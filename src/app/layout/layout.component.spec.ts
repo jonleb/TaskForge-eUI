@@ -16,7 +16,7 @@ describe('LayoutComponent', () => {
     let component: LayoutComponent;
     let fixture: ComponentFixture<LayoutComponent>;
     let authServiceMock: { logout: ReturnType<typeof vi.fn>; getCurrentUser: ReturnType<typeof vi.fn> };
-    let permissionServiceMock: { setUser: ReturnType<typeof vi.fn>; clear: ReturnType<typeof vi.fn> };
+    let permissionServiceMock: { setUser: ReturnType<typeof vi.fn>; clear: ReturnType<typeof vi.fn>; hasGlobalRole: ReturnType<typeof vi.fn> };
     let router: Router;
     let userServiceMock: SpyObj<UserService>;
     let i18nServiceMock: SpyObj<I18nService>;
@@ -40,6 +40,7 @@ describe('LayoutComponent', () => {
         permissionServiceMock = {
             setUser: vi.fn(),
             clear: vi.fn(),
+            hasGlobalRole: vi.fn().mockReturnValue(false),
         };
         userServiceMock = { init: vi.fn() } as SpyObj<UserService>;
         i18nServiceMock = {
@@ -123,5 +124,56 @@ describe('LayoutComponent', () => {
         component.logout();
 
         expect(permissionServiceMock.clear).toHaveBeenCalled();
+    });
+
+    it('should populate sidebarItems after ngOnInit', () => {
+        permissionServiceMock.hasGlobalRole.mockReturnValue(true);
+
+        component.ngOnInit();
+
+        expect(component.sidebarItems.length).toBeGreaterThan(0);
+    });
+
+    it('should show all items when user has matching role', () => {
+        permissionServiceMock.hasGlobalRole.mockReturnValue(true);
+        // Add a role-gated item to test filtering
+        (component as any).allSidebarItems.push({ label: 'Admin', url: 'screen/admin', metadata: { roles: ['SUPER_ADMIN'] } });
+
+        component.ngOnInit();
+
+        const labels = component.sidebarItems.map(i => i.label);
+        expect(labels).toContain('Admin');
+        expect(labels).toContain('Home');
+    });
+
+    it('should hide role-gated items when user lacks required role', () => {
+        permissionServiceMock.hasGlobalRole.mockReturnValue(false);
+        (component as any).allSidebarItems.push({ label: 'Admin', url: 'screen/admin', metadata: { roles: ['SUPER_ADMIN'] } });
+
+        component.ngOnInit();
+
+        const labels = component.sidebarItems.map(i => i.label);
+        expect(labels).not.toContain('Admin');
+        expect(labels).toContain('Home');
+    });
+
+    it('should show items without metadata.roles to all users', () => {
+        permissionServiceMock.hasGlobalRole.mockReturnValue(false);
+
+        component.ngOnInit();
+
+        // All default items have no roles, so all should be visible
+        expect(component.sidebarItems.length).toBe(3);
+    });
+
+    it('should filter sidebar on error (show only unrestricted items)', () => {
+        authServiceMock.getCurrentUser.mockReturnValue(throwError(() => new Error('fail')));
+        (component as any).allSidebarItems.push({ label: 'Admin', url: 'screen/admin', metadata: { roles: ['SUPER_ADMIN'] } });
+
+        component.ngOnInit();
+
+        const labels = component.sidebarItems.map(i => i.label);
+        expect(labels).not.toContain('Admin');
+        expect(labels).toContain('Home');
     });
 });

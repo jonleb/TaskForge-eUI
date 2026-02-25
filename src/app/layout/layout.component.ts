@@ -6,7 +6,11 @@ import { EUI_USER_PROFILE } from '@eui/components/eui-user-profile';
 import { EUI_ICON } from '@eui/components/eui-icon';
 import { EuiMenuItem } from '@eui/components/eui-menu';
 import { EUI_LAYOUT } from '@eui/components/layout';
-import { AuthService, PermissionService } from '../core/auth';
+import { AuthService, GlobalRole, PermissionService } from '../core/auth';
+
+interface SidebarItemMetadata {
+    roles?: GlobalRole[];
+}
 
 @Component({
     selector: 'app-layout',
@@ -26,7 +30,7 @@ export class LayoutComponent implements OnInit {
 
     userRole = '';
 
-    sidebarItems: EuiMenuItem[] = [
+    private readonly allSidebarItems: EuiMenuItem<SidebarItemMetadata>[] = [
         { label: 'Home', url: 'screen/home' },
         { label: 'Module 1', url: 'screen/module1', children: [
             { label: 'page 1', url: 'screen/module1/page1' },
@@ -34,6 +38,7 @@ export class LayoutComponent implements OnInit {
         ] },
         { label: 'Module 2', url: 'screen/module2' },
     ];
+    sidebarItems: EuiMenuItem<SidebarItemMetadata>[] = [];
     notificationItems = [
         { label: 'Title label 1', subLabel: 'Subtitle label' },
         { label: 'Title label 2', subLabel: 'Subtitle label' },
@@ -46,8 +51,12 @@ export class LayoutComponent implements OnInit {
             next: profile => {
                 this.userRole = profile.role;
                 this.permissionService.setUser(profile);
+                this.filterSidebarItems();
             },
-            error: () => this.userRole = '',
+            error: () => {
+                this.userRole = '';
+                this.filterSidebarItems();
+            },
         });
     }
 
@@ -55,6 +64,16 @@ export class LayoutComponent implements OnInit {
         this.permissionService.clear();
         this.authService.logout().subscribe(() => {
             this.router.navigate(['/login']);
+        });
+    }
+
+    private filterSidebarItems(): void {
+        this.sidebarItems = this.allSidebarItems.filter(item => {
+            const roles = item.metadata?.roles;
+            if (!roles || roles.length === 0) {
+                return true;
+            }
+            return this.permissionService.hasGlobalRole(...roles);
         });
     }
 }
