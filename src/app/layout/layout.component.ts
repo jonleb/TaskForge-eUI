@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { EUI_LANGUAGE_SELECTOR } from '@eui/components/eui-language-selector';
@@ -19,9 +19,11 @@ import { AuthService } from '../core/auth';
         ...EUI_LANGUAGE_SELECTOR,
     ],
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
     private readonly authService = inject(AuthService);
     private readonly router = inject(Router);
+
+    userRole = '';
 
     sidebarItems: EuiMenuItem[] = [
         { label: 'Home', url: 'screen/home' },
@@ -37,6 +39,13 @@ export class LayoutComponent {
         { label: 'Title label 3', subLabel: 'Subtitle label' },
         { label: 'Title label 4', subLabel: 'Subtitle label' },
     ];
+
+    ngOnInit(): void {
+        this.authService.getCurrentUser().subscribe({
+            next: profile => this.userRole = profile.role,
+            error: () => this.userRole = '',
+        });
+    }
 
     logout(): void {
         this.authService.logout().subscribe(() => {

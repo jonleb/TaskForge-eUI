@@ -3,7 +3,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideRouter, Router } from '@angular/router';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { CONFIG_TOKEN, I18nService, I18nState, UserService, EuiAppConfig } from '@eui/core';
 import { LayoutComponent } from './layout.component';
@@ -15,16 +15,27 @@ type SpyObj<T> = { [K in keyof T]: T[K] extends (...args: any[]) => any ? Return
 describe('LayoutComponent', () => {
     let component: LayoutComponent;
     let fixture: ComponentFixture<LayoutComponent>;
-    let authServiceMock: { logout: ReturnType<typeof vi.fn> };
+    let authServiceMock: { logout: ReturnType<typeof vi.fn>; getCurrentUser: ReturnType<typeof vi.fn> };
     let router: Router;
     let userServiceMock: SpyObj<UserService>;
     let i18nServiceMock: SpyObj<I18nService>;
     let configMock: EuiAppConfig;
 
+    const mockUserProfile = {
+        userId: '1',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        role: 'DEVELOPER',
+    };
+
     beforeEach(async () => {
         type GetStateReturnType<T> = T extends keyof I18nState ? Observable<I18nState[T]> : Observable<I18nState>;
 
-        authServiceMock = { logout: vi.fn() };
+        authServiceMock = {
+            logout: vi.fn(),
+            getCurrentUser: vi.fn().mockReturnValue(of(mockUserProfile)),
+        };
         userServiceMock = { init: vi.fn() } as SpyObj<UserService>;
         i18nServiceMock = {
             init: vi.fn(),
@@ -77,5 +88,20 @@ describe('LayoutComponent', () => {
         component.logout();
 
         expect(router.navigate).toHaveBeenCalledWith(['/login']);
+    });
+
+    it('should fetch current user and set userRole on init', () => {
+        component.ngOnInit();
+
+        expect(authServiceMock.getCurrentUser).toHaveBeenCalled();
+        expect(component.userRole).toBe('DEVELOPER');
+    });
+
+    it('should set userRole to empty string when getCurrentUser fails', () => {
+        authServiceMock.getCurrentUser.mockReturnValue(throwError(() => new Error('Network error')));
+
+        component.ngOnInit();
+
+        expect(component.userRole).toBe('');
     });
 });
