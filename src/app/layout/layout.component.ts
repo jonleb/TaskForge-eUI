@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { EUI_LANGUAGE_SELECTOR } from '@eui/components/eui-language-selector';
@@ -27,6 +27,7 @@ export class LayoutComponent implements OnInit {
     private readonly authService = inject(AuthService);
     private readonly permissionService = inject(PermissionService);
     private readonly router = inject(Router);
+    private readonly cdr = inject(ChangeDetectorRef);
 
     userRole = '';
 
@@ -37,6 +38,7 @@ export class LayoutComponent implements OnInit {
             { label: 'page 2', url: 'screen/module1/page2' },
         ] },
         { label: 'Module 2', url: 'screen/module2' },
+        { label: 'Users', url: 'screen/admin/users', metadata: { roles: ['SUPER_ADMIN'] } },
     ];
     sidebarItems: EuiMenuItem<SidebarItemMetadata>[] = [];
     notificationItems = [
@@ -52,10 +54,12 @@ export class LayoutComponent implements OnInit {
                 this.userRole = profile.role;
                 this.permissionService.setUser(profile);
                 this.filterSidebarItems();
+                this.cdr.markForCheck();
             },
             error: () => {
                 this.userRole = '';
                 this.filterSidebarItems();
+                this.cdr.markForCheck();
             },
         });
     }
