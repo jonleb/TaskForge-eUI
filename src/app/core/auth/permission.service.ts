@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { EuiGrowlService } from '@eui/core';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { GlobalRole, ProjectRole, UserProfile } from './auth.models';
@@ -12,6 +13,7 @@ interface ProjectMemberResponse {
 @Injectable({ providedIn: 'root' })
 export class PermissionService {
     private readonly http = inject(HttpClient);
+    private readonly growlService = inject(EuiGrowlService);
 
     private globalRole: GlobalRole = 'USER';
     private userId = '';
@@ -49,6 +51,14 @@ export class PermissionService {
 
     getUserId(): string {
         return this.userId;
+    }
+
+    showAccessDenied(message?: string): void {
+        this.growlService.growl({
+            severity: 'warning',
+            summary: 'Access denied',
+            detail: message || 'You do not have permission to perform this action.',
+        });
     }
 
     clear(): void {

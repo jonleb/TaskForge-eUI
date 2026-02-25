@@ -6,6 +6,7 @@ import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import { BehaviorSubject } from 'rxjs';
 import { authInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
+import { PermissionService } from './permission.service';
 import { EuiGrowlService } from '@eui/core';
 
 describe('authInterceptor', () => {
@@ -14,6 +15,7 @@ describe('authInterceptor', () => {
     let authServiceMock: { getToken: ReturnType<typeof vi.fn>; isAuthenticated$: BehaviorSubject<boolean> };
     let routerMock: { navigate: ReturnType<typeof vi.fn> };
     let growlServiceMock: { growl: ReturnType<typeof vi.fn> };
+    let permissionServiceMock: { showAccessDenied: ReturnType<typeof vi.fn> };
 
     beforeEach(() => {
         localStorage.clear();
@@ -23,6 +25,7 @@ describe('authInterceptor', () => {
         };
         routerMock = { navigate: vi.fn() };
         growlServiceMock = { growl: vi.fn() };
+        permissionServiceMock = { showAccessDenied: vi.fn() };
 
         TestBed.configureTestingModule({
             providers: [
@@ -31,6 +34,7 @@ describe('authInterceptor', () => {
                 { provide: AuthService, useValue: authServiceMock },
                 { provide: Router, useValue: routerMock },
                 { provide: EuiGrowlService, useValue: growlServiceMock },
+                { provide: PermissionService, useValue: permissionServiceMock },
             ],
         });
 
@@ -143,5 +147,93 @@ describe('authInterceptor', () => {
                 summary: 'Session expired',
             }),
         );
+    });
+
+    describe('403 Forbidden handling', () => {
+        it('should call showAccessDenied on 403 response', () => {
+            authServiceMock.getToken.mockReturnValue('valid-token');
+
+            http.get('/api/admin/users').subscribe({ error: () => {} });
+
+            httpMock.expectOne('/api/admin/users').flush(
+                { message: 'Forbidden' },
+                { status: 403, statusText: 'Forbidden' },
+            );
+
+            expect(permissionServiceMock.showAccessDenied).toHaveBeenCalledWith('Forbidden');
+        });
+
+        it('should use default message when backend provides no message', () => {
+            authServiceMock.getToken.mockReturnValue('valid-token');
+
+            http.get('/api/admin/users').subscribe({ error: () => {} });
+
+            httpMock.expectOne('/api/admin/users').flush(
+                null,
+                { status: 403, statusText: 'Forbidden' },
+            );
+
+            expect(permissionServiceMock.showAccessDenied).toHaveBeenCalledWith(
+                'You do not have permission to perform this action.',
+            );
+        });
+
+        it('should NOT clear token on 403 response', () => {
+            localStorage.setItem('auth_token', 'valid-token');
+            authServiceMock.getToken.mockReturnValue('valid-token');
+
+            http.get('/api/admin/users').subscribe({ error: () => {} });
+
+            httpMock.expectOne('/api/admin/users').flush(
+                { message: 'Forbidden' },
+                { status: 403, statusText: 'Forbidden' },
+            );
+
+            expect(localStorage.getItem('auth_token')).toBe('valid-token');
+        });
+
+        it('should NOT update isAuthenticated$ on 403 response', () => {
+            authServiceMock.isAuthenticated$.next(true);
+            authServiceMock.getToken.mockReturnValue('valid-token');
+
+            http.get('/api/admin/users').subscribe({ error: () => {} });
+
+            httpMock.expectOne('/api/admin/users').flush(
+                { message: 'Forbidden' },
+                { status: 403, statusText: 'Forbidden' },
+            );
+
+            expect(authServiceMock.isAuthenticated$.getValue()).toBe(true);
+        });
+
+        it('should NOT redirect on 403 response', () => {
+            authServiceMock.getToken.mockReturnValue('valid-token');
+
+            http.get('/api/admin/users').subscribe({ error: () => {} });
+
+            httpMock.expectOne('/api/admin/users').flush(
+                { message: 'Forbidden' },
+                { status: 403, statusText: 'Forbidden' },
+            );
+
+            expect(routerMock.navigate).not.toHaveBeenCalled();
+        });
+
+        it('should propagate 403 error to subscriber', () => {
+            authServiceMock.getToken.mockReturnValue('valid-token');
+            let receivedError: any;
+
+            http.get('/api/admin/users').subscribe({
+                error: (err) => { receivedError = err; },
+            });
+
+            httpMock.expectOne('/api/admin/users').flush(
+                { message: 'Forbidden' },
+                { status: 403, statusText: 'Forbidden' },
+            );
+
+            expect(receivedError).toBeTruthy();
+            expect(receivedError.status).toBe(403);
+        });
     });
 });

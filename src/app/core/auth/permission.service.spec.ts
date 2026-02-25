@@ -1,13 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { describe, it, beforeEach, afterEach, expect } from 'vitest';
+import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
+import { EuiGrowlService } from '@eui/core';
 import { PermissionService } from './permission.service';
 import { UserProfile } from './auth.models';
 
 describe('PermissionService', () => {
     let service: PermissionService;
     let httpMock: HttpTestingController;
+    let growlServiceMock: { growl: ReturnType<typeof vi.fn> };
 
     const superAdminProfile: UserProfile = {
         userId: '1',
@@ -26,11 +28,14 @@ describe('PermissionService', () => {
     };
 
     beforeEach(() => {
+        growlServiceMock = { growl: vi.fn() };
+
         TestBed.configureTestingModule({
             providers: [
                 provideHttpClient(withInterceptorsFromDi()),
                 provideHttpClientTesting(),
                 PermissionService,
+                { provide: EuiGrowlService, useValue: growlServiceMock },
             ],
         });
 
@@ -178,6 +183,28 @@ describe('PermissionService', () => {
             expect(service.isSuperAdmin()).toBe(false);
             expect(service.getGlobalRole()).toBe('USER');
             expect(service.getUserId()).toBe('');
+        });
+    });
+
+    describe('showAccessDenied()', () => {
+        it('should show growl with default message when no message provided', () => {
+            service.showAccessDenied();
+
+            expect(growlServiceMock.growl).toHaveBeenCalledWith({
+                severity: 'warning',
+                summary: 'Access denied',
+                detail: 'You do not have permission to perform this action.',
+            });
+        });
+
+        it('should show growl with custom message when provided', () => {
+            service.showAccessDenied('Cannot delete this project.');
+
+            expect(growlServiceMock.growl).toHaveBeenCalledWith({
+                severity: 'warning',
+                summary: 'Access denied',
+                detail: 'Cannot delete this project.',
+            });
         });
     });
 });
