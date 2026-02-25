@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -26,6 +26,7 @@ import { AuthService } from '../../core/auth';
 export class LoginComponent implements OnInit {
     private readonly authService = inject(AuthService);
     private readonly router = inject(Router);
+    private readonly cdr = inject(ChangeDetectorRef);
 
     loginForm = new FormGroup({
         username: new FormControl('', [Validators.required]),
@@ -61,6 +62,7 @@ export class LoginComponent implements OnInit {
             error: (err) => {
                 this.isLoading = false;
                 this.errorMessage = err.error?.message || 'An unexpected error occurred';
+                this.cdr.detectChanges();
             },
         });
     }

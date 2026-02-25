@@ -12,21 +12,25 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
     const growlService = inject(EuiGrowlService);
     const permissionService = inject(PermissionService);
 
-    // Don't attach token to login requests — login is public
-    if (req.url.includes('/api/auth/login')) {
-        return next(req);
-    }
+    const isLoginRequest = req.url.includes('/api/auth/login');
 
-    // Attach Bearer token if available
-    const token = authService.getToken();
-    if (token) {
-        req = req.clone({
-            setHeaders: { Authorization: `Bearer ${token}` },
-        });
+    // Don't attach token to login requests — login is public
+    if (!isLoginRequest) {
+        const token = authService.getToken();
+        if (token) {
+            req = req.clone({
+                setHeaders: { Authorization: `Bearer ${token}` },
+            });
+        }
     }
 
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
+            // Login errors are handled by the login component — skip interceptor handling
+            if (isLoginRequest) {
+                return throwError(() => error);
+            }
+
             if (error.status === 401) {
                 localStorage.removeItem('auth_token');
                 authService.isAuthenticated$.next(false);

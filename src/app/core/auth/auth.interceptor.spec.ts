@@ -67,6 +67,27 @@ describe('authInterceptor', () => {
         req.flush({});
     });
 
+    it('should NOT trigger interceptor error handling for login 403 (deactivated user)', () => {
+        let receivedError: any;
+
+        http.post('/api/auth/login', { username: 'deactivated', password: 'pass' }).subscribe({
+            error: (err) => { receivedError = err; },
+        });
+
+        httpMock.expectOne('/api/auth/login').flush(
+            { message: 'Account is deactivated' },
+            { status: 403, statusText: 'Forbidden' },
+        );
+
+        // Error should propagate to subscriber (login component handles it)
+        expect(receivedError).toBeTruthy();
+        expect(receivedError.status).toBe(403);
+        // Interceptor should NOT show access denied for login requests
+        expect(permissionServiceMock.showAccessDenied).not.toHaveBeenCalled();
+        // Interceptor should NOT redirect for login requests
+        expect(routerMock.navigate).not.toHaveBeenCalled();
+    });
+
     it('should NOT add Authorization header when no token exists', () => {
         authServiceMock.getToken.mockReturnValue(null);
 
