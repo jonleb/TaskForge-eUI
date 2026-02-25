@@ -120,3 +120,177 @@ describe('POST /api/auth/login', () => {
         expect(res.body.user.password).toBeUndefined();
     });
 });
+
+
+// --- STORY-002: Auth Middleware, Logout & /me ---
+
+/**
+ * Helper: logs in as superadmin and returns a valid token.
+ */
+async function getValidToken() {
+    const res = await request(app)
+        .post('/api/auth/login')
+        .send({ username: 'superadmin', password: 'SecurePassword!123' });
+    return res.body.accessToken;
+}
+
+/**
+ * Helper: creates an expired token for testing.
+ */
+function getExpiredToken() {
+    const payload = { userId: '1', role: 'SUPER_ADMIN', exp: Date.now() - 1000 };
+    return Buffer.from(JSON.stringify(payload)).toString('base64');
+}
+
+describe('Auth Middleware — protected routes', () => {
+
+    it('should return 401 when no Authorization header is provided', async () => {
+        const res = await request(app).get('/api/auth/me');
+
+        expect(res.status).toBe(401);
+        expect(res.body.message).toBe('Session expired or invalid');
+    });
+
+    it('should return 401 when Authorization header has no Bearer prefix', async () => {
+        const token = await getValidToken();
+        const res = await request(app)
+            .get('/api/auth/me')
+            .set('Authorization', token);
+
+        expect(res.status).toBe(401);
+        expect(res.body.message).toBe('Session expired or invalid');
+    });
+
+    it('should return 401 when token is malformed (not valid base64 JSON)', async () => {
+        const res = await request(app)
+            .get('/api/auth/me')
+            .set('Authorization', 'Bearer not-a-valid-token');
+
+        expect(res.status).toBe(401);
+        expect(res.body.message).toBe('Session expired or invalid');
+    });
+
+    it('should return 401 when token is expired', async () => {
+        const res = await request(app)
+            .get('/api/auth/me')
+            .set('Authorization', `Bearer ${getExpiredToken()}`);
+
+        expect(res.status).toBe(401);
+        expect(res.body.message).toBe('Session expired or invalid');
+    });
+
+    it('should return 401 when token payload is missing required fields', async () => {
+        const incomplete = Buffer.from(JSON.stringify({ userId: '1' })).toString('base64');
+        const res = await request(app)
+            .get('/api/auth/me')
+            .set('Authorization', `Bearer ${incomplete}`);
+
+        expect(res.status).toBe(401);
+        expect(res.body.message).toBe('Session expired or invalid');
+    });
+
+    it('should pass through with valid token', async () => {
+        const token = await getValidToken();
+        const res = await request(app)
+            .get('/api/auth/me')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+    });
+});
+
+describe('GET /api/auth/me', () => {
+
+    it('should return the current user profile without password', async () => {
+        const token = await getValidToken();
+        const res = await request(app)
+            .get('/api/auth/me')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.id).toBe('1');
+        expect(res.body.firstName).toBe('Super');
+        expect(res.body.lastName).toBe('Admin');
+        expect(res.body.email).toBe('superadmin@taskforge.local');
+        expect(res.body.role).toBe('SUPER_ADMIN');
+        expect(res.body.password).toBeUndefined();
+    });
+
+    it('should return 401 without token', async () => {
+        const res = await request(app).get('/api/auth/me');
+
+        expect(res.status).toBe(401);
+    });
+});
+
+describe('POST /api/auth/logout', () => {
+
+    it('should return 200 with valid token', async () => {
+        const token = await getValidToken();
+        const res = await request(app)
+            .post('/api/auth/logout')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.message).toBe('Logged out');
+    });
+
+    it('should return 401 without token', async () => {
+        const res = await request(app).post('/api/auth/logout');
+
+        expect(res.status).toBe(401);
+    });
+
+    it('should return 401 with expired token', async () => {
+        const res = await request(app)
+            .post('/api/auth/logout')
+            .set('Authorization', `Bearer ${getExpiredToken()}`);
+
+        expect(res.status).toBe(401);
+    });
+});
+
+describe('POST /api/auth/login — remains public', () => {
+
+    it('should still work without Authorization header', async () => {
+        const res = await request(app)
+            .post('/api/auth/login')
+            .send({ username: 'superadmin', password: 'SecurePassword!123' });
+
+        expect(res.status).toBe(200);
+        expect(res.body.accessToken).toBeDefined();
+    });
+});
+
+describe('Protected user routes', () => {
+
+    it('GET /api/users should return 401 without token', async () => {
+        const res = await request(app).get('/api/users');
+
+        expect(res.status).toBe(401);
+    });
+
+    it('GET /api/users should return 200 with valid token', async () => {
+        const token = await getValidToken();
+        const res = await request(app)
+            .get('/api/users')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+    });
+
+    it('GET /api/user-details should return 401 without token', async () => {
+        const res = await request(app).get('/api/user-details');
+
+        expect(res.status).toBe(401);
+    });
+
+    it('GET /api/user-details should return 200 with valid token', async () => {
+        const token = await getValidToken();
+        const res = await request(app)
+            .get('/api/user-details')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+    });
+});

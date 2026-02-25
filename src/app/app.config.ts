@@ -8,7 +8,8 @@ import { AppStarterService } from './app-starter.service';
 
 import { TranslateModule } from '@ngx-translate/core';
 
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { authInterceptor } from './core/auth';
 import {
     CachePreventionInterceptor,
     CorsSecurityInterceptor,
@@ -72,7 +73,7 @@ export const appConfig: ApplicationConfig = {
         },
         provideEuiInitializer(),
         provideAppInitializer(init),
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withInterceptorsFromDi(), withInterceptors([authInterceptor])),
         importProvidersFrom(
             EuiCoreModule.forRoot(),
             TranslateModule.forRoot(translateConfig)

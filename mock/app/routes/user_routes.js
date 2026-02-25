@@ -1,24 +1,25 @@
 const User = require('../models/user');
 const uuid = require('uuid');
+const authMiddleware = require('../middleware/auth');
 
 module.exports = function (app, db) {
   db.then(db => {
-    app.get('/api/user-details', (req, res) => {
+    app.get('/api/user-details', authMiddleware, (req, res) => {
       res.send(db.get('user-details'))
     });
 
-    app.get('/api/users', (req, res) => {
+    app.get('/api/users', authMiddleware, (req, res) => {
       res.send(db.get('users'))
     });
 
-    app.get('/api/users/:userId', (req, res) => {
+    app.get('/api/users/:userId', authMiddleware, (req, res) => {
       res.send(
         db.get('users')
           .find({ userId: req.params.userId })
       );
     });
 
-    app.put('/api/users/:userId', (req, res) => {
+    app.put('/api/users/:userId', authMiddleware, (req, res) => {
       db.get('users')
         .find({ userId: req.params.userId })
         .assign( { ...req.body } )
@@ -26,14 +27,14 @@ module.exports = function (app, db) {
         .then(user => res.send(user))
     });
 
-    app.delete('/api/users/:userId', (req, res) => {
+    app.delete('/api/users/:userId', authMiddleware, (req, res) => {
       db.get('users')
         .remove({ userId: req.params.userId })
         .write()
         .then(res.send())
     });
 
-    app.post('/api/users', (req, res) => {
+    app.post('/api/users', authMiddleware, (req, res) => {
       db.get('users')
         .push({ ...User, ...req.body, ...{ userId: uuid.v4() } })
         .last()

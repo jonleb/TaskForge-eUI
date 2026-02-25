@@ -1,3 +1,5 @@
+const authMiddleware = require('../middleware/auth');
+
 module.exports = function (app, db) {
     db.then(db => {
 
@@ -21,22 +23,18 @@ module.exports = function (app, db) {
 
             const user = db.get('users').find({ username }).value();
 
-            // User not found — generic error (no distinction from wrong password)
             if (!user) {
                 return res.status(401).json({ message: 'Invalid username or password' });
             }
 
-            // Wrong password — same generic error
             if (user.password !== password) {
                 return res.status(401).json({ message: 'Invalid username or password' });
             }
 
-            // Inactive user
             if (!user.is_active) {
                 return res.status(403).json({ message: 'Account is deactivated' });
             }
 
-            // Generate access token (base64-encoded JSON, expires in 1 hour)
             const payload = {
                 userId: user.id,
                 role: user.role,
@@ -54,6 +52,31 @@ module.exports = function (app, db) {
                     role: user.role,
                 },
             });
+        });
+
+        /**
+         * POST /api/auth/logout
+         * Protected — requires valid token.
+         * Returns 200 on success. Token invalidation is client-side (clear localStorage).
+         */
+        app.post('/api/auth/logout', authMiddleware, (req, res) => {
+            return res.status(200).json({ message: 'Logged out' });
+        });
+
+        /**
+         * GET /api/auth/me
+         * Protected — requires valid token.
+         * Returns the current user's profile (without password).
+         */
+        app.get('/api/auth/me', authMiddleware, (req, res) => {
+            const user = db.get('users').find({ id: req.user.userId }).value();
+
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            const { password, ...profile } = user;
+            return res.status(200).json(profile);
         });
 
     });
