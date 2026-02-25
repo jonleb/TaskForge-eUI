@@ -13,6 +13,7 @@ import { AuthService } from '../../core/auth';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
+    styleUrl: './login.component.scss',
     imports: [
         ReactiveFormsModule,
         ...EUI_BUTTON,
