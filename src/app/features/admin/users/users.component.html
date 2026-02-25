@@ -55,7 +55,9 @@
                         <eui-icon-button
                             icon="key:regular"
                             size="s"
-                            [ariaLabel]="'Reset password for ' + row.username">
+                            aria-haspopup="dialog"
+                            [ariaLabel]="'Reset password for ' + row.username"
+                            (click)="onResetPassword(row)">
                         </eui-icon-button>
                         @if (row.is_active) {
                             <eui-icon-button
@@ -172,7 +174,7 @@
 
 <!-- ─── Temporary Password Dialog ─────────────────────────────────── -->
 <eui-dialog #tempPasswordDialog
-    [title]="'User Created Successfully'"
+    [title]="tempPasswordTitle"
     [hasDismissButton]="false"
     [acceptLabel]="'Close'"
     [width]="'450px'"
@@ -195,4 +197,16 @@
             (click)="copyPassword()">
         Copy to Clipboard
     </button>
+</eui-dialog>
+
+<!-- ─── Reset Password Confirmation Dialog ────────────────────────── -->
+<eui-dialog #resetPasswordDialog
+    [title]="'Reset Password'"
+    [acceptLabel]="'Reset Password'"
+    [dismissLabel]="'Cancel'"
+    [width]="'450px'"
+    (accept)="onConfirmResetPassword()">
+
+    <p>Are you sure you want to reset the password for <strong>{{ selectedUser?.username }}</strong>?</p>
+    <p>A new temporary password will be generated.</p>
 </eui-dialog>

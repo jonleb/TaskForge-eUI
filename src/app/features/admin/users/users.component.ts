@@ -49,10 +49,13 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('createDialog') createDialog!: EuiDialogComponent;
     @ViewChild('tempPasswordDialog') tempPasswordDialog!: EuiDialogComponent;
+    @ViewChild('resetPasswordDialog') resetPasswordDialog!: EuiDialogComponent;
 
     users: AdminUser[] = [];
     total = 0;
     loading = false;
+    selectedUser: AdminUser | null = null;
+    tempPasswordTitle = 'User Created Successfully';
 
     params: AdminUserListParams = {
         _page: 1,
@@ -162,6 +165,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
         this.adminUserService.createUser(this.createForm.value).subscribe({
             next: res => {
                 this.temporaryPassword = res.temporaryPassword;
+                this.tempPasswordTitle = 'User Created Successfully';
                 this.createDialog.closeDialog();
                 this.resetCreateForm();
                 this.loadUsers();
@@ -184,6 +188,35 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     copyPassword(): void {
         navigator.clipboard.writeText(this.temporaryPassword).then(() => {
             this.growlService.growl({ severity: 'success', summary: 'Copied', detail: 'Password copied to clipboard.' });
+        });
+    }
+
+    // ─── Reset password ──────────────────────────────────────────────
+
+    onResetPassword(user: AdminUser): void {
+        this.selectedUser = user;
+        this.resetPasswordDialog.openDialog();
+    }
+
+    onConfirmResetPassword(): void {
+        if (!this.selectedUser) {
+            return;
+        }
+
+        this.adminUserService.resetPassword(this.selectedUser.id).subscribe({
+            next: res => {
+                this.temporaryPassword = res.temporaryPassword;
+                this.tempPasswordTitle = 'Password Reset Successfully';
+                this.tempPasswordDialog.openDialog();
+                this.cdr.markForCheck();
+            },
+            error: err => {
+                this.growlService.growl({
+                    severity: 'error',
+                    summary: 'Reset failed',
+                    detail: err.error?.message || 'Could not reset password. Please try again.',
+                });
+            },
         });
     }
 }

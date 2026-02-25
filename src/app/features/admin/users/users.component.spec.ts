@@ -460,4 +460,91 @@ describe('UsersComponent', () => {
             expect.objectContaining({ severity: 'success', summary: 'Copied' })
         );
     });
+
+    // ─── Reset password ──────────────────────────────────────────────────
+
+    it('should set selectedUser and open confirmation dialog when onResetPassword is called', () => {
+        initWithData();
+        const user = mockListResponse.data[0];
+        component.resetPasswordDialog = { openDialog: vi.fn() } as any;
+
+        component.onResetPassword(user);
+
+        expect(component.selectedUser).toBe(user);
+        expect(component.resetPasswordDialog.openDialog).toHaveBeenCalled();
+    });
+
+    it('should call resetPassword API on confirm', () => {
+        initWithData();
+        component.selectedUser = mockListResponse.data[0];
+        component.tempPasswordDialog = { openDialog: vi.fn() } as any;
+
+        component.onConfirmResetPassword();
+
+        const req = httpMock.expectOne(r =>
+            r.url === '/api/admin/users/1/reset-password' && r.method === 'POST'
+        );
+        req.flush({ temporaryPassword: 'NewPass789' });
+
+        expect(component.temporaryPassword).toBe('NewPass789');
+        expect(component.tempPasswordTitle).toBe('Password Reset Successfully');
+        expect(component.tempPasswordDialog.openDialog).toHaveBeenCalled();
+    });
+
+    it('should show error growl when reset password API fails', () => {
+        initWithData();
+        component.selectedUser = mockListResponse.data[0];
+        component.tempPasswordDialog = { openDialog: vi.fn() } as any;
+
+        component.onConfirmResetPassword();
+
+        const req = httpMock.expectOne(r =>
+            r.url === '/api/admin/users/1/reset-password' && r.method === 'POST'
+        );
+        req.flush(
+            { message: 'User not found' },
+            { status: 404, statusText: 'Not Found' }
+        );
+
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(
+            expect.objectContaining({ severity: 'error', summary: 'Reset failed' })
+        );
+        expect(component.tempPasswordDialog.openDialog).not.toHaveBeenCalled();
+    });
+
+    it('should not call API if selectedUser is null', () => {
+        initWithData();
+        component.selectedUser = null;
+
+        component.onConfirmResetPassword();
+
+        httpMock.expectNone(r => r.url.includes('reset-password'));
+    });
+
+    it('should set tempPasswordTitle to "User Created Successfully" on create flow', () => {
+        initWithData();
+        component.createForm.setValue({
+            username: 'newuser',
+            firstName: 'New',
+            lastName: 'User',
+            email: 'new@taskforge.local',
+            role: 'DEVELOPER',
+        });
+
+        component.createDialog = { closeDialog: vi.fn() } as any;
+        component.tempPasswordDialog = { openDialog: vi.fn() } as any;
+
+        component.onCreateUser();
+
+        const req = httpMock.expectOne(r => r.url === '/api/admin/users' && r.method === 'POST');
+        req.flush({
+            user: { id: '26', username: 'newuser', email: 'new@taskforge.local', role: 'DEVELOPER', global_role: 'DEVELOPER', firstName: 'New', lastName: 'User', is_active: true, created_at: '2026-02-25T00:00:00Z', updated_at: '2026-02-25T00:00:00Z' },
+            temporaryPassword: 'CreatePass123',
+        });
+
+        const listReq = httpMock.expectOne(r => r.url === '/api/admin/users' && r.method === 'GET');
+        listReq.flush(mockListResponse);
+
+        expect(component.tempPasswordTitle).toBe('User Created Successfully');
+    });
 });
