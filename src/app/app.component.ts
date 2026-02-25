@@ -25,6 +25,7 @@ export class AppComponent {
             { label: 'page 2', url: 'screen/module1/page2' },
         ] },
         { label: 'Module 2', url: 'screen/module2' },
+        { label: 'Scrollbar', url: 'screen/scrollbar' },
     ];
     notificationItems = [
         { label: 'Title label 1', subLabel: 'Subtitle label' },
