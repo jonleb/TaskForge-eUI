@@ -31,6 +31,16 @@ The project uses `@angular/build:unit-test` (Jasmine).
 - NEVER use `npm test -- file.spec.ts --run` — this syntax does not work in this project.
 - Mock server tests (Jest): `npm run test:mock`
 
+## Definition of Done
+
+A story or task is not complete until:
+
+- Frontend changes include unit tests (Jasmine) for new components, services, guards, and interceptors.
+- Mock server changes include integration tests (Jest + supertest) for new or modified endpoints.
+- All existing tests still pass (`npm run ng test` for frontend, `npm run test:mock` for backend).
+- Build passes: `npx ng build --configuration=development`.
+- Code follows the a11y steering rules (see `a11y.md`).
+
 ## MCP Server
 
 The `eui-compodoc` MCP server must be available. If it is not responding, check `.kiro/settings/mcp.json` and reconnect from the MCP Server view in Kiro.
