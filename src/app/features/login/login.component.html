@@ -1,0 +1,52 @@
+<main class="eui-u-d-flex eui-u-flex-align-items-center eui-u-flex-justify-center eui-u-height-100">
+    <div class="eui-u-width-20">
+        <h1 class="eui-u-text-center eui-u-mb-l">TaskForge</h1>
+
+        @if (errorMessage) {
+            <div aria-live="polite" class="eui-u-mb-m">
+                <eui-feedback-message euiDanger>{{ errorMessage }}</eui-feedback-message>
+            </div>
+        }
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div euiInputGroup class="eui-u-mb-m">
+                <label euiLabel euiRequired for="login-username">Username</label>
+                <input euiInputText
+                       id="login-username"
+                       formControlName="username"
+                       autocomplete="username"
+                       aria-required="true"
+                       [attr.aria-describedby]="loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required') ? 'username-error' : null" />
+                @if (loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required')) {
+                    <eui-feedback-message euiDanger id="username-error">Username is required</eui-feedback-message>
+                }
+            </div>
+
+            <div euiInputGroup class="eui-u-mb-m">
+                <label euiLabel euiRequired for="login-password">Password</label>
+                <input euiInputText
+                       id="login-password"
+                       type="password"
+                       formControlName="password"
+                       autocomplete="current-password"
+                       aria-required="true"
+                       [attr.aria-describedby]="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required') ? 'password-error' : null" />
+                @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')) {
+                    <eui-feedback-message euiDanger id="password-error">Password is required</eui-feedback-message>
+                }
+            </div>
+
+            <button euiButton
+                    euiPrimary
+                    euiBlockButton
+                    type="submit"
+                    [euiDisabled]="isLoading">
+                @if (isLoading) {
+                    Signing in...
+                } @else {
+                    Sign in
+                }
+            </button>
+        </form>
+    </div>
+</main>
