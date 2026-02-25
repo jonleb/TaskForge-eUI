@@ -6,12 +6,14 @@ import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import { BehaviorSubject } from 'rxjs';
 import { authInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
+import { EuiGrowlService } from '@eui/core';
 
 describe('authInterceptor', () => {
     let httpMock: HttpTestingController;
     let http: HttpClient;
     let authServiceMock: { getToken: ReturnType<typeof vi.fn>; isAuthenticated$: BehaviorSubject<boolean> };
     let routerMock: { navigate: ReturnType<typeof vi.fn> };
+    let growlServiceMock: { growl: ReturnType<typeof vi.fn> };
 
     beforeEach(() => {
         localStorage.clear();
@@ -20,6 +22,7 @@ describe('authInterceptor', () => {
             isAuthenticated$: new BehaviorSubject<boolean>(false),
         };
         routerMock = { navigate: vi.fn() };
+        growlServiceMock = { growl: vi.fn() };
 
         TestBed.configureTestingModule({
             providers: [
@@ -27,6 +30,7 @@ describe('authInterceptor', () => {
                 provideHttpClientTesting(),
                 { provide: AuthService, useValue: authServiceMock },
                 { provide: Router, useValue: routerMock },
+                { provide: EuiGrowlService, useValue: growlServiceMock },
             ],
         });
 
@@ -121,5 +125,23 @@ describe('authInterceptor', () => {
         );
 
         expect(routerMock.navigate).not.toHaveBeenCalled();
+    });
+
+    it('should show growl notification on 401 response', () => {
+        authServiceMock.getToken.mockReturnValue('expired-token');
+
+        http.get('/api/users').subscribe({ error: () => {} });
+
+        httpMock.expectOne('/api/users').flush(
+            { message: 'Session expired or invalid' },
+            { status: 401, statusText: 'Unauthorized' },
+        );
+
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(
+            expect.objectContaining({
+                severity: 'warning',
+                summary: 'Session expired',
+            }),
+        );
     });
 });

@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { EUI_LANGUAGE_SELECTOR } from '@eui/components/eui-language-selector';
 import { EUI_USER_PROFILE } from '@eui/components/eui-user-profile';
 import { EUI_ICON } from '@eui/components/eui-icon';
 import { EuiMenuItem } from '@eui/components/eui-menu';
 import { EUI_LAYOUT } from '@eui/components/layout';
+import { AuthService } from '../core/auth';
 
 @Component({
     selector: 'app-layout',
@@ -18,6 +20,9 @@ import { EUI_LAYOUT } from '@eui/components/layout';
     ],
 })
 export class LayoutComponent {
+    private readonly authService = inject(AuthService);
+    private readonly router = inject(Router);
+
     sidebarItems: EuiMenuItem[] = [
         { label: 'Home', url: 'screen/home' },
         { label: 'Module 1', url: 'screen/module1', children: [
@@ -32,4 +37,10 @@ export class LayoutComponent {
         { label: 'Title label 3', subLabel: 'Subtitle label' },
         { label: 'Title label 4', subLabel: 'Subtitle label' },
     ];
+
+    logout(): void {
+        this.authService.logout().subscribe(() => {
+            this.router.navigate(['/login']);
+        });
+    }
 }

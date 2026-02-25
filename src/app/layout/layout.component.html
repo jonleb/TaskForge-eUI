@@ -12,7 +12,7 @@
                             <eui-user-profile-menu-item>
                                 <eui-icon-svg icon="user:regular"/>{{ 'eui.my-profile-informations' | translate }}
                             </eui-user-profile-menu-item>
-                            <eui-user-profile-menu-item>
+                            <eui-user-profile-menu-item (click)="logout()">
                                 <eui-icon-svg icon="sign-out:regular"/>{{ 'eui.sign-out' | translate }}
                             </eui-user-profile-menu-item>
                         </eui-user-profile-menu>
