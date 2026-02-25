@@ -1137,5 +1137,232 @@
       "created_at": "2025-04-25T17:50:00.000Z",
       "updated_at": "2025-04-25T17:50:00.000Z"
     }
+  ],
+  "sessions": [
+    {
+      "id": "d462afe4-9c45-4cbd-b509-ca344b21a650",
+      "userId": "2",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjIiLCJ1c2VybmFtZSI6InVzZXIiLCJlbWFpbCI6InVzZXJAdGFza2ZvcmdlLmxvY2FsIiwicm9sZSI6IlBST0pFQ1RfTUVNQkVSIiwiaWF0IjoxNzcxOTMwMzkxLCJleHAiOjE3NzI1MzUxOTF9.3FSZt2QVJLzw12igDt6AWWzRy1DQ01CK1gnRR_5CgWc",
+      "createdAt": "2026-02-24T10:53:11.427Z",
+      "expiresAt": "2026-03-03T10:53:11.428Z"
+    },
+    {
+      "id": "c1a7966a-6427-4e9c-887b-f47f646b9816",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk0NzI1MSwiZXhwIjoxNzcyNTUyMDUxfQ.QQa7feQ3sEVsNac3jE0V7UzZC-GcRBSvTDeQY_GG_HY",
+      "createdAt": "2026-02-24T15:34:11.159Z",
+      "expiresAt": "2026-03-03T15:34:11.159Z"
+    },
+    {
+      "id": "5106ad98-6bcf-42d4-848a-907b2f7b589c",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk0NzI1OSwiZXhwIjoxNzcyNTUyMDU5fQ.IW6a7LgBgcFfy6AG_VTG-Oq1JGWaz8kvC5KxDFyhXhw",
+      "createdAt": "2026-02-24T15:34:19.313Z",
+      "expiresAt": "2026-03-03T15:34:19.315Z"
+    },
+    {
+      "id": "dd8729b2-289f-44b6-b91c-758b045a0a00",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk0NzU5OSwiZXhwIjoxNzcyNTUyMzk5fQ.ORcUxplALO7xzjQsJXJi7SRBq63SFarKmxwgagUUeJg",
+      "createdAt": "2026-02-24T15:39:59.111Z",
+      "expiresAt": "2026-03-03T15:39:59.111Z"
+    },
+    {
+      "id": "0141cde7-ecbc-4b79-b2fe-18cf280c16c8",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk0NzYwNywiZXhwIjoxNzcyNTUyNDA3fQ.lD1JiEElKD3pjF1YR8NmJ4UF5HwQtVqoFuEl1hdthCA",
+      "createdAt": "2026-02-24T15:40:07.141Z",
+      "expiresAt": "2026-03-03T15:40:07.142Z"
+    },
+    {
+      "id": "90361adf-214e-4059-b228-8fda96c5ae06",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk0NzY2MiwiZXhwIjoxNzcyNTUyNDYyfQ.gabqUdDOrQZzauGXARiRSN20scfCNATp8gqHCtMWrZY",
+      "createdAt": "2026-02-24T15:41:02.896Z",
+      "expiresAt": "2026-03-03T15:41:02.896Z"
+    },
+    {
+      "id": "276ccb93-b7b1-4491-a540-b3b1b031968e",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk0NzcyNCwiZXhwIjoxNzcyNTUyNTI0fQ.5g00Ll-LKXwCDJumnN0EroApnpad8rjKL7OJmqhKAMA",
+      "createdAt": "2026-02-24T15:42:04.149Z",
+      "expiresAt": "2026-03-03T15:42:04.149Z"
+    },
+    {
+      "id": "5bfad2a2-abff-43e3-8ea0-cdd00e5b6ccc",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk0Nzc0NCwiZXhwIjoxNzcyNTUyNTQ0fQ.CTrDc2_wtVA03Xz6ebKgvtRbeAkcXDjewvQEY0ge2ow",
+      "createdAt": "2026-02-24T15:42:24.397Z",
+      "expiresAt": "2026-03-03T15:42:24.397Z"
+    },
+    {
+      "id": "10aa3f59-1610-4211-b18d-300b00dac2fc",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk0Nzc4MywiZXhwIjoxNzcyNTUyNTgzfQ.5cax7PLfclXrjtsG7WU4a5RBrPZhg60nwCU-Q5d_7c0",
+      "createdAt": "2026-02-24T15:43:03.311Z",
+      "expiresAt": "2026-03-03T15:43:03.311Z"
+    },
+    {
+      "id": "c17a2ce1-4b9b-4591-aef2-9fa7f3699cdb",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk0NzgzNSwiZXhwIjoxNzcyNTUyNjM1fQ.l_20TXoWi5fTlo66JiNClQp5moF36NrRsCWy5wrkIzk",
+      "createdAt": "2026-02-24T15:43:55.197Z",
+      "expiresAt": "2026-03-03T15:43:55.197Z"
+    },
+    {
+      "id": "5fe82867-f51f-4119-aa4f-87675915f31e",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk0Nzg0OCwiZXhwIjoxNzcyNTUyNjQ4fQ.G3WLej-luolDyIXCtPYcJGSNFsvMyFMDmuTcVb3uOUQ",
+      "createdAt": "2026-02-24T15:44:08.284Z",
+      "expiresAt": "2026-03-03T15:44:08.285Z"
+    },
+    {
+      "id": "1a01a0b1-0b5d-4542-a607-e7a915521390",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk0Nzg2MSwiZXhwIjoxNzcyNTUyNjYxfQ.O8y6usBkMwiPtSvasA-R-uImA010cvdGFrcDFLG224Q",
+      "createdAt": "2026-02-24T15:44:21.623Z",
+      "expiresAt": "2026-03-03T15:44:21.625Z"
+    },
+    {
+      "id": "a878eecb-15ed-41ea-9134-6bd58585dd9e",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk0Nzg2NSwiZXhwIjoxNzcyNTUyNjY1fQ.x2G180RFQcKQ65d_unVZ72Ns2YT7M5ncXp4-DbajQpk",
+      "createdAt": "2026-02-24T15:44:25.862Z",
+      "expiresAt": "2026-03-03T15:44:25.864Z"
+    },
+    {
+      "id": "17854f0e-6d5a-4b7f-99af-08d130b640cd",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk1MzU1MiwiZXhwIjoxNzcyNTU4MzUyfQ.oAc6yus9Dxsr0-uq8nnVOc3WVXAoHyn35na2vnxXsmM",
+      "createdAt": "2026-02-24T17:19:12.320Z",
+      "expiresAt": "2026-03-03T17:19:12.320Z"
+    },
+    {
+      "id": "e1dad50f-1d87-4e0a-a736-e731351217c3",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk1NzUxMSwiZXhwIjoxNzcyNTYyMzExfQ.4kvOdKCdQcuTEMT6niYwKRGbd7F7qkkCuSpRHYzGTk0",
+      "createdAt": "2026-02-24T18:25:11.958Z",
+      "expiresAt": "2026-03-03T18:25:11.958Z"
+    },
+    {
+      "id": "5156c3f9-c603-4791-9b9a-2da4141baaa8",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MTk1ODU4OCwiZXhwIjoxNzcyNTYzMzg4fQ.kK-c5E_02g0blKdeZtbmCr1YI_Vd-lRVB9trQWr_8-0",
+      "createdAt": "2026-02-24T18:43:08.289Z",
+      "expiresAt": "2026-03-03T18:43:08.289Z"
+    },
+    {
+      "id": "53c89bb0-d112-4d74-a898-4edc85909c02",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MjAwNzIwMiwiZXhwIjoxNzcyNjEyMDAyfQ.nN3X34o-j9kamr5NZts_Go_D9xBLSCG_JtUtlD6wHZs",
+      "createdAt": "2026-02-25T08:13:22.065Z",
+      "expiresAt": "2026-03-04T08:13:22.065Z"
+    },
+    {
+      "id": "794dad7e-c531-486a-88a9-f58b018ff7f4",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MjAwOTEzOCwiZXhwIjoxNzcyNjEzOTM4fQ.IGeQwgyEKzLkLP3V2lOUfODzuTOiVmFdFSlfs7CyHF8",
+      "createdAt": "2026-02-25T08:45:38.141Z",
+      "expiresAt": "2026-03-04T08:45:38.141Z"
+    },
+    {
+      "id": "38bff486-7d80-47b9-a350-256381ac3453",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MjAxMDI0NiwiZXhwIjoxNzcyNjE1MDQ2fQ.hGuWtzY8qc4zm4P5y0ja_qyC0UFSNCl9eI2WIreMQuY",
+      "createdAt": "2026-02-25T09:04:06.516Z",
+      "expiresAt": "2026-03-04T09:04:06.516Z"
+    },
+    {
+      "id": "4ae2147f-c651-4402-8a77-cbaf3e0ec4ec",
+      "userId": "1",
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZW1haWwiOiJhZG1pbkB0YXNrZm9yZ2UubG9jYWwiLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImlhdCI6MTc3MjAxMjA0NiwiZXhwIjoxNzcyNjE2ODQ2fQ.-NXw1XSvKopefKdN3gv5opVPDfMw06J3nP3wvCOuVjo",
+      "createdAt": "2026-02-25T09:34:06.512Z",
+      "expiresAt": "2026-03-04T09:34:06.512Z"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-1",
+      "name": "TaskForge Core",
+      "project_key": "TFC",
+      "description": "Core platform development",
+      "status": "active",
+      "created_at": "2025-01-20T10:00:00.000Z",
+      "updated_at": "2025-06-01T10:00:00.000Z"
+    },
+    {
+      "id": "proj-2",
+      "name": "TaskForge Mobile",
+      "project_key": "TFM",
+      "description": "Mobile app development",
+      "status": "active",
+      "created_at": "2025-03-01T10:00:00.000Z",
+      "updated_at": "2025-06-01T10:00:00.000Z"
+    },
+    {
+      "id": "proj-3",
+      "name": "TaskForge Docs",
+      "project_key": "TFD",
+      "description": "Documentation site",
+      "status": "active",
+      "created_at": "2025-04-15T10:00:00.000Z",
+      "updated_at": "2025-06-01T10:00:00.000Z"
+    }
+  ],
+  "project_members": [
+    {
+      "id": "pm-1",
+      "project_id": "proj-1",
+      "user_id": "2",
+      "role": "DEVELOPER"
+    },
+    {
+      "id": "pm-2",
+      "project_id": "proj-1",
+      "user_id": "5",
+      "role": "DEVELOPER"
+    },
+    {
+      "id": "pm-3",
+      "project_id": "proj-1",
+      "user_id": "6",
+      "role": "REPORTER"
+    },
+    {
+      "id": "pm-4",
+      "project_id": "proj-1",
+      "user_id": "7",
+      "role": "VIEWER"
+    },
+    {
+      "id": "pm-5",
+      "project_id": "proj-2",
+      "user_id": "2",
+      "role": "PROJECT_ADMIN"
+    },
+    {
+      "id": "pm-6",
+      "project_id": "proj-2",
+      "user_id": "5",
+      "role": "PRODUCT_OWNER"
+    },
+    {
+      "id": "pm-7",
+      "project_id": "proj-2",
+      "user_id": "6",
+      "role": "DEVELOPER"
+    },
+    {
+      "id": "pm-8",
+      "project_id": "proj-3",
+      "user_id": "2",
+      "role": "PRODUCT_OWNER"
+    },
+    {
+      "id": "pm-9",
+      "project_id": "proj-3",
+      "user_id": "7",
+      "role": "REPORTER"
+    }
   ]
 }

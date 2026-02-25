@@ -25,6 +25,8 @@ export class AppComponent {
             { label: 'page 2', url: 'screen/module1/page2' },
         ] },
         { label: 'Module 2', url: 'screen/module2' },
+        { label: 'Users', url: 'screen/users' },
+        { label: 'Table Pagination', url: 'screen/table-pagination' },
     ];
     notificationItems = [
         { label: 'Title label 1', subLabel: 'Subtitle label' },

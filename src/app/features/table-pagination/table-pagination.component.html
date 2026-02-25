@@ -1,0 +1,37 @@
+<eui-page>
+    <eui-page-header label="Table Pagination" />
+
+    <eui-page-content>
+        <eui-table-filter #filter placeholder="Search users..."></eui-table-filter>
+
+        <table euiTable [data]="users" [filter]="filter" [paginator]="paginator" isTableResponsive>
+            <ng-template euiTemplate="header">
+                <tr>
+                    <th isSortable sortOn="username">Username</th>
+                    <th isSortable sortOn="firstName">First Name</th>
+                    <th isSortable sortOn="lastName">Last Name</th>
+                    <th isSortable sortOn="email">Email</th>
+                    <th isSortable sortOn="role">Role</th>
+                    <th isSortable sortOn="is_active">Active</th>
+                </tr>
+            </ng-template>
+            <ng-template let-row euiTemplate="body">
+                <tr>
+                    <td data-col-label="Username">{{ row.username }}</td>
+                    <td data-col-label="First Name">{{ row.firstName }}</td>
+                    <td data-col-label="Last Name">{{ row.lastName }}</td>
+                    <td data-col-label="Email">{{ row.email }}</td>
+                    <td data-col-label="Role">{{ row.role }}</td>
+                    <td data-col-label="Active">{{ row.is_active ? 'Yes' : 'No' }}</td>
+                </tr>
+            </ng-template>
+            <ng-template euiTemplate="noData">
+                <tr>
+                    <td class="eui-u-text-center" colspan="6">No users found</td>
+                </tr>
+            </ng-template>
+        </table>
+
+        <eui-paginator #paginator [pageSizeOptions]="[5, 10, 25, 50]" [pageSize]="10" [hasPageNumberNavigation]="true"></eui-paginator>
+    </eui-page-content>
+</eui-page>
