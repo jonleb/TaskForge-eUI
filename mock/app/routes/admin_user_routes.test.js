@@ -494,9 +494,9 @@ describe('POST /api/admin/users/:userId/reset-password', () => {
     });
 
     it('returns 200 with a new temporaryPassword for valid user', async () => {
-        // Use id 29 (victor.perez) — not used by other test suites for login
+        // Use id 17 (jack.martinez) — not used by other test suites for login
         const res = await request(app)
-            .post('/api/admin/users/29/reset-password')
+            .post('/api/admin/users/17/reset-password')
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
@@ -506,12 +506,12 @@ describe('POST /api/admin/users/:userId/reset-password', () => {
     });
 
     it('returns a different password on each call', async () => {
-        // Use id 30 (wendy.thompson) — not used by other test suites for login
+        // Use id 14 (karen.hernandez) — not used by other test suites for login
         const res1 = await request(app)
-            .post('/api/admin/users/30/reset-password')
+            .post('/api/admin/users/14/reset-password')
             .set('Authorization', `Bearer ${token}`);
         const res2 = await request(app)
-            .post('/api/admin/users/30/reset-password')
+            .post('/api/admin/users/14/reset-password')
             .set('Authorization', `Bearer ${token}`);
 
         expect(res1.status).toBe(200);
@@ -531,7 +531,7 @@ describe('POST /api/admin/users/:userId/reset-password', () => {
 
     it('updates the user updated_at timestamp', async () => {
         const beforeRes = await request(app)
-            .get('/api/admin/users/29')
+            .get('/api/admin/users/17')
             .set('Authorization', `Bearer ${token}`);
         const beforeUpdatedAt = beforeRes.body.updated_at;
 
@@ -539,11 +539,11 @@ describe('POST /api/admin/users/:userId/reset-password', () => {
         await new Promise(r => setTimeout(r, 10));
 
         await request(app)
-            .post('/api/admin/users/29/reset-password')
+            .post('/api/admin/users/17/reset-password')
             .set('Authorization', `Bearer ${token}`);
 
         const afterRes = await request(app)
-            .get('/api/admin/users/29')
+            .get('/api/admin/users/17')
             .set('Authorization', `Bearer ${token}`);
 
         expect(afterRes.body.updated_at).not.toBe(beforeUpdatedAt);
@@ -560,21 +560,21 @@ describe('PATCH /api/admin/users/:userId/deactivate', () => {
     });
 
     it('returns 200 and sets is_active to false for an active user', async () => {
-        // Use id 21 (nathan.wilson) — active PROJECT_ADMIN, not used by other suites
+        // Use id 18 (nathan.wilson) — active PROJECT_ADMIN, not used by other suites
         // First ensure user is active
         const checkRes = await request(app)
-            .get('/api/admin/users/21')
+            .get('/api/admin/users/18')
             .set('Authorization', `Bearer ${token}`);
 
         if (!checkRes.body.is_active) {
             // Reactivate first if needed from a previous test run
             await request(app)
-                .patch('/api/admin/users/21/reactivate')
+                .patch('/api/admin/users/18/reactivate')
                 .set('Authorization', `Bearer ${token}`);
         }
 
         const res = await request(app)
-            .patch('/api/admin/users/21/deactivate')
+            .patch('/api/admin/users/18/deactivate')
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
@@ -614,7 +614,7 @@ describe('PATCH /api/admin/users/:userId/deactivate', () => {
     it('does not strip password from response', async () => {
         // Verify the response from a successful deactivation has no password
         const checkRes = await request(app)
-            .get('/api/admin/users/21')
+            .get('/api/admin/users/18')
             .set('Authorization', `Bearer ${token}`);
 
         expect(checkRes.body.password).toBeUndefined();
@@ -631,9 +631,9 @@ describe('PATCH /api/admin/users/:userId/reactivate', () => {
     });
 
     it('returns 200 and sets is_active to true for an inactive user', async () => {
-        // id 24 (quinn.taylor) is inactive by default — not used by other test suites
+        // id 19 (quinn.taylor) is inactive by default — not used by other test suites
         const res = await request(app)
-            .patch('/api/admin/users/24/reactivate')
+            .patch('/api/admin/users/19/reactivate')
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
@@ -642,9 +642,9 @@ describe('PATCH /api/admin/users/:userId/reactivate', () => {
     });
 
     it('returns 400 when user is already active', async () => {
-        // After the previous test, id 24 is now active
+        // After the previous test, id 19 is now active
         const res = await request(app)
-            .patch('/api/admin/users/24/reactivate')
+            .patch('/api/admin/users/19/reactivate')
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(400);
@@ -661,26 +661,26 @@ describe('PATCH /api/admin/users/:userId/reactivate', () => {
     });
 
     it('reactivated user can be verified via GET', async () => {
-        // Use id 44 (kira.torres) — inactive SUPER_ADMIN, not used by other suites
+        // Use id 20 (kira.torres) — inactive SUPER_ADMIN, not used by other suites
         // First ensure inactive
         const check = await request(app)
-            .get('/api/admin/users/44')
+            .get('/api/admin/users/20')
             .set('Authorization', `Bearer ${token}`);
 
         if (check.body.is_active) {
             await request(app)
-                .patch('/api/admin/users/44/deactivate')
+                .patch('/api/admin/users/20/deactivate')
                 .set('Authorization', `Bearer ${token}`);
         }
 
         const reactivateRes = await request(app)
-            .patch('/api/admin/users/44/reactivate')
+            .patch('/api/admin/users/20/reactivate')
             .set('Authorization', `Bearer ${token}`);
 
         expect(reactivateRes.status).toBe(200);
 
         const getRes = await request(app)
-            .get('/api/admin/users/44')
+            .get('/api/admin/users/20')
             .set('Authorization', `Bearer ${token}`);
 
         expect(getRes.body.is_active).toBe(true);
