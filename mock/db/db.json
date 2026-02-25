@@ -1137,5 +1137,55 @@
       "created_at": "2025-04-25T17:50:00.000Z",
       "updated_at": "2025-04-25T17:50:00.000Z"
     }
+  ],
+  "projects": [
+    {
+      "id": "1",
+      "key": "TF",
+      "name": "TaskForge Core",
+      "description": "Main product — task and project management platform",
+      "created_by": "1",
+      "created_at": "2025-01-20T09:00:00.000Z",
+      "updated_at": "2025-06-01T10:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "2",
+      "key": "DEMO",
+      "name": "Demo Project",
+      "description": "Sandbox project for demos and onboarding",
+      "created_by": "2",
+      "created_at": "2025-03-01T14:00:00.000Z",
+      "updated_at": "2025-05-15T11:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "3",
+      "key": "INFRA",
+      "name": "Infrastructure",
+      "description": "Internal infrastructure and DevOps tasks",
+      "created_by": "1",
+      "created_at": "2025-02-10T08:00:00.000Z",
+      "updated_at": "2025-04-01T09:00:00.000Z",
+      "is_active": false
+    }
+  ],
+  "project-members": [
+    { "id": "1",  "projectId": "1", "userId": "2",  "role": "PROJECT_ADMIN",  "joined_at": "2025-01-20T09:00:00.000Z" },
+    { "id": "2",  "projectId": "1", "userId": "3",  "role": "PRODUCT_OWNER",  "joined_at": "2025-01-20T09:00:00.000Z" },
+    { "id": "3",  "projectId": "1", "userId": "4",  "role": "DEVELOPER",      "joined_at": "2025-01-21T10:00:00.000Z" },
+    { "id": "4",  "projectId": "1", "userId": "5",  "role": "REPORTER",       "joined_at": "2025-01-22T08:00:00.000Z" },
+    { "id": "5",  "projectId": "1", "userId": "6",  "role": "VIEWER",         "joined_at": "2025-01-23T11:00:00.000Z" },
+    { "id": "6",  "projectId": "1", "userId": "11", "role": "DEVELOPER",      "joined_at": "2025-02-01T09:00:00.000Z" },
+    { "id": "7",  "projectId": "1", "userId": "15", "role": "PROJECT_ADMIN",  "joined_at": "2025-02-05T14:00:00.000Z" },
+    { "id": "8",  "projectId": "2", "userId": "2",  "role": "PROJECT_ADMIN",  "joined_at": "2025-03-01T14:00:00.000Z" },
+    { "id": "9",  "projectId": "2", "userId": "10", "role": "PRODUCT_OWNER",  "joined_at": "2025-03-02T09:00:00.000Z" },
+    { "id": "10", "projectId": "2", "userId": "17", "role": "DEVELOPER",      "joined_at": "2025-03-03T10:00:00.000Z" },
+    { "id": "11", "projectId": "2", "userId": "12", "role": "REPORTER",       "joined_at": "2025-03-04T08:00:00.000Z" },
+    { "id": "12", "projectId": "2", "userId": "13", "role": "VIEWER",         "joined_at": "2025-03-05T11:00:00.000Z" },
+    { "id": "13", "projectId": "2", "userId": "4",  "role": "REPORTER",       "joined_at": "2025-03-10T09:00:00.000Z" },
+    { "id": "14", "projectId": "3", "userId": "15", "role": "PROJECT_ADMIN",  "joined_at": "2025-02-10T08:00:00.000Z" },
+    { "id": "15", "projectId": "3", "userId": "16", "role": "PRODUCT_OWNER",  "joined_at": "2025-02-11T09:00:00.000Z" },
+    { "id": "16", "projectId": "3", "userId": "23", "role": "DEVELOPER",      "joined_at": "2025-02-12T10:00:00.000Z" }
   ]
 }
