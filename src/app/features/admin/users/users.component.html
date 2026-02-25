@@ -4,6 +4,7 @@
             <button euiButton euiPrimary
                     type="button"
                     aria-haspopup="dialog"
+                    [euiDisabled]="operationPending"
                     (click)="createDialog.openDialog()">
                 Create User
             </button>
@@ -11,11 +12,20 @@
     </eui-page-header>
     <eui-page-content>
 
-        <!-- Search filter (not bound to table — async mode) -->
-        <eui-table-filter
-            placeholder="Search users..."
-            (filterChange)="onFilterChange($event)">
-        </eui-table-filter>
+        <!-- Filter bar: search + status toggle -->
+        <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-s">
+            <eui-table-filter
+                placeholder="Search users..."
+                (filterChange)="onFilterChange($event)">
+            </eui-table-filter>
+
+            <eui-toggle-group aria-label="Filter users by status"
+                              (itemClick)="onStatusFilterChange($event)">
+                <eui-toggle-group-item id="status-all" [isChecked]="true">All</eui-toggle-group-item>
+                <eui-toggle-group-item id="status-active">Active</eui-toggle-group-item>
+                <eui-toggle-group-item id="status-inactive">Inactive</eui-toggle-group-item>
+            </eui-toggle-group>
+        </div>
 
         <!-- Result count (a11y: aria-live for dynamic updates) -->
         <p aria-live="polite" class="eui-u-mt-s eui-u-mb-s">
@@ -57,6 +67,7 @@
                             size="s"
                             aria-haspopup="dialog"
                             [ariaLabel]="'Reset password for ' + row.username"
+                            [euiDisabled]="operationPending"
                             (click)="onResetPassword(row)">
                         </eui-icon-button>
                         @if (row.is_active) {
@@ -65,6 +76,7 @@
                                 size="s"
                                 aria-haspopup="dialog"
                                 [ariaLabel]="'Deactivate ' + row.username"
+                                [euiDisabled]="operationPending"
                                 (click)="onToggleStatus(row)">
                             </eui-icon-button>
                         } @else {
@@ -73,6 +85,7 @@
                                 size="s"
                                 aria-haspopup="dialog"
                                 [ariaLabel]="'Reactivate ' + row.username"
+                                [euiDisabled]="operationPending"
                                 (click)="onToggleStatus(row)">
                             </eui-icon-button>
                         }
@@ -82,7 +95,16 @@
 
             <ng-template euiTemplate="noData">
                 <tr>
-                    <td class="eui-u-text-center" colspan="7">No users found</td>
+                    <td class="eui-u-text-center" colspan="7">
+                        {{ emptyStateMessage }}
+                        @if (hasLoadError) {
+                            <button euiButton euiSecondary type="button"
+                                    class="eui-u-ml-m"
+                                    (click)="loadUsers()">
+                                Retry
+                            </button>
+                        }
+                    </td>
                 </tr>
             </ng-template>
         </table>

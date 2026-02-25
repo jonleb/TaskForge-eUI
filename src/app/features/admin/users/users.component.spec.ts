@@ -668,4 +668,155 @@ describe('UsersComponent', () => {
 
         httpMock.expectNone(r => r.url.includes('deactivate') || r.url.includes('reactivate'));
     });
+
+    // ─── STORY-007: Status filter & polish ───────────────────────────────
+
+    it('should render the status filter toggle group', () => {
+        initWithData();
+        const toggleGroup = fixture.nativeElement.querySelector('eui-toggle-group');
+        expect(toggleGroup).toBeTruthy();
+        expect(toggleGroup.getAttribute('aria-label')).toBe('Filter users by status');
+
+        const items = fixture.nativeElement.querySelectorAll('eui-toggle-group-item');
+        expect(items.length).toBe(3);
+    });
+
+    it('should filter by active users when onStatusFilterChange is called with status-active', () => {
+        initWithData();
+
+        component.onStatusFilterChange({ id: 'status-active' } as any);
+
+        const req = httpMock.expectOne(r =>
+            r.url === '/api/admin/users' && r.params.get('is_active') === 'true'
+        );
+        req.flush(mockListResponse);
+
+        expect(component.activeStatusFilter).toBe('active');
+        expect(component.params.is_active).toBe('true');
+        expect(component.params._page).toBe(1);
+    });
+
+    it('should filter by inactive users when onStatusFilterChange is called with status-inactive', () => {
+        initWithData();
+
+        component.onStatusFilterChange({ id: 'status-inactive' } as any);
+
+        const req = httpMock.expectOne(r =>
+            r.url === '/api/admin/users' && r.params.get('is_active') === 'false'
+        );
+        req.flush(emptyResponse);
+
+        expect(component.activeStatusFilter).toBe('inactive');
+        expect(component.params.is_active).toBe('false');
+    });
+
+    it('should reset to all users when onStatusFilterChange is called with status-all', () => {
+        initWithData();
+
+        // First set to active
+        component.onStatusFilterChange({ id: 'status-active' } as any);
+        httpMock.expectOne(r => r.url === '/api/admin/users').flush(mockListResponse);
+
+        // Then reset to all
+        component.onStatusFilterChange({ id: 'status-all' } as any);
+        const req = httpMock.expectOne(r =>
+            r.url === '/api/admin/users' && !r.params.has('is_active')
+        );
+        req.flush(mockListResponse);
+
+        expect(component.activeStatusFilter).toBe('all');
+        expect(component.params.is_active).toBeUndefined();
+    });
+
+    it('should show error growl and set hasLoadError when loadUsers fails', () => {
+        fixture.detectChanges();
+        const req = httpMock.expectOne(r => r.url === '/api/admin/users');
+        req.flush(null, { status: 500, statusText: 'Internal Server Error' });
+        fixture.detectChanges();
+
+        expect(component.hasLoadError).toBe(true);
+        expect(component.users).toEqual([]);
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(
+            expect.objectContaining({ severity: 'error', summary: 'Load failed' })
+        );
+    });
+
+    it('should show retry button when hasLoadError is true', () => {
+        fixture.detectChanges();
+        const req = httpMock.expectOne(r => r.url === '/api/admin/users');
+        req.flush(null, { status: 500, statusText: 'Internal Server Error' });
+        fixture.detectChanges();
+
+        const retryBtn = fixture.nativeElement.querySelector('button[euibutton][euisecondary]');
+        expect(retryBtn).toBeTruthy();
+        expect(retryBtn.textContent.trim()).toContain('Retry');
+    });
+
+    it('should reload users when retry button is clicked', () => {
+        fixture.detectChanges();
+        httpMock.expectOne(r => r.url === '/api/admin/users')
+            .flush(null, { status: 500, statusText: 'Internal Server Error' });
+        fixture.detectChanges();
+
+        component.loadUsers();
+        const retryReq = httpMock.expectOne(r => r.url === '/api/admin/users');
+        retryReq.flush(mockListResponse);
+        fixture.detectChanges();
+
+        expect(component.hasLoadError).toBe(false);
+        expect(component.users.length).toBe(2);
+    });
+
+    it('should show contextual empty message for search with no results', () => {
+        initWithData(emptyResponse);
+        component.params = { ...component.params, q: 'nonexistent' };
+        expect(component.emptyStateMessage).toBe('No users match your search criteria.');
+    });
+
+    it('should show contextual empty message for active filter with no results', () => {
+        initWithData(emptyResponse);
+        component.activeStatusFilter = 'active';
+        expect(component.emptyStateMessage).toBe('No active users found.');
+    });
+
+    it('should show contextual empty message for inactive filter with no results', () => {
+        initWithData(emptyResponse);
+        component.activeStatusFilter = 'inactive';
+        expect(component.emptyStateMessage).toBe('No inactive users found.');
+    });
+
+    it('should show error empty message when hasLoadError is true', () => {
+        initWithData(emptyResponse);
+        component.hasLoadError = true;
+        expect(component.emptyStateMessage).toBe('An error occurred while loading users.');
+    });
+
+    it('should set operationPending during reset password operation', () => {
+        initWithData();
+        component.selectedUser = mockListResponse.data[0];
+
+        component.onConfirmResetPassword();
+        expect(component.operationPending).toBe(true);
+
+        const req = httpMock.expectOne(r => r.url === '/api/admin/users/1/reset-password');
+        req.flush({ temporaryPassword: 'NewPass123' });
+
+        expect(component.operationPending).toBe(false);
+    });
+
+    it('should set operationPending during toggle status operation', () => {
+        initWithData();
+        component.selectedUser = mockListResponse.data[0];
+        component.toggleDialogIsDeactivate = true;
+
+        component.onConfirmToggleStatus();
+        expect(component.operationPending).toBe(true);
+
+        const req = httpMock.expectOne(r => r.url === '/api/admin/users/1/deactivate');
+        req.flush({ ...mockListResponse.data[0], is_active: false });
+        // loadUsers fires after success
+        httpMock.expectOne(r => r.url === '/api/admin/users').flush(mockListResponse);
+
+        expect(component.operationPending).toBe(false);
+    });
 });
