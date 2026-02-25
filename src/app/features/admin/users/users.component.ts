@@ -50,12 +50,16 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('createDialog') createDialog!: EuiDialogComponent;
     @ViewChild('tempPasswordDialog') tempPasswordDialog!: EuiDialogComponent;
     @ViewChild('resetPasswordDialog') resetPasswordDialog!: EuiDialogComponent;
+    @ViewChild('toggleStatusDialog') toggleStatusDialog!: EuiDialogComponent;
 
     users: AdminUser[] = [];
     total = 0;
     loading = false;
     selectedUser: AdminUser | null = null;
     tempPasswordTitle = 'User Created Successfully';
+    toggleDialogTitle = '';
+    toggleDialogAcceptLabel = '';
+    toggleDialogIsDeactivate = false;
 
     params: AdminUserListParams = {
         _page: 1,
@@ -215,6 +219,48 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
                     severity: 'error',
                     summary: 'Reset failed',
                     detail: err.error?.message || 'Could not reset password. Please try again.',
+                });
+            },
+        });
+    }
+
+    // ─── Deactivate / Reactivate ─────────────────────────────────────
+
+    onToggleStatus(user: AdminUser): void {
+        this.selectedUser = user;
+        this.toggleDialogIsDeactivate = user.is_active;
+        this.toggleDialogTitle = user.is_active ? 'Deactivate User' : 'Reactivate User';
+        this.toggleDialogAcceptLabel = user.is_active ? 'Deactivate' : 'Reactivate';
+        this.cdr.detectChanges();
+        this.toggleStatusDialog.openDialog();
+    }
+
+    onConfirmToggleStatus(): void {
+        if (!this.selectedUser) {
+            return;
+        }
+
+        const isDeactivate = this.toggleDialogIsDeactivate;
+        const action$ = isDeactivate
+            ? this.adminUserService.deactivateUser(this.selectedUser.id)
+            : this.adminUserService.reactivateUser(this.selectedUser.id);
+        const actionLabel = isDeactivate ? 'deactivated' : 'reactivated';
+        const username = this.selectedUser.username;
+
+        action$.subscribe({
+            next: () => {
+                this.loadUsers();
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: `User ${actionLabel}`,
+                    detail: `${username} has been ${actionLabel}.`,
+                });
+            },
+            error: err => {
+                this.growlService.growl({
+                    severity: 'error',
+                    summary: 'Action failed',
+                    detail: err.error?.message || `Could not ${isDeactivate ? 'deactivate' : 'reactivate'} user. Please try again.`,
                 });
             },
         });

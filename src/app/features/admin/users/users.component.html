@@ -63,13 +63,17 @@
                             <eui-icon-button
                                 icon="prohibit:regular"
                                 size="s"
-                                [ariaLabel]="'Deactivate ' + row.username">
+                                aria-haspopup="dialog"
+                                [ariaLabel]="'Deactivate ' + row.username"
+                                (click)="onToggleStatus(row)">
                             </eui-icon-button>
                         } @else {
                             <eui-icon-button
                                 icon="check-circle:regular"
                                 size="s"
-                                [ariaLabel]="'Reactivate ' + row.username">
+                                aria-haspopup="dialog"
+                                [ariaLabel]="'Reactivate ' + row.username"
+                                (click)="onToggleStatus(row)">
                             </eui-icon-button>
                         }
                     </td>
@@ -209,4 +213,20 @@
 
     <p>Are you sure you want to reset the password for <strong>{{ selectedUser?.username }}</strong>?</p>
     <p>A new temporary password will be generated.</p>
+</eui-dialog>
+
+<!-- ─── Deactivate / Reactivate Confirmation Dialog ───────────────── -->
+<eui-dialog #toggleStatusDialog
+    [title]="toggleDialogTitle"
+    [acceptLabel]="toggleDialogAcceptLabel"
+    [dismissLabel]="'Cancel'"
+    [width]="'450px'"
+    (accept)="onConfirmToggleStatus()">
+
+    @if (toggleDialogIsDeactivate) {
+        <p>Are you sure you want to deactivate <strong>{{ selectedUser?.username }}</strong>?</p>
+        <p>They will no longer be able to log in.</p>
+    } @else {
+        <p>Are you sure you want to reactivate <strong>{{ selectedUser?.username }}</strong>?</p>
+    }
 </eui-dialog>

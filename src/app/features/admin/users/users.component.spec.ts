@@ -547,4 +547,125 @@ describe('UsersComponent', () => {
 
         expect(component.tempPasswordTitle).toBe('User Created Successfully');
     });
+
+    // ─── Deactivate / Reactivate ─────────────────────────────────────────
+
+    it('should set selectedUser and open toggle status dialog when onToggleStatus is called', () => {
+        initWithData();
+        const user = mockListResponse.data[0];
+        component.toggleStatusDialog = { openDialog: vi.fn() } as any;
+
+        component.onToggleStatus(user);
+
+        expect(component.selectedUser).toBe(user);
+        expect(component.toggleDialogIsDeactivate).toBe(true);
+        expect(component.toggleDialogTitle).toBe('Deactivate User');
+        expect(component.toggleDialogAcceptLabel).toBe('Deactivate');
+        expect(component.toggleStatusDialog.openDialog).toHaveBeenCalled();
+    });
+
+    it('should set reactivate labels when onToggleStatus is called for inactive user', () => {
+        initWithData();
+        const user = mockListResponse.data[1]; // inactive_user, is_active: false
+        component.toggleStatusDialog = { openDialog: vi.fn() } as any;
+
+        component.onToggleStatus(user);
+
+        expect(component.toggleDialogIsDeactivate).toBe(false);
+        expect(component.toggleDialogTitle).toBe('Reactivate User');
+        expect(component.toggleDialogAcceptLabel).toBe('Reactivate');
+    });
+
+    it('should call deactivateUser API when confirming for an active user', () => {
+        initWithData();
+        component.selectedUser = { ...mockListResponse.data[0], is_active: true };
+        component.toggleDialogIsDeactivate = true;
+
+        component.onConfirmToggleStatus();
+
+        const req = httpMock.expectOne(r =>
+            r.url === '/api/admin/users/1/deactivate' && r.method === 'PATCH'
+        );
+        req.flush({ ...mockListResponse.data[0], is_active: false });
+
+        // Flush the loadUsers() call triggered by success
+        const listReq = httpMock.expectOne(r => r.url === '/api/admin/users' && r.method === 'GET');
+        listReq.flush(mockListResponse);
+
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(
+            expect.objectContaining({ severity: 'success', summary: 'User deactivated' })
+        );
+    });
+
+    it('should call reactivateUser API when confirming for an inactive user', () => {
+        initWithData();
+        component.selectedUser = { ...mockListResponse.data[1], is_active: false };
+        component.toggleDialogIsDeactivate = false;
+
+        component.onConfirmToggleStatus();
+
+        const req = httpMock.expectOne(r =>
+            r.url === '/api/admin/users/7/reactivate' && r.method === 'PATCH'
+        );
+        req.flush({ ...mockListResponse.data[1], is_active: true });
+
+        const listReq = httpMock.expectOne(r => r.url === '/api/admin/users' && r.method === 'GET');
+        listReq.flush(mockListResponse);
+
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(
+            expect.objectContaining({ severity: 'success', summary: 'User reactivated' })
+        );
+    });
+
+    it('should show error growl with backend message on 409 deactivate error', () => {
+        initWithData();
+        component.selectedUser = { ...mockListResponse.data[0], is_active: true };
+        component.toggleDialogIsDeactivate = true;
+
+        component.onConfirmToggleStatus();
+
+        const req = httpMock.expectOne(r =>
+            r.url === '/api/admin/users/1/deactivate' && r.method === 'PATCH'
+        );
+        req.flush(
+            { message: 'Cannot deactivate the last active SUPER_ADMIN user' },
+            { status: 409, statusText: 'Conflict' }
+        );
+
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(
+            expect.objectContaining({
+                severity: 'error',
+                detail: 'Cannot deactivate the last active SUPER_ADMIN user',
+            })
+        );
+    });
+
+    it('should show error growl on reactivate error', () => {
+        initWithData();
+        component.selectedUser = { ...mockListResponse.data[1], is_active: false };
+        component.toggleDialogIsDeactivate = false;
+
+        component.onConfirmToggleStatus();
+
+        const req = httpMock.expectOne(r =>
+            r.url === '/api/admin/users/7/reactivate' && r.method === 'PATCH'
+        );
+        req.flush(
+            { message: 'User not found' },
+            { status: 404, statusText: 'Not Found' }
+        );
+
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(
+            expect.objectContaining({ severity: 'error', summary: 'Action failed' })
+        );
+    });
+
+    it('should not call API if selectedUser is null on confirmToggleStatus', () => {
+        initWithData();
+        component.selectedUser = null;
+
+        component.onConfirmToggleStatus();
+
+        httpMock.expectNone(r => r.url.includes('deactivate') || r.url.includes('reactivate'));
+    });
 });
