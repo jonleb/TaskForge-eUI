@@ -1,0 +1,27 @@
+<div class="doc-sample-section-title">Tailwind</div>
+
+<div class="eui-u-flex eui-u-flex-gap-xs">
+    @for (colorPalette of colorPalettes; track colorPalette) {
+        <eui-badge colorPalette="{{colorPalette}}">9</eui-badge>
+    }
+</div>
+<br>
+<div class="eui-u-flex eui-u-flex-gap-xs">
+    @for (colorPalette of colorPalettes; track colorPalette) {
+        <eui-badge euiOutline colorPalette="{{colorPalette}}">9</eui-badge>
+    }
+</div>
+
+<div class="doc-sample-section-title">ECL</div>
+
+<div class="eui-u-flex eui-u-flex-gap-xs">
+    @for (colorPalette of colorPalettesEcl; track colorPalette) {
+        <eui-badge colorPalette="{{colorPalette}}">9</eui-badge>
+    }
+</div>
+<br>
+<div class="eui-u-flex eui-u-flex-gap-xs">
+    @for (colorPalette of colorPalettesEcl; track colorPalette) {
+        <eui-badge euiOutline colorPalette="{{colorPalette}}">9</eui-badge>
+    }
+</div>

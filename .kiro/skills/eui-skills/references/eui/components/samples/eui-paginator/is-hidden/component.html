@@ -1,0 +1,5 @@
+The <code class="eui-u-text-code">isHidden</code> input property allows to dynamically show/hide the paginator.<br>
+
+<eui-slide-toggle (slideToggleChange)="onTogglePagination()" [isChecked]="hasPagination"></eui-slide-toggle> Show/hide pagination
+<br>
+<eui-paginator [length]="dataSource.length" [isHidden]="!hasPagination"></eui-paginator>

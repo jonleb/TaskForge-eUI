@@ -1,0 +1,85 @@
+<div class="eui-u-flex eui-u-flex-wrap eui-u-mt-m">
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" class="eui-u-mr-s eui-u-mb-s">
+        Default
+        <span euiBadge>9</span>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiPrimary class="eui-u-mr-s eui-u-mb-s">
+        Primary
+        <span euiBadge>9</span>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiSecondary class="eui-u-mr-s eui-u-mb-s">
+        Secondary
+        <span euiBadge>9</span>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiInfo class="eui-u-mr-s eui-u-mb-s">
+        Info
+        <span euiBadge>9</span>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiSuccess class="eui-u-mr-s eui-u-mb-s">
+        Success
+        <span euiBadge>9</span>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiWarning class="eui-u-mr-s eui-u-mb-s">
+        Warning
+        <span euiBadge>9</span>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiDanger class="eui-u-mr-s eui-u-mb-s">
+        Danger
+        <span euiBadge>9</span>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiCTAButton class="eui-u-mr-s eui-u-mb-s">
+        Accent
+        <span euiBadge>9</span>
+    </button>
+</div>
+
+<br>
+<button euiButton euiPrimary euiOutline class="eui-u-mr-s eui-u-mb-s" euiSizeS (click)="onDefaultButton()">Default buttons</button>
+<button euiButton euiPrimary euiOutline class="eui-u-mr-s eui-u-mb-s" euiSizeS (click)="onBasicButton()">Basic buttons</button>
+<button euiButton euiPrimary euiOutline class="eui-u-mr-s eui-u-mb-s" euiSizeS (click)="onOutlineButton()">Outlined buttons</button>
+
+
+<div class="doc-sample-section-title">Composition with badges</div>
+<div class="eui-u-flex">
+    <div class="eui-u-width-5">Default</div>
+    <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS>
+        <span euiBadge euiPrimary>1</span>
+    </button>
+    <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS>
+        <span euiBadge euiSecondary>2</span>
+    </button>
+    <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS>
+        <span euiBadge euiInfo>3</span>
+    </button>
+    <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS>
+        <span euiBadge euiSuccess>4</span>
+    </button>
+    <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS>
+        <span euiBadge euiWarning>5</span>
+    </button>
+    <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS>
+        <span euiBadge euiDanger>6</span>
+    </button>
+</div>
+
+<div class="eui-u-flex">
+    <div class="eui-u-width-5">euiOutline</div>
+    <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS>
+        <span euiBadge euiPrimary euiOutline>1</span>
+    </button>
+    <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS>
+        <span euiBadge euiSecondary euiOutline>2</span>
+    </button>
+    <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS>
+        <span euiBadge euiInfo euiOutline>3</span>
+    </button>
+    <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS>
+        <span euiBadge euiSuccess euiOutline>4</span>
+    </button>
+    <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS>
+        <span euiBadge euiWarning euiOutline>5</span>
+    </button>
+    <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS>
+        <span euiBadge euiDanger euiOutline>6</span>
+    </button>
+</div>

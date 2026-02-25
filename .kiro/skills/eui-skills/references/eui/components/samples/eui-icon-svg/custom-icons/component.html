@@ -1,0 +1,34 @@
+You can use any custom SVG icon by providing the URI of the SVG file with the <code class="eui-u-text-code">iconUrl</code> input option.
+<br>
+In order to have your custom SVG icon's files accessible for your project, it is <u>recommended</u> to store them within your project's <strong>assets</strong> folder.
+
+<eui-alert class="eui-u-mt-m">
+    Please note that when using custom SVG icons, some options may not work (like the color which is usually embedded within the SVG data file).
+    You can also use SVG sprites to create your own custom set. See "Custom icons sets" section from right menu.
+</eui-alert>
+
+<div class="doc-sample-section-subtitle">Usage examples</div>
+<pre class="eui-u-f">
+    <code class="eui-u-text-code">&lt;eui-icon-svg iconUrl="assets/images/custom-svg-icons/md-edit.svg" size="2xl" /&gt;</code>
+    <code class="eui-u-text-code">&lt;eui-icon-svg iconUrl="assets/images/custom-svg-icons/md-blur.svg" size="2xl" /&gt;</code>
+    <code class="eui-u-text-code">&lt;eui-icon-svg iconUrl="assets/images/custom-svg-icons/ms-teams-logo.svg" size="2xl" /&gt;</code>
+    <code class="eui-u-text-code">&lt;eui-icon-svg iconUrl="assets/images/custom-svg-icons/eui-logo.svg" size="2xl" /&gt;</code>
+</pre>
+
+<div class="doc-sample-section-subtitle">Rendered examples</div>
+<eui-icon-svg iconUrl="assets/images/custom-svg-icons/md-edit.svg" size="2xl" />
+<eui-icon-svg iconUrl="assets/images/custom-svg-icons/md-blur.svg" size="2xl" />
+<eui-icon-svg iconUrl="assets/images/ms-teams-logo.svg" size="2xl" />
+<eui-icon-svg iconUrl="assets/images/eui-logo.svg" size="2xl" />
+
+<div class="doc-sample-section-title">Custom size</div>
+<p class="eui-u-text-paragraph">You can define a custom size by setting the height and width through the <code class="eui-u-text-code">style</code> tag.
+<br>
+Examples :</p>
+<pre class="eui-u-f">
+    <code class="eui-u-text-code">&lt;eui-icon-svg iconUrl="assets/images/ec-logo-svg.svg" style="height: auto; width: 200px;" /&gt;</code>
+    <code class="eui-u-text-code">&lt;eui-icon-svg iconUrl="assets/images/ec-logo-svg.svg" style="height: auto; width: 20rem;" /&gt;</code>
+</pre>
+
+<eui-icon-svg iconUrl="assets/images/ec-logo.svg" style="height: auto; width: 200px;" />
+<eui-icon-svg iconUrl="assets/images/ec-logo.svg" style="height: auto; width: 20rem;" />

@@ -1,0 +1,18 @@
+<p class="eui-u-text-paragraph">The following samples shows how to use and inject, on demand, components inside the Message Box window and make them communicate together.
+Injected components can be declared in a Template driven approach or through the EuiMessageBoxService.</p>
+
+<p class="eui-u-text-paragraph">Note that when using Template driven approach, the OnInit hook is triggered when the page is loaded and OnDestroy hook when the page has changed.
+If you need 'ngOnDestroy' logic, it needs to be written in the close callback of the Message Box.<br/>
+<br/>
+The source code of the injected component can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-message-box-template/dummy-components" target="_blank" class="eui-u-text-link">here</a>.</p>
+
+<div class="doc-sample-section-title">Inject component in message box body and footer</div>
+<button euiButton type="button" (click)="openMessageBox()" aria-haspopup="dialog">Open Message Box</button>
+
+<!-- MESSAGE BOX TEMPLATES -->
+<eui-message-box #messageBox [title]="'Message box title'" [isHandleCloseOnAccept]="true" [isHandleCloseOnClose]="true" (messageBoxClose)="onClose()">
+    <dummy-body-template-component #bodyComponent (formValueChange)="onFormValueChange($event)" (closeDialog)="onClose()" (closeModal)="onClose()"></dummy-body-template-component>
+    <eui-message-box-footer>
+        <dummy-footer-template-component #bodyComponent (accept)="onAccept()" (dismiss)="onDismiss()"></dummy-footer-template-component>
+    </eui-message-box-footer>
+</eui-message-box>

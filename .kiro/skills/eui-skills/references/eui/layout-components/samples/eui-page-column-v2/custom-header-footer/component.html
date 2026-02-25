@@ -1,0 +1,79 @@
+<p class="eui-u-text-paragraph">
+    This sample features the <strong>main column</strong> having its column header with left and right custom content.
+    In such case, the <strong>eui-page-column-header</strong> is replaced by the <code class="eui-u-text-code">eui-page-column-header-start</code>
+    and <code class="eui-u-text-code">eui-page-column-header-end</code> tags.
+</p>
+<p class="eui-u-text-paragraph">
+    Also featuring a custom <strong>column footer</strong> with optional left, center and right custom content. See the code source for more information.
+</p>
+
+<eui-page>
+    <eui-page-content>
+        <eui-page-columns>
+
+            <eui-page-column label="Navigation" euiSizeVariant="2xl" isCollapsible=true>
+                <eui-page-column-body>
+                    <eui-sidebar-menu [items]="sidebarItems" hasIcons></eui-sidebar-menu>
+                </eui-page-column-body>
+
+                <eui-page-column-footer>
+                    <div class="eui-u-flex eui-u-flex-justify-content-between">
+                        <div class="eui-u-inline-flex eui-u-flex-justify-content-start">Left</div>
+                        <div class="eui-u-inline-flex eui-u-flex-justify-content-start">Center</div>
+                        <div class="eui-u-inline-flex eui-u-flex-justify-content-end">Right</div>
+                    </div>
+                </eui-page-column-footer>
+            </eui-page-column>
+
+            <eui-page-column>
+
+                <eui-page-column-header-start>
+                    <!-- Column header custom left content -->
+                    <div class="eui-u-flex">
+                        <span euiLabel class="eui-u-f-bold">Main column</span>
+                        <eui-icon-svg icon="eui-state-info"
+                            euiSizeS
+                            fillColor="info"
+                            class="eui-u-cursor-help eui-u-ml-s"
+                            euiTooltip="This column auto-grows with custom left & right header content"
+                            euiTooltipAccent>
+                        </eui-icon-svg>
+                    </div>
+                    <div class="eui-u-flex">
+                        <span euiLabel euiSizeM>Main column subtitle (optional)</span>
+                        <eui-icon-svg icon="eui-state-info"
+                            euiSizeS
+                            fillColor="info"
+                            class="eui-u-cursor-help eui-u-ml-s"
+                            euiTooltip="Subtitle tooltip text"
+                            euiTooltipAccent>
+                        </eui-icon-svg>
+                    </div>
+                </eui-page-column-header-start>
+
+                <!-- Column header custom right content -->
+                <eui-page-column-header-end>
+                    <button euiButton euiOutline euiSecondary euiSizeS class="eui-u-ml-s">Secondary action</button>
+                    <button euiButton euiOutline euiPrimary euiSizeS class="eui-u-ml-s">Primary action</button>
+                </eui-page-column-header-end>
+
+                <eui-page-column-body>
+                    <p class="eui-u-text-paragraph">
+                        <strong>This is the main column body content with left & right custom header</strong>
+                    </p>
+                    <eui-showcase-doc-lorem-ipsum textSize="small"></eui-showcase-doc-lorem-ipsum>
+                </eui-page-column-body>
+
+                <eui-page-column-footer>
+                    <div class="eui-u-flex eui-u-flex-justify-content-between">
+                        <div class="eui-u-inline-flex eui-u-flex-justify-content-start">Column footer left</div>
+                        <div class="eui-u-inline-flex eui-u-flex-justify-content-start">Column footer center</div>
+                        <div class="eui-u-inline-flex eui-u-flex-justify-content-end">Column footer right</div>
+                    </div>
+                </eui-page-column-footer>
+            </eui-page-column>
+        </eui-page-columns>
+
+    </eui-page-content>
+
+</eui-page>

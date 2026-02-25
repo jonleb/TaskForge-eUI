@@ -1,0 +1,37 @@
+<div class="doc-sample-section-title">Pictures viewer &mdash; Using card media & card footer sections only</div>
+
+<eui-alert euiWarning>
+    Only use the image text legend when there is no card content like in this typical example.
+</eui-alert>
+<br>
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <eui-card euiCompact>
+            <eui-card-media
+                [imageUrl]="picture?.url"
+                [imageLegend]="picture?.legend"
+                [euiTooltip]="picture?.legend"
+                style="height: 25rem">
+            </eui-card-media>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons>
+                    <button euiButton euiRounded euiIconButton euiBasicButton euiSuccess euiSizeXL euiTooltip="Like" euiTooltipAccent aria-label="Like">
+                        <eui-icon-svg icon="eui-thumbs-up"/>
+                    </button>
+                    <button euiButton euiRounded euiIconButton euiBasicButton euiDanger euiTooltip="Don't like" euiTooltipAccent aria-label="Don't like">
+                        <eui-icon-svg icon="eui-thumbs-down"/>
+                    </button>
+                </eui-card-footer-action-buttons>
+                <eui-card-footer-action-icons>
+                    <button euiButton euiRounded euiIconButton euiBasicButton euiPrimary euiTooltip="Previous image" euiTooltipAccent (click)="showPicture(-1)" aria-label="Previous image">
+                        <eui-icon-svg icon="eui-chevron-left"/>
+                    </button>
+                    <button euiButton euiRounded euiIconButton euiBasicButton euiPrimary euiTooltip="Next image" euiTooltipAccent (click)="showPicture(+1)" aria-label="Next image">
+                        <eui-icon-svg icon="eui-chevron-right"/>
+                    </button>
+                </eui-card-footer-action-icons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+</div>

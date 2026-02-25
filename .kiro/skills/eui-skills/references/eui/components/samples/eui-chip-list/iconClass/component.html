@@ -1,0 +1,13 @@
+<eui-chip-list>
+    @for (chip of chips; track chip.id) {
+        <eui-chip [euiVariant]="chip.variant"><span [class]="chip.icon"></span><span euiLabel>{{ chip.label }}</span></eui-chip>
+    }
+</eui-chip-list>
+
+<br/>
+
+<eui-chip-list>
+    @for (chip of chips; track chip.id) {
+        <eui-chip [euiVariant]="chip.variant"><span [class]="chip.icon + ' eui-flag-icon--rounded'"></span><span euiLabel>{{ chip.label }}</span></eui-chip>
+    }
+</eui-chip-list>

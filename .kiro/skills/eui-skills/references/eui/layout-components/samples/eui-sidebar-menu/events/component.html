@@ -1,0 +1,23 @@
+<button euiButton euiSizeS (click)="onToggleCollapsed()">Toggle collapsed</button>
+<br><br>
+
+<eui-sidebar-menu [items]="sidebarItems" [isCollapsed]="isCollapsed" [hasIcons]="true" [hasTooltip]="true"  fragmentId="Default" (itemClick)="onSidebarItemClicked($event)"></eui-sidebar-menu>
+
+<div class="eui-showcase-demo eui-u-mt-xl">
+    <div class="eui-u-f-bold eui-u-c-primary">Clicked Menu item :</div>
+    <div class="code">
+        <pre class="eui-u-text-pre">{{ itemClicked | json }}</pre>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">No router / url version - handled programatically</div>
+
+<eui-sidebar-menu [items]="sidebarItemsProg" fragmentId="Default" (itemClick)="onSidebarItemClicked2($event)"></eui-sidebar-menu>
+
+<div class="eui-showcase-demo eui-u-mt-xl">
+    <div class="eui-u-f-bold eui-u-c-primary">Clicked Menu item :</div>
+    <div class="code">
+        <pre class="eui-u-text-pre">{{ itemClicked2 | json }}</pre>
+    </div>
+</div>

@@ -1,0 +1,126 @@
+<p class="eui-u-text-paragraph">Default <strong>eui-dropdown</strong> and dropdown items are using the <code class="eui-u-text-code">euiDropdownItem</code> directive around the <strong>button</strong> html element.</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-dropdown>
+            <button euiButton euiPrimary>Button trigger</button>
+            <eui-dropdown-content>
+                <div class="eui-u-flex eui-u-flex-column eui-u-flex-align-items-start">
+                    <p class="eui-u-ph-m">Use the <kbd class="eui-u-text-kbd">&uarr;</kbd> and <kbd class="eui-u-text-kbd">&darr;</kbd> arrow keys to navigate</p>
+                    <button euiDropdownItem (click)="onClick('Item 1')" aria-label="Item 1">I'm focusable and keyboard navigable</button>
+                    <button euiDropdownItem (click)="onClick('Item 2')" aria-label="item 2">I'm also focusable and keyboard navigable</button>
+                    <button euiDropdownItem (click)="onClick('Item 3')" aria-label="item 3">I'm the last focusable dropdown item</button>
+                </div>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col-md-6">
+        <eui-dropdown>
+            <a href="javascript:void(0)" class="eui-u-text-link">Link trigger</a>
+            <eui-dropdown-content>
+                <div class="eui-u-flex eui-u-flex-column eui-u-flex-align-items-start">
+                    <p class="eui-u-ph-m">Use the <kbd class="eui-u-text-kbd">&uarr;</kbd> and <kbd class="eui-u-text-kbd">&darr;</kbd> arrow keys to navigate</p>
+                    <button euiDropdownItem (click)="onClick('Item 1')" aria-label="Item 1">I'm focusable and keyboard navigable</button>
+                    <button euiDropdownItem (click)="onClick('Item 2')" aria-label="Item 2">I'm also focusable and keyboard navigable</button>
+                    <button euiDropdownItem (click)="onClick('Item 3')" aria-label="Item 3">I'm the last focusable dropdown item</button>
+                </div>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Hamburger menu</div>
+
+<eui-dropdown>
+    <button euiButton euiRounded euiIconButton euiBasicButton euiPrimary [attr.aria-label]="'Menu'">
+        <eui-icon-svg icon="eui-menu"></eui-icon-svg>
+    </button>
+    <eui-dropdown-content>
+        <div>
+            <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="Item 1">Menu item 1</button>
+            <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="Item 2">Menu item 2</button>
+            <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="Item 3">Menu item 3</button>
+        </div>
+    </eui-dropdown-content>
+</eui-dropdown>
+
+
+<div class="doc-sample-section-title">Options menu</div>
+
+<div class="row">
+    <div class="col">
+        <eui-dropdown>
+            <button euiButton euiRounded euiIconButton euiBasicButton euiPrimary [attr.aria-label]="'More options'">
+                <eui-icon-svg icon="eui-ellipsis-vertical" size="s" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Option item 1')" aria-label="Item 1">Option item 1</button>
+                <button euiDropdownItem (click)="onClick('Option item 2')" aria-label="Item 2">Option item 2</button>
+                <button euiDropdownItem (click)="onClick('Option item 3')" aria-label="Item 3">Option item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col">
+        <eui-dropdown>
+            <button euiButton euiPrimary [attr.aria-label]="'Menu'">
+                <span euiLabel>Options</span>
+                <eui-icon-svg icon="eui-ellipsis-vertical" size="s" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')">Menu item 1</button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')">Menu item 2</button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')">Menu item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col">
+        <eui-dropdown>
+            <button euiButton euiPrimary euiOutline [attr.aria-label]="'Menu'">
+                <span euiLabel>More actions</span>
+                <eui-icon-svg icon="eui-ellipsis-vertical" size="s" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')">Menu item 1</button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')">Menu item 2</button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')">Menu item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>
+
+
+
+<div class="doc-sample-section-title">Actionable avatar</div>
+
+<div class="row">
+    <div class="col">
+        <eui-dropdown>
+            <button euiButton euiRounded euiIconButton euiBasicButton euiAvatarButton [attr.aria-label]="'More options'">
+                <eui-avatar>
+                    <eui-avatar-image imageUrl="assets/images/avatars/small/panda.png"></eui-avatar-image>
+                </eui-avatar>
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Option item 1')" aria-label="Item 1">Option item 1</button>
+                <button euiDropdownItem (click)="onClick('Option item 2')" aria-label="Item 2">Option item 2</button>
+                <button euiDropdownItem (click)="onClick('Option item 3')" aria-label="Item 3">Option item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Menu items dynamically generated based on data array</div>
+
+<eui-dropdown>
+    <button euiButton euiPrimary [attr.aria-label]="'Menu items'">
+        <span euiLabel>Menu</span>
+        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+    </button>
+    <eui-dropdown-content>
+        @for (dropdownItem of dropdownItems; track $index) {
+            <button euiDropdownItem (click)="onClick(dropdownItem.label)" [attr.aria-label]="dropdownItem.label">{{ dropdownItem.label }}</button>
+        }
+    </eui-dropdown-content>
+</eui-dropdown>

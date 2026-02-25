@@ -1,0 +1,19 @@
+<p class="eui-u-text-paragraph">
+    The <strong>isActive</strong> property allows to set the visual of the active <code class="eui-u-text-code">euiDropdownItem</code> element of the list.
+</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-dropdown>
+            <button euiButton euiPrimary>Button trigger</button>
+            <eui-dropdown-content>
+                <div class="eui-u-flex eui-u-flex-column eui-u-flex-align-items-start">
+                    <p class="eui-u-ph-m">Use the <kbd class="eui-u-text-kbd">&uarr;</kbd> and <kbd class="eui-u-text-kbd">&darr;</kbd> arrow keys to navigate</p>
+                    <button euiDropdownItem (click)="onClick('Item 1')" aria-label="Item 1">I'm focusable and keyboard navigable</button>
+                    <button euiDropdownItem isActive (click)="onClick('Item 2')" aria-label="item 2">I'm active / focusable and keyboard navigable</button>
+                    <button euiDropdownItem (click)="onClick('Item 3')" aria-label="item 3">I'm the last focusable dropdown item</button>
+                </div>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>

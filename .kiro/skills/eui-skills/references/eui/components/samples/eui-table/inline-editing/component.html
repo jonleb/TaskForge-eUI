@@ -1,0 +1,59 @@
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data" [formGroup]="form">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th width="20%">Country</th>
+                <th width="20%">Year</th>
+                <th width="10%">ISO</th>
+                <th width="20%">Population</th>
+                <th width="20%">Capital city</th>
+                <th width="10%" class="eui-u-text-center">Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            @if (!form.get('row-' + row.id)) {
+                <tr>
+                    <td>{{ row.country }}</td>
+                    <td>{{ row.year }}</td>
+                    <td>{{ row.iso }}</td>
+                    <td>{{ row.population | number }}</td>
+                    <td>{{ row.capital }}</td>
+                    <td class="eui-u-text-center">
+                        <eui-icon-button icon="eui-edit" size="s" euiPrimary (click)="editRow(row.id)" aria-label="Edit"/>
+                    </td>
+                </tr>
+            } @else {
+                <tr [formGroupName]="'row-' + row.id" euiHighlighted>
+                    <td><input euiInputText formControlName="country" aria-label="Country"/></td>
+                    <td>
+                        <select euiSelect formControlName="year" placeholder="-- Select a year --">
+                            @for (option of options; track option) {
+                                <option [ngValue]="option.value">{{ option.label }}</option>
+                            }
+                        </select>
+                    </td>
+                    <td><input euiInputText formControlName="iso" aria-label="ISO"/></td>
+                    <td><input euiInputNumber formControlName="population" aria-label="Population"/></td>
+                    <td><input euiInputText formControlName="capital" aria-label="Capital city"/></td>
+                    <td class="eui-u-text-center">
+                        <eui-icon-button icon="eui-checkmark" euiSuccess (click)="saveRow(row.id)" aria-label="Save row"/>
+                        <eui-icon-button icon="eui-close" euiDanger (click)="cancelEditRow(row.id)" aria-label="Cancel edit row"/>
+                    </td>
+                </tr>
+                <tr [formGroupName]="'row-' + row.id" euiHighlighted>
+                    <td colspan="5">
+                        <label euilabel>Add comment</label>
+                        <eui-editor isMinimalToolbar formControlName="comment"></eui-editor>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer 1</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>

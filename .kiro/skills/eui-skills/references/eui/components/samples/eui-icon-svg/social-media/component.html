@@ -1,0 +1,32 @@
+<p class="eui-u-text-paragraph">A subset of recommended social media icons which are part of the <strong>ECL icons set</strong>.</p>
+
+<div class="doc-sample-section-title">List of social media icons <small>({{ euiSocialMediaIcons?.length }})</small></div>
+
+<div class="icons-demo">
+    @for (icon of euiSocialMediaIcons; track icon.icon) {
+        <div class="icon-item-container" title="{{ icon.icon }}" (click)="openPopover($event, icon.icon, 'ecl', selectedSize, selectedColor)" [euiTooltip]="icon.icon" euiTooltipInfo>
+            <div class="icon-item-inner-container">
+                <eui-icon-svg icon="{{ icon.icon }}" size="l" set="ecl" fillColor="secondary" />
+            </div>
+            <span class="icon-item-title">{{ icon.icon }}</span>
+        </div>
+    }
+</div>
+
+<eui-popover #popover title="{{ (selectedSet).toUpperCase() }} &mdash; {{selectedIcon}}">
+    <div class="eui-u-flex eui-u-flex-column eui-u-flex-gap-s">
+        <div class="eui-u-flex eui-u-flex-gap-m">
+            <eui-icon-svg [icon]="selectedSet !== 'eui' ? selectedIcon+':'+selectedSet : selectedIcon" [set]="selectedSet" size="2xl" fillColor="primary" />
+            <div class="eui-u-f-2xl eui-u-c-neutral-dark">{{selectedIcon}}</div>
+        </div>
+        <input euiInputText
+            value="<eui-icon-svg icon=&quot;{{selectedIcon}}:{{selectedSet}}&quot; />"
+            readonly />
+        <div class="eui-u-flex eui-u-flex-justify-content-center">
+            <button euiButton euiOutline euiPrimary euiSizeS (click)="copySourceToClipboard(selectedIcon);">
+                <eui-icon-svg icon="eui-copy" />
+                Copy to clipboard
+            </button>
+        </div>
+    </div>
+</eui-popover>

@@ -1,0 +1,47 @@
+<eui-alert euiWarning>
+    This feature requires the import of <code class="eui-u-text-code">EuiTemplateDirective</code><br/>
+    <code class="eui-u-text-code">import &#123; EuiTemplateDirective &#125; from '&#64;eui/components/directives';</code>
+</eui-alert><br/>
+
+<p class="eui-u-text-paragraph">
+    The <code class="eui-u-text-code">isExpanded</code> option can be used to reveal or hide the fieldset contents. By default, the content is displayed (isExpanded=true).
+    Please note that this option <strong>only works in conjunction with the <code class="eui-u-text-code">isExpandable</code> option.</strong>
+    The <code class="eui-u-text-code">(expand)</code> output allows to programmatically handle the expandable state of the fieldset.
+</p>
+<br>
+<eui-fieldset label="Fieldset label" isExpandable>
+    <p class="eui-u-text-paragraph">This is the <strong>fieldset</strong> content.</p>
+</eui-fieldset>
+
+
+<div class="doc-sample-section-title">Dynamic expand with expanded event handler</div>
+
+<button euiButton euiOutline euiPrimary euiSizeS (click)="onExpanded($event)">Toggle isExpanded</button>
+<br><br>
+
+<eui-fieldset label="Fieldset label" isExpandable [isExpanded]="isExpanded" (expand)="onExpanded($event)">
+    <euiFieldsetLabelRightContent>
+        <code class="eui-u-mr-xl">isExpanded: {{ isExpanded }}</code>
+    </euiFieldsetLabelRightContent>
+
+    <div class="eui-u-flex eui-u-flex-gap-m">
+        <eui-slide-toggle />
+        This is the fieldset content.
+    </div>
+</eui-fieldset>
+
+
+<div class="doc-sample-section-title">Lazy expanded content</div>
+
+<eui-fieldset label="Fieldset label" isExpandable [isExpanded]="isExpandedLazy" (expand)="onExpandedLazy($event)">
+    <euiFieldsetLabelRightContent>
+        <code class="eui-u-mr-xl">isExpanded: {{ isExpandedLazy }}</code>
+    </euiFieldsetLabelRightContent>
+
+    <ng-template euiTemplate="eui-fieldset-content">
+        <div class="eui-u-flex eui-u-flex-gap-m">
+            <eui-slide-toggle />
+            This is the fieldset content.
+        </div>
+    </ng-template>
+</eui-fieldset>

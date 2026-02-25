@@ -1,0 +1,34 @@
+<div class="row">
+    <div class="col-md-6">
+        <eui-card euiHoverable>
+            <eui-card-content>
+                <eui-progress-bar [progress]="75" label="My claimed tasks"></eui-progress-bar>
+                <eui-feedback-message>75/100</eui-feedback-message>
+            </eui-card-content>
+        </eui-card>
+    </div>
+
+    <div class="col-md-6">
+        <eui-card euiHoverable>
+            <eui-card-content>
+                <div class="eui-u-mb-m">
+                    <div class="eui-u-flex eui-u-flex-justify-content-between eui-u-mb-s">
+                        <div class="eui-u-flex">
+                            <div class="eui-u-f eui-u-f-bold">My on going claimed tasks</div>
+                        </div>
+                        <div class="eui-u-ml-auto">6/10</div>
+                    </div>
+                    <eui-progress-bar [progress]="75"></eui-progress-bar>
+                </div>
+                <div class="eui-u-mb-m">
+                    <eui-progress-bar [progress]="1/7 * 100" label="My Dossiers" hasStatusIcon euiWarning></eui-progress-bar>
+                    <eui-feedback-message euiWarning>Dossiers to be closed before the end of the month 1/7</eui-feedback-message>
+                </div>
+                <div>
+                    <eui-progress-bar [progress]="64/60 * 100" label="Contract deadline" hasStatusIcon euiDanger></eui-progress-bar>
+                    <eui-feedback-message euiDanger>The contractual period of 60 days is exceeded by 4 days!</eui-feedback-message>
+                </div>
+            </eui-card-content>
+        </eui-card>
+    </div>
+</div>

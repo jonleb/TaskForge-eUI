@@ -1,0 +1,45 @@
+<div class="doc-sample-section-title">Tailwind</div>
+
+@for (colorPalette of colorPalettes; track colorPalette) {
+    <eui-avatar colorPalette="{{colorPalette}}">
+        <eui-avatar-icon>
+            <eui-icon-svg icon="eui-user" />
+        </eui-avatar-icon>
+    </eui-avatar>
+}
+<br><br>
+@for (colorPalette of colorPalettes; track colorPalette) {
+    <eui-avatar colorPalette="{{colorPalette}}">
+        <eui-avatar-text>eUI</eui-avatar-text>
+    </eui-avatar>
+}
+<br><br>
+@for (colorPalette of colorPalettes; track colorPalette) {
+    <eui-avatar euiOutline colorPalette="{{colorPalette}}">
+        <eui-avatar-text>eUI</eui-avatar-text>
+    </eui-avatar>
+}
+<br><br>
+
+<div class="doc-sample-section-title">ECL</div>
+
+@for (colorPalette of colorPalettesEcl; track colorPalette) {
+    <eui-avatar colorPalette="{{colorPalette}}">
+        <eui-avatar-icon>
+            <eui-icon-svg icon="eui-user" />
+        </eui-avatar-icon>
+    </eui-avatar>
+}
+<br><br>
+@for (colorPalette of colorPalettesEcl; track colorPalette) {
+    <eui-avatar colorPalette="{{colorPalette}}">
+        <eui-avatar-text>eUI</eui-avatar-text>
+    </eui-avatar>
+}
+<br><br>
+@for (colorPalette of colorPalettesEcl; track colorPalette) {
+    <eui-avatar euiOutline colorPalette="{{colorPalette}}">
+        <eui-avatar-text>eUI</eui-avatar-text>
+    </eui-avatar>
+}
+<br><br>

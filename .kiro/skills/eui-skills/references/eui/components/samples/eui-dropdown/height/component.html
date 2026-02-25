@@ -1,0 +1,64 @@
+<p class="eui-u-text-paragraph">The <strong>height</strong> of the dropdown panel can be set using the <code class="eui-u-text-code">height</code> input option.
+    Value needs to be one of the following measurement units: <code class="eui-u-text-code">px</code>, <code class="eui-u-text-code">vw</code> or <code class="eui-u-text-code">rem</code>.
+    Default value: <code class="eui-u-text-code">auto</code>
+    <br/><br/>
+    Default size height is set to auto which automatically defines the height to best fit and show the dropdownItem elements.
+</p>
+
+<div class="eui-u-flex eui-u-flex-wrap eui-u-flex-gap-m">
+    <div class="eui-u-inline-flex">
+        <eui-dropdown height="auto">
+            <button euiButton euiPrimary [attr.aria-label]="'Menu items'">
+                <span euiLabel>Dropdown height auto</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                @for (dropdownItem of dropdownItems; track dropdownItem) {
+                    <button euiDropdownItem (click)="onClick(dropdownItem.label)" [attr.aria-label]="dropdownItem.label">{{ dropdownItem.label }}</button>
+                }
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+
+    <div class="eui-u-inline-flex">
+        <eui-dropdown height="16rem">
+            <button euiButton euiPrimary [attr.aria-label]="'Menu items'">
+                <span euiLabel>Dropdown height 16rem</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                @for (dropdownItem of dropdownItems; track dropdownItem) {
+                    <button euiDropdownItem (click)="onClick(dropdownItem.label)" [attr.aria-label]="dropdownItem.label">{{ dropdownItem.label }}</button>
+                }
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+
+    <div class="eui-u-inline-flex">
+        <eui-dropdown height="320px">
+            <button euiButton euiPrimary [attr.aria-label]="'Menu items'">
+                <span euiLabel>Dropdown height 320px</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                @for (dropdownItem of dropdownItems; track dropdownItem) {
+                    <button euiDropdownItem (click)="onClick(dropdownItem.label)" [attr.aria-label]="dropdownItem.label">{{ dropdownItem.label }}</button>
+                }
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+
+    <div class="eui-u-inline-flex">
+        <eui-dropdown height="25vw">
+            <button euiButton euiPrimary [attr.aria-label]="'Menu items'">
+                <span euiLabel>Dropdown height 25vw</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                @for (dropdownItem of dropdownItems; track dropdownItem) {
+                    <button euiDropdownItem (click)="onClick(dropdownItem.label)" [attr.aria-label]="dropdownItem.label">{{ dropdownItem.label }}</button>
+                }
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>

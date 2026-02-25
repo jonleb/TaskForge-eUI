@@ -1,0 +1,58 @@
+<eui-chip-list>
+    @for (chip of chips; let i = $index; track chip.id) {
+        @if (isMaxVisibleChipsOpened || i <= maxVisibleChipsCount) {
+            <eui-chip [data]="{ id: chip.id }" [euiVariant]="chip.variant"><span euiLabel>{{ chip.label }}</span></eui-chip>
+        }
+    }
+    <eui-chip-list-additional-content>
+        @if (maxVisibleChipsCount && chips && chips.length > maxVisibleChipsCount) {
+            <button
+                euiButton
+                euiBasicButton
+                euiSecondary
+                euiSizeS
+                type="button"
+                class="eui-chip-list__expand-button"
+                [aria-label]="isMaxVisibleChipsOpened ? 'Collapse tags' : 'Expand tags'"
+                (click)="toggleTags()">
+
+                @if (isMaxVisibleChipsOpened) {
+                    <eui-icon-svg icon="eui-chevron-left"/>
+                } @else {
+                    <eui-icon-svg icon="eui-chevron-right"/>
+                }
+            </button>
+        }
+    </eui-chip-list-additional-content>
+</eui-chip-list>
+
+<br/>
+
+<eui-chip-list>
+    @for (chip of chips; let i = $index; track chip.id) {
+        @if (isMaxVisibleChipsOpened || i <= maxVisibleChipsCount) {
+            <eui-chip [data]="{ id: chip.id }" [euiVariant]="chip.variant"><span euiLabel>{{ chip.label }}</span></eui-chip>
+        }
+    }
+    <eui-chip-list-additional-content>
+        @if (maxVisibleChipsCount && chips && chips.length > maxVisibleChipsCount) {
+            <button
+                euiButton
+                euiBasicButton
+                euiSecondary
+                euiSizeS
+                type="button"
+                class="eui-chip-list__expand-button"
+                (click)="toggleTags()">
+
+                @if (isMaxVisibleChipsOpened) {
+                    <eui-icon-svg icon="eui-chevron-left" aria-label="Collapse icon" />
+                    <span euiLabel>Less</span>
+                } @else {
+                    <span euiLabel>More</span>
+                    <eui-icon-svg icon="eui-chevron-right" aria-label="Expand icon" />
+                }
+            </button>
+        }
+    </eui-chip-list-additional-content>
+</eui-chip-list>

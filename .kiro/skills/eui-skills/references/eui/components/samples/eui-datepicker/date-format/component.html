@@ -1,0 +1,16 @@
+<eui-alert>By default <code class="eui-u-text-code">eui-datepicker</code> listens to the locale specified at the <code class="eui-u-text-code"><a href="https://eui.ecdevops.eu/eui-showcase-ux-components-21.x/showcase-dev-guide/docs/10-services/locale">Locale Service</a></code> and applies the corresponding format. Bellow you can find also how to force a desired format in your app.</eui-alert>
+<br>
+<div class="col-3">
+    <div class="doc-sample-section-title">Date format using letters</div>
+    <eui-datepicker euiLetterFormat [value]="value" isClearable></eui-datepicker>
+</div>
+
+<div class="doc-sample-section-title">Using two datepickers on the same component with different formats</div>
+<div class="col-3">
+    <eui-datepicker [value]="value"></eui-datepicker><br>
+    <eui-datepicker euiLetterFormat [value]="value" isClearable></eui-datepicker>
+
+    <div class="doc-sample-section-title">Using other custom formats</div>
+    <eui-datepicker appDateFormat1 [value]="value"></eui-datepicker><br>
+    <eui-datepicker appDateFormat2 [value]="value"></eui-datepicker>
+</div>

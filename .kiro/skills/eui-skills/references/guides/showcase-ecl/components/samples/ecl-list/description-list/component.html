@@ -1,0 +1,239 @@
+<h6 class="section-title">Description List with maximum 2 items visible by default</h6>
+<ecl-notification variant="warning">
+    'maxVisibleItems' property is available only for non-horizontal lists.
+  </ecl-notification>
+  <br>
+<dl eclDescriptionList [maxVisibleItems]="3">
+    <dt eclDescriptionListTerm>Label 01</dt>
+    <dd eclDescriptionListDefinition>
+        Descriptive text with <a eclLink routerLink="/">inline link</a>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 02</dt>
+    <dd eclDescriptionListDefinition variant="link">
+        <ul eclDescriptionListDefinitionList>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">
+                    Standalone link
+                </a>
+            </li>
+        </ul>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 03</dt>
+    <dd eclDescriptionListDefinition>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt.</dd>
+
+    <dt eclDescriptionListTerm>Label 04</dt>
+    <dd eclDescriptionListDefinition variant="link">
+        <ul eclDescriptionListDefinitionList>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">
+                    <span eclLinkLabel>Standalone link</span>
+                    <ecl-icon icon="external" size="2xs" role="img" ariaHidden="false">
+                        <title>
+                            Link to an external domain
+                        </title>
+                    </ecl-icon>
+                </a>
+            </li>
+        </ul>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 05</dt>
+    <dd eclDescriptionListDefinition variant="inline">
+        <ul eclDescriptionListDefinitionList>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">Standalone link</a>
+            </li>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">Standalone link</a>
+            </li>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">Standalone link</a>
+            </li>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">Standalone link</a>
+            </li>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">Standalone link</a>
+            </li>
+        </ul>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 06</dt>
+    <dd eclDescriptionListDefinition variant="link">
+        <ul eclDescriptionListDefinitionList>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">Very very very very very very very very very very very very
+                    veryveryveryvery long standalone link that wraps in multiple lines</a>
+            </li>
+        </ul>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 07</dt>
+    <dd eclDescriptionListDefinition variant="link">
+        <ul eclDescriptionListDefinitionList>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">
+                    <ecl-icon iconSet="social-media" icon="facebook" size="s"></ecl-icon>
+                    <span eclLinkLabel>social network 1</span></a>
+            </li>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">
+                    <ecl-icon iconSet="social-media" icon="twitter" size="s"></ecl-icon>
+                    <span eclLinkLabel>social network 2</span></a>
+            </li>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">
+                    <ecl-icon iconSet="social-media" icon="mastodon" size="s"></ecl-icon>
+                    <span eclLinkLabel>social network 3</span></a>
+            </li>
+        </ul>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 08</dt>
+    <dd eclDescriptionListDefinition variant="tag">
+        <ul eclDescriptionListDefinitionList>
+            @for (tagItem of tagItems; track $index) {
+            <li eclDescriptionListDefinitionItem>
+                <a eclTag routerLink="{{tagItem.routerLink}}">
+                    {{tagItem.text}}</a>
+            </li>
+            }
+        </ul>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 09</dt>
+    <dd eclDescriptionListDefinition variant="taxonomy">
+        <ul eclDescriptionListDefinitionList>
+            @for (item of taxonomyItems; track $index) {
+            <li eclDescriptionListDefinitionItem>
+                @if(item.routerLink) {
+                <a eclLink [attr.routerLink]="item.routerLink">{{ item.text }}</a>
+                } @else {
+                {{ item.text }}
+                }
+            </li>
+            }
+        </ul>
+    </dd>
+</dl>
+
+<h6 class="section-title">Description List (horizontal)</h6>
+<dl eclDescriptionList isHorizontal>
+    <dt eclDescriptionListTerm>Label 01</dt>
+    <dd eclDescriptionListDefinition>
+        Descriptive text with <a eclLink routerLink="/">inline link</a>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 02</dt>
+    <dd eclDescriptionListDefinition variant="link">
+        <ul eclDescriptionListDefinitionList>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">
+                    Standalone link
+                </a>
+            </li>
+        </ul>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 03</dt>
+    <dd eclDescriptionListDefinition>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt.</dd>
+
+    <dt eclDescriptionListTerm>Label 04</dt>
+    <dd eclDescriptionListDefinition variant="link">
+        <ul eclDescriptionListDefinitionList>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">
+                    <span eclLinkLabel>Standalone link</span>
+                    <ecl-icon icon="external" size="xs" role="img" ariaHidden="false">
+                        <title>
+                            Link to an external domain
+                        </title>
+                    </ecl-icon>
+                </a>
+            </li>
+        </ul>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 05</dt>
+    <dd eclDescriptionListDefinition variant="inline">
+        <ul eclDescriptionListDefinitionList>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">Standalone link</a>
+            </li>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">Standalone link</a>
+            </li>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">Standalone link</a>
+            </li>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">Standalone link</a>
+            </li>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">Standalone link</a>
+            </li>
+        </ul>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 06</dt>
+    <dd eclDescriptionListDefinition variant="link">
+        <ul eclDescriptionListDefinitionList>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">Very very very very very very very very very very very very
+                    veryveryveryvery long standalone link that wraps in multiple lines</a>
+            </li>
+        </ul>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 07</dt>
+    <dd eclDescriptionListDefinition variant="link">
+        <ul eclDescriptionListDefinitionList>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">
+                    <ecl-icon iconSet="social-media" icon="facebook" size="s"></ecl-icon>
+                    <span eclLinkLabel>social network 1</span></a>
+            </li>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">
+                    <ecl-icon iconSet="social-media" icon="twitter" size="s"></ecl-icon>
+                    <span eclLinkLabel>social network 2</span></a>
+            </li>
+            <li eclDescriptionListDefinitionItem>
+                <a eclLink variant="standalone" routerLink="/">
+                    <ecl-icon iconSet="social-media" icon="mastodon" size="s"></ecl-icon>
+                    <span eclLinkLabel>social network 3</span></a>
+            </li>
+        </ul>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 08</dt>
+    <dd eclDescriptionListDefinition variant="tag">
+        <ul eclDescriptionListDefinitionList>
+            @for (tagItem of tagItems; track $index) {
+            <li eclDescriptionListDefinitionItem>
+                <a eclTag routerLink="{{tagItem.routerLink}}">
+                    {{tagItem.text}}</a>
+            </li>
+            }
+        </ul>
+    </dd>
+
+    <dt eclDescriptionListTerm>Label 09</dt>
+    <dd eclDescriptionListDefinition variant="taxonomy">
+        <ul eclDescriptionListDefinitionList>
+            @for (item of taxonomyItems; track $index) {
+            <li eclDescriptionListDefinitionItem>
+                @if(item.routerLink) {
+                <a eclLink [attr.routerLink]="item.routerLink">{{ item.text }}</a>
+                } @else {
+                {{ item.text }}
+                }
+            </li>
+            }
+        </ul>
+    </dd>
+</dl>

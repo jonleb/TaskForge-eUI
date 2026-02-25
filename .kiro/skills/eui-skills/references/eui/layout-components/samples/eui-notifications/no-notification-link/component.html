@@ -1,0 +1,9 @@
+<eui-alert>This sample shows how to have a link for the 'no notification message' and an event when the link is clicked.</eui-alert><br/>
+
+<eui-toolbar>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-notifications [items]="items" [noNotificationFoundLink]="true" (noNotificationFoundClick)="onNoNotificationFoundClick()"/>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>

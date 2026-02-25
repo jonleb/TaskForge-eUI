@@ -1,0 +1,20 @@
+<p class="eui-u-text-paragraph">
+    The eui-card component is listening to the card's header collapse/expand trigger and returns its state through the <code class="eui-u-text-code">collapse</code> output emitter.
+    See the code source for usage sample.
+</p>
+
+<br>
+
+<eui-card (collapse)="onCollapsed($event)" euiCollapsible>
+    <eui-card-header>
+        <eui-card-header-title>
+            Card title
+        </eui-card-header-title>
+        <eui-card-header-subtitle>
+            Card subtitle
+        </eui-card-header-subtitle>
+    </eui-card-header>
+    <eui-card-content>
+        I am the content of the card container...
+    </eui-card-content>
+</eui-card>

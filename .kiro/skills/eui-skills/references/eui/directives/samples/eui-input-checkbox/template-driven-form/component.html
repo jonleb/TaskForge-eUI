@@ -1,0 +1,55 @@
+<div class="row">
+    <div class="col-md-7">
+        <div class="doc-sample-section-title">Two-way data binding (ngModel)</div>
+        <form #myForm="ngForm" id="my-form" validate (ngSubmit)="onSubmitModel(myForm)">
+            <div euiInputGroup>
+                <label euiLabel>Select language(s)</label>
+                <div class="eui-u-inline-flex eui-u-mb-s">
+                    <input  id="reactive-checkbox-model-en"
+                            name="checkbox-en"
+                            euiInputCheckBox
+                            [readonly]="isReadonly"
+                            [(ngModel)]="modelCheckedValueEN"/>
+                    <label euiLabel for="reactive-checkbox-model-en">English</label>
+                </div>
+
+                <div class="eui-u-inline-flex eui-u-mb-s">
+                    <input  id="reactive-checkbox-model-fr"
+                            name="checkbox-fr"
+                            euiInputCheckBox
+                            [readonly]="isReadonly"
+                            [(ngModel)]="modelCheckedValueFR"/>
+                    <label euiLabel for="reactive-checkbox-model-fr">french</label>
+                </div>
+
+                <div class="eui-u-inline-flex eui-u-mb-s">
+                    <input  id="reactive-checkbox-model-es"
+                            name="checkbox-es"
+                            euiInputCheckBox
+                            [readonly]="isReadonly"
+                            [(ngModel)]="modelCheckedValueES"/>
+                    <label euiLabel for="reactive-checkbox-model-es">spanish</label>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-5">
+        <div class="doc-sample-section-title">NgModel content</div>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="code" style="overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre" tabindex="0">{{ myForm.value | json }}</pre>
+                <div class="eui-u-flex">
+                    <div class="eui-u-f-bold eui-u-mr-m">Form status</div>
+                    <eui-badge euiSizeS [euiSuccess]="myForm.status === 'VALID'" [euiDanger]="myForm.status !== 'VALID'">
+                        {{ myForm.status }}
+                    </eui-badge>
+                </div>
+            </div>
+        </div>
+
+        <div class="eui-u-flex eui-u-flex-wrap eui-u-mt-m">
+            <button form="my-form" type="submit" euiButton euiPrimary class="eui-u-mr-m eui-u-mb-m">Submit form</button>
+            <button euiButton euiPrimary euiOutline (click)="changeModelValues()" class="eui-u-mr-m eui-u-mb-m">Change value</button>
+        </div>
+    </div>
+</div>

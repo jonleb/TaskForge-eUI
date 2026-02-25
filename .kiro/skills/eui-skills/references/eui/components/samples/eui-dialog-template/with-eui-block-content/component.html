@@ -1,0 +1,40 @@
+<p class="eui-u-text-paragraph">The source code of the injected component can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-dialog-template/dummy-components" target="_blank" class="eui-u-text-link-external">here</a>.</p>
+
+<button euiButton type="button" (click)="openDialog()" aria-haspopup="dialog">Open Dialog</button>
+
+<eui-dialog #dialog [title]="'Dialog with eui-block-content'">
+    <eui-block-content [isBlocked]="isBlocked">
+        <form [formGroup]="form">
+            <div euiInputGroup>
+                <label euiLabel [euiRequired]="true">Name</label>
+                <input euiInputText formControlName="name" placeholder="Enter your name" />
+                @if (render('name')) {
+                    <eui-feedback-message euiDanger>This field is <strong>required</strong></eui-feedback-message>
+                }
+            </div>
+            <div euiInputGroup>
+                <label euiLabel [euiRequired]="true">E-mail</label>
+                <input euiInputText formControlName="email" placeholder="Enter your e-mail" />
+                @if (render('email')) {
+                    <eui-feedback-message euiDanger>This field is <strong>required</strong></eui-feedback-message>
+                }
+            </div>
+        </form>
+        <br/>
+        <button euiButton type="button" euiOutline euiPrimary (click)="closeDialog()">
+            Close dialog from injected component
+        </button>
+    </eui-block-content>
+
+    <eui-dialog-footer>
+        <div class="eui-u-flex eui-u-flex-justify-content-between">
+            <div class="eui-u-inline-flex eui-u-flex-justify-content-start eui-u-flex-gap-s">
+                <button euiButton type="button" euiSecondary (click)="resetForm()">Reset</button>
+            </div>
+            <div class="eui-u-inline-flex eui-u-flex-justify-content-end eui-u-flex-gap-s">
+                <button euiButton type="button" euiOutline (click)="closeDialog()">Cancel</button>
+                <button euiButton type="button" euiPrimary (click)="onSubmitForm()"euiPrimary>OK</button>
+            </div>
+        </div>
+    </eui-dialog-footer>
+</eui-dialog>

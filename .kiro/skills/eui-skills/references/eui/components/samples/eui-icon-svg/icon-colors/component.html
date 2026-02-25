@@ -1,0 +1,68 @@
+<p class="eui-u-text-paragraph">
+    For coloring icons, use the optional <code class="eui-u-text-code">fillColor="%color-token%"</code> input option where %color-token% (default: secondary) is one of the following.
+</p>
+<br>
+
+<eui-tabs>
+    <!-- PHOSPHOR FILL -->
+    <eui-tab>
+        <eui-tab-header>
+            <eui-label>Fill</eui-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            <div class="eui-u-flex eui-u-flex-column eui-u-flex-gap-s">
+            @for (colorType of colorTypes; track $index) {
+                <div class="eui-u-flex icons-demo">
+                    @for (color of colorType.map; track $index) {
+                        <div class="eui-u-flex eui-u-flex-column eui-u-flex-gap-xs eui-u-width-8">
+                            @if (color) {
+                                <div class="icon-item-inner-container" [class]="hasDarkBackground ? 'eui-u-c-bg-secondary' : ''">
+                                    <eui-icon-svg icon="star:fill" size="l" fillColor="{{colorType.name}}-{{color}}" />
+                                </div>
+                                <div class="eui-u-text-small">{{colorType.name}}-{{color}}</div>
+    
+                            } @else {
+                                <div class="icon-item-inner-container" [class]="hasDarkBackground ? 'eui-u-c-bg-secondary' : ''">
+                                    <eui-icon-svg icon="star:fill" size="l" fillColor="{{colorType.name}}" />
+                                </div>
+                                <div class="eui-u-text-small">{{colorType.name}}</div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            </div>
+        </eui-tab-body>
+    </eui-tab>
+
+    <!-- PHOSPHOR REGULAR -->
+    <eui-tab>
+        <eui-tab-header>
+            <eui-label>Regular</eui-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            <div class="eui-u-flex eui-u-flex-column eui-u-flex-gap-s">
+            @for (colorType of colorTypes; track $index) {
+                <div class="eui-u-flex icons-demo">
+                    @for (color of colorType.map; track $index) {
+                        <div class="eui-u-flex eui-u-flex-column eui-u-flex-gap-xs eui-u-width-8">
+                            @if (color) {
+                                <div class="icon-item-inner-container" [class]="hasDarkBackground ? 'eui-u-c-bg-secondary' : ''">
+                                    <eui-icon-svg icon="star:regular" size="l" fillColor="{{colorType.name}}-{{color}}" />
+                                </div>
+                                <div class="eui-u-text-small">{{colorType.name}}-{{color}}</div>
+    
+                            } @else {
+                                <div class="icon-item-inner-container" [class]="hasDarkBackground ? 'eui-u-c-bg-secondary' : ''">
+                                    <eui-icon-svg icon="star:regular" size="l" fillColor="{{colorType.name}}" />
+                                </div>
+                                <div class="eui-u-text-small">{{colorType.name}}</div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            </div>
+        </eui-tab-body>
+    </eui-tab>
+</eui-tabs>

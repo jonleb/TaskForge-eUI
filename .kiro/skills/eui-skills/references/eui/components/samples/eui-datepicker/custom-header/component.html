@@ -1,0 +1,6 @@
+<eui-alert>
+    The header section of the calendar (the part containing the view switcher and previous and next buttons) can be replaced with a custom component if desired. This is accomplished using the <code class="eui-u-text-code">customHeader</code> Input property of <code class="eui-u-text-code">eui-datepicker</code>. It takes a component class and constructs an instance of the component to use as the header.
+    In order to interact with the calendar in your custom header component, you can inject the parent MatCalendar in the constructor. To make sure your header stays in sync with the calendar, subscribe to the stateChanges observable of the calendar and mark your header component for change detection.
+</eui-alert>
+<br>
+<eui-datepicker [customHeader]="customHeaderClass"></eui-datepicker>

@@ -1,0 +1,17 @@
+<div class="doc-sample-section-title">Tailwind</div>
+
+<div class="eui-u-flex eui-u-flex-gap-m">
+@for (colorPalette of colorPalettes; track colorPalette) {
+    <eui-status-badge colorPalette="{{colorPalette}}">Status</eui-status-badge>
+}
+</div>
+
+<br>
+
+<div class="doc-sample-section-title">ECL</div>
+
+<div class="eui-u-flex eui-u-flex-gap-m">
+@for (colorPalette of colorPalettesEcl; track colorPalette) {
+    <eui-status-badge colorPalette="{{colorPalette}}">Status</eui-status-badge>
+}
+</div>

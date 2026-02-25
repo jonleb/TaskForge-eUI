@@ -1,0 +1,46 @@
+<eui-tabs #euiTabs (tabActivate)="onTabActivated($event)">
+    @for (tab of tabs; let i = $index; track tab) {
+        <eui-tab #tabdisable [isDisabled]="i > 0 ? isDisabled : false">
+            <eui-tab-header>
+                <eui-tab-header-label>
+                   Sample label
+                </eui-tab-header-label>
+                <eui-tab-header-sub-label>
+                Sublabel sample
+                </eui-tab-header-sub-label>                
+            </eui-tab-header>
+            <eui-tab-body>
+                @if (tabdisable.isActive) {
+                    <dummy-comp [content]="tab.tabContent"></dummy-comp>
+                }
+            </eui-tab-body>
+        </eui-tab>
+    }
+</eui-tabs>
+
+<button euiButton euiPrimary euiOutline euiSizeS (click)="toggleDisable()">Toggle disable (isDisabled: {{ isDisabled }})</button>
+
+
+<div class="doc-sample-section-title">isFlat variant</div>
+
+<eui-tabs #euiTabs (tabActivate)="onTabActivated($event)" isFlat>
+    @for (tab of tabs; let i = $index; track tab) {
+        <eui-tab #tabdisable [isDisabled]="i > 0 ? isDisabled : false">
+            <eui-tab-header>
+                <eui-tab-header-label>
+                   Sample label
+                </eui-tab-header-label>
+                <eui-tab-header-sub-label>
+                Sublabel sample
+                </eui-tab-header-sub-label>                
+            </eui-tab-header>
+            <eui-tab-body>
+                @if (tabdisable.isActive) {
+                    <dummy-comp [content]="tab.tabContent"></dummy-comp>
+                }
+            </eui-tab-body>
+        </eui-tab>
+    }
+</eui-tabs>
+
+<button euiButton euiPrimary euiOutline euiSizeS (click)="toggleDisable()">Toggle disable (isDisabled: {{ isDisabled }})</button>

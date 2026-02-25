@@ -1,0 +1,33 @@
+<eui-alert>
+    This option is auto-set when used within an <strong>eui-toolbar-item</strong>
+</eui-alert>
+<br>
+
+<div class="eui-u-c-bg-branding-surface eui-u-p-m">
+    <eui-user-profile euiPrimary></eui-user-profile>
+    <eui-user-profile euiPrimary>
+        <eui-user-profile-menu>
+            <eui-user-profile-menu-item>
+                <eui-icon-svg icon="eui-user" size="s"/>
+                View profile information
+            </eui-user-profile-menu-item>
+            <eui-user-profile-menu-item>
+                <eui-icon-svg icon="eui-sign-out" size="s"/>
+                Sign out
+            </eui-user-profile-menu-item>
+        </eui-user-profile-menu>
+    </eui-user-profile>
+    <eui-user-profile euiPrimary isShowAvatarInitials></eui-user-profile>
+    <eui-user-profile euiPrimary avatarUrl="assets/images/avatars/small/rabbit.png"></eui-user-profile>
+
+    <br>
+
+    <eui-user-profile euiPrimary euiStatusSuccess></eui-user-profile>
+    <eui-user-profile euiPrimary euiStatusSuccess isShowAvatarInitials></eui-user-profile>
+    <eui-user-profile euiPrimary euiStatusSuccess avatarUrl="assets/images/avatars/small/rabbit.png"></eui-user-profile>
+
+    <br>
+    <eui-user-profile [isShowUserInfos]="false" euiPrimary euiStatusSuccess></eui-user-profile>
+    <eui-user-profile [isShowUserInfos]="false"euiPrimary euiStatusSuccess isShowAvatarInitials></eui-user-profile>
+    <eui-user-profile [isShowUserInfos]="false"euiPrimary euiStatusSuccess avatarUrl="assets/images/avatars/small/rabbit.png"></eui-user-profile>
+</div>

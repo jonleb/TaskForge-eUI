@@ -1,0 +1,154 @@
+<div class="row">
+    <div class="col">
+        <div class="doc-sample-section-title">Reactive Forms passing a Date object value</div>
+    </div>
+    <div class="col">
+        <div class="doc-sample-section-title">Form value in json(0-based UTC) format</div>
+    </div>
+</div>
+
+<form [formGroup]="form">
+    <div class="row">
+        <div class="col">
+            <eui-datepicker formControlName="datepicker"></eui-datepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form.value | json }}</pre>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <button euiButton euiPrimary (click)="onResetForm()" class="eui-u-mr-xs">Reset</button>
+            <button euiButton euiPrimary (click)="onDisableField()">Toggle disabled</button>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col">
+        <div class="doc-sample-section-title">Reactive Forms passing a momentjs value</div>
+    </div>
+</div>
+
+<form [formGroup]="form4">
+    <div class="row">
+        <div class="col">
+            <eui-datepicker formControlName="datepickerMomentValue"></eui-datepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form4.value | json }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col">
+        <div class="doc-sample-section-title">Reactive Forms passing an ISO 8601 string value</div>
+    </div>
+</div>
+
+<form [formGroup]="form5">
+    <div class="row">
+        <div class="col">
+            <eui-datepicker formControlName="datepickerStringValue"></eui-datepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form5.value | json }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="row">
+    <div class="col-6">
+        <div class="doc-sample-section-title">Reactive Forms - Interaction with eui-input-group & eui-feedback-message</div>
+    </div>
+    <div class="col-6">
+        <div class="doc-sample-section-title">Form value using the date pipe</div>
+    </div>
+</div>
+<form [formGroup]="form2">
+    <div class="row">
+        <div class="col">
+            <div euiInputGroup>
+                <label euiLabel for="datepicker" euiRequired>Sample label</label>
+                <eui-datepicker inputId="datepicker" formControlName="datepicker" [isReadOnly]="isReadonly"></eui-datepicker>
+                @if (form2.get('datepicker').hasError('required') && form2.get('datepicker').touched) {
+                    <eui-feedback-message euiDanger>
+                        This field is <strong>required</strong>
+                    </eui-feedback-message>
+                }
+            </div>
+        </div>
+
+        <div class="col eui-u-mt-m">
+            <pre class="eui-u-text-pre">{{ form2.value.datepicker | date: 'dd/MM/yyyy' }}</pre>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <button euiButton euiPrimary (click)="onResetForm2()" class="eui-u-mr-xs">Reset</button>
+            <button euiButton euiPrimary (click)="onDisableField2()" class="eui-u-mr-xs">Toggle disabled</button>
+            <button euiButton euiPrimary (click)="isReadonly = !isReadonly" class="eui-u-mr-xs">Toggle readonly</button>
+            <button euiButton euiPrimary (click)="onChangeValue()" class="eui-u-mr-xs">Change value</button>
+            <button euiButton euiPrimary (click)="onSubmit2()">Submit</button>
+        </div>
+    </div>
+</form>
+<br>
+<form [formGroup]="form7">
+    <div class="row">
+        <div class="col">
+            <div euiInputGroup>
+                <label euiLabel for="validEmptyInput">With error message on invalid date but not on empty input field</label>
+                <eui-datepicker #dpref inputId="validEmptyInput" formControlName="withValidEmptyInputField"></eui-datepicker>
+                @if (form7.get('withValidEmptyInputField').dirty && form7.get('withValidEmptyInputField').value === null) {
+                    <eui-feedback-message euiDanger>
+                        {{ getErrorMessage(dpref) }}
+                    </eui-feedback-message>
+                }
+            </div>
+        </div>
+
+        <div class="col eui-u-mt-m">
+            <pre class="eui-u-text-pre">{{ form7.value.withValidEmptyInputField | date: 'dd/MM/yyyy' }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">With dateOutputFormat defined</div>
+<form [formGroup]="form3">
+    <div class="row">
+        <div class="col">
+            <eui-datepicker dateOutputFormat="DD-MM-YYYY" formControlName="datepickerOutputFormat"></eui-datepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form3.value | json }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">Using dateInputValidator to validate the date input field</div>
+<form [formGroup]="form6">
+    <div class="row">
+        <div class="col">
+            <div euiInputGroup>
+                <eui-datepicker formControlName="customValidatorValue"></eui-datepicker>
+                @if (this.form6.get('customValidatorValue').dirty && form6.get('customValidatorValue').hasError('invalidDate')) {
+                    <eui-feedback-message euiDanger>
+                        The field is <strong>invalid</strong>. Please provide a date that matches the provided date format!
+                    </eui-feedback-message>
+                }
+            </div>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form6.value | json }}</pre>
+        </div>
+    </div>
+</form>

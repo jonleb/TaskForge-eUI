@@ -1,0 +1,10 @@
+import { Component } from '@angular/core';
+import { EUI_ECL_LIST_ILUSTRATION } from '@eui/ecl/components/ecl-list-illustration';
+
+@Component({
+    // tslint:disable-next-line
+    selector: 'horizontal',
+    templateUrl: 'component.html',
+    imports: [...EUI_ECL_LIST_ILUSTRATION],
+})
+export class HorizontalComponent {}

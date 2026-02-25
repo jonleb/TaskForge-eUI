@@ -1,0 +1,41 @@
+<div class="doc-sample-section-title">The euiDropdownTree directive is used on eui-dropdown which renders the eui-tree</div>
+<eui-alert>
+    Please note that the button trigger uses the <code class="eui-u-text-code">euiResponsive</code> option which allows the selected tree items to be displayed correctly within the button.
+    Also, the <code class="eui-u-text-code">eui-dropdown</code> have the <code class="eui-u-text-code">isBlock</code> input option which displays the dropdown content using the same width as the button trigger.
+</eui-alert>
+
+<br>
+
+<ng-template #buttonTemplate let-label>
+    <button euiButton euiPrimary>
+        <div class="eui-u-flex">
+            <div class="eui-u-flex eui-u-flex-justify-content-start eui-u-text-truncate">
+                <label euilabel class="eui-u-text-truncate">{{label}}</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-flex-justify-content-end eui-u-ml-s">
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </div>
+        </div>
+    </button>
+</ng-template>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-dropdown hasTabNavigation [hasClosedOnClickInside]="false" euiDropdownTree [buttonTemplateRef]="buttonTemplate" isBlock>
+            <eui-dropdown-content>
+                <div class="eui-u-p-m">
+                    <eui-tree #euiTreeInstance isMultiselect [nodes]="treeData"></eui-tree>
+                </div>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Selection" isExpandable>
+                    <pre class="eui-u-text-pre">{{ euiTreeInstance.getSelection() | json}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>

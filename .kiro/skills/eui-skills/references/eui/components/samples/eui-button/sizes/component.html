@@ -1,0 +1,90 @@
+<p class="eui-u-text-paragraph">eUI buttons are available in 4 different sizes : XS(eXtra-Small), S(mall), M(edium) and (L)arge by using one of the following semantic input option :</p>
+<code class="eui-u-text-code">euiSizeS</code> | <code class="eui-u-text-code">euiSizeXS</code> | <code class="eui-u-text-code">euiSizeM</code> | <code class="eui-u-text-code">euiSizeL</code>
+
+<div class="doc-sample-section-title">Semantic sizes</div>
+
+<button euiButton euiSizeXS>euiSizeXS</button>&nbsp;
+<button euiButton euiSizeS>euiSizeS</button>&nbsp;
+<button euiButton euiSizeM>euiSizeM (default)</button>&nbsp;
+<button euiButton euiSizeL>euiSizeL</button>&nbsp;
+
+
+<div class="doc-sample-section-title">Semantic sizes - with icon</div>
+
+<button euiButton euiSizeXS aria-label="notifications Icon">
+    Default
+    <eui-icon-svg size="xs" icon="eui-email"></eui-icon-svg>
+</button>&nbsp;
+<button euiButton euiSizeS aria-label="notifications Icon">
+    Default
+    <eui-icon-svg size="s" icon="eui-email"></eui-icon-svg>
+</button>&nbsp;
+<button euiButton euiSizeM aria-label="notifications Icon">
+    Default
+    <eui-icon-svg icon="eui-email"></eui-icon-svg>
+</button>&nbsp;
+<button euiButton euiSizeL aria-label="notifications Icon">
+    Default
+    <eui-icon-svg icon="eui-email"></eui-icon-svg>
+</button>&nbsp;
+
+
+<div class="doc-sample-section-title">Explicit size using euiSizeVariant input option</div>
+
+<button euiButton euiSizeVariant="xs">euiSizeVariant="xs"</button>&nbsp;
+<button euiButton euiSizeVariant="s">euiSizeVariant="s"</button>&nbsp;
+<button euiButton euiSizeVariant="m">euiSizeVariant="m" (default)</button>&nbsp;
+<button euiButton euiSizeVariant="l">euiSizeVariant="l"</button>&nbsp;
+
+
+<div class="doc-sample-section-title">Buttons have proportional minimum sizes</div>
+
+<button euiButton euiPrimary>e</button>&nbsp;
+<button euiButton euiPrimary>U</button>&nbsp;
+<button euiButton euiPrimary>I</button>&nbsp;
+<button euiButton euiPrimary>is</button>&nbsp;
+<button euiButton euiPrimary>awesome</button>&nbsp;
+
+
+<div class="doc-sample-section-title">Buttons with icon's sizes</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-card>
+            <eui-card-header>
+                <eui-card-header-title>Using eUI SVG icons</eui-card-header-title>
+            </eui-card-header>
+            <eui-card-content>
+                euiSizeS<br>
+                <button euiButton euiIconButton euiPrimary euiSizeS aria-label="Email">
+                    <eui-icon-svg icon="eui-email" size="s"></eui-icon-svg>
+                </button>&nbsp;
+
+                <button euiButton euiIconButton euiRounded euiPrimary euiSizeS aria-label="Email">
+                    <eui-icon-svg icon="eui-email" size="s"></eui-icon-svg>
+                </button>
+                <br><br>
+
+                euiSizeM (default)<br>
+                <button euiButton euiIconButton euiPrimary euiSizeM aria-label="Email">
+                    <eui-icon-svg icon="eui-email" size="m"></eui-icon-svg>
+                </button>&nbsp;
+
+                <button euiButton euiIconButton euiRounded euiPrimary euiSizeM aria-label="Email">
+                    <eui-icon-svg icon="eui-email" size="m"></eui-icon-svg>
+                </button>
+                <br><br>
+
+                euiSizeL<br>
+                <button euiButton euiIconButton euiPrimary euiSizeL aria-label="Email">
+                    <eui-icon-svg icon="eui-email" size="m"></eui-icon-svg>
+                </button>&nbsp;
+
+                <button euiButton euiIconButton euiRounded euiPrimary euiSizeL aria-label="Email">
+                    <eui-icon-svg icon="eui-email" size="l"></eui-icon-svg>
+                </button>
+                <br><br>
+            </eui-card-content>
+        </eui-card>
+    </div>
+</div>

@@ -1,0 +1,128 @@
+<div class="doc-sample-section-title">Editor within an eui-card and reactive form (custom) validations</div>
+
+<form [formGroup]="form">
+    <eui-card>
+        <eui-card-content>
+
+            <div euiInputGroup>
+                <label euiLabel>Add comment</label>
+                <eui-editor
+                    isMinimalToolbar
+                    formControlName="htmlContent"
+                    [placeholder]="placeholder"
+                    format="html"
+                    euiEditorMaxlength="1000">
+                </eui-editor>
+            </div>
+
+            <div class="eui-u-flex">
+                <eui-icon-svg icon="lock:regular" size="s" fillColor="secondary"></eui-icon-svg>
+                <div euiLabel class="eui-u-mh-s">Restricted to my unit only</div>
+                <eui-slide-toggle formControlName="slideControl"></eui-slide-toggle>
+            </div>
+
+            @if (form.get('htmlContent').hasError('required') && form.get('htmlContent').touched) {
+                <eui-feedback-message euiDanger>
+                    This field is required
+                </eui-feedback-message>
+            }
+            @if (form.get('htmlContent').hasError('minLength') && form.get('htmlContent').touched) {
+                <eui-feedback-message euiDanger>
+                    Minimum length for this field is <strong>{{ form.get('htmlContent').errors.minLength.minLength }}</strong>
+                    and is currently <strong>{{ form.get('htmlContent').errors.minLength.actual }}</strong>
+                </eui-feedback-message>
+            }
+            @if (form.get('htmlContent').hasError('maxLength') && form.get('htmlContent').touched) {
+                <eui-feedback-message euiDanger>
+                    Maximum length for this field is <strong>{{ form.get('htmlContent').errors.maxLength.maxLength }}</strong>
+                    and is currently <strong>{{ form.get('htmlContent').errors.maxLength.actual }}</strong>
+                </eui-feedback-message>
+            }
+
+        </eui-card-content>
+
+        <eui-card-footer>
+            <eui-card-footer-action-buttons class="eui-u-flex eui-u-flex-justify-content-end eui-u-flex-wrap">
+                <button euiButton euiSecondary>Cancel</button>
+                <button euiButton euiPrimary>Save comment</button>
+            </eui-card-footer-action-buttons>
+        </eui-card-footer>
+    </eui-card>
+</form>
+
+
+<div class="doc-sample-section-title">Editable card sample</div>
+<eui-card [euiHighlighted]="isEditActive">
+    <eui-card-header>
+        <eui-card-header-title>
+            Card title
+        </eui-card-header-title>
+
+        <eui-card-header-right-content>
+            @if (!isEditActive) {
+                <div class="eui-u-flex">
+                    <button
+                        euiButton
+                        euiBasicButton
+                        euiPrimary
+                        euiOutline
+                        euiTooltip="Edit card content"
+                        aria-label="Edit card"
+                        euiSizeS
+                        (click)="onToggleEdit()">
+                        <span euiLabel>Edit</span>
+                    </button>
+                </div>
+            }
+            @if (isEditActive) {
+                <div class="eui-u-flex">
+                    <button
+                        euiButton
+                        euiSecondary
+                        class="eui-u-ml-s"
+                        (click)="onToggleEdit()">
+                        Cancel
+                    </button>
+                    <button
+                        euiButton
+                        euiPrimary
+                        class="eui-u-ml-s"
+                        (click)="onToggleEdit()">
+                        Save
+                    </button>
+                </div>
+            }
+        </eui-card-header-right-content>
+    </eui-card-header>
+
+    <eui-card-content>
+        <form [formGroup]="form">
+            <eui-editor
+                formControlName="htmlContent2"
+                [placeholder]="placeholder"
+                [isReadOnly]="!isEditActive"
+                euiEditorMaxlength="1000">
+            </eui-editor>
+        </form>
+
+        @if (form.get('htmlContent2').hasError('required') && form.get('htmlContent2').touched) {
+            <eui-feedback-message euiDanger>
+                This field is required
+            </eui-feedback-message>
+        }
+        @if (form.get('htmlContent2').hasError('minLength') && form.get('htmlContent2').touched) {
+            <eui-feedback-message euiDanger>
+                Minimum length for this field is <strong>{{ form.get('htmlContent2').errors.minLength.minLength }}</strong>
+                and is currently <strong>{{ form.get('htmlContent2').errors.minLength.actual }}</strong>
+            </eui-feedback-message>
+        }
+        @if (form.get('htmlContent2').hasError('maxLength') && form.get('htmlContent2').touched) {
+            <eui-feedback-message euiDanger>
+                Maximum length for this field is <strong>{{ form.get('htmlContent2').errors.maxLength.maxLength }}</strong>
+                and is currently <strong>{{ form.get('htmlContent2').errors.maxLength.actual }}</strong>
+            </eui-feedback-message>
+        }
+
+    </eui-card-content>
+
+</eui-card>

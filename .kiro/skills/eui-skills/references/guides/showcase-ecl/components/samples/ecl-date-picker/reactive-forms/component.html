@@ -1,0 +1,87 @@
+<h6 class="section-title">Default</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <div eclFormLabel for="datepicker-reactive-2" id="datepicker-label-reactive-2" isOptional>Label</div>
+    <div eclHelpBlock id="datepicker-helper-reactive-2">This is the help text.</div>
+    <input
+        id="datepicker-reactive-2"
+        eclTextInput
+        eclDatePicker
+        aria-describedby="datepicker-helper-reactive-2"
+        aria-label="Date picker"
+        formControlName="default"
+        [yearRange]="10"
+        format="DD-MM-YYYY"
+        eclSize="s"
+        placeholder="DD-MM-YYYY"
+        (datePicked)="onDatePicked($event)"/>
+  </div>
+</form>
+
+<h6 class="section-title">Disabled</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <div eclFormLabel for="datepicker-reactive-3" id="datepicker-label-reactive-3" isDisabled>Label</div>
+    <div eclHelpBlock id="datepicker-helper-reactive-3">This is the help text.</div>
+    <input
+        id="datepicker-reactive-3"
+        eclTextInput
+        eclDatePicker
+        aria-describedby="datepicker-helper-reactive-3"
+        aria-label="Date picker"
+        formControlName="disabled"
+        [yearRange]="10"
+        format="DD-MM-YYYY"
+        eclSize="s"
+        placeholder="DD-MM-YYYY"
+        (datePicked)="onDatePicked($event)"/>
+  </div>
+</form>
+
+<h6 class="section-title">Required</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <div eclFormLabel for="datepicker-reactive-4" id="datepicker-label-reactive-4" isRequired>Label</div>
+    <div eclHelpBlock id="datepicker-helper-reactive-4">This is the help text.</div>
+    <input
+        id="datepicker-reactive-4"
+        eclTextInput
+        eclDatePicker
+        aria-describedby="datepicker-helper-reactive-4"
+        aria-label="Date picker"
+        formControlName="required"
+        [yearRange]="10"
+        format="DD-MM-YYYY"
+        eclSize="s"
+        placeholder="DD-MM-YYYY"
+        (datePicked)="onDatePicked($event)"/>
+      @if (validateRequired()) {
+          <div eclFeedbackMessage>
+              <ecl-icon icon="error" size="s" ariaHidden="false" role="img">
+                  <title>Error</title>
+              </ecl-icon>
+              This field is required
+          </div>
+      }
+  </div>
+</form>
+
+<h6 class="section-title">Two-way Data Binding</h6>
+<div eclFormGroup>
+  <div eclFormLabel for="datepicker-reactive-5" id="datepicker-label-reactive-5">Label</div>
+  <div eclHelpBlock id="datepicker-helper-reactive-5">This is the help text.</div>
+    <input
+        id="datepicker-reactive-5"
+        eclTextInput
+        eclDatePicker
+        aria-describedby="datepicker-helper-reactive-5"
+        aria-label="Date picker"
+        [(ngModel)]="model"
+        [yearRange]="10"
+        format="DD-MM-YYYY"
+        placeholder="DD-MM-YYYY"
+        (datePicked)="onDatePicked($event)"/>
+  <div class="ecl-u-mt-m">
+    <button eclButton variant="primary" (click)="onChangeValue()">Change value</button>
+  </div>
+</div>

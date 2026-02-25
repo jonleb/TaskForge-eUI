@@ -1,0 +1,12 @@
+<button euiButton type="button" (click)="openMessageBox()" aria-haspopup="dialog">Open Message Box</button>
+
+<eui-message-box #messageBox
+    [title]="'Message box title'"
+    [acceptLabel]="'YES, delete it'"
+    [dismissLabel]="'NO, keep it'"
+    (messageBoxClose)="onClose()"
+    (messageBoxOpen)="onOpen()"
+    (accept)="onAccept()"
+    (dismiss)="onDismiss()">
+    <p class="eui-u-text-paragraph">Message box content</p>
+</eui-message-box>

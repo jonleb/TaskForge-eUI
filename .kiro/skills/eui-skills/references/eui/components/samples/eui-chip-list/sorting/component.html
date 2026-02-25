@@ -1,0 +1,13 @@
+<div class="doc-sample-section-title">Sort ASC</div>
+<eui-chip-list>
+    @for (chip of chipsAsc; track chip.id) {
+        <eui-chip [euiVariant]="chip.variant"><span euiLabel>{{ chip.label }}</span></eui-chip>
+    }
+</eui-chip-list>
+
+<div class="doc-sample-section-title">Sort DESC</div>
+<eui-chip-list>
+    @for (chip of chipsDesc; track chip.id) {
+        <eui-chip [euiVariant]="chip.variant"><span euiLabel>{{ chip.label }}</span></eui-chip>
+    }
+</eui-chip-list>

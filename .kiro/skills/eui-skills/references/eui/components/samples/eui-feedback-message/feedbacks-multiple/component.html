@@ -1,0 +1,31 @@
+<div class="row">
+	<div class="col-md-6">
+		<div euiInputGroup>
+			<label euiLabel for="multiple-feedbacks">Multiple feedbacks</label>
+			<input euiInputText id="multiple-feedbacks" placeholder="Placeholder text..." />
+
+			<eui-feedback-message>This is the default feedback message</eui-feedback-message>
+			<eui-feedback-message euiPrimary>This is the <strong>primary</strong> feedback message</eui-feedback-message>
+			<eui-feedback-message euiSecondary>This is the <strong>secondary</strong> feedback message</eui-feedback-message>
+			<eui-feedback-message euiInfo>This is the <strong>info</strong> feedback message</eui-feedback-message>
+			<eui-feedback-message euiSuccess>This is the <strong>success</strong> feedback message</eui-feedback-message>
+			<eui-feedback-message euiWarning>This is the <strong>warning</strong> feedback message</eui-feedback-message>
+			<eui-feedback-message euiDanger>This is the <strong>danger</strong> feedback message</eui-feedback-message>
+		</div>
+	</div>
+
+	<div class="col-md-6">
+		<div euiInputGroup>
+			<label euiLabel for="multiple-feedbacks-muted">Multiple feedbacks with isMuted=false</label>
+			<input euiInputText id="multiple-feedbacks-muted" placeholder="Placeholder text..." />
+
+			<eui-feedback-message [isMuted]="false">This is the default feedback message</eui-feedback-message>
+			<eui-feedback-message  [isMuted]="false" euiPrimary>This is the <strong>primary</strong> feedback message</eui-feedback-message>
+			<eui-feedback-message  [isMuted]="false" euiSecondary>This is the <strong>secondary</strong> feedback message</eui-feedback-message>
+			<eui-feedback-message  [isMuted]="false" euiInfo>This is the <strong>info</strong> feedback message</eui-feedback-message>
+			<eui-feedback-message  [isMuted]="false" euiSuccess>This is the <strong>success</strong> feedback message</eui-feedback-message>
+			<eui-feedback-message  [isMuted]="false" euiWarning>This is the <strong>warning</strong> feedback message</eui-feedback-message>
+			<eui-feedback-message  [isMuted]="false" euiDanger>This is the <strong>danger</strong> feedback message</eui-feedback-message>
+		</div>
+	</div>
+</div>

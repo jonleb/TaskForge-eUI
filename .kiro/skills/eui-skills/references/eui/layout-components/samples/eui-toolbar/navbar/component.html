@@ -1,0 +1,45 @@
+<eui-alert>
+    Check console.log for output event triggered values
+</eui-alert>
+
+<div class="doc-sample-section-title">Default</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-navbar (itemClick)="onClick($event)">
+        @for (item of navbarItems; track $index) {
+            <eui-toolbar-navbar-item [id]="item.id" [label]="item.label" [isActive]="navbarItemActive.id === item.id">
+            </eui-toolbar-navbar-item>
+        }
+    </eui-toolbar-navbar>
+</eui-toolbar>
+
+<div class="doc-sample-section-title">euiSecondary toolbar</div>
+
+<eui-toolbar euiSecondary>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-navbar (itemClick)="onClick($event)">
+        @for (item of navbarItems; track $index) {
+            <eui-toolbar-navbar-item [id]="item.id" [label]="item.label" [isActive]="navbarItemActive.id === item.id">
+            </eui-toolbar-navbar-item>
+        }
+    </eui-toolbar-navbar>
+</eui-toolbar>
+
+
+<div class="doc-sample-section-title">Long item / overflow the toolbar element, fallback to dropdown view</div>
+
+<eui-toolbar euiSecondary>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-navbar (itemClick)="onClick($event)">
+        @for (item of navbarItemsLong; track $index) {
+            <eui-toolbar-navbar-item [id]="item.id" [label]="item.label" [isActive]="navbarItemLongActive.id === item.id">
+            </eui-toolbar-navbar-item>
+        }
+    </eui-toolbar-navbar>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <button euiButton euiSecondary euiSizeS>Button item</button>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>

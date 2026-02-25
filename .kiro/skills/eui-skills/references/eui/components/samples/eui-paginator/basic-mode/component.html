@@ -1,0 +1,16 @@
+<div class="doc-sample-section-title">isBasicMode</div>
+<p class="eui-u-text-paragraph">
+    The <span class="eui-u-text-code">isBasicMode</span> input option allows to display a simple paginator
+    which is typically used when working with async data fetching or where the page sizes and/or the number of total records are not set.
+</p>
+
+<eui-paginator [length]="dataSource.length" isBasicMode />
+
+
+<div class="doc-sample-section-title">hasPageSize</div>
+<p class="eui-u-text-paragraph">
+    When the page size of the fetched data cannot be provided (or the total of the number of records is unknown), 
+    you can hide the display of the paginator's left section by using the <span class="eui-u-text-code">isBasicMode hasPageSize=false</span> input option (default: true).
+</p>
+
+<eui-paginator [length]="dataSource.length" isBasicMode hasPageSize="false" />

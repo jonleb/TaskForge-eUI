@@ -1,0 +1,347 @@
+<div class="doc-sample-section-title">MyWorkplace Task centre's like cards</div>
+
+<div class="row">
+    <div class="col">
+        <div class="eui-u-flex flex-wrap">
+            Responsive size layout :
+            @for (size of cardSizes; let i = $index; track $index) {
+                <div class="eui-u-ml-m">
+                    <input euiInputRadio
+                            name="layout-size"
+                            id="size-{{i}}"
+                            [value]="size.value"
+                            [attr.checked]="size.default ? 'checked' : null"
+                            [(ngModel)]="cardSize"
+                            (ngModelChange)="setLayout($event)"/>
+                    <label euiLabel for="size-{{i}}">{{ size.label }}</label>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Design layout 1 - Using custom card header section</div>
+
+<div class="row">
+    <div class="col-md-{{cardSize}}">
+        <eui-card euiCollapsible euiCollapsed [euiSelected]="isSelectedSample1">
+            <eui-card-header >
+                <eui-card-header-left-content isTopAligned>
+                    <input euiInputCheckBox id="checkbox-sample-1" name="checkbox-sample-1" [(ngModel)]="isSelectedSample1" [ngModelOptions]="{standalone: true}">
+                </eui-card-header-left-content>
+
+                <eui-card-header-title>
+                    <a (click)="onCardTitleLinkClicked($event)" class="eui-u-text-link">Contract Preparation - Financial Initiation: 309200000</a>
+                </eui-card-header-title>
+
+                <eui-card-header-subtitle>
+                    SC under SIEA FWC
+
+                    <div class="row eui-u-flex">
+                        <div class="col-md-6 eui-u-text-truncate">
+                            <span euiLabel euiSecondary euiSizeS>Created on</span><br>
+                            <span class="eui-u-f-s">17/07/2020, 02:07:30 PM</span>
+                        </div>
+                        <div class="col-md-6 eui-u-text-truncate">
+                            <span euiLabel euiSecondary euiSizeS>Assignee</span><br>
+                            <span class="eui-u-f-s">Generic User w0501075</span>
+                        </div>
+                    </div>
+                </eui-card-header-subtitle>
+
+                <eui-card-header-right-content class="eui-u-flex-gap-m">
+                    <eui-chip euiRounded euiOutline euiSuccess euiSizeS euiTooltip="Status">
+                        Active
+                    </eui-chip>
+                    <eui-dropdown>
+                        <button euiButton euiResponsive euiOutline euiPrimary euiSizeS euiTooltip="More actions">
+                            Actions
+                            <eui-icon-svg icon="eui-chevron-down" />
+                        </button>
+                        <eui-dropdown-content>
+                            <button euiDropdownItem>
+                                Claim
+                            </button>
+                            <button euiDropdownItem>
+                                Unclaim
+                            </button>
+                        </eui-dropdown-content>
+                    </eui-dropdown>
+                </eui-card-header-right-content>
+            </eui-card-header>
+
+            <eui-card-content>
+                <div class="eui-u-flex align-items-start" style="overflow: auto;" tabindex="0">
+                    <div class="col-md-6 pl-0">
+                        <span euiLabel euiSizeS>CFD ID</span>
+                        <br>
+                        CFD-10582
+                        <br>
+                        <span euiLabel euiSizeS>Exercise ID</span>
+                        <br>
+                        11650
+                        <br>
+                        <span euiLabel euiSizeS>Exercise Type</span>
+                        <br>
+                        Initial CFD
+                        <br>
+                    </div>
+                    <div class="col-md-6 pr-0">
+                        <span euiLabel euiSizeS>Assigned by</span>
+                        <br>
+                        —
+                        <br>
+                        <span euiLabel euiSizeS>Assigned to</span>
+                        <br>
+                        Me and 97 more...
+                        <br>
+                    </div>
+                </div>
+            </eui-card-content>
+        </eui-card>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Design layout 2 - Custom card header with full title and card footer actions</div>
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-{{cardSize}}">
+        <eui-card euiCollapsible euiCollapsed [euiSelected]="isSelectedSample2">
+
+            <eui-card-header hasFullTitle>
+                <eui-card-header-left-content>
+                    <input euiInputCheckBox id="checkbox-sample-2" name="checkbox-sample-2" [(ngModel)]="isSelectedSample2" [ngModelOptions]="{standalone: true}" class="eui-u-p-absolute">
+                </eui-card-header-left-content>
+
+                <eui-card-header-title>
+                    <a (click)="onCardTitleLinkClicked($event)" euiTooltip="Contract Preparation - CcReferenceProcess - Prepare Grant Agreement - CCREF-ALERT-2021-11589623" class="eui-u-text-link">
+                        Contract Preparation - CcReferenceProcess - Prepare Grant Agreement - CCREF-ALERT-2021-11589623
+                    </a>
+                </eui-card-header-title>
+
+                <eui-card-header-subtitle>
+                    SC under SIEA FWC
+                    <div class="eui-u-flex eui-u-text-truncate">
+                        <span euiLabel euiSecondary euiSizeS>Created on</span>
+                        <br>
+                        <span class="eui-u-f-s eui-u-ml-s">20/11/2021, 11:45:30 AM</span>
+                    </div>
+                    <div class="eui-u-flex eui-u-text-truncate">
+                        <span euiLabel euiSecondary euiSizeS>Assignee</span>
+                        <br>
+                        <span class="eui-u-f-s eui-u-text-truncate eui-u-ml-s">
+                            <span>Generic User w0501075</span>
+                        </span>
+                    </div>
+                </eui-card-header-subtitle>
+
+                <eui-card-header-right-content>
+                    <eui-chip euiOutline euiRounded euiSizeS euiTooltip="Status">
+                        Unclaimed
+                    </eui-chip>
+                </eui-card-header-right-content>
+            </eui-card-header>
+
+            <eui-card-content>
+                <div class="eui-u-flex align-items-start" style="overflow: auto;" tabindex="0">
+                    <div class="col-md-6 pl-0">
+                        <span euiLabel euiSizeS>CFD ID</span>
+                        <br>
+                        CFD-10582
+                        <br>
+                        <span euiLabel euiSizeS>Exercise ID</span>
+                        <br>
+                        11650
+                        <br>
+                        <span euiLabel euiSizeS>Exercise Type</span>
+                        <br>
+                        Initial CFD
+                        <br>
+                    </div>
+                    <div class="col-md-6 pr-0">
+                        <span euiLabel euiSizeS>Assigned by</span>
+                        <br>
+                        —
+                        <br>
+                        <span euiLabel euiSizeS>Assigned to</span>
+                        <br>
+                        Me and 97 more...
+                        <br>
+                    </div>
+                </div>
+            </eui-card-content>
+
+            <eui-card-footer>
+                <eui-card-footer-action-buttons class="eui-u-flex eui-u-flex-justify-content-between">
+                    <div class="eui-u-flex">
+                        <button euiButton euiBasicButton euiPrimary>Reset</button>
+                    </div>
+                    <div class="eui-u-ml-auto eui-u-inline-flex">
+                        <eui-card-footer-action-icons>
+                            <eui-icon-toggle iconSvgNameOn="eui-star-fill" iconSvgNameOff="eui-star" euiTooltip="Mark as favourite" aria-label="Mark as favourite" />
+                            <button euiButton euiRounded euiIconButton euiBasicButton euiPrimary euiTooltip="Share" aria-label="Share">
+                                <eui-icon-svg icon="share-network:regular" fillColor="secondary" />
+                            </button>
+                        </eui-card-footer-action-icons>
+                        <eui-card-footer-menu>
+                            <eui-dropdown euiTooltip="More actions">
+                                <button euiButton euiPrimary euiOutline type="button" class="eui-u-mr-none">
+                                    Actions
+                                    <eui-icon-svg icon="eui-chevron-down" />
+                                </button>
+                                <eui-dropdown-content>
+                                    <button euiDropdownItem>Claim</button>
+                                    <button euiDropdownItem>Unclaim</button>
+                                    <button euiDropdownItem>Unassign</button>
+                                </eui-dropdown-content>
+                            </eui-dropdown>
+                        </eui-card-footer-menu>
+                    </div>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Design layout 3 - Custom card header with custom action's footer</div>
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-{{cardSize}}">
+        <eui-card euiCollapsible euiCollapsed [euiSelected]="isSelectedSample3" euiUrgent>
+            <eui-card-header hasFullTitle hasBottomExpander>
+                <eui-card-header-title>
+                    <a (click)="onCardTitleLinkClicked($event)" euiTooltip="Contract Preparation - CcReferenceProcess - Prepare Grant Agreement - CCREF-ALERT-2021-11589623" class="eui-u-text-link">
+                        Contract Preparation - CcReferenceProcess - Prepare Grant Agreement - CCREF-ALERT-2021-11589623
+                    </a>
+                </eui-card-header-title>
+
+                <eui-card-header-subtitle>
+                    <div class="eui-u-flex eui-u-flex-column eui-u-flex-justify-content-start  eui-u-flex-align-items-start">
+                        <div class="eui-u-text-truncate">
+                            <span euiLabel euiSecondary euiSizeS>Id:</span>
+                            <span class="eui-u-f-s eui-u-ml-s">2021-11589623</span>
+                        </div>
+                        <div class="eui-u-text-truncate">
+                            <span euiLabel euiSecondary euiSizeS>Created on:</span>
+                            <span class="eui-u-f-s eui-u-ml-s">20/11/2021, 11:45:30 AM</span>
+                        </div>
+                        <div class="eui-u-text-truncate">
+                            <span euiLabel euiSecondary euiSizeS>Assignee:</span>
+                            <span class="eui-u-f-s eui-u-ml-s">Generic User w0501075</span>
+                        </div>
+                    </div>
+                </eui-card-header-subtitle>
+
+                <eui-card-header-left-content>
+                    <div class="eui-u-flex eui-u-flex-column">
+                        <div class="eui-u-flex eui-u-flexjustify-content-center">
+                            <input euiInputCheckBox id="checkbox-sample-3" name="checkbox-sample-3" [attr.aria-label]=" isSelectedSample3? 'Deselect': 'Select' " [(ngModel)]="isSelectedSample3" [ngModelOptions]="{standalone: true}">
+                        </div>
+
+                    </div>
+                </eui-card-header-left-content>
+
+                <eui-card-header-right-content class="eui-u-flex-column eui-u-flex-justify-content-start">
+                    <eui-chip euiSuccess euiSizeS>
+                        <span euiLabel>Assigned</span>
+                    </eui-chip>
+                </eui-card-header-right-content>
+            </eui-card-header>
+
+            <eui-card-content>
+                <div class="row" style="overflow: auto;" tabindex="0">
+                    <div class="col-md-6">
+                        <span euiLabel euiSizeS>CFD ID</span>
+                        <br>
+                        CFD-10582
+                        <br>
+                        <span euiLabel euiSizeS>Exercise ID</span>
+                        <br>
+                        11650
+                        <br>
+                        <span euiLabel euiSizeS>Exercise Type</span>
+                        <br>
+                        Initial CFD
+                        <br>
+                    </div>
+                    <div class="col-md-6">
+                        <span euiLabel euiSizeS>Assigned by</span>
+                        <br>
+                        —
+                        <br>
+                        <span euiLabel euiSizeS>Assigned to</span>
+                        <br>
+                        Me and 97 more...
+                        <br>
+                    </div>
+                </div>
+            </eui-card-content>
+
+            <eui-card-footer>
+                <eui-card-footer-action-buttons class="eui-u-flex eui-u-flex-justify-content-between">
+                    <div class="eui-u-flex">
+                        <eui-chip-list>
+                            @for (chip of chips; let i = $index; track $index) {
+                                @if (isMaxVisibleChipsOpened || i <= maxVisibleChipsCount) {
+                                    <eui-chip><span euiLabel>{{ chip.label }}</span></eui-chip>
+                                }
+                            }
+                            <eui-chip-list-additional-content>
+                                @if (maxVisibleChipsCount && chips && chips.length > maxVisibleChipsCount) {
+                                    <button
+                                        euiButton
+                                        euiBasicButton
+                                        euiSecondary
+                                        euiSizeS
+                                        type="button"
+                                        class="eui-chip-list__expand-button"
+                                        (click)="toggleTags()">
+
+                                        @if (isMaxVisibleChipsOpened) {
+                                            <eui-icon-svg icon="eui-chevron-left" aria-label="Collapse icon" />
+                                            <span euiLabel>Less</span>
+                                        } @else {
+                                            <span euiLabel>More</span>
+                                            <eui-icon-svg icon="eui-chevron-right" aria-label="Expand icon" />
+                                        }
+                                    </button>
+                                }
+                            </eui-chip-list-additional-content>
+                        </eui-chip-list>
+                    </div>
+                    <div class="eui-u-ml-auto eui-u-inline-flex">
+                        <eui-card-footer-action-icons>
+                            <eui-icon-toggle keyboardAccessKey="c"
+                                            iconSvgNameOn="eui-star-fill"
+                                            iconSvgNameOff="eui-star"
+                                            [euiTooltip]="isFavourite ? 'Remove favourite' : 'Mark as favourite'"
+                                            [attr.aria-label]="isFavourite ? 'Remove favourite' : 'Mark as favourite'"
+                                            [isChecked]="isFavourite"
+                                            (toggle)="onFavouriteToggle($event)">
+                            </eui-icon-toggle>
+                            <button euiButton euiRounded euiIconButton euiBasicButton euiPrimary euiTooltip="Share" aria-label="Share">
+                                <eui-icon-svg icon="share-network:regular" fillColor="secondary" />
+                            </button>
+                        </eui-card-footer-action-icons>
+                        <eui-card-footer-menu>
+                            <eui-dropdown euiTooltip="More actions">
+                                <button euiButton euiPrimary euiOutline type="button" class="eui-u-mr-none">
+                                    <span euiLabel>Actions</span>
+                                    <eui-icon-svg icon="eui-chevron-down" />
+                                </button>
+                                <eui-dropdown-content>
+                                    <button euiDropdownItem>Claim</button>
+                                    <button euiDropdownItem>Unclaim</button>
+                                    <button euiDropdownItem>Unassign</button>
+                                </eui-dropdown-content>
+                            </eui-dropdown>
+                        </eui-card-footer-menu>
+                    </div>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+</div>

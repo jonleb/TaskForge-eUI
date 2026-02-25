@@ -1,0 +1,78 @@
+<div class="doc-sample-section-title">Used as an expand/collapse toggler</div>
+<p class="eui-u-text-paragraph">
+    Use as a toggler, switch from <code class="eui-u-text-code">euiOutline</code> from <strong>false</strong> to <strong>true</strong> (click to toggle)
+</p>
+<div class="eui-u-flex eui-u-flex-gap-m">
+    <button euiButton euiPrimary [euiOutline]="isToggled1" (click)="onToggle1a($event)">Toggle button 1</button>
+    <button euiButton euiPrimary [euiOutline]="isToggled2" (click)="onToggle1b($event)">Toggle button 2</button>
+</div>
+
+
+<div class="doc-sample-section-title">Used as an expand/collapse toggler</div>
+<p class="eui-u-text-paragraph">Use a wrapper container with the <code class="eui-u-text-code">eui-button__expand-trigger</code> style class. See the code source for usage samples code.</p>
+<br>
+
+@if (!isCollapsed) {
+    <div class="eui-u-mt-m">
+        Showing some expandable content...
+    </div>
+}
+<div class="eui-button__expand-trigger" (click)="onToggle($event)">
+    @if (isCollapsed) {
+        <button euiButton euiIconButton class="eui-button eui-button--expand-toggle" euiTooltip="Expand" aria-label="Expand">
+            <eui-icon-svg icon="eui-chevron-down"></eui-icon-svg>
+        </button>
+    }
+    @if (!isCollapsed) {
+        <button euiButton euiIconButton class="eui-button eui-button--expand-toggle" euiTooltip="Collapse" aria-label="Collapse">
+            <eui-icon-svg icon="eui-chevron-up"></eui-icon-svg>
+        </button>
+    }
+</div>
+
+
+
+<h2 class="eui-u-text-h6 section-title">Toggler with custom label & icon</h2>
+
+@if (!isCollapsed2) {
+    <div>
+        Showing some expandable content...
+    </div>
+}
+
+<div class="eui-button__expand-trigger" (click)="onToggle2($event)">
+    @if (isCollapsed2) {
+        <button class="eui-button eui-button--expand-toggle">
+            expand
+            <eui-icon-svg icon="eui-chevron-down"></eui-icon-svg>
+        </button>
+    }
+    @if (!isCollapsed2) {
+        <button class="eui-button eui-button--expand-toggle">
+            collapse
+            <eui-icon-svg icon="eui-chevron-up"></eui-icon-svg>
+        </button>
+    }
+</div>
+
+<br>
+
+@if (!isCollapsed3) {
+<div>
+    Showing some expandable content...
+</div>
+}
+<div class="eui-button__expand-trigger" (click)="onToggle3($event)">
+    @if (isCollapsed3) {
+        <button class="eui-button eui-button--expand-toggle">
+            <eui-icon-svg icon="eui-chevron-down"></eui-icon-svg>
+            expand
+        </button>
+    }
+    @if (!isCollapsed3) {
+        <button class="eui-button eui-button--expand-toggle">
+            <eui-icon-svg icon="eui-chevron-up"></eui-icon-svg>
+            collapse
+        </button>
+    }
+</div>

@@ -1,0 +1,32 @@
+<div class="doc-sample-section-title">Drag and reorder</div>
+<eui-autocomplete
+    (chipDragRelease)="onChipDragReleased($event)"
+    (chipDragStart)="onChipDragStarted($event)"
+    (chipDrop)="onChipDropped($event)"
+    [autocompleteDataSelected]="autocompleteDataSelected1"
+    [autocompleteData]="autocompleteData"
+    [hasChips]="true"
+    isChipsDragAndDrop>
+</eui-autocomplete>
+
+<div class="doc-sample-section-title">Drag and drop from one list to another</div>
+<p class="eui-u-text-paragraph">To work properly, data passed to <code class="eui-u-text-code">eui-autocomplete</code> and <code class="eui-u-text-code">eui-chip-list</code> need to be the same, items need to share same <code class="eui-u-text-code">id</code> property.</p><br />
+
+<div cdkDropListGroup>
+    <eui-autocomplete
+        (chipDragRelease)="onChipDragReleased($event)"
+        (chipDragStart)="onChipDragStarted($event)"
+        (chipDrop)="onChipDropped($event)"
+        (selectionChange)="onSelectionChange($event)"
+        [autocompleteDataSelected]="autocompleteDataSelected2"
+        [autocompleteData]="autocompleteData"
+        [hasChips]="true"
+        isChipsDragAndDrop>
+    </eui-autocomplete>
+
+    <eui-chip-list cdkDropList [cdkDropListData]="autocompleteDataDropped" cdkDropListOrientation="horizontal" (cdkDropListDropped)="onChipDroppedChipList($event)" class="eui-u-mt-xs">
+        @for (chip of autocompleteDataDropped; track $index) {
+            <eui-chip cdkDrag isChipRemovable [data]="chip" [euiVariant]="chip.variant" (remove)="onChipRemoveChipList($event)"><span euiLabel>{{ chip.label }}</span></eui-chip>
+        }
+    </eui-chip-list>
+</div>

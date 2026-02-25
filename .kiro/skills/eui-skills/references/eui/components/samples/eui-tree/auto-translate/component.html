@@ -1,0 +1,15 @@
+<div class="doc-sample-section-title">autoTranslate = true (default)</div>
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">autoTranslate</code> input option is set to <strong>true</strong> by default. It uses the <code class="eui-u-text-code">TranslateService</code> from from '&#64;ngx-translate/core'.
+See the code source for more details.</p>
+
+<eui-tree [nodes]="treeData"></eui-tree>
+
+
+<div class="doc-sample-section-title">autoTranslate = false</div>
+<p class="eui-u-text-paragraph">When the <code class="eui-u-text-code">autoTranslate</code> input option is set to <strong>false</strong>, it will not translate the node label.</p>
+
+<div class="eui-u-flex eui-u-mb-m">
+    Auto Translate: <eui-slide-toggle (slideToggleChange)="onChange($event)" class="eui-u-ml-m"></eui-slide-toggle>
+</div>
+
+<eui-tree [nodes]="treeData" [autoTranslate]="autoTranslate"></eui-tree>

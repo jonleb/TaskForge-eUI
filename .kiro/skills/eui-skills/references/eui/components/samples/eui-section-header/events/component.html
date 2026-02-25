@@ -1,0 +1,26 @@
+<table class="eui-table-default eui-table-default--compact eui-u-mb-m">
+    <thead class="ng-star-inserted">
+        <tr class="ng-star-inserted">
+            <th>Event handler</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>expand</td>
+            <td>Triggered when the content is expanded or disexpanded with the <code class="eui-u-text-code">id</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<eui-section-header [id]="'eui-section-header-id'" isExpandable (expand)="onExpand($event)">
+    <eui-section-header-icon icon="circle-dashed:regular"/>
+    <eui-section-header-title>Section title</eui-section-header-title>
+    <eui-section-header-action>
+        <button euiButton euiPrimary euiSizeS>
+            Primary action
+        </button>
+    </eui-section-header-action>
+
+    Content
+</eui-section-header>

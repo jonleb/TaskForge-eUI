@@ -1,0 +1,52 @@
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th aria-hidden="true"></th>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Click to expand/collapse">
+                    <eui-icon-button
+                        size="s"
+                        [icon]="!(expandedPanelId === row.id) ? 'eui-chevron-right' : 'eui-chevron-down'"
+                        [attr.aria-label]="'Click to ' + (row.expanded ? 'collapse' : 'expand')"
+                        (click)="expandedPanelId === row.id ? expandedPanelId = null : expandedPanelId = row.id" />
+                </td>
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon--rounded eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+            @if(expandedPanelId === row.id) {
+                <tr isExpandableRow>
+                    <td colspan="6" class="p-3">
+                        <h4 class="eui-u-text-h4">Expanded row content for <strong>{{ row.country }}</strong> <span euiBadge class="eui-u-ml-m">{{ row.iso }}</span></h4>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-flag-icon-5x"></span>
+                            </div>
+                            <div class="col-md-9">
+                                <span>Capital city : <strong>{{ row.capital }}</strong></span><br>
+                                <span>Population : <strong>{{ row.population | number }}</strong></span><br>
+                                <span>Year : <strong>{{ row.year }}</strong></span><br>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>

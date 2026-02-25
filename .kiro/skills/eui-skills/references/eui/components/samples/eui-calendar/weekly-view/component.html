@@ -1,0 +1,24 @@
+<p>This is an example of a weekly calendar view with a custom day template to display additional metadata for each day.
+</p>
+
+<eui-calendar>
+    
+    <!-- Header for Weekly Calendar -->
+    <eui-calendar-header (todayClicked)="onTodayClicked($event)"
+    [(currentDate)]="date"
+    [mode]="Mode.Weekly"
+    [startingDay]="startDayOfWeek()"
+    class="header" />
+    
+    <!-- Weekly Calendar with Custom Day Template -->
+    <eui-calendar-weekly [(date)]="date"
+    [dayHeaderTemplate]="header()"
+    [events]="events()"
+    [ngStyle]="{ minHeight: '600px', maxHeight: '600px', marginTop: '1em' }" />
+    
+    <!-- Day Header Template Definition -->
+    <ng-template #dayHeaderTemplate let-date="date">
+        <eui-calendar-weekly-day-header-action [date]="date" [options]="options()" />
+    </ng-template>
+
+</eui-calendar>

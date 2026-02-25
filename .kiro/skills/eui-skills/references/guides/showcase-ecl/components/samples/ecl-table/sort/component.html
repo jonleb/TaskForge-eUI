@@ -1,0 +1,30 @@
+<div eclTableResponsive>
+    <table eclTable (sort)="onSort($event)">
+        <caption eclTableCaption>Table caption</caption>
+        <thead eclTableHead>
+            <tr eclTableRow>
+                <th rowspan="2" eclTableHeader eclSortable="jobTitle" sortButtonAriaLabel="Sort by Job Title">Job title</th>
+                <th rowspan="2" eclTableHeader eclSortable="approvedBy">EFSI finance approved by EIB</th>
+                <th colspan="2" eclTableHeader scope="colgroup">Extra information</th>
+                <th rowspan="2" eclTableHeader eclSortable="location" sortButtonAriaLabel="Sort by Location">Location</th>
+            </tr>
+            <tr eclTableRow>
+                <th eclTableHeader eclSortable="organization">Organization</th>
+                <th eclTableHeader eclSortable="contractType">Type of contract</th>
+            </tr>
+        </thead>
+        <tbody eclTableBody>
+            @for (dataElement of dataSource; track $index) {
+            <tr eclTableRow>
+                <td eclTableCellHeader="Job title" eclTableCell>{{ dataElement.jobTitle }}</td>
+                <td eclTableCellHeader="EFSI finance approved by EIB" eclTableCell>{{ dataElement.approvedBy }}</td>
+                <td eclTableCellHeader="Organization" eclTableCellGroup="Extra information" eclTableCell>{{
+                        dataElement.organization }}</td>
+                <td eclTableCellHeader="Type of contract" eclTableCell eclTableCellGroup>{{ dataElement.contractType }}
+                </td>
+                <td eclTableCellHeader="Location" eclTableCell>{{ dataElement.location }}</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

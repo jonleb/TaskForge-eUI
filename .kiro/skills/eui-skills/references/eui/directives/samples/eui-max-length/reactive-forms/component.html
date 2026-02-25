@@ -1,0 +1,23 @@
+<div class="doc-sample-section-title">Max Length</div>
+<label euiLabel for="maxlength">Label</label>
+<input #ctrl="ngModel" [euiMaxlength]="20"
+       [ngModel]="'sample text'"
+       euiInputText
+       id="maxlength"
+       maxlength="20"
+       value="sample text" />
+<p class="eui-u-text-paragraph">Value: {{ ctrl.value }}</p>
+<p class="eui-u-text-paragraph">Valid: {{ ctrl.valid }}</p>
+
+<div class="doc-sample-section-title">Max Length on Custom Component</div>
+<div #ctrl2="ngModel"
+     [(ngModel)]="model"
+     [euiMaxlength]="20"
+     ngDefaultControl
+     style="border: dotted red;">
+    {{ ctrl2.value }}
+</div>
+<p class="eui-u-text-paragraph">Value: {{ ctrl2.value }}</p>
+<p class="eui-u-text-paragraph">Valid: {{ ctrl2.valid }}</p>
+<p class="eui-u-text-paragraph">Times added 'a' char to the model: {{ counter }}</p>
+<button euiButton (click)="reset()" euiButton>Reset</button>

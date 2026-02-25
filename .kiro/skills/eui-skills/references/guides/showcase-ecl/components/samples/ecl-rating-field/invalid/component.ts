@@ -1,0 +1,19 @@
+import { Component } from '@angular/core';
+import { EUI_ECL_FEEDBACK_MESSAGE } from '@eui/ecl/components/ecl-feedback-message';
+import { EUI_ECL_ICON } from '@eui/ecl/components/ecl-icon';
+import { EUI_ECL_FORM_GROUP } from '@eui/ecl/components/ecl-form-group';
+import { EUI_ECL_FORM_LABEL } from '@eui/ecl/components/ecl-form-label';
+import { EUI_ECL_HELP_BLOCK } from '@eui/ecl/components/ecl-help-block';
+import { EclRatingChangeEvent, EUI_ECL_RATING_FIELD } from '@eui/ecl/components/ecl-rating-field';
+
+@Component({
+    // tslint:disable-next-line
+    selector: 'Invalid',
+    templateUrl: 'component.html',
+    imports: [...EUI_ECL_FEEDBACK_MESSAGE, ...EUI_ECL_ICON, ...EUI_ECL_FORM_GROUP, ...EUI_ECL_FORM_LABEL, ...EUI_ECL_HELP_BLOCK, ...EUI_ECL_RATING_FIELD],
+})
+export class InvalidComponent {
+    onRatingChange(evt: EclRatingChangeEvent) {
+        console.log('rated', evt.value);
+    }
+}

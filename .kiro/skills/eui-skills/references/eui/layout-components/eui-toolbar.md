@@ -1,0 +1,277 @@
+# eui-toolbar
+
+## Overview
+
+<eui-alert>
+    This eui-toolbar is used within an <strong>eui-app-toolbar</strong> wrapper component at eui-app / app.component.html root level of an eUI application.
+    <br>
+    For more options for the user profile, check the <strong>eui-user-profile</strong> component. The same inputs applies there.
+</eui-alert>
+
+<br><br><br>
+
+<div class="eui-u-flex">
+    Toggle impersonated view :
+    <eui-slide-toggle class="eui-u-ml-xs eui-u-mr-m" (slideToggleChange)="onToggleImpersonated($event)"></eui-slide-toggle>
+</div>
+<br>
+
+## Samples
+
+### [Default](samples/eui-toolbar/Default)
+
+```html
+<div class="doc-sample-section-title">Default</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+</eui-toolbar>
+
+
+<div class="doc-sample-section-title">eui-language-selector</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-language-selector></eui-language-selector>
+</eui-toolbar>
+<button euiButton (click)="setLanguages(many)">Switch to {{ many ? 'Many': 'two' }} languages</button>
+
+<div class="doc-sample-section-title">eui-toolbar-environment</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-environment>ENV</eui-toolbar-environment>
+</eui-toolbar>
+
+
+
+
+<div class="doc-sample-section-title">button within eui-toolbar-items</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <button euiButton euiSecondary euiSizeS>Button item</button>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+<div class="doc-sample-section-title">eui-icon-button within eui-toolbar-item</div>
+
+<eui-alert euiWarning class="eui-u-mb-m">
+    Strongly recommended for accessibility reason
+</eui-alert>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-icon-button icon="eui-state-info" ariaLabel="Information"></eui-icon-button>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+
+<div class="doc-sample-section-title">with eui-toolbar-item and eui-user-profile</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile euiStatusSuccess></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+<p>
+   <strong>with eui-user-profile subInfos</strong>
+</p>
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile subInfos="DIGIT.A.4.002"></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+
+<p>
+   <strong>with eui-user-profile-menu</strong>
+</p>
+
+<eui-alert euiWarning class="eui-u-mb-m">
+    In order for keyboard navigation to work on the user profile menu, make sure that you project directly the eui-user-profile-menu-item components without using *ngTemplateOutlet. When EuiUserProfileMenuItemComponent is instantiated by *ngTemplateOutlet from the userProfileMenuItems, templates are not considered direct content children of eui-user-profile-menu in the way &#64;ContentChildren expects and thus the first item is not focused. More info can be found here: <a href="https://github.com/angular/angular/issues/14842" target="_blank">Angular issue #14842</a>.
+ </eui-alert>
+ <br>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile>
+                <eui-user-profile-menu>
+                    <eui-user-profile-menu-item>
+                        <eui-icon-svg icon="eui-user" size="s"/>
+                        View profile information
+                    </eui-user-profile-menu-item>
+                    <eui-user-profile-menu-item>
+                        <eui-icon-svg icon="eui-sign-out" size="s"/>
+                        Sign out
+                    </eui-user-profile-menu-item>
+                </eui-user-profile-menu>
+            </eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+<div class="doc-sample-section-title">with eui-toolbar-center</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-center>
+        <button euiButton euiSecondary euiSizeS>Button item</button>
+    </eui-toolbar-center>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+<div class="doc-sample-section-title">Multiple options</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-environment>MOCK</eui-toolbar-environment>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-icon-button icon="eui-state-info" ariaLabel="Information"></eui-icon-button>
+        </eui-toolbar-item>
+        <eui-toolbar-item>
+            <eui-icon-button icon="eui-email" ariaLabel="Mail">
+                <eui-badge euiDanger></eui-badge>
+            </eui-icon-button>
+        </eui-toolbar-item>
+        <eui-toolbar-item>
+            <eui-notifications [items]="notificationItemsMetadata" [count]="notificationItemsMetadata.length"></eui-notifications>
+        </eui-toolbar-item>
+        <eui-toolbar-item>
+            <eui-user-profile isShowAvatarInitials [isShowUserInfos]="false" euiStatusSuccess>
+                <eui-user-profile-menu>
+                    <eui-user-profile-menu-item>
+                        <eui-icon-svg icon="eui-user" size="s"/>
+                        View profile information
+                    </eui-user-profile-menu-item>
+                    <eui-user-profile-menu-item>
+                        <eui-icon-svg icon="eui-sign-out" size="s"/>
+                        Sign out
+                    </eui-user-profile-menu-item>
+                </eui-user-profile-menu>
+            </eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+    <eui-language-selector></eui-language-selector>
+</eui-toolbar>
+```
+
+```typescript
+import { Component, inject } from '@angular/core';
+
+import { EUI_ALERT } from '@eui/components/eui-alert';
+import { EUI_BADGE } from '@eui/components/eui-badge';
+import { EUI_BUTTON } from '@eui/components/eui-button';
+import { EUI_ICON } from '@eui/components/eui-icon';
+import { EUI_ICON_BUTTON } from '@eui/components/eui-icon-button';
+import { EUI_LANGUAGE_SELECTOR } from '@eui/components/eui-language-selector';
+import { EUI_USER_PROFILE } from '@eui/components/eui-user-profile';
+import { EUI_LAYOUT } from '@eui/components/layout';
+import { EuiAppShellService, EuiEuLanguages } from '@eui/core';
+
+@Component({
+    // eslint-disable-next-line
+    selector: 'Default',
+    templateUrl: 'component.html',
+    imports: [...EUI_LAYOUT, ...EUI_LANGUAGE_SELECTOR, ...EUI_ICON, ...EUI_USER_PROFILE, ...EUI_BADGE, ...EUI_ICON_BUTTON, ...EUI_ALERT, ...EUI_BUTTON],
+})
+export class DefaultComponent {
+    public many = true;
+    private appShell: EuiAppShellService = inject(EuiAppShellService);
+
+    notificationItemsMetadata = [
+        {
+            label: 'Notification label', subLabel: 'this is the description of the notification - subLabel - and this can be very huge too',
+            metadata: {
+                date: new Date(), read: false, important: true,
+            },
+        },
+        {
+            label: 'Notification label', subLabel: 'this is the description of the notification - subLabel - and this can be very huge too',
+            metadata: {
+                date: new Date(), read: true,
+            },
+        },
+        {
+            label: 'Notification label', subLabel: 'this is the description of the notification - subLabel - and this can be very huge too',
+            metadata: {
+                date: new Date(), read: true, important: true,
+            },
+        },
+        {
+            label: 'Notification label',
+            subLabel: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+            metadata: {
+                date: new Date(),
+            },
+        },
+    ];
+
+    /**
+     * Sets the active language and updates the languages list in the app shell state.
+     * @param many - If true, sets a larger set of languages; if false, sets a smaller set with only English and French.
+     */
+    setLanguages(many: boolean) {
+        this.appShell.setState({
+            ...this.appShell.state,
+            activeLanguage: 'en',
+            languages: many? EuiEuLanguages.getLanguages(): EuiEuLanguages.getLanguages(['en', 'fr']),
+        });
+        this.many = !many;
+    }
+}
+```
+
+### Other examples
+
+- [Variants: Secondary variant](samples/eui-toolbar/secondary)
+- [Options: isShowAvatarInitials](samples/eui-toolbar/avatar-initials)
+- [Main Features: avatarUrl](samples/eui-toolbar/avatar-image)
+- [Main Features: logoUrl / logoHeight / logoWidth](samples/eui-toolbar/logo)
+- [Main Features: with eui-notifications usage](samples/eui-toolbar/notifications)
+- [Main Features: with eui-toolbar-search usage](samples/eui-toolbar/search)
+- [Main Features: with eui-toolbar-selector](samples/eui-toolbar/selector)
+- [Main Features: with navbar and navbar-item](samples/eui-toolbar/navbar)
+
+## Accessibility
+
+<eui-alert>
+    <eui-alert-title>N/A</eui-alert-title>
+    this component has no interaction, it's a plain container used for rendering
+</eui-alert>

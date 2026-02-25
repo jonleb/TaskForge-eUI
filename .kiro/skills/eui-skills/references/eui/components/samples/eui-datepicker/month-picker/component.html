@@ -1,0 +1,9 @@
+<eui-datepicker type="month" euiMonthYearFormat (dateSelect)="onDateSelected($event)" (inputChange)="onInputChanged($event)"></eui-datepicker><br/>
+Selected date(deserialized toISOString): {{ selectedDate }}<br/>
+Input date(deserialized toISOString): {{ inputDate }}
+<br>
+
+<div class="doc-sample-section-title">With dateOutputFormat defined</div>
+<eui-datepicker type="month" euiMonthYearFormat dateOutputFormat="MM-YYYY" (dateSelect)="onDateSelected2($event)" (inputChange)="onInputChanged2($event)"></eui-datepicker><br/>
+Selected date: {{ selectedDate2 }}<br/>
+Input date: {{ inputDate2 }}

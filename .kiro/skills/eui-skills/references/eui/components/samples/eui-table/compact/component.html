@@ -1,0 +1,27 @@
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable [data]="data" isTableCompact>
+        <ng-template euiTemplate="header">
+            <tr>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td>{{ row.country }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.iso }}</td>
+                <td>{{ row.population | number }}</td>
+                <td>{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">Footer 1</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>

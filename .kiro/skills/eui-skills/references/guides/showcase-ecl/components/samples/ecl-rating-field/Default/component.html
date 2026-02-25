@@ -1,0 +1,28 @@
+<fieldset eclFormGroup aria-describedby="rating-field-helper-default">
+    <legend eclFormLabel id="rating-field-label-default" isRequired>Please Rate</legend>
+    <div eclHelpBlock id="rating-field-helper-default">This is the group's helper text.</div>
+
+    <ecl-rating-field name="rating" (ratingChange)="onRatingChange($event)"></ecl-rating-field>
+</fieldset>
+
+<h6 class="section-title">Preselect rating</h6>
+<fieldset eclFormGroup aria-describedby="rating-field-helper-preselect">
+    <legend eclFormLabel id="rating-field-label-preselect" isRequired>Please Rate</legend>
+    <div eclHelpBlock id="rating-field-helper-preselect">This is the group's helper text.</div>
+
+    <ecl-rating-field name="preselect"
+                      rating="4"
+                      (ratingChange)="onRatingChange($event)">
+    </ecl-rating-field>
+</fieldset>
+
+<h6 class="section-title">Adjust stars number</h6>
+<fieldset eclFormGroup aria-describedby="rating-field-helper-adjust-stars">
+    <legend eclFormLabel id="rating-field-label-adjust-stars" isRequired>Please Rate</legend>
+    <div eclHelpBlock id="rating-field-helper-adjust-stars">This is the group's helper text.</div>
+
+    <ecl-rating-field name="stars"
+                      numberOfStars="8"
+                      (ratingChange)="onRatingChange($event)">
+    </ecl-rating-field>
+</fieldset>

@@ -1,0 +1,14 @@
+<eui-alert>
+This example is showing how to implement an <code class="eui-u-text-code">eui-dialog</code> containing a form. The submit button of the form
+is disabled or enabled regarding the status (valid/invalid) of the form.<br />
+<br />
+The submission of the form is confirmed by an <code class="eui-u-text-code">eui-message-box</code>.<br />
+<br />
+All source code can be found <a
+href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-dialog-service/dummy-components"
+target="_blank">here</a>.
+</eui-alert><br/>
+
+<button euiButton type="button" (click)="openDialog()" aria-haspopup="dialog">Open Dialog</button>
+
+Form Values: {{ formValues | json }}

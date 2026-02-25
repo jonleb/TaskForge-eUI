@@ -1,0 +1,8 @@
+<div class="eui-u-flex eui-u-mt-xl">
+    <eui-slide-toggle [isChecked]="isReadOnly" (slideToggleChange)="toggleReadOnly()" class="eui-u-mr-m"></eui-slide-toggle>
+    <strong>Interactive toggle &mdash; isReadOnly = {{isReadOnly}}</strong>
+</div><br/><br/>
+
+<form [formGroup]="form">
+    <eui-editor formControlName="emptyContent" [height]="isReadOnly ? null : '500px'" [isReadOnly]="isReadOnly"></eui-editor>
+</form>

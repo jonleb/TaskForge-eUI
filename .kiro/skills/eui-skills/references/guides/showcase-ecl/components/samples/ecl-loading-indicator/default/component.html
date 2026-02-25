@@ -1,0 +1,46 @@
+<div style="position:relative;height:200px">
+    <ecl-loading-indicator>
+        <div eclLoadingIndicatorLabel>
+            {{ 'ecl.loading-indicator.LOADING' | translate }}
+        </div>
+    </ecl-loading-indicator>
+</div>
+
+<h6 class="section-title">Not centered</h6>
+<div style="position:relative;height:200px">
+    <ecl-loading-indicator isCentered="false">
+        <div eclLoadingIndicatorLabel>
+            {{ 'ecl.loading-indicator.LOADING' | translate }}
+        </div>
+    </ecl-loading-indicator>
+</div>
+
+<h6 class="section-title">Custom text</h6>
+<div style="position:relative;height:200px">
+    <ecl-loading-indicator>
+        <div eclLoadingIndicatorLabel>
+            Waiting...
+        </div>
+    </ecl-loading-indicator>
+</div>
+
+<h6 class="section-title">No text</h6>
+<div style="position:relative;height:200px">
+    <ecl-loading-indicator></ecl-loading-indicator>
+</div>
+
+<h6 class="section-title">Visibility</h6>
+<div style="position:relative;height:200px">
+    <ecl-loading-indicator [isVisible]="isVisible">
+        <div eclLoadingIndicatorLabel>
+            {{ 'ecl.loading-indicator.LOADING' | translate }}
+        </div>
+    </ecl-loading-indicator>
+</div>
+<div>
+    <button eclButton
+            variant="primary"
+            (click)="onClick()">
+                Toggle visibility
+    </button>
+</div>

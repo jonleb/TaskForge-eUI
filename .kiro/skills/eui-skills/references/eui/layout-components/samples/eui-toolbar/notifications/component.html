@@ -1,0 +1,14 @@
+<div class="doc-sample-section-title">with eui-notifications</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile></eui-user-profile>
+        </eui-toolbar-item>
+        <eui-toolbar-item>
+            <eui-notifications [items]="notificationItemsMetadata" [count]="notificationItemsMetadata.length"></eui-notifications>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>

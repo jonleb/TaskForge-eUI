@@ -1,0 +1,49 @@
+<div class="doc-sample-section-title">Template</div>
+
+<eui-tabs>
+    <eui-tab>
+        <eui-tab-header>
+            <eui-tab-header-label>
+                Tab 1
+            </eui-tab-header-label>
+            <eui-tab-header-sub-label>
+                sub-label
+            </eui-tab-header-sub-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            Tab content 1
+        </eui-tab-body>
+    </eui-tab>
+
+    <eui-tab>
+        <eui-tab-header>
+            <eui-tab-header-label>
+                Tab 2
+            </eui-tab-header-label>
+            <eui-tab-header-sub-label>
+                sub-label
+            </eui-tab-header-sub-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            Tab content 2
+        </eui-tab-body>
+    </eui-tab>
+</eui-tabs>
+
+<div class="doc-sample-section-title">Array of tabs</div>
+
+<eui-tabs>
+    @for (tab of tabs; let i = $index; track tab) {
+        <eui-tab>
+            <eui-tab-header>
+                <eui-tab-header-label>
+                   {{ tab.tabLabel }}
+                </eui-tab-header-label>
+                <eui-tab-header-sub-label>
+                    {{ tab.tabSubLabel }}
+                </eui-tab-header-sub-label>
+            </eui-tab-header>
+            <eui-tab-body>{{ tab.tabContent }}</eui-tab-body>
+        </eui-tab>
+    }
+</eui-tabs>

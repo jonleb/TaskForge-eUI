@@ -1,0 +1,8 @@
+<button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover($event)">
+    <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+</button>
+<eui-popover #popover [title]="'This is popover title'" (close)="onClose()">
+    <eui-block-content [isBlocked]="isBlocked">
+        {{ content }}
+    </eui-block-content>
+</eui-popover>

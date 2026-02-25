@@ -1,0 +1,15 @@
+<p class="eui-u-text-paragraph">Use the <code class="eui-u-text-code">isClickTogglingNode</code> option to use the auto expand/collapse feature when clicking on a node.</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree [nodes]="treeData" (nodeClick)="onNodeClick($event)" (nodeToggle)="onNodeToggle($event)" [isClickTogglingNode]="true">
+        </eui-tree>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="doc-sample-section-title">Triggered event</div>
+        <div>(nodeClick) : <strong>{{nodeClickedLabel}}</strong></div>
+        <br>
+        <div>(nodeToggle) : <strong>{{nodeToggledLabel}}</strong></div>
+    </div>
+</div>

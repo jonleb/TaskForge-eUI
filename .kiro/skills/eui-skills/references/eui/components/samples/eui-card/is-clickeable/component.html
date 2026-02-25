@@ -1,0 +1,45 @@
+<eui-alert euiDanger>
+    This feature should be used without any interactive elements within the card header to comply with a11y rule as explained here : 
+    <a href="https://dequeuniversity.com/rules/axe-devtools/4.5/nested-interactive" target="_blank">https://dequeuniversity.com/rules/axe-devtools/4.5/nested-interactive</a>
+</eui-alert><br/>
+
+<eui-alert euiWarning>
+    Note that only the bottom expansion will be used when the card header is set clickeable and the card is set to be collapsible, to not break the a11y rules mentioned above, 
+    as this bottom expansion button is outside the header itself.
+</eui-alert><br/>
+
+<eui-card>
+	<eui-card-header isClickeable (headerClick)="onHeaderClick($event)" >
+        <eui-card-header-title>
+            Card header title
+        </eui-card-header-title>
+    </eui-card-header>
+	<eui-card-content>
+        Card content...
+    </eui-card-content>
+</eui-card>
+
+
+<div class="doc-sample-section-title">Collapsible</div>
+<eui-card euiCollapsible>
+	<eui-card-header isClickeable (headerClick)="onHeaderClick($event)" >
+        <eui-card-header-title>
+            Card header title
+        </eui-card-header-title>
+    </eui-card-header>
+	<eui-card-content>
+        Card content...
+    </eui-card-content>
+</eui-card>
+
+<div class="doc-sample-section-title">Collapsible - collapsed</div>
+<eui-card euiCollapsible euiCollapsed>
+	<eui-card-header isClickeable (headerClick)="onHeaderClick($event)" >
+        <eui-card-header-title>
+            Card header title
+        </eui-card-header-title>
+    </eui-card-header>
+	<eui-card-content>
+        Card content...
+    </eui-card-content>
+</eui-card>

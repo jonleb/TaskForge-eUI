@@ -1,0 +1,35 @@
+<div class="doc-sample-section-title">Delay before showing &mdash; showDelay={{ showDelay }} (in ms)</div>
+<button euiButton euiPrimary euiTooltip="Info about the action" [showDelay]="showDelay">Action</button>
+
+
+<div class="doc-sample-section-title">Delay before hiding &mdash; hideDelay={{ hideDelay }} (in ms)</div>
+<button euiButton euiPrimary euiTooltip="Info about the action" [hideDelay]="hideDelay" position="above">Action</button>
+
+
+<div class="doc-sample-section-title">Show / Hide &mdash; always visible / dismissed</div>
+You can control the display of the tooltip message programmatically by calling the <code class="eui-u-text-code">show()</code> and <code class="eui-u-text-code">hide()</code> methods :
+<br><br>
+<span euiBadge euiSizeS>1</span> by using an element reference within the view <code class="eui-u-text-code">#euiTooltip</code> in this example<br>
+<span euiBadge euiSizeS>2</span> by using the <code class="eui-u-text-code">&#64;Viewchild</code> property decorator from the component's ts file<br>
+<br>
+See code source for more information.
+
+<div class="eui-u-flex eui-u-mt-m">
+    <div class="col">
+        <div class="eui-u-flex flex-column">
+            <div class="col text-right">
+                <span euiBadge euiSizeS euiSecondary>1</span>&nbsp;<small>Direct call from the view</small><br>
+                <button euiButton euiPrimary euiSizeS euiOutline (click)="euiTooltip.show();">Show</button>&nbsp;
+                <button euiButton euiPrimary euiSizeS euiOutline (click)="euiTooltip.hide();">Hide</button>
+            </div>
+            <div class="col text-right eui-u-mt-m">
+                <span euiBadge euiSizeS euiSecondary>2</span>&nbsp;<small>Call from component's function</small><br>
+                <button euiButton euiPrimary euiSizeS euiOutline (click)="onTooltipShow();">Show</button>&nbsp;
+                <button euiButton euiPrimary euiSizeS euiOutline (click)="onTooltipHide();">Hide</button>
+            </div>
+        </div>
+    </div>
+    <div class="col text-center">
+        <button #euiTooltip="euiTooltip" euiButton euiPrimary euiTooltip="Tooltip text goes here.">Action</button>
+    </div>
+</div>

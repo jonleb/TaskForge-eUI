@@ -1,0 +1,89 @@
+<div class="doc-sample-section-title">Responsive multi-select dropdown with a search filter</div>
+<p class="eui-u-text-paragraph">
+    This <strong>advanced composition</strong> sample features a responsive dropdown with rich content containing :
+    <br>
+    - an auto search filter with clearable option<br>
+    - an expand/collapse toggle icon button with tooltips<br>
+    - a select/deselect all items option<br>
+    - the multi-select eui-tree<br>
+</p>
+
+<eui-alert>
+    Please note that the button trigger uses the <code class="eui-u-text-code">euiResponsive</code> option which allows the selected tree items to be displayed correctly within the button.
+    Also, the <code class="eui-u-text-code">eui-dropdown</code> have the <code class="eui-u-text-code">isBlock</code> input option which displays the dropdown content using the same width as the button trigger.
+</eui-alert>
+
+<br>
+
+<div class="row">
+    <div class="col-md-6">
+        <ng-template #buttonTemplate let-label>
+            <button euiButton euiPrimary euiResponsive>
+                <div class="eui-u-flex">
+                    <div class="eui-u-flex eui-u-flex-justify-content-start eui-u-text-truncate">
+                        <label euilabel class="eui-u-text-truncate">{{label}}</label>
+                    </div>
+                    <div class="eui-u-inline-flex eui-u-flex-justify-content-end eui-u-ml-s">
+                        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+                    </div>
+                </div>
+            </button>
+        </ng-template>
+
+        <eui-dropdown hasTabNavigation euiDropdownTree [buttonTemplateRef]="buttonTemplate" isBlock height="25vw">
+            <eui-dropdown-content class="eui-u-p-m">
+
+                <!-- Search filter with expand/collapse all -->
+                <div class="eui-u-flex eui-u-mb-m">
+
+                    <div euiInputGroupAddOn>
+                        <div euiInputGroupAddOnItem>
+                            <eui-icon-svg icon="eui-search" fillColor="secondary" />
+                        </div>
+                        <input euiInputText placeholder="Search from tree list items..." [formControl]="filterInputControl" />
+                    </div>
+
+                    <!-- Expand/collapse all -->
+                    <div class="eui-u-ml-s">
+                        @if (!isExpandedAll) {
+                            <button euiButton euiIconButton euiPrimary euiOutline (click)="expandAll()" euiTooltip="Expand all" aria-label="Expand all">
+                                <eui-icon-svg icon="eui-level-down" />
+                            </button>
+                        }
+                        @if (isExpandedAll) {
+                            <button euiButton euiIconButton euiOutline (click)="collapseAll()" euiTooltip="Collapse all" aria-label="Collapse all">
+                                <eui-icon-svg icon="eui-level-up" />
+                            </button>
+                        }
+                    </div>
+                </div>
+
+                <!-- Select All checkbox -->
+                <input euiInputCheckBox
+                    [formControl]="selectAllDropdownCheckboxControl"
+                    id="selectall-checkbox-dropdown"
+                    name="selectall-checkbox-dropdown"
+                    aria-label="Select all checkbox"
+                />
+                <label euiLabel for="selectall-checkbox-dropdown">Select All</label>
+
+                <!-- Tree -->
+                <eui-tree #selectAllDropdownTreeInstance
+                    isMultiselect
+                    [nodes]="treeData"
+                    euiTreeFormControl
+                    [formControl]="selectAllDropdownTreeControl"
+                    (selectionChange)="onSelectionChangeDropdown($event)">
+                </eui-tree>
+
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>
+
+<div class="eui-u-m-4xl">&nbsp;</div>
+<div class="eui-u-m-4xl">&nbsp;</div>
+<div class="eui-u-m-4xl">&nbsp;</div>
+<div class="eui-u-m-4xl">&nbsp;</div>
+<div class="eui-u-m-4xl">&nbsp;</div>
+<div class="eui-u-m-4xl">&nbsp;</div>

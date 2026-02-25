@@ -1,0 +1,29 @@
+<p class="eui-u-text-paragraph">
+    Adapt your layout to match select dropdown data and use the <code class="eui-u-text-code">eui-u-width-%</code> utility class to size the select dropdown.
+    For more information, please refer to 
+    <a class="eui-u-text-link" href="showcase-design-system/css-utilities#Width">Design Sytem Showcase utility classes</a>
+</p>
+
+<div class="doc-sample-section-title">Vertical layout (default)</div>
+<div euiInputGroup>
+    <label euiLabel for="assets-v">Frozen assets by Member State</label>
+    <select euiSelect name="assets-v" id="assets-v" class="eui-u-width-4">
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+    </select>
+</div>
+
+<div class="doc-sample-section-title">Horizontal layout</div>
+<div euiInputGroup class="row">
+    <div class="col-4">
+        <label for="assets-h" euiLabel euiRequired>Frozen assets by Member State</label>
+    </div>
+    <div class="col-8">
+        <select euiSelect name="assets-h" id="assets-h" class="eui-u-width-4">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+        </select>
+    </div>
+</div>

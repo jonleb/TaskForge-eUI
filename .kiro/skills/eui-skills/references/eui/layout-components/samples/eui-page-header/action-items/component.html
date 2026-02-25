@@ -1,0 +1,53 @@
+<div class="doc-sample-section-title">With page title, sub-title and action's button(s)</div>
+<p class="eui-u-text-paragraph">Page actions' buttons are always displayed to the right.</p>
+
+<eui-page-header label="Page Title"
+                subLabel="Page Sub-title">
+    <eui-page-header-action-items>
+        <button euiButton euiSecondary>Secondary action</button>
+        <button euiButton euiPrimary>Primary action</button>
+    </eui-page-header-action-items>
+</eui-page-header>
+
+
+<div class="doc-sample-section-title">With long page title, sub-title and action's button(s)</div>
+<p class="eui-u-text-paragraph">
+    It is <strong>highly recommended to display maximum 3 main actions' buttons</strong> and put other actions into the local menu (see hereafter).
+    When in tablet/mobile mode, action buttons are automatically displayed into a local menu to enhance user experience and improve screen readability.
+    Try to resize your browser to see it in action.
+</p>
+
+<eui-page-header label="Page Title - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut massa tempus, posuere leo eget, scelerisque ipsum."
+                subLabel="Page Sub-title : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut massa tempus, posuere leo eget, scelerisque ipsum."
+                euiTooltip="Page Title - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut massa tempus, posuere leo eget, scelerisque ipsum.">
+    <eui-page-header-action-items>
+        <button euiButton euiSecondary>Secondary action</button>
+        <button euiButton euiPrimary>Primary action</button>
+    </eui-page-header-action-items>
+</eui-page-header>
+
+
+
+
+<div class="doc-sample-section-title">With actions and dropdown menu</div>
+<p class="eui-u-text-paragraph">The role of the local menu is to gather extra actions' buttons and custom links (optional).</p>
+
+<eui-page-header label="Page Title - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut massa tempus, posuere leo eget, scelerisque ipsum.">
+    <eui-page-header-action-items>
+        <button euiButton euiSecondary>Secondary action</button>
+        <button euiButton euiPrimary>
+            <eui-icon-svg icon="eui-add"/>
+            Primary action
+        </button>
+        <eui-dropdown>
+            <button euiButton euiPrimary euiOutline euiTooltip="More actions" [attr.aria-label]="'More actions menu'">
+                More
+                <eui-icon-svg icon="eui-ellipsis-vertical"/>
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem>Extra page action 1</button>
+                <button euiDropdownItem>Extra page action 2</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </eui-page-header-action-items>
+</eui-page-header>

@@ -1,0 +1,21 @@
+<div class="doc-sample-section-title">With different icon button using togglerIconSvg</div>
+<eui-datepicker togglerIconSvg="calendar:fill"></eui-datepicker>
+
+<div class="doc-sample-section-title">Using label in the toggle</div>
+<eui-datepicker togglerLabel="Open"></eui-datepicker>
+
+<div class="doc-sample-section-title">Using hasNoButton to remove the button</div>
+<eui-datepicker hasNoButton></eui-datepicker>
+
+<div class="doc-sample-section-title">Using isClearable=true option to clear the date field</div>
+
+<eui-slide-toggle (slideToggleChange)="onClearToggle()" [isChecked]="isClearable"></eui-slide-toggle> Toggle isClearable
+<br><br>
+
+<eui-datepicker [isClearable]="isClearable" [value]="date"></eui-datepicker>
+<br>
+
+<eui-datepicker euiLetterFormat [isClearable]="isClearable" [value]="date"></eui-datepicker>
+<br>
+
+<eui-datepicker type="year" euiYearFormat [isClearable]="isClearable" [value]="date"></eui-datepicker>

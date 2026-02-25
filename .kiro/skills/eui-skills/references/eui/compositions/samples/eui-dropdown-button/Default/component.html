@@ -1,0 +1,16 @@
+<div class="eui-dropdown-button">
+    <eui-dropdown>
+        <button euiButton>
+            <label euiLabel>Default</label>
+            <eui-icon-svg icon="eui-chevron-down" size="xs" />
+        </button>
+        <eui-dropdown-content>
+            @for (item of listItems; track $index) {
+                <button euiDropdownItem [disabled]="item?.disabled" (click)="onListItemClicked(item)">
+                    <eui-icon-svg icon="{{item.icon}}" size="s" class="eui-u-mr-s" />
+                    <span euiLabel>{{item.label}}</span>
+                </button>
+            }
+        </eui-dropdown-content>
+    </eui-dropdown>
+</div>

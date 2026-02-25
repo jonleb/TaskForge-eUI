@@ -1,0 +1,13 @@
+<eui-alert>With use of <code class="eui-u-text-code">isForceSelection</code> in combination with <code
+    class="eui-u-text-code">isFreeValueAllowed=false</code>, the field will be empty after blurring the component if a
+    value has not been selected in the panel.
+</eui-alert>
+
+<div class="doc-sample-section-title">With chips - Free chips not allowed + isForceSelection</div>
+<eui-autocomplete (selectionChange)="onSelectionChanged1($event)" [autocompleteData]="autocompleteData"
+                  [hasChips]="true" [isFreeValueAllowed]="false"
+                  isForceSelection></eui-autocomplete>
+
+                  <div class="doc-sample-section-title">Without chips + isForceSelection</div>
+<eui-autocomplete (selectionChange)="onSelectionChanged2($event)" [autocompleteData]="autocompleteData"
+                  isForceSelection></eui-autocomplete>

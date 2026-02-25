@@ -1,0 +1,13 @@
+<eui-alert typeClass="info">
+    In the following example we use a custom adapter that extends the <code class="eui-u-text-code">MomentDateAdapter</code> in order to force a specific timezone. Specifically we set the <code class="eui-u-text-code">eui-datepicker</code> to create dates on Asia/Tokyo timezone. So when you select a date, it will be created in Tokyo midnight which corresponds to <code class="eui-u-text-code">UTC+9</code>. That's why you will notice a 9 hour difference on the outputed day which is <code class="eui-u-text-code">UTC-0</code>.
+</eui-alert>
+<br>
+<div class="row">
+    <div class="col">
+        <eui-datepicker (dateSelect)="onDateSelected($event)"></eui-datepicker>
+    </div>
+
+    <div class="col">
+        Selected date: {{ selectedDate }}
+    </div>
+</div>

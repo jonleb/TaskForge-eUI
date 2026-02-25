@@ -1,0 +1,34 @@
+<h6 class="section-title">Default</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label for="text-area-reactive-default" id="text-area-label-reactive-default" eclFormLabel isOptional>Label</label>
+    <div eclHelpBlock id="text-area-helper-reactive-default">This is the textarea help text.</div>
+    <textarea id="text-area-reactive-default" aria-describedby="text-area-helper-reactive-default" eclTextArea formControlName="default"></textarea>
+  </div>
+</form>
+
+<h6 class="section-title">Disabled</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label for="text-area-reactive-disabled" id="text-area-label-reactive-disabled" eclFormLabel isDisabled>Label</label>
+    <div eclHelpBlock id="text-area-helper-reactive-disabled">This is the textarea help text.</div>
+    <textarea id="text-area-reactive-disabled" aria-describedby="text-area-helper-reactive-disabled" eclTextArea formControlName="disabled"></textarea>
+  </div>
+</form>
+
+<h6 class="section-title">Required</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label for="text-area-reactive-required" id="text-area-label-reactive-required" eclFormLabel isRequired>Label</label>
+    <div eclHelpBlock id="text-area-helper-reactive-required">This is the textarea help text.</div>
+    <textarea id="text-area-reactive-required" aria-describedby="text-area-helper-reactive-required" eclTextArea formControlName="required"></textarea>
+    @if (validateRequired()) {
+    <div eclFeedbackMessage>
+        <ecl-icon icon="error" size="s" ariaHidden="false" role="img">
+            <title>Error</title>
+        </ecl-icon>
+        This field is required
+    </div>
+    }
+  </div>
+</form>

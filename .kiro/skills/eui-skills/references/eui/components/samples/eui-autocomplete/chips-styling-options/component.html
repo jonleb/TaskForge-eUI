@@ -1,0 +1,25 @@
+<div class="doc-sample-section-title">Long labels</div>
+<eui-autocomplete [autocompleteDataSelected]="autocompleteDataSelected" [autocompleteData]="autocompleteData"
+                  [hasChips]="true"></eui-autocomplete>
+
+<div class="doc-sample-section-title">Truncated label - chipsLabelTruncateCount=5</div>
+<eui-autocomplete [autocompleteDataSelected]="autocompleteDataSelected2" [autocompleteData]="autocompleteData2"
+                  [chipsLabelTruncateCount]="5" [hasChips]="true"></eui-autocomplete>
+
+<div class="doc-sample-section-title">Max visible chips</div>
+<eui-alert>
+    This sample shows how to display only a specified number of chips.<br />
+    A label can be added, with <code class="eui-u-text-code">toggleLinkMoreLabel</code> and <code
+    class="eui-u-text-code">toggleLinkLessLabel</code> options, in the toggling button.<br />
+    All chips can be shown by default with <code class="eui-u-text-code">isMaxVisibleChipsOpened</code> option.
+</eui-alert><br />
+
+<eui-autocomplete
+    [autocompleteDataSelected]="autocompleteDataSelected3"
+    [autocompleteData]="autocompleteData3"
+    [hasChips]="true"
+    [isMaxVisibleChipsOpened]="true"
+    [maxVisibleChipsCount]="2"
+    [toggleLinkLessLabel]="'Custom less label'"
+    [toggleLinkMoreLabel]="'Custom more label'">
+</eui-autocomplete>

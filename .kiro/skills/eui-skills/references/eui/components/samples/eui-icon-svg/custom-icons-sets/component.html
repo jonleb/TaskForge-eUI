@@ -1,0 +1,53 @@
+You can build up and use you own <strong>custom set of SVG icons</strong> by using the following procedure.
+<br>
+The recommended starting point is to generate your custom icons set from a fresh <strong>eUI-CLI generated app</strong>.
+
+<div class="doc-sample-section-title">Recommended step by step procedure</div>
+
+<div class="doc-sample-section-subtitle"><strong>STEP 1 - Setup</strong></div>
+Temporary install <strong>"SVGSpriter" package</strong> to your root app <code class="eui-u-text-code">package.json</code> file dependendies.
+This package is required in order to generate the Svg sprites. It is not recommended to keep it for environments other than your local dev.
+Add this line to the dependendies list : "svg-sprite": "2.0.4"
+
+
+<div class="doc-sample-section-subtitle"><strong>STEP 2 - Sources</strong></div>
+Copy your custom svg icons to your app root assets folder in:  <code class="eui-u-text-code">assets/icons/svg-src</code>
+
+
+<div class="doc-sample-section-subtitle"><strong>STEP 3 - Generation</strong></div>
+Generate your custom Svg icons set file with the following command prompt :
+<pre>
+    <code class="eui-u-text-code">npm run generate-sprite -- --inFolder src/assets/icons/svg-src --outFile custom-set.svg</code>
+</pre>
+
+<p class="eui-u-text-paragraph">The script will create an <code class="eui-u-text-code">assets/icons/sprites</code> folder containing 2 files:</p>
+<ul>
+    <li><strong>custom-set.json</strong> : a Json file containing the list of the icons in your set</li>
+    <li><strong>custom-set.svg</strong> : custom Svg icons set containing all the sprites</li>
+</ul>
+The sprites set will be loaded automatically when serving the App.
+<br>
+The "svg-src" folder is no more required and can be removed after generation.
+
+
+<div class="doc-sample-section-subtitle"><strong>STEP 4 - Usage</strong></div>
+In order to display your new icons with the <code class="eui-u-text-code">eui-icon-svg</code> component, you just need to pass the set name.
+<p class="eui-u-text-paragraph">Example :</p>
+
+    <div class="eui-u-flex eui-u-flex-gap-m">
+        <eui-icon-svg icon="eui-logo:custom-set" size="2xl" />
+        <code class="eui-u-text-code">&lt;eui-icon-svg icon="eui-logo:custom-set" /&gt;</code>
+    </div>
+
+
+
+
+<div class="doc-sample-section-title">Generated SVG custom icons set samples</div>
+        
+<div class="eui-u-flex">
+    <eui-icon-svg icon="md-edit:custom-set" size="2xl" />
+    <eui-icon-svg icon="md-blur:custom-set" size="2xl" />
+    <eui-icon-svg icon="ms-teams-logo:custom-set" size="2xl" />
+    <eui-icon-svg icon="eui-logo:custom-set" size="2xl" />
+</div>
+    

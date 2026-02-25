@@ -1,0 +1,40 @@
+<p class="eui-u-text-paragraph">The optional <code class="eui-u-text-code">hasStatusIcon</code> input option combined with previous state classes, can be enabled to display the process status icon (usually when the process is completed or an error occurs).</p>
+
+<div class="doc-sample-section-title">With success status</div>
+<div class="row">
+    <div class="col-md-6">
+        <eui-progress-bar [progress]="taskProgress" label="Processing Tasks"></eui-progress-bar>
+        <eui-feedback-message>{{ taskCompleted }} out of {{ taskTotal }} tasks completed</eui-feedback-message>
+    </div>
+    <div class="col-md-6">
+        <eui-progress-bar [progress]="100" label="Processing Tasks" hasStatusIcon euiSuccess></eui-progress-bar>
+        <eui-feedback-message>{{ taskTotal }} out of {{ taskTotal }} tasks completed</eui-feedback-message>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">With warning status</div>
+<div class="row">
+    <div class="col-md-6">
+        <eui-progress-bar [progress]="taskProgress" label="Processing Tasks"></eui-progress-bar>
+        <eui-feedback-message>{{ taskCompleted }} out of {{ taskTotal }} tasks completed</eui-feedback-message>
+    </div>
+    <div class="col-md-6">
+        <eui-progress-bar [progress]="100" label="Processing Tasks" hasStatusIcon euiWarning></eui-progress-bar>
+        <eui-feedback-message euiWarning>{{ taskTotal - 1 }} out of {{ taskTotal }} tasks completed. 1 task cannot be processed.</eui-feedback-message>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">With error status</div>
+<div class="row">
+    <div class="col-md-6">
+        <eui-progress-bar [progress]="uploadStart" label="File Upload"></eui-progress-bar>
+        <eui-feedback-message>Uploading file {{ uploadStart }}%</eui-feedback-message>
+    </div>
+    <div class="col-md-6">
+        <eui-progress-bar [progress]="uploadEnd" label="File Upload" hasStatusIcon euiDanger></eui-progress-bar>
+        <eui-feedback-message euiDanger>Invalid file format. The file is not a recognized image format.</eui-feedback-message>
+        <eui-feedback-message>Allowed formats: BMP, JPG, PNG, TIF</eui-feedback-message>
+    </div>
+</div>

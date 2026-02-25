@@ -1,0 +1,30 @@
+<div euiInputGroup>
+    <label euiLabel for="story-autoresize">Tell us your story</label>
+    <textarea euiTextArea id="story-autoresize" name="story" autoResize>It was a dark and stormy night...</textarea>
+</div>
+
+<div euiInputGroup>
+    <label euiLabel for="form-minrows">With minRows=3</label>
+    <textarea euiTextArea id="form-minrows" name="story" autoResize="true" minRows="3">It was a dark and stormy night...</textarea>
+</div>
+
+<div euiInputGroup>
+    <label euiLabel for="form-maxrows">With maxRows=4</label>
+    <textarea euiTextArea id="form-maxrows" name="story" autoResize="true" maxRows="4">It was a dark and stormy night...</textarea>
+</div>
+
+<div class="doc-sample-section-title">Dynamically remove/add autoResize</div>
+<div euiInputGroup>
+    <label euiLabel for="story-autoresize-dyn">Tell us your story</label>
+    <textarea euiTextArea id="story-autoresize-dyn" name="story" [autoResize]="state">
+It was a dark and stormy night...
+    </textarea>
+</div>
+
+<br>
+
+<button euiButton euiOutline euiPrimary (click)="changeState()">{{state ? 'Remove':'Add'}} AutoResize</button>
+
+
+<div class="doc-sample-section-title">Inside dialog</div>
+<button euiButton euiOutline euiPrimary (click)="openDialog()">Open Dialog</button>

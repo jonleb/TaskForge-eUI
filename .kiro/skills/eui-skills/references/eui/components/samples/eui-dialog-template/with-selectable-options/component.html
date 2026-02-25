@@ -1,0 +1,24 @@
+<p class="eui-u-text-paragraph">The source code of the injected component can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-dialog-template/dummy-components" target="_blank" class="eui-u-text-link-external">here</a>.</p>
+
+<button euiButton type="button" (click)="openDialog()" aria-haspopup="dialog">Open Dialog</button>
+
+<eui-dialog
+    #dialog
+    [title]="'Dialog title'"
+    [height]="'auto'"
+    [width]="'15rem'">
+    <div class="eui-u-flex eui-u-flex-column">
+        @for (option of options; track option) {
+            <div>
+                <input
+                    euiInputRadio
+                    aria-label="default unchecked"
+                    name="option"
+                    [id]="'item-' + option.id"
+                    [value]="option.value"
+                    (click)="onItemClicked(option.id)" />
+                <label for="item-{{ option.id }}">{{ option.value }}</label>
+            </div>
+        }
+    </div>
+</eui-dialog>

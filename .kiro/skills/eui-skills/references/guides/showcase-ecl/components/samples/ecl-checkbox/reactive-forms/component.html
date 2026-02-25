@@ -1,0 +1,46 @@
+<h6 class="section-title">Reactive Forms</h6>
+<form [formGroup]="fg">
+  <fieldset eclFormGroup aria-describedby="checkbox-reactive-helper">
+      <legend eclFormLabel isRequired id="checkbox-reactive-label">Select your preferred destinations</legend>
+      <div eclHelpBlock id="checkbox-reactive-helper">Helper text for the group</div>
+
+      <div eclCheckbox>
+          <input
+            eclCheckboxInput
+            type="checkbox"
+            formControlName="lu"
+            id="checkbox-reactive1"
+            value="lu">
+          <label for="checkbox-reactive1" eclCheckboxLabel>Luxembourg</label>
+      </div>
+
+      <div eclCheckbox>
+          <input
+            eclCheckboxInput
+            type="checkbox"
+            formControlName="be"
+            id="checkbox-reactive2"
+            value="be">
+          <label for="checkbox-reactive2" eclCheckboxLabel>Belgium</label>
+      </div>
+      <div eclCheckbox>
+          <input
+            eclCheckboxInput
+            type="checkbox"
+            formControlName="pl"
+            id="checkbox-reactive3"
+            value="pl">
+          <label for="checkbox-reactive3" eclCheckboxLabel>Poland (disabled)</label>
+      </div>
+      <div eclCheckbox>
+          <input
+          eclCheckboxInput
+          type="checkbox"
+          formControlName="lorem"
+          id="checkbox-reactive4"
+          value="lorem">
+          <label for="checkbox-reactive4" eclCheckboxLabel>Lorem ipsum dolor sit amet,<a
+              href="/component-library/v3.13.0/example">consectetur adipiscing elit</a>.</label>
+      </div>
+  </fieldset>
+</form>

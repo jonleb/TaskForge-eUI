@@ -1,0 +1,54 @@
+<div class="doc-sample-section-title">Initial values</div>
+<div class="eui-u-ml-m">
+    <div class="eui-u-mb-s">
+        <small><strong>Sample 1 &mdash; length : {{ commentSmall.length }} characters</strong></small>
+        <br>
+        <em>{{ commentSmall }}</em>
+    </div>
+    <div class="eui-u-mb-s">
+        <small><strong>Sample 2 &mdash; length : {{ commentBig.length }} characters</strong></small>
+        <br>
+        <em>{{ commentBig }}</em>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Truncated values</div>
+<table class="eui-table-default eui-table-default--responsive eui-table-default--bordered eui-table-default--compact">
+    <thead>
+        <tr>
+            <th>Truncated&nbsp;size</th>
+            <th>Result</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td data-col="Truncated&nbsp;size">10</td>
+            <td data-col="Result">{{ commentSmall | euiTruncate : 10 }}</td>
+        </tr>
+        <tr>
+            <td data-col="Truncated&nbsp;size">20</td>
+            <td data-col="Result">{{ commentSmall | euiTruncate : 20 }}</td>
+        </tr>
+        <tr>
+            <td data-col="Truncated&nbsp;size">30</td>
+            <td data-col="Result">{{ commentSmall | euiTruncate : 30 }}</td>
+        </tr>
+        <tr>
+            <td data-col="Truncated&nbsp;size">40 (default)</td>
+            <td data-col="Result">{{ commentSmall | euiTruncate }}</td>
+        </tr>
+        <tr>
+            <td data-col="Truncated&nbsp;size">50</td>
+            <td data-col="Result">{{ commentSmall | euiTruncate : 50 }}</td>
+        </tr>
+        <tr>
+            <td data-col="Truncated&nbsp;size">100</td>
+            <td data-col="Result">{{ commentBig | euiTruncate : 100 }}</td>
+        </tr>
+        <tr>
+            <td data-col="Truncated&nbsp;size">250</td>
+            <td data-col="Result">{{ commentBig | euiTruncate : 250 }}</td>
+        </tr>
+    </tbody>
+</table>

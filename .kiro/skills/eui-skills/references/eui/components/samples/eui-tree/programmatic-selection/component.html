@@ -1,0 +1,36 @@
+<div class="doc-sample-section-title">Multi Level Example</div>
+<p> Wen you define an id in the treeItem (controls are using as default treeContentBlock, but you can customize,
+    you can programmatically select a node with the help of tree helper. </p>
+<div class="row">
+    <div class="row">
+        <div class="col-md-7">
+        <div euiInputGroup>
+            <label euiLabel for="targeted-id">Targeted Id:</label>
+            <div euiInputGroupAddOn>
+                <input euiInputText id="targeted-id" type="text" (change)="setTargetedId($event)">
+                <button euiButton euiPrimary euiOutline (click)="selectNode()">Select</button>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <eui-tree #compInstance [nodes]="treeData" isMultiselect isRecursiveSelection (selectionChange)="onSelectionChange($event)"></eui-tree>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre class="eui-u-text-pre">{{addedLabels}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{removedLabels}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionLabels}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>

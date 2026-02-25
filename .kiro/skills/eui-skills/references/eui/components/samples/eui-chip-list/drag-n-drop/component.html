@@ -1,0 +1,72 @@
+<eui-alert>For Drag and Drop feature, the following samples implement directly <a href="https://material.angular.io/cdk/drag-drop/overview" target="_blank">CDK Drag and Drop Directives</a>.<br/>
+This feature needs to be used with template-driven concept.<br/>
+<br/>
+For horizontal drag and drop, Eui expose utils which allow to make the drag and drop works when multiline.</eui-alert>
+
+
+
+<div class="doc-sample-section-title">Horizontal</div>
+<eui-chip-list cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropH($event)">
+    @for (chip of chipsH; track chip.id) {
+        <eui-chip cdkDrag [euiVariant]="chip.variant"><span euiLabel>{{ chip.label }}</span></eui-chip>
+    }
+</eui-chip-list>
+
+
+<div class="doc-sample-section-title">Vertical</div>
+<div class="eui-u-width-10">
+    <eui-chip-list cdkDropList cdkDropListOrientation="vertical" (cdkDropListDropped)="dropV($event)">
+        @for (chip of chipsV; track chip.id) {
+            <eui-chip cdkDrag [euiVariant]="chip.variant"><span euiLabel>{{ chip.label }}</span></eui-chip><br/>
+        }
+    </eui-chip-list>
+</div>
+
+
+<div class="doc-sample-section-title">Horizontal + between lists</div>
+<div cdkDropListGroup>
+    <eui-chip-list cdkDropList [cdkDropListData]="chipsHMulti1" cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropHMulti($event)">
+        @for (chip of chipsHMulti1; let i = $index; track $index) {
+            <eui-chip cdkDrag [euiVariant]="chip.variant"><span euiLabel>{{ chip.label }}</span></eui-chip>
+        }
+    </eui-chip-list>
+    <br/>
+    <eui-chip-list cdkDropList [cdkDropListData]="chipsHMulti2" cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropHMulti($event)">
+        @for (chip of chipsHMulti2; let i = $index; track $index) {
+            <eui-chip cdkDrag [euiVariant]="chip.variant"><span euiLabel>{{ chip.label }}</span></eui-chip>
+        }
+    </eui-chip-list>
+</div>
+
+<div class="doc-sample-section-title">Vertical + between lists</div>
+<div class="row" cdkDropListGroup>
+    <div class="col-4">
+        <div class="eui-u-width-10">
+            <eui-chip-list cdkDropList [cdkDropListData]="chipsVMulti1" cdkDropListOrientation="vertical" (cdkDropListDropped)="dropVMulti($event)">
+                @for (chip of chipsVMulti1; let i = $index; track $index) {
+                    <eui-chip cdkDrag [euiVariant]="chip.variant"><span euiLabel>{{ chip.label }}</span></eui-chip>
+                }
+            </eui-chip-list>
+        </div>
+    </div>
+    <div class="col-4">
+        <div class="eui-u-width-10">
+            <eui-chip-list cdkDropList [cdkDropListData]="chipsVMulti2" cdkDropListOrientation="vertical" (cdkDropListDropped)="dropVMulti($event)">
+                @for (chip of chipsVMulti2; let i = $index; track $index) {
+                    <eui-chip cdkDrag [euiVariant]="chip.variant"><span euiLabel>{{ chip.label }}</span></eui-chip>
+                }
+            </eui-chip-list>
+        </div>
+    </div>
+</div>
+
+<div class="doc-sample-section-title">Horizontal + Vertical</div>
+<div >
+    <eui-chip-list cdkDropListGroup>
+        @for (chip of chipsHVMulti; let i = $index; track $index) {
+            <div cdkDropList [cdkDropListData]="{ chip: chip, index: i }" cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropHVMulti($event)" style="min-width: auto">
+                <eui-chip cdkDrag [euiVariant]="chip.variant"><span euiLabel>{{ chip.label }}</span></eui-chip>
+            </div>
+        }
+    </eui-chip-list>
+</div>

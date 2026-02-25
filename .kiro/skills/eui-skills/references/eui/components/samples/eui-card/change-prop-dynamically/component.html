@@ -1,0 +1,17 @@
+<eui-card [euiCollapsible]="isCollapsible" [euiCollapsed]="isCollapsed" [euiUrgent]="isUrgent">
+    <eui-card-header>
+        <eui-card-header-title>
+            Card title
+        </eui-card-header-title>
+        <eui-card-header-subtitle>
+            Card subtitle
+        </eui-card-header-subtitle>
+    </eui-card-header>
+    <eui-card-content>
+        I am the content of the card container...
+    </eui-card-content>
+</eui-card>
+<br/>
+<button euiButton (click)="toggleCollapsible()">Toggle collapsible</button>&nbsp;
+<button euiButton (click)="toggleCollapsed()">Toggle collapsed</button>&nbsp;
+<button euiButton (click)="toggleUrgent()">Toggle urgent</button>&nbsp;

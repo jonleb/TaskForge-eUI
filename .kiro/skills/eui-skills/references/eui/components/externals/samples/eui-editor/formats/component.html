@@ -1,0 +1,20 @@
+Formats option is a <strong>restricted white list of allowed formats</strong> in the eui-editor which disallows some formats when laying out or paste content to the editor's content.
+By default, eUI editor allows and enables all formats.
+
+<br><br>
+
+<eui-alert>
+    Refer to <a class="eui-u-text-link-external" href="https://quilljs.com/docs/formats/" target="_blank"><strong>Quill JS Formats documentation</strong></a> for the various options and its customizations.
+</eui-alert>
+
+<form [formGroup]="form" class="eui-u-mt-xl">
+    <div class="doc-sample-section-title">Using <strong>formats</strong> to whitelist 'header', 'bold', 'italic' and 'color' formats. Other formats are <strong>inactive</strong>.</div>
+    <div euiInputGroup>
+        <label euiLabel>Description</label>
+        <eui-editor formControlName="editorContentTextValue"
+            [placeholder]="placeholder"
+            [formats]="formats"
+            [customToolbarConfig]="customToolbar">
+        </eui-editor>
+    </div>
+</form>

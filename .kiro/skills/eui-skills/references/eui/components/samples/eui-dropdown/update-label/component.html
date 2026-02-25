@@ -1,0 +1,34 @@
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">isLabelUpdatedFromSelectedItem</code> directive replaces the button label with the selected item label.</p>
+<eui-alert>
+    In order for this to work, the button label <strong>must be wrapped</strong> by an <code class="eui-u-text-code">euiLabel</code> directive or using the <code class="eui-u-text-code">.eui-label</code> CSS class.
+    See the code source for examples.
+</eui-alert><br/>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-dropdown isLabelUpdatedFromSelectedItem>
+            <button euiButton euiPrimary [attr.aria-label]="'Button trigger'">
+                <span euiLabel>Button trigger</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1">Menu item 1</button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2">Menu item 2</button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3">Menu item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col-md-6">
+        <eui-dropdown isLabelUpdatedFromSelectedItem>
+            <button euiButton euiPrimary [attr.aria-label]="'Button trigger'">
+                <span class="eui-label">Button trigger</span>
+                <eui-icon-svg icon="eui-ellipsis-vertical" size="s" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Option item 1')" aria-label="item 1">Option item 1</button>
+                <button euiDropdownItem (click)="onClick('Option item 2')" aria-label="item 2">Option item 2</button>
+                <button euiDropdownItem (click)="onClick('Option item 3')" aria-label="item 3">Option item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>

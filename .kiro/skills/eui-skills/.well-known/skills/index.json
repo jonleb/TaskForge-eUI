@@ -1,0 +1,24 @@
+{
+  "skills": [
+    {
+      "id": "eui-angular-v21",
+      "name": "eUI Angular 21",
+      "description": "Comprehensive guide for developing with eUI Angular 21 framework. Use it always when building EC/EU web applications, working with Angular 21 and eUI components, styling EC-themed interfaces, integrating ECL components, or developing mobile apps with eUI-Mobile (Ionic 8).",
+      "version": "0.1.0",
+      "skillFile": "SKILL.md",
+      "keywords": [
+        "eui",
+        "angular",
+        "angular 21",
+        "european commission",
+        "ecl",
+        "europa component library",
+        "eui-mobile",
+        "ionic",
+        "ec",
+        "eu",
+        "web applications"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+<h6 class="section-title">Binary radio group</h6>
+<fieldset eclFormGroup aria-describedby="radio-binary-helper" role="radiogroup" aria-required="true">
+    <legend eclFormLabel isRequired>Do you need help?</legend>
+    <p eclHelpBlock id="radio-binary-helper">Helper text for the group</p>
+
+    <div eclRadio isBinary>
+        <input eclRadioInput type="radio" id="radio-binary1" name="radio-binary-default" value="yes" checked required>
+        <label for="radio-binary1" eclRadioLabel>Yes</label>
+    </div>
+
+    <div eclRadio isBinary>
+        <input eclRadioInput type="radio" id="radio-binary2" name="radio-binary-default" value="no" required>
+        <label for="radio-binary2" eclRadioLabel>No</label>
+    </div>
+</fieldset>
+
+<h6 class="section-title">Binary invalid radio group</h6>
+<fieldset eclFormGroup aria-describedby="radio-binary-invalid-helper radio-binary-invalid-feedback" role="radiogroup" aria-required="true">
+    <legend eclFormLabel isRequired>Do you need help?</legend>
+    <p eclHelpBlock id="radio-binary-invalid-helper">Helper text for the group</p>
+
+    <div eclRadio isBinary isInvalid>
+        <input eclRadioInput type="radio" id="radio-binary3" name="radio-binary-invalid" value="yes" checked required>
+        <label for="radio-binary3" eclRadioLabel>Yes</label>
+    </div>
+
+    <div eclRadio isBinary isInvalid>
+        <input eclRadioInput type="radio" id="radio-binary4" name="radio-binary-invalid" value="no" required>
+        <label for="radio-binary4" eclRadioLabel>No</label>
+    </div>
+
+    <div eclFeedbackMessage id="radio-binary-invalid-feedback">
+        <ecl-icon icon="error" size="s" ariaHidden="false" role="img">
+            <title>Error</title>
+        </ecl-icon>
+        This is the error message
+    </div>
+</fieldset>

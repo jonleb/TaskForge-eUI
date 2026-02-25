@@ -1,0 +1,43 @@
+<p class="eui-u-text-paragraph"> The <code class="eui-u-text-code">eui-dialog</code> uses scalable relative length units for setting the height and width of the Dialog window.
+Recommended usage is to use the <strong>viewport size</strong> ie. the browser window size which works like percentages:</p>
+<div class="eui-u-ml-xl">
+    <ul>
+        <li>vh : to set the <strong>v</strong>iewport <strong>h</strong>eight</li>
+        <li>vw : to set the <strong>v</strong>iewport <strong>w</strong>idth</li>
+    </ul>
+</div>
+
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">hasMobileCustomSize</code> option allows to override the default full screen display when in mobile mode and to set your own height and width sizes.</p>
+
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">isSizeFullScreen</code> option allows to sets automatically the width and height to 100% and overrides the width and height parameters.</p>
+
+<p class="eui-u-text-paragraph">The Service driven approach allows to dynamically set the Dialog window size.
+<br>
+Please note that when in mobile mode, the Dialog window is always displayed in full screen by default, unless you use the <code class="eui-u-text-code">hasMobileCustomSize=true</code> option which allows to set your own height and width sizes.</p>
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-6">
+        <div euiInputGroup>
+            <label euiLabel for="dialog-height">Select height</label>
+            <select euiSelect name="dialog-height" id="dialog-height" placeholder="Select dialog height" aria-label="Select Dialog height" (change)="onHeightChange($event.target)">
+                @for (option of optionsHeight; track option) {
+                    <option [value]="option.value" [attr.selected]="option.value === dialogHeight ? true : null">{{ option.label }}</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div euiInputGroup>
+            <label euiLabel for="dialog-width">Select width</label>
+            <select euiSelect name="dialog-width" id="dialog-width" placeholder="Select dialog width" aria-label="Select Dialog width" (change)="onWidthChange($event.target)">
+                    @for (option of optionsWidth; track option) {
+                        <option [value]="option.value" [attr.selected]="option.value === dialogWidth ? true : null">{{ option.label }}</option>
+                    }
+            </select>
+        </div>
+    </div>
+</div>
+
+<button euiButton type="button" (click)="openWithService()" class="eui-u-mr-m eui-u-mb-m" aria-haspopup="dialog">Open Dialog (dynamic)</button>
+<button euiButton type="button" (click)="openCustomSizeWithService()" class="eui-u-mr-m eui-u-mb-m" aria-haspopup="dialog">Open custom size Dialog (dynamic)</button>
+<button euiButton type="button" (click)="openFullScreenWithService()" class="eui-u-mr-m eui-u-mb-m" aria-haspopup="dialog">Open Dialog (fullscreen)</button>

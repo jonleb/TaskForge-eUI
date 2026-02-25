@@ -1,0 +1,89 @@
+<div class="doc-sample-section-title">Required with info icon and tooltip</div>
+
+<div euiInputGroup>
+    <div euiLabel euiRequired>
+        User name
+        <eui-icon-svg icon="eui-state-info" class="eui-u-ml-2xs" fillColor="info" euiTooltip="Can be the user's lastname, user id or user code"></eui-icon-svg>
+    </div>
+    <input euiInputText value="" placeholder="Enter the user name" aria-label="Enter user name" />
+</div>
+
+
+<div class="doc-sample-section-title">Required with inline radio options</div>
+
+<div euiInputGroup>
+    <label euiLabel euiRequired>Gender</label>
+    <div class="eui-u-flex eui-u-flex-wrap">
+        <div class="eui-u-inline-flex eui-u-mb-s">
+            <input euiInputRadio
+                    id="misc-gender-m"
+                    name="radioForm"
+                    value="male">
+            <label euiLabel for="misc-gender-m">Male</label>
+        </div>
+        <div class="eui-u-inline-flex eui-u-mb-s">
+            <input euiInputRadio
+                    id="misc-gender-f"
+                    name="radioForm"
+                    value="female">
+            <label euiLabel for="misc-gender-f">Female</label>
+        </div>
+        <div class="eui-u-inline-flex eui-u-mb-s">
+            <input euiInputRadio
+                    id="misc-gender-o"
+                    name="radioForm"
+                    value="other">
+            <label euiLabel for="misc-gender-o">Other</label>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Required with inline checkboxes</div>
+
+<div euiInputGroup>
+    <div euiLabel euiRequired>Select preferred language(s)</div>
+    <div class="eui-u-flex eui-u-flex-wrap">
+        <div class="eui-u-inline-flex eui-u-mb-s">
+            <input euiInputCheckBox id="usage-checkbox-en" name="usage-checkbox-en" />
+            <label euiLabel for="usage-checkbox-en">English</label>
+        </div>
+        <div class="eui-u-inline-flex eui-u-mb-s">
+            <input euiInputCheckBox id="usage-checkbox-de" name="usage-checkbox-de" />
+            <label euiLabel for="usage-checkbox-de">deutsch</label>
+        </div>
+        <div class="eui-u-inline-flex eui-u-mb-s">
+            <input euiInputCheckBox id="usage-checkbox-fr" name="usage-checkbox-fr" checked="checked" />
+            <label euiLabel for="usage-checkbox-fr">french</label>
+        </div>
+        <div class="eui-u-inline-flex eui-u-mb-s">
+            <input euiInputCheckBox id="usage-checkbox-es" name="usage-checkbox-es" />
+            <label euiLabel for="usage-checkbox-es">spanish</label>
+        </div>
+        <div class="eui-u-inline-flex eui-u-mb-s">
+            <input euiInputCheckBox id="usage-checkbox-it" name="usage-checkbox-it" />
+            <label euiLabel for="usage-checkbox-it">italian</label>
+        </div>
+        <div class="eui-u-inline-flex eui-u-mb-s">
+            <input euiInputCheckBox id="usage-checkbox-el" name="usage-checkbox-el" />
+            <label euiLabel for="usage-checkbox-el">greek</label>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Required with multiple feedback messages</div>
+
+<div euiInputGroup>
+    <label euiLabel for="textModel" euiRequired>Input text label</label>
+    <input #textModel="ngModel" id="textModel" euiInputText [(ngModel)]="modelTextValue" required />
+    <eui-feedback-message>This is the default feedback message</eui-feedback-message>
+    <eui-feedback-message euiSuccess>This is the <strong>success</strong> feedback message</eui-feedback-message>
+    <eui-feedback-message euiInfo>This is the <strong>info</strong> feedback message</eui-feedback-message>
+    <eui-feedback-message euiWarning>This is the <strong>warning</strong> feedback message</eui-feedback-message>
+    @if (textModel.getError('required')) {
+        <eui-feedback-message euiDanger>
+            This field is <strong>required</strong>
+        </eui-feedback-message>
+    }
+</div>

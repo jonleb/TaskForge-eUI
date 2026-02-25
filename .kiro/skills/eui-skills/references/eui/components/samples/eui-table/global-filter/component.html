@@ -1,0 +1,47 @@
+<eui-alert>
+    The Global filter allows to search from user input text string matching any of the table contents.<br/>
+    The sample below shows how to use the public method <code class="eui-u-text-code">getFilteredData()</code> to get the data filtered by what is typed in the filter field, here it allows to calculate the total population in he footer and display the number of results.<br/>
+</eui-alert><br/>
+
+<div class="eui-u-mb-xs eui-u-flex eui-u-flex-justify-content-between">
+    <div>European Union <eui-badge euiPrimary>{{ filteredData.length }}</eui-badge> countries found</div>
+    <div class="eui-u-width-20">
+        <eui-table-filter #filter placeholder="Search filter..." (filterChange)="onFilterChange($event)"></eui-table-filter>
+    </div>
+</div>
+<div class="eui-table__scrollable-wrapper">
+    <table #euiTable euiTable isTableResponsive [data]="data" [paginator]="paginator" [filter]="filter">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon--rounded eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>&nbsp;{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td colspan="3" class="text-right"><strong>TOTAL</strong></td>
+                <td><strong>{{ totalPopulation | number:'1.0-3'}}</strong></td>
+                <td>&nbsp;</td>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="noData">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">There are currently no data to display</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator #paginator></eui-paginator>

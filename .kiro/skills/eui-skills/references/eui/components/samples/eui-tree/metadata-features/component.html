@@ -1,0 +1,136 @@
+<div class="doc-sample-section-title">Selectable Node</div>
+When <code class="eui-u-text-code">selectable :
+    true</code> defined in tree metadata, It renders it as selectable.
+<br />
+Note that isMultiselect input is not used in this example.
+<br />
+<eui-tree [nodes]="treeData1" (selectionChange)="onSelectionChange($event)"></eui-tree>
+<br />
+<div class="row">
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre">{{treeData1 | json}}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre class="eui-u-text-pre">{{addedLabels}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{removedLabels}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionLabels}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+
+
+<div class="doc-sample-section-title">Initial selection</div>
+When <code class="eui-u-text-code">isSelected : true</code> is used in your metadata, If the node is selectable, It will be rendered as selected.
+<br />
+As you see in the metadata we didn't define selectable, because we used isMultiselect input on component.
+<br />
+<eui-tree [nodes]="treeData3" isMultiselect (selectionChange)="onSelectionChange3($event)"></eui-tree>
+<br />
+<div class="row">
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre">{{treeData3 | json}}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;" tabindex="0">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre class="eui-u-text-pre">{{addedLabels3}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{removedLabels3}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionLabels3}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+
+
+<div class="doc-sample-section-title">Initial expand</div>
+<p class="eui-u-text-paragraph">
+    When <code class="eui-u-text-code">isExpanded : true</code> is used in your metadata, 
+    if node has children, it and all its parents will be rendered in expanded state.
+</p>
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-6">
+        <eui-tree #treeComponent1 [nodes]="treeData4" (selectionChange)="onSelectionChange3($event)"></eui-tree>
+    </div>
+
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre">{{treeComponent1.getProcessedNodes() | json}}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+
+
+<div class="doc-sample-section-title">If Initial expand is defined on parent level, It overrides children's even if isExpanded:false </div>
+<p class="eui-u-text-paragraph">
+    When <code class="eui-u-text-code">isExpanded : true</code> is used in your metadata,
+    if node has children, it and all its parents will be rendered in expanded state.
+</p>
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-6">
+        <eui-tree #treeComponent2 [nodes]="treeData5" ></eui-tree>
+    </div>
+
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre">{{ treeComponent2.getProcessedNodes() | json}}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+
+
+<div class="doc-sample-section-title">Non-selectable items are not taken into account in the recursive calculation for the indeterminate state</div>
+<eui-alert>
+    Please note that, it is <strong>not possible to define selectable children for non-selectable parent</strong>.
+    If you define them, those children will be omitted for recursive state calculation.
+</eui-alert>
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-6">
+        <eui-tree #treeComponent3 [nodes]="treeData6" isMultiselect isRecursiveSelection></eui-tree>
+    </div>
+
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre">{{ treeComponent3.getProcessedNodes() | json}}</pre>
+            </div>
+        </div>
+    </div>
+</div>

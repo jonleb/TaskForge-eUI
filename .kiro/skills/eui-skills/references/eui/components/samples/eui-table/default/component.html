@@ -1,0 +1,59 @@
+<div class="doc-sample-section-title">Static table</div>
+
+<table class="eui-table-default">
+    <thead>
+        <tr>
+            <th>Country</th>
+            <th>Year</th>
+            <th>ISO</th>
+            <th>Population</th>
+            <th>Capital city</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (row of data; track row) {
+            <tr>
+                <td>{{ row.country }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.iso }}</td>
+                <td>{{ row.population | number }}</td>
+                <td>{{ row.capital }}</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td class="eui-u-text-center" colspan="5">Footer 1</td>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="doc-sample-section-title">eui-table</div>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable [data]="data">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td>{{ row.country }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.iso }}</td>
+                <td>{{ row.population | number }}</td>
+                <td>{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">Footer 1</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>

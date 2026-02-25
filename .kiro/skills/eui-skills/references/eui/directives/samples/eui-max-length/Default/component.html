@@ -1,0 +1,11 @@
+<div class="doc-sample-section-title">Max Length on text with callback</div>
+<label euiLabel for="maxlength-default">Label</label>
+<input (maxLengthReached)="textMaxLengthReached($event)" [euiMaxlength]="20" euiInputText id="maxlength-default" value="sample text" />
+<pre class="eui-u-text-pre">Has max length reached? {{ textMax }}</pre>
+
+<div class="doc-sample-section-title">Text area with show/hide</div>
+<label for="story">Tell us your story:</label>
+<textarea [euiMaxlength]="22" [isShowMaxlength]="show" cols="33" euiTextArea id="story" name="story" rows="5">
+It was a dark and stormy night...
+</textarea><br/>
+<button (click)="show=!show" euiButton>{{ show ? 'Hide' : 'Show' }}</button>

@@ -1,0 +1,40 @@
+<eui-alert>The validator <code class="eui-u-text-code">euiAutocompleteForceSelectionFromData</code> will validate that the user chose a value in the panel.</eui-alert>
+
+<div class="doc-sample-section-title">Reactive Form Support</div>
+<form [formGroup]="form">
+
+    <div euiInputGroup>
+        <label [euiRequired]="true" euiLabel>Select a fruit</label>
+        <eui-autocomplete
+            [autocompleteData]="autocompleteDataForm"
+            formControlName="autoComplete"
+            placeholder="Select a fruit">
+        </eui-autocomplete>
+        @if (renderForm('autoComplete')) {
+            <eui-feedback-message euiDanger>Value in not part of the data</eui-feedback-message>
+        }
+    </div>
+    <br />
+
+    <button (click)="onSubmit()" class="eui-u-mr-xs" euiButton euiPrimary type="button">Submit</button>
+</form>
+
+<div class="doc-sample-section-title">Reactive Form with chips Support</div>
+<form [formGroup]="formChips">
+
+    <div euiInputGroup>
+        <label [euiRequired]="true" euiLabel>Select fruits</label>
+        <eui-autocomplete
+            [autocompleteData]="autocompleteDataFormChips"
+            [hasChips]="true"
+            formControlName="autoCompleteChips"
+            placeholder="Select a fruit">
+        </eui-autocomplete>
+        @if (renderFormChips('autoCompleteChips')) {
+            <eui-feedback-message euiDanger>Value in not part of the data</eui-feedback-message>
+        }
+    </div>
+    <br />
+
+    <button (click)="onSubmitChips()" class="eui-u-mr-xs" euiButton euiPrimary type="button">Submit</button>
+</form>

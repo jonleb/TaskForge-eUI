@@ -1,0 +1,45 @@
+<eui-alert>
+    <code class="eui-u-text-code">getPage(page: number)</code> public method of <code class="eui-u-text-code">eui-paginator</code> is called to change the page. 0 is the first page.<br/>
+</eui-alert><br/>
+<eui-alert euiWarning>
+     When the <code class="eui-u-text-code">eui-table</code> has async data, the content length is gonna change (from 0 to data length), in that case <code class="eui-u-text-code">hasDynamicLength</code> has to be added on the <code class="eui-u-text-code">eui-paginator</code> component.
+</eui-alert>
+<br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data" [paginator]="paginator">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator
+    #paginator
+    hasPageNumberNavigation
+    [nbPageNumberNavigation]="5"
+    [page]="0"
+    [pageSizeOptions]="[5, 10, 25, 50]"
+    [pageSize]="5"
+    (pageChange)="onPageChange($event)">
+</eui-paginator>

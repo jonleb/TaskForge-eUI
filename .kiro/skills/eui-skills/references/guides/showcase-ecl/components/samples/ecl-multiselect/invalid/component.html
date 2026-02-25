@@ -1,0 +1,16 @@
+<div eclFormGroup>
+    <label id="label-multi-invalid" eclFormLabel isInvalid>Select countries</label>
+    <div id="help-multi-invalid" eclHelpBlock>This is invalid component</div>
+    <select ariaLabeledby="label-multi-invalid" ariaDescribedby="helper-multi-invalid"
+        eclMultiselect eclPlaceholder="Custom placeholder" isInvalid>
+        @for (country of countries; track country.id) {
+        <option eclMultiselectOption [selected]="isSelected(country)" [value]="country.id" [label]="country.name"></option>
+        }
+    </select>
+    <div eclFeedbackMessage>
+        <ecl-icon icon="error" size="s" ariaHidden="false" role="img">
+            <title>Error</title>
+        </ecl-icon>
+        This is the error messagee
+    </div>
+</div>

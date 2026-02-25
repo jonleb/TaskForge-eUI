@@ -1,0 +1,10 @@
+<p class="eui-u-text-paragraph">By default, dialog is centered horizontally and vertically on the screen. There are options to change the position.</p>
+
+<button euiButton type="button" (click)="openTop()" aria-haspopup="dialog">Open Dialog (top)</button>
+
+<eui-dialog
+    #dialogTop
+    [title]="'Dialog (aligned to top)'"
+    [verticalPosition]="'top'">
+    Dialog content
+</eui-dialog>

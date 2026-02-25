@@ -1,0 +1,15 @@
+<p class="eui-u-text-paragraph">Popover close button can be controlled with the <code class="eui-u-text-code">hasCloseButton</code> input option which accepts the following values:
+    <span class="eui-u-text-monospace"><code class="eui-u-text-code">true (default) | false</code></span></p>
+
+    <br>
+
+    <eui-slide-toggle [isChecked]="hasCloseButton" (slideToggleChange)="onChangeCloseButton($event)"></eui-slide-toggle> hasCloseButton
+
+    <br><br>
+
+    <button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover($event)">
+        <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+    </button>
+    <eui-popover #popover [title]="'This is the popover title'" [hasCloseButton]="hasCloseButton">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+    </eui-popover>

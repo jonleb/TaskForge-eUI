@@ -1,0 +1,71 @@
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">eui-overlay</code> panel has <strong>default width sizes</strong> based on the device's screen width (Media Queries).</p>
+Default overlay panel widths size :
+<ul>
+    <li>mobile : 75% of the screen</li>
+    <li>tablet : 45% of the screen</li>
+    <li>desktop : 33% of the screen</li>
+</ul>
+
+<p class="eui-u-text-paragraph">You can also use <strong>predefined width sizes</strong> by using the <code class="eui-u-text-code">width</code> input option and choose one of the following values:</p>
+<ul>
+    <li><button euiButton euiOutline euiPrimary euiSizeS (click)="setOverlayWidth('25')" aria-label="width 25">25</button> sets the overlay width to 25% of the screen (default)</li>
+    <li><button euiButton euiOutline euiPrimary euiSizeS (click)="setOverlayWidth('30')" aria-label="width 30">30</button> sets the overlay width to 30% of the screen</li>
+    <li><button euiButton euiOutline euiPrimary euiSizeS (click)="setOverlayWidth('35')" aria-label="width 35">35</button> sets the overlay width to 35% of the screen</li>
+    <li><button euiButton euiOutline euiPrimary euiSizeS (click)="setOverlayWidth('40')" aria-label="width 40">40</button> sets the overlay width to 40% of the screen</li>
+    <li><button euiButton euiOutline euiPrimary euiSizeS (click)="setOverlayWidth('50')" aria-label="width 50">50</button> sets the overlay width to 50% of the screen</li>
+    <li><button euiButton euiOutline euiPrimary euiSizeS (click)="setOverlayWidth('75')" aria-label="width 75">75</button> sets the overlay width to 75% of the screen</li>
+</ul>
+
+<div class="row">
+    <div class="col-md-6">
+        <button euiButton euiOutline euiPrimary (click)="toggleOverlay()" aria-haspopup="dialog" aria-label="Overlay trigger button">Toggle overlay</button>
+    </div>
+    <div class="col-md-6">
+        Sample code:<br>
+        <div class="eui-showcase-demo">
+            <div class="code" style="overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre" tabindex="0">&lt;eui-overlay [isActive]="{{ isOverlayActive }}" [width]="{{ overlayWidth }}"&gt;&lt;/eui-overlay&gt;</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<eui-overlay [isActive]="isOverlayActive" (activeState)="updateActiveState($event)" [width]="overlayWidth">
+    <eui-overlay-header>Header</eui-overlay-header>
+    <eui-overlay-body class="eui-u-text-center eui-u-mt-4xl">
+        <button euiButton euiOutline euiPrimary (click)="closeOverlay()" aria-label="Close Overlay">Close overlay</button>
+    </eui-overlay-body>
+    <eui-overlay-footer>Footer</eui-overlay-footer>
+</eui-overlay>
+
+<p class="eui-u-text-paragraph">You can also use <strong>fixed width sizes</strong> by using the <code class="eui-u-text-code">fixedWidth</code> input option and choose one of the following values:</p>
+<ul>
+    <li><button euiButton euiOutline euiPrimary euiSizeS (click)="setOverlayFixedWidth('25')" aria-label="25rem">25rem</button> sets the overlay width to 25rem of the screen (default)</li>
+    <li><button euiButton euiOutline euiPrimary euiSizeS (click)="setOverlayFixedWidth('30')" aria-label="30rem">30rem</button> sets the overlay width to 30rem of the screen</li>
+    <li><button euiButton euiOutline euiPrimary euiSizeS (click)="setOverlayFixedWidth('35')" aria-label="35rem">35rem</button> sets the overlay width to 35rem of the screen</li>
+    <li><button euiButton euiOutline euiPrimary euiSizeS (click)="setOverlayFixedWidth('40')" aria-label="40rem">40rem</button> sets the overlay width to 40rem of the screen</li>
+    <li><button euiButton euiOutline euiPrimary euiSizeS (click)="setOverlayFixedWidth('50')" aria-label="50rem">50rem</button> sets the overlay width to 50rem of the screen</li>
+    <li><button euiButton euiOutline euiPrimary euiSizeS (click)="setOverlayFixedWidth('75')" aria-label="75rem">75rem</button> sets the overlay width to 75rem of the screen</li>
+</ul>
+
+<div class="row">
+    <div class="col-md-6">
+        <button euiButton euiOutline euiPrimary (click)="toggleFixedWidthOverlay()" aria-haspopup="dialog" aria-label="Overlay trigger button">Toggle overlay</button>
+    </div>
+    <div class="col-md-6">
+        Sample code:<br>
+        <div class="eui-showcase-demo">
+            <div class="code" style="overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre" tabindex="0">&lt;eui-overlay [isActive]="{{ isOverlayActive }}" [fixedWidth]="{{ overlayFixedWidth }}"&gt;&lt;/eui-overlay&gt;</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<eui-overlay [isActive]="isOverlayFixedWidthActive" (activeState)="updateActiveState($event)" [fixedWidth]="overlayFixedWidth">
+    <eui-overlay-header>Header</eui-overlay-header>
+    <eui-overlay-body class="eui-u-text-center eui-u-mt-4xl">
+        <button euiButton euiOutline euiPrimary (click)="closeFixedWidthOverlay()" aria-label="CLose Overlay">Close overlay</button>
+    </eui-overlay-body>
+    <eui-overlay-footer>Footer</eui-overlay-footer>
+</eui-overlay>

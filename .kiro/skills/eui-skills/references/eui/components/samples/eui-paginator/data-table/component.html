@@ -1,0 +1,34 @@
+<!-- The optional scrollable wrapper around the table allows dynamic scroll when the table is too big -->
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="paginatedItems">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th>Id</th>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Id"><span euiBadge>{{ row.id }}</span></td>
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator
+    [pageSize]="pageSize"
+    [page]="0"
+    [length]="dataSource.length"
+    [hasPageNumberNavigation]="true"
+    [nbPageNumberNavigation]="5"
+    (pageChange)="onPageChange($event)">
+</eui-paginator>

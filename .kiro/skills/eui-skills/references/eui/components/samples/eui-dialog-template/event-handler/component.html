@@ -1,0 +1,54 @@
+<table class="eui-table-default eui-table-default--compact eui-u-mb-m">
+    <thead>
+        <tr>
+            <th>Event handler</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>init</td>
+            <td>Triggered when the dialog is inited.</td>
+        </tr>
+        <tr>
+            <td>clickOutside</td>
+            <td>Triggered when the backdrop is clicked.</td>
+        </tr>
+        <tr>
+            <td>dialogClose</td>
+            <td>Triggered when the dialog is closed.</td>
+        </tr>
+        <tr>
+            <td>escape</td>
+            <td>Triggered when the dialog is closed with escape button.</td>
+        </tr>
+        <tr>
+            <td>dialogOpen</td>
+            <td>Triggered when the dialog is opened.</td>
+        </tr>
+        <tr>
+            <td>accept</td>
+            <td>Triggered when the accept button is clicked.</td>
+        </tr>
+        <tr>
+            <td>dismiss</td>
+            <td>Triggered when the dismiss button is clicked.</td>
+        </tr>
+    </tbody>
+</table>
+
+<button euiButton type="button" (click)="openDialog()" aria-haspopup="dialog">Open Dialog</button>
+
+<eui-dialog #dialog
+    [title]="'Dialog title'"
+    [hasClosedOnClickOutside]="true"
+    (clickOutside)="onClickOutside()"
+    (dialogClose)="onClose()"
+    (escape)="onEscape()"
+    (dialogOpen)="onOpen()"
+    (accept)="onAccept()"
+    (dismiss)="onDismiss()">
+    <div class="eui-u-flex">
+        Dialog content...
+    </div>
+</eui-dialog>

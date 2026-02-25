@@ -1,0 +1,37 @@
+<button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover($event)">
+    <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+</button>
+<eui-popover #popover [title]="'This is the popover title'" [position]="'top'">
+    <eui-tabs>
+        <eui-tab>
+            <eui-tab-header>
+                <eui-label>Tab 1</eui-label>
+            </eui-tab-header>
+            <eui-tab-body>
+                <div class="text-center p-1">
+                    This is <eui-badge euiSuccess>rich</eui-badge> content for tab 1
+                </div>
+            </eui-tab-body>
+        </eui-tab>
+        <eui-tab>
+            <eui-tab-header>
+                <eui-label>Tab 2</eui-label>
+            </eui-tab-header>
+            <eui-tab-body>
+                <div class="text-center p-1">
+                    This is <eui-badge euiDanger>rich</eui-badge> content for tab 2
+                </div>
+            </eui-tab-body>
+        </eui-tab>
+        <eui-tab>
+            <eui-tab-header>
+                <eui-label>Tab 3</eui-label>
+            </eui-tab-header>
+            <eui-tab-body>
+                <div class="text-center p-1">
+                    This is <eui-badge euiInfo>rich</eui-badge> content for tab 3
+                </div>
+            </eui-tab-body>
+        </eui-tab>
+    </eui-tabs>
+</eui-popover>

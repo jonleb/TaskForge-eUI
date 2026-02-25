@@ -1,0 +1,71 @@
+<p class="eui-u-text-paragraph">
+    All <code class="eui-u-text-code">eui-card</code> elements can be editable: header title/subtitle,
+    header body content and main content. The following sample uses the
+    <code class="eui-u-text-code">eui-editor</code> Rich Html content editor for editing the card main
+    content. The editor is populated using reactive forms.
+</p>
+
+<p class="eui-u-text-paragraph">
+    Edition of cards can be triggered within the card itself like the following
+    example or at page level, for global or context related edition.
+</p>
+
+<p class="eui-u-text-paragraph">
+    To activate the edit mode of an eui-card, use the
+    <code class="eui-u-text-code">euiHighlighted=true</code> input directive. This will dimmer the
+    screen and reveals (highlights) only the editable elements.
+</p>
+
+Usage :
+<pre class="eui-u-text-pre">
+    &lt;eui-card [euiHighlighted]="isEditActive"&gt;
+</pre>
+
+<p class="eui-u-text-paragraph">See the code source for more information.</p>
+
+<div class="doc-sample-section-title">Using reactive forms to edit card content</div>
+
+<eui-card [euiHighlighted]="isEditActive">
+    <eui-card-header>
+        <eui-card-header-title>
+            <a (click)="onCardTitleLinkClicked($event)" class="eui-u-text-link">{{cardTitle}}</a>
+        </eui-card-header-title>
+
+        <eui-card-header-subtitle>
+            {{ cardSubtitle }}
+        </eui-card-header-subtitle>
+    </eui-card-header>
+
+    <eui-card-content [style]="!isEditActive ? cardContentStyle : null">
+        <form [formGroup]="form">
+            <eui-editor
+                formControlName="htmlContent"
+                [placeholder]="placeholder"
+                [isReadOnly]="!isEditActive">
+            </eui-editor>
+        </form>
+    </eui-card-content>
+
+    <eui-card-footer>
+        <eui-card-footer-action-buttons>
+            @if (!isEditActive) {
+                <button euiButton euiPrimary euiTooltip="Edit card content" aria-label="Edit card" (click)="onToggleEdit()">Edit</button>
+            } @else {
+                <div class="eui-u-flex eui-u-flex-gap-s">
+                    <button
+                        euiButton
+                        euiPrimary
+                        (click)="onToggleEdit()">
+                        Save
+                    </button>
+                    <button
+                        euiButton
+                        euiSecondary
+                        (click)="onToggleEdit()">
+                        Cancel
+                    </button>
+                </div>
+            }
+        </eui-card-footer-action-buttons>
+    </eui-card-footer>
+</eui-card>

@@ -1,0 +1,35 @@
+<input euiInputText value="Input text sample" aria-label="sample disabled" disabled />
+
+<div class="doc-sample-section-title">With Placeholder</div>
+<input euiInputText placeholder="Placeholder text" aria-label="Sample with placeholder" disabled/>
+
+
+<div class="doc-sample-section-title">With Label</div>
+<div euiInputGroup>
+    <label euiLabel for="with_label_disabled">Label</label>
+    <input euiInputText id="with_label_disabled" value="Input text sample" disabled />
+</div>
+
+
+<div class="doc-sample-section-title">With input addon</div>
+<div euiInputGroup>
+    <label euiLabel for="with_input-addon_disabled">Label</label>
+    <div euiInputGroupAddOn>
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="eui-home" size="s" fillColor="secondary"></eui-icon-svg>
+        </div>
+        <input euiInputText id="with_input-addon_disabled" value="Input text sample" disabled />
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">With action button addon</div>
+<div euiInputGroup>
+    <label euiLabel for="with_action-button_disabled">Label</label>
+    <div euiInputGroupAddOn>
+        <input euiInputText id="with_action-button_disabled" value="Input text sample" disabled />
+        <button euiButton euiSecondary euiIconButton euiDisabled aria-label="Search">
+            <eui-icon-svg icon="eui-search" size="s" fillColor="secondary"></eui-icon-svg>
+        </button>
+    </div>
+</div>

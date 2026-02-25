@@ -1,0 +1,32 @@
+<eui-alert>By default, select all feature will select rows of the current page. Then, all interactions such as filtering, sorting and pagination will reset the selection. <br/>
+    Selection of all items across pages can be activated with the option <code class="eui-u-text-code">isSelectOnlyVisibleRows</code> set on <code class="eui-u-text-code">false</code>.</eui-alert><br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [isSelectOnlyVisibleRows]="false" [data]="data" [paginator]="paginator" (rowsSelect)="onRowsSelect($event)">
+        <ng-template euiTemplate="header">
+            <tr isHeaderSelectable>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr [isDataSelectable]="row">
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator #paginator></eui-paginator>

@@ -1,0 +1,63 @@
+<div class="eui-u-flex eui-u-flex-justify-content-end eui-u-mb-m">
+    <eui-dropdown isDropDownRightAligned hasTabNavigation [hasClosedOnClickInside]="false">
+        <button euiButton euiPrimary>Filter columns</button>
+        <eui-dropdown-content>
+            <div [formGroup]="form" class="eui-u-pt-xs eui-u-pl-xs eui-u-pr-xs">
+                @for (col of cols; track $index) {
+                    <div class="eui-u-pb-xs">
+                        <input id="checkbox_{{ col.id }}" euiInputCheckBox name="checkbox" [formControlName]="col.id" />
+                        <label for="checkbox_{{ col.id }}" euiLabel>{{ col.label }}</label>
+                    </div>
+                }
+            </div>
+        </eui-dropdown-content>
+    </eui-dropdown>
+</div>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data">
+        <ng-template euiTemplate="header">
+            <tr>
+                @if (form.get('country').value) {
+                    <th>Country</th>
+                }
+                @if (form.get('year').value) {
+                    <th>Year</th>
+                }
+                @if (form.get('iso').value) {
+                    <th>ISO</th>
+                }
+                @if (form.get('population').value) {
+                    <th>Population</th>
+                }
+                @if (form.get('capital').value) {
+                    <th>Capital city</th>
+                }
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                @if (form.get('country').value) {
+                    <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon--rounded eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>&nbsp;{{ row.country }}</td>
+                }
+                @if (form.get('year').value) {
+                    <td data-col-label="Year"><eui-chip euiSecondary euiSizeS>{{ row.year }}</eui-chip></td>
+                }
+                @if (form.get('iso').value) {
+                    <td data-col-label="ISO">{{ row.iso }}</td>
+                }
+                @if (form.get('population').value) {
+                    <td data-col-label="Population">{{ row.population | number }}</td>
+                }
+                @if (form.get('capital').value) {
+                    <td data-col-label="Capital city">{{ row.capital }}</td>
+                }
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">Footer 1</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>

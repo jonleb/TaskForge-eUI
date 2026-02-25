@@ -1,0 +1,20 @@
+<div class="doc-sample-section-title">Set focus / blur programmatically</div>
+
+<strong>Set focus / blur from parent :</strong>
+<br>
+<button euiButton euiPrimary (click)="onFocus1()" class="eui-u-mr-m">Focus on EDITOR 1</button>
+<button euiButton euiPrimary (click)="onFocus2()" class="eui-u-mr-m">Focus on EDITOR 2</button>
+
+<hr class="eui-u-hr">
+
+To set the focus / blur use the <code class="eui-u-text-code">(editorCreate)</code> event handler which returns the Quill editor's object instance.
+Then you can use the <code class="eui-u-text-code">editor.focus()</code> method. See <a routerLink="/externals/04-eui-editor#event-handlers">Events</a> for more information about event handlers.
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-6">
+        <focus-editor1 (editorCreate)="onEditor1Create($event)"></focus-editor1>
+    </div>
+    <div class="col-md-6">
+        <focus-editor2 (editorCreate)="onEditor2Create($event)"></focus-editor2>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+<div eclFormGroup>
+    <label eclFormLabel>Size</label>
+    <select eclSelect [(ngModel)]="size" aria-label="Size">
+        <option value="s">Small</option>
+        <option value="m">Medium</option>
+        <option value="l">Large</option>
+        <option value="full">Full container</option>
+    </select>
+</div>
+<br><br>
+<dialog #modal1 eclModal [size]="size" (modalClose)="onClose($event)" (modalOpen)="onOpen($event)">
+    <header eclModalHeader>
+        Lorem ipsum dolor sit amet
+    </header>
+    <div eclModalBody>
+        Scrollable content: <br />Sed quam augue, volutpat
+        sed dapibus in, accumsan a arcu. Nulla quam enim, porttitor at neque a, egestas porttitor tortor. Nam tortor
+        sem, elementum id augue quis, posuere vestibulum dui. Donec id posuere libero, sit amet egestas lorem. Aliquam
+        finibus ipsum mauris, a molestie tortor laoreet. Morbi interdum orci arcu, tempor porta nisl elementum non.
+        Morbi blandit risus sed turpis mollis mattis. Maecenas semper, risus nec sollicitudin aliquet, dui eros
+        vehicula nulla, ac bibendum mauris mauris a lectus. Ut ut justo in sem vestibulum mollis. Pellentesque ac
+        commodo erat. Phasellus vitae aliquet mi. Suspendisse sed nisl feugiat, porta ante a, finibus nisi.<br />Sed
+        quam augue, volutpat sed dapibus in, accumsan a arcu. Nulla quam enim, porttitor at neque a, egestas porttitor
+        tortor. Nam tortor sem, elementum id augue quis, posuere vestibulum dui. Donec id posuere libero, sit amet
+        egestas lorem. Aliquam finibus ipsum mauris, a molestie tortor laoreet. Morbi interdum orci arcu, tempor porta
+        nisl elementum non. Morbi blandit risus sed turpis mollis mattis. Maecenas semper, risus nec sollicitudin
+        aliquet, dui eros vehicula nulla, ac bibendum mauris mauris a lectus. Ut ut justo in sem vestibulum mollis.
+        Pellentesque ac commodo erat. Phasellus vitae aliquet mi. Suspendisse sed nisl feugiat, porta ante a, finibus
+        nisi.
+        <div eclModalBodyFixedContent>
+            <div eclCheckbox>
+                <input eclCheckboxInput type="checkbox" id="option-label" name="option-label" value="ol">
+                <label for="option-label" eclCheckboxLabel>Option label</label>
+            </div>
+        </div>
+    </div>
+    <footer eclModalFooter>
+        <button eclButton eclModalRole="cancel" eclModalClose variant="secondary">Cancel</button>
+        <button eclButton eclModalRole="confirm" [eclModalClose]="'Luxembourg'" variant="primary">Save</button>
+    </footer>
+</dialog>
+
+<div>
+    <a eclButton [eclModalTriggerFor]="modal1">Open modal</a>
+</div>

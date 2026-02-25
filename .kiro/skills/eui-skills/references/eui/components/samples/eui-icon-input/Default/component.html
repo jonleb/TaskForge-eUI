@@ -1,0 +1,32 @@
+<div class="doc-sample-section-title">Default</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <eui-icon-input>
+            <eui-icon-svg icon="eui-search" fillColor="secondary" aria-label="Search Icon"/>
+            <input
+                euiInputText
+                [euiClearable]="true"
+                (input)="onSearch($event)"
+                placeholder="Search..."
+                aria-label="Search"/>
+        </eui-icon-input>        
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">euiIconPositionEnd</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <eui-icon-input euiIconPositionEnd>
+            <eui-icon-svg icon="eui-search" fillColor="secondary" aria-label="Search Icon"/>
+            <input
+                euiInputText
+                [euiClearable]="true"
+                (input)="onSearch($event)"
+                placeholder="Search..."
+                aria-label="Search"/>
+        </eui-icon-input>        
+    </div>
+</div>

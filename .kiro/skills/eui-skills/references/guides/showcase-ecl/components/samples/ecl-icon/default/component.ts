@@ -1,0 +1,14 @@
+import { Component } from '@angular/core';
+import { EUI_ECL_ICON } from '@eui/ecl/components/ecl-icon';
+import { TranslateModule } from '@ngx-translate/core';
+
+@Component({
+    // tslint:disable-next-line
+    selector: 'Default',
+    templateUrl: 'component.html',
+    imports: [
+        EUI_ECL_ICON, 
+        TranslateModule,
+    ],
+})
+export class DefaultComponent {}

@@ -1,0 +1,95 @@
+<eui-alert>
+    Check console.log for output event triggered values
+</eui-alert>
+
+<div class="doc-sample-section-title">with eui-toolbar-center and eui-toolbar-search - autocomplete mode (default)</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-center>
+        <eui-toolbar-item>
+            <eui-toolbar-search [searchResults]="results" placeholderLabel="Search" (search)="onSearch($event)" (selectionChange)="onSelectionChange($event)"></eui-toolbar-search>
+        </eui-toolbar-item>
+    </eui-toolbar-center>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+
+<div class="doc-sample-section-title">with eui-toolbar-center and eui-toolbar-search - input text mode</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-center>
+        <eui-toolbar-item>
+            <eui-toolbar-search isInputText placeholderLabel="Search" (search)="onSearch($event)"></eui-toolbar-search>
+        </eui-toolbar-item>
+    </eui-toolbar-center>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+
+<div class="doc-sample-section-title">with eui-toolbar-center and eui-toolbar-search - input text mode - hasSearchButton</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-center>
+        <eui-toolbar-item>
+            <eui-toolbar-search isInputText hasSearchButton placeholderLabel="Search" (searchClick)="onSearch($event)"></eui-toolbar-search>
+        </eui-toolbar-item>
+    </eui-toolbar-center>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+<div class="doc-sample-section-title">No expand and animation</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-center>
+        <eui-toolbar-item>
+            <eui-toolbar-search isInputText placeholderLabel="Search" [hasExpandAnimation]="false"></eui-toolbar-search>
+        </eui-toolbar-item>
+    </eui-toolbar-center>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+
+
+<div class="doc-sample-section-title">with user-profile AND eui-toolbar-search within a eui-toolbar-item</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-toolbar-search [searchResults]="results" placeholderLabel="Search"></eui-toolbar-search>
+        </eui-toolbar-item>
+        <eui-toolbar-item>
+            <eui-user-profile isShowAvatarInitials [isShowUserInfos]="false"></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+

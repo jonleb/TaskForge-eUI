@@ -1,0 +1,27 @@
+<div class="doc-sample-section-title">Dynamic update of color variant and properties</div>
+
+<eui-alert [euiVariant]="variant" [isCloseable]="closeableState">
+    <eui-alert-title>Alert title</eui-alert-title>
+    sample text
+</eui-alert>
+<br>
+
+<button (click)="onUpdateVariant()" euiButton>Toggle color variant</button>
+&nbsp;
+<button (click)="onUpdateCloseable()" euiButton>Toggle isCloseable</button>
+
+
+
+<div class="doc-sample-section-title">Dynamic update of color variant using coerce color inputs</div>
+
+<eui-alert [euiDanger]="variantColor === 'danger'" [euiSuccess]="variantColor === 'success'" [euiWarning]="variantColor === 'warning'">
+    <eui-alert-title>Alert title</eui-alert-title>
+    sample text
+</eui-alert>
+<br>
+
+<button (click)="onUpdateColor('danger')" euiButton>Update to 'danger'</button>&nbsp;
+<button (click)="onUpdateColor('success')" euiButton>Update to 'success'</button>&nbsp;
+<button (click)="onUpdateColor('warning')" euiButton>Update to 'warning'</button>&nbsp;
+<button (click)="onUpdateColor('info')" euiButton>Update to 'info'</button>
+

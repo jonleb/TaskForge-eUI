@@ -1,0 +1,116 @@
+<eui-alert euiWarning>
+    This feature requires the import of <code class="eui-u-text-code">EuiTemplateDirective</code><br/>
+    <code class="eui-u-text-code">import &#123; EuiTemplateDirective &#125; from '&#64;eui/components/directives';</code>
+</eui-alert><br/>
+
+<p class="eui-u-text-paragraph">Uses the <code class="eui-u-text-code">eui-card</code> as the main container including :</p>
+<ul>
+    <li>the card header section : displays a custom title and actions (search filter, edit mode)</li>
+    <li>the card content section : displays the eui-table using a card's list as table rows</li>
+</ul>
+
+<p class="eui-u-text-paragraph">Using <code class="eui-u-text-code">eui-table</code> component as part or the <code class="eui-u-text-code">eui-card-content</code> template directive.
+<br>
+It also uses the <code class="eui-u-text-code">euiNoContentPadding</code> option to fill the main card content container.</p>
+
+<br>
+
+<eui-card euiNoShadow euiCollapsible euiCollapsed="false" [euiHighlighted]="isEditable">
+    <eui-card-header>
+        <eui-card-header-left-content>
+            <eui-icon-svg icon="eui-language-selector" set="eui" size="xl" fillColor="info"></eui-icon-svg>
+        </eui-card-header-left-content>
+        <eui-card-header-title>
+            <div class="eui-u-text-truncate">
+                European Union
+                <eui-badge euiInfo class="eui-u-ml-s">{{filteredData?.length}}</eui-badge>
+                <span class="eui-u-ml-s">countries found</span>
+            </div>
+        </eui-card-header-title>
+        <eui-card-header-subtitle>Population per capital city</eui-card-header-subtitle>
+        <eui-card-header-right-content>
+            <eui-table-filter #filter2 placeholder="Search filter..." (filterChange)="onFilterChange()" (click)="searchFilterClicked($event)"></eui-table-filter>
+            @if (isEditable) {
+                <div class="eui-u-ml-m">
+                    <button euiButton euiPrimary (click)="onToggleEdit($event)">Exit edit mode</button>
+                </div>
+            }
+            @if (!isEditable) {
+                <button euiButton euiBasicButton euiPrimary euiOutline euiTooltip="Edit table content" aria-label="Edit" class="eui-u-ml-m eui-u-mr-s" (click)="onToggleEdit($event)">
+                    Edit
+                </button>
+            }
+        </eui-card-header-right-content>
+    </eui-card-header>
+    <eui-card-content>
+        <table euiTable isTableResponsive euiTableCards [data]="filteredData" [paginator]="paginator" [filter]="filter2">
+            <ng-template let-row euiTemplate="body">
+                <tr>
+                    <td>
+                        <eui-card euiHoverable euiCollapsible euiCollapsed>
+                            <eui-card-header>
+                                <eui-card-header-left-content>
+                                    <span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-flag-icon-2x"></span>
+                                </eui-card-header-left-content>
+                                <eui-card-header-title>
+                                    <span class="eui-u-f-bold">{{ row.country }}</span>
+                                </eui-card-header-title>
+                                <eui-card-header-right-content>
+                                    <div class="eui-u-mr-xl"><small class="eui-u-mr-s">Population</small>{{ row.population | number }}</div>
+                                    @if (isEditable) {
+                                        <div class="eui-u-flex">
+                                            <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS euiPrimary
+                                                euiTooltip="Edit this item"
+                                                aria-label="Edit"
+                                                class="eui-u-mr-xs"
+                                                (click)="onEdit($event, row)">
+                                                <eui-icon-svg icon="eui-edit" fillColor="primary" />
+                                            </button>
+                                            <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS euiDanger euiTooltip="Delete this item" aria-label="Delete" (click)="onDelete($event, row)">
+                                                <eui-icon-svg icon="eui-trash" fillColor="danger" />
+                                            </button>
+                                        </div>
+                                    }
+                                    <eui-dropdown>
+                                        <button euiButton euiBasicButton euiIconButton euiRounded euiTooltip="More options" [attr.aria-label]="'More options'">
+                                            <eui-icon-svg icon="eui-ellipsis-vertical"></eui-icon-svg>
+                                        </button>
+                                        <eui-dropdown-content>
+                                            <button euiDropdownItem (click)="onClick($event, 'Menu item 1', row)"><eui-icon-svg icon="circle-dashed:regular" size="s" fillColor="secondary" class="eui-u-mr-xs"></eui-icon-svg>Menu item 1</button>
+                                            <button euiDropdownItem (click)="onClick($event, 'Menu item 2', row)"><eui-icon-svg icon="circle-dashed:regular" size="s" fillColor="secondary" class="eui-u-mr-xs"></eui-icon-svg>Menu item 2</button>
+                                            <button euiDropdownItem (click)="onClick($event, 'Menu item 3', row)"><eui-icon-svg icon="circle-dashed:regular" size="s" fillColor="secondary" class="eui-u-mr-xs"></eui-icon-svg>Menu item 3</button>
+                                        </eui-dropdown-content>
+                                    </eui-dropdown>
+                                </eui-card-header-right-content>
+                            </eui-card-header>
+
+                            <eui-card-content>
+                                <div class="row" style="overflow: auto;" tabindex="0">
+                                    <div class="col-md-3 col-xs-6">
+                                        <span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }}" style="border: 1px solid silver; height: 4rem; width: 5rem;"></span>
+                                    </div>
+                                    <div class="col-md-9 col-xs-6">
+                                        <span>Capital city : {{ row.capital }}</span><br>
+                                        <span>Population : {{ row.population | number }}</span><br>
+                                        <span>Year : {{ row.year }}</span><br>
+                                    </div>
+                                </div>
+                            </eui-card-content>
+                        </eui-card>
+                    </td>
+                </tr>
+            </ng-template>
+        </table>
+    </eui-card-content>
+        <eui-paginator #paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" />
+</eui-card>
+
+<eui-message-box #messageBox
+    [title]="'Confirm action'"
+    (accept)="onAccept()"
+    (dismiss)="onDismiss()"
+    euiDanger>
+    <div class="eui-u-flex">
+        Are you sure you want to delete this card ?
+    </div>
+</eui-message-box>

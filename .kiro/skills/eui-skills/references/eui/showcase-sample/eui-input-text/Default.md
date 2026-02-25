@@ -1,0 +1,43 @@
+---
+description: Basic euiInputText implementation with standalone input, labeled input, and euiMaxlength directive usage.
+id: Default
+---
+
+```html
+<input euiInputText value="Input text sample" aria-label="Input text sample" />
+
+<div class="doc-sample-section-title">With Label</div>
+<div euiInputGroup>
+    <label euiLabel for="with_label_default">Label</label>
+    <input euiInputText id="with_label_default" value="Input text sample" />
+</div>
+
+<div class="doc-sample-section-title">With max length defined</div>
+<p class="eui-u-text-paragraph">Use the <code class="eui-u-text-code">euiMaxlength</code> directive to set contents size limit</p>
+<br>
+<div euiInputGroup>
+    <label euiLabel for="label_max50">Label (euiMaxlength=50)</label>
+    <input euiInputText id="label_max50" value="Input text sample" [euiMaxlength]="50" />
+</div>
+```
+
+```typescript
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+
+import { EUI_INPUT_GROUP } from '@eui/components/eui-input-group';
+import { EUI_LABEL } from '@eui/components/eui-label';
+import { EUI_INPUT_TEXT } from '@eui/components/eui-input-text';
+import { EuiMaxLengthDirective } from '@eui/components/directives';
+
+
+@Component({
+    // tslint:disable-next-line
+    selector: 'Default',
+    templateUrl: 'component.html',
+    imports: [...EUI_INPUT_GROUP, ...EUI_LABEL, ...EUI_INPUT_TEXT, EuiMaxLengthDirective],
+    changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class DefaultComponent {
+}
+```
+

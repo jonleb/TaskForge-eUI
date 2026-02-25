@@ -1,0 +1,11 @@
+<p>The source code of the used service can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-card/samples/cards-list/service" class="eui-u-text-link-external" target="_blank">here</a>.<p>
+
+<div class="doc-sample-section-title">Display accordion cards</div>
+
+<p class="eui-u-text-paragraph">In order to use the accordion display with <code class="eui-u-text-code">eui-cards</code>, we listen on the emitted collapsed state of the <code class="eui-u-text-code">eui-card-header</code> by using the (collapse) method and emits it back to the caller.</p>
+<p class="eui-u-text-paragraph">See the <a class="eui-u-text-link-external" href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-card/samples/cards-list-accordion" target="_blank" class="eui-u-text-link-external">code source</a> of the card-list-item-accordion component for more information.</p>
+<pre class="eui-u-text-pre">&lt;eui-card-header (collapse)="onCollapse($event)"&gt;</pre>
+
+@for (data of payload; track $index) {
+    <card-list-item-accordion [data]="data" isCollapsible [isCollapsed]="!data.collapsed" (collapse)="onCollapse($event, data)"/>
+}

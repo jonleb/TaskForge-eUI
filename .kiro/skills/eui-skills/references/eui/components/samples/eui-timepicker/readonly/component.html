@@ -1,0 +1,12 @@
+<form [formGroup]="form">
+    <div class="row">
+        <div class="col">
+            <eui-timepicker isreadOnly formControlName="timepickerControl"></eui-timepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form.value | json }}</pre>
+        </div>
+    </div>
+</form>
+

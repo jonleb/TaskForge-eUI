@@ -1,0 +1,14 @@
+Page numbers allows more <strong>precise and fast navigation</strong> through data pages which also brings a
+better user experience when displaying lots of data records.<br>
+Use the <code class="eui-u-text-code">hasPageNumberNavigation=true</code> input property to enable the
+display of pages numbers to be accessible within the next and previous action buttons.
+Default number of accessible pages : 5.
+<br><br>
+<eui-alert>
+    Combining the page number navigation with the <code
+        class="eui-u-text-code">nbPageNumberNavigation</code> input property, you can define the number of
+    numbered pages to be accessible.
+    <strong>Recommended</strong> and default value: 5
+</eui-alert>
+
+<eui-paginator [length]="dataSource.length" [pageSize]="5" [hasPageNumberNavigation]="true"></eui-paginator>

@@ -1,0 +1,20 @@
+<p class="eui-u-text-paragraph">The eui-dropdown panel is automatically closed when the panel is out ouf the viewport scope.</p>
+
+<button euiButton euiPrimary euiOutline (click)="openDialog()">Open Dialog</button>
+
+<eui-dialog #dialog [title]="'Dialog title'">
+    <eui-showcase-doc-lorem-ipsum [textSize]="'small'"></eui-showcase-doc-lorem-ipsum>
+    
+    <eui-dropdown>
+        <button euiButton euiPrimary [attr.aria-label]="'Menu'" class="eui-u-mv-m">
+            <span euiLabel>Button trigger</span>
+        </button>
+        <eui-dropdown-content>
+            <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1">Menu item 1</button>
+            <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2">Menu item 2</button>
+            <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3">Menu item 3</button>
+        </eui-dropdown-content>
+    </eui-dropdown>
+    <eui-showcase-doc-lorem-ipsum [textSize]="'large'"></eui-showcase-doc-lorem-ipsum>
+</eui-dialog>
+

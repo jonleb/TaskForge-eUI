@@ -1,0 +1,28 @@
+<p class="eui-u-text-paragraph">This sample shows how to open multiple eui-dialog and how to open an eui-message-box from the dialog when implemented with template-driven.<br/>
+<br/>
+<code class="eui-u-text-code">euiDialogService.getOpenedDialog()</code> can be subscribed to get an array containing all opened dialog and message-box.<br/>
+<br/>
+The source code of the injected component can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-dialog-template/dummy-components" target="_blank" class="eui-u-text-link-external">here</a>.</p><br/>
+
+<button euiButton type="button" (click)="openDialog()" aria-haspopup="dialog">Open Dialog</button>
+{{ injectedFormValues | json }}
+
+<eui-dialog #dialog
+    [title]="'Dialog title Dialog1TemplateComponent'"
+    [isHandleCloseOnAccept]="true"
+    [isHandleCloseOnDismiss]="true"
+    (accept)="onAccept()"
+    (dismiss)="onDismiss()">
+    @if (dialog.isOpen) {
+        <dialog1-template-component #dialogContentComponent (formValueChange)="onFormValueChange($event)"></dialog1-template-component>
+    }
+</eui-dialog>
+
+<eui-message-box #messageBox
+    [isHandleCloseOnAccept]="true"
+    [title]="'Message box title'"
+    (accept)="onMessageBoxAccept()">
+    <div class="eui-u-flex">
+        <p class="eui-u-text-paragraph">Are you sure to cancel the form</p>
+    </div>
+</eui-message-box>

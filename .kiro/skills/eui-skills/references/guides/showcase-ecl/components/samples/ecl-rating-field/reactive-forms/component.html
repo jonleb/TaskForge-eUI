@@ -1,0 +1,19 @@
+<form [formGroup]="fg">
+  <fieldset eclFormGroup aria-describedby="rating-field-helper-reactive">
+      <legend eclFormLabel id="rating-field-label-reactive" isRequired>Please Rate</legend>
+      <div eclHelpBlock id="rating-field-helper-reactive">Rating selection value: {{ this.fg.get('choices').value || 'None' }}</div>
+      <ecl-rating-field
+        formControlName="choices"
+        name="choices"
+        (ratingChange)="onRatingChange($event)">
+      </ecl-rating-field>
+      @if (validateRequired()) {
+      <div eclFeedbackMessage>
+          <ecl-icon icon="error" size="s" ariaHidden="false" role="img">
+              <title>Error</title>
+          </ecl-icon>
+          This field is required
+      </div>
+      }
+  </fieldset>
+</form>

@@ -1,0 +1,11 @@
+<fieldset eclFormGroup aria-describedby="rating-field-helper-invalid">
+    <legend eclFormLabel id="rating-field-label-invalid" isRequired>Please Rate</legend>
+    <div eclHelpBlock id="rating-field-helper-invalid">This is the group's helper text.</div>
+    <ecl-rating-field name="invalid" (ratingChange)="onRatingChange($event)"></ecl-rating-field>
+    <div eclFeedbackMessage>
+        <ecl-icon icon="error" size="s" ariaHidden="false" role="img">
+            <title>Error</title>
+        </ecl-icon>
+        This is the error message
+    </div>
+</fieldset>

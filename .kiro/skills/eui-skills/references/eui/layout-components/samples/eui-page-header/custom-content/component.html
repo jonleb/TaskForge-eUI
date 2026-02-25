@@ -1,0 +1,283 @@
+<p class="eui-u-text-paragraph">
+    The following examples are compositions using the <code class="eui-u-text-code">eui-page-header</code> with the <code class="eui-u-text-code">eui-page-header-sub-label</code> as a custom container.
+</p>
+
+<div class="doc-sample-section-title">1. Custom content (status + text label)</div>
+
+<eui-page-header label="Prepare checklist - Desk Officer - Admissibility checklist with explicit extra long label to test auto-truncated title (CSP Annual Performance Report LV)">
+    <eui-page-header-sub-label class="eui-u-flex-gap-xs">
+        <div class="eui-u-flex eui-u-flex-gap-m">
+            <eui-chip euiPrimary euiSizeS>
+                CLAIMED
+            </eui-chip>
+            by Jane DOE on 05/04/2024 14:15:00
+        </div>
+    </eui-page-header-sub-label>
+
+    <eui-page-header-action-items>
+        <button euiButton euiSecondary>Secondary action</button>
+        <button euiButton euiPrimary>Primary action</button>
+    </eui-page-header-action-items>
+</eui-page-header>
+
+
+
+
+<div class="doc-sample-section-title">2. Custom content (category, status + text label) and optional tags </div>
+
+<eui-page-header label="Prepare checklist - Desk Officer - Admissibility checklist with explicit extra long label to test auto-truncated title (CSP Annual Performance Report LV)">
+
+    <eui-page-header-sub-label class="eui-u-flex-gap-xs">
+
+        <div class="eui-u-flex eui-u-flex-gap-m">
+
+            <!-- CATEGORY -->
+            <div class="eui-u-c-bg-secondary-surface-dark eui-u-ph-xs eui-u-pv-4xs">
+                CATEGORY
+            </div>
+
+            <!-- STATUS -->
+            <eui-chip euiSizeS euiInfo>
+                STATUS
+            </eui-chip>
+
+            by Jane DOE on 17/06/2024 14:15:00
+        </div>
+
+        <!-- OPTIONAL TAGS -->
+        <div class="eui-u-flex eui-u-flex-align-items-start eui-u-flex-gap-s">
+            <eui-icon-svg icon="tag:regular" class="eui-u-mt-xs" />
+            <eui-chip-list euiOutline euiSecondary>
+                @for (chip of chips; let i = $index; track chip.id) {
+                    @if (isMaxVisibleChipsOpened || i <= maxVisibleChipsCount) {
+                        <eui-chip euiSizeS>{{ chip.label }}</eui-chip>
+                    }
+                }
+                <eui-chip-list-additional-content>
+                    @if (maxVisibleChipsCount && chips && chips.length > maxVisibleChipsCount) {
+                        <button
+                            euiButton
+                            euiBasicButton
+                            euiSecondary
+                            euiSizeXS
+                            type="button"
+                            class="eui-chip-list__expand-button"
+                            (click)="toggleTags()">
+
+                            @if (isMaxVisibleChipsOpened) {
+                                <eui-icon-svg icon="eui-chevron-left" aria-label="Collapse icon" />
+                                {{ 'eui.SHOW-LESS' | translate }}
+                            } @else {
+                                {{ 'eui.SHOW-MORE' | translate }}
+                                <eui-icon-svg icon="eui-chevron-right" aria-label="Expand icon" />
+                            }
+                        </button>
+                    }
+                </eui-chip-list-additional-content>
+            </eui-chip-list>
+            <!-- Optional Manage action -->
+            <!-- <button euiButton euiBasicButton euiPrimary euiSizeS>Manage</button> -->
+        </div>
+    </eui-page-header-sub-label>
+
+    <eui-page-header-action-items>
+        <button euiButton euiSecondary>Secondary action</button>
+        <button euiButton euiPrimary>Primary action</button>
+    </eui-page-header-action-items>
+</eui-page-header>
+
+
+
+
+<div class="doc-sample-section-title">3. Custom content with optional tags and advanced responsive card header</div>
+
+<eui-page-header
+    label="Prepare checklist - Desk Officer - Admissibility checklist with explicit extra long label to test auto-truncated title (CSP Annual Performance Report LV)"
+    [isCollapsible]="true"
+    [isCollapsed]="false">
+
+    <eui-page-header-sub-label class="eui-u-flex-gap-xs">
+
+        <div class="eui-u-flex eui-u-flex-gap-m">
+            <!-- CATEGORY -->
+            <div class="eui-u-c-bg-secondary-surface-dark eui-u-ph-2xs eui-u-pv-4xs">
+                CATEGORY
+            </div>
+
+            <!-- STATUS -->
+            <eui-chip euiSizeS euiInfo>
+                STATUS
+            </eui-chip>
+
+            by Jane DOE on 17/06/2024 14:15:00
+        </div>
+
+        <!-- OPTIONAL TAGS -->
+        <div class="eui-u-flex eui-u-flex-align-items-start eui-u-flex-gap-s">
+            <eui-icon-svg icon="tag:regular" class="eui-u-mt-xs" />
+            <eui-chip-list euiOutline euiSecondary>
+                @for (chip of chips; let i = $index; track chip.id) {
+                    @if (isMaxVisibleChipsOpened || i <= maxVisibleChipsCount) {
+                        <eui-chip euiSizeS>{{ chip.label }}</eui-chip>
+                    }
+                }
+                <eui-chip-list-additional-content>
+                    @if (maxVisibleChipsCount && chips && chips.length > maxVisibleChipsCount) {
+                        <button
+                            euiButton
+                            euiBasicButton
+                            euiSecondary
+                            euiSizeXS
+                            type="button"
+                            class="eui-chip-list__expand-button"
+                            (click)="toggleTags()">
+
+                            @if (isMaxVisibleChipsOpened) {
+                                <eui-icon-svg icon="eui-chevron-left" aria-label="Collapse icon" />
+                                {{ 'eui.SHOW-LESS' | translate }}
+                            } @else {
+                                {{ 'eui.SHOW-MORE' | translate }}
+                                <eui-icon-svg icon="eui-chevron-right" aria-label="Expand icon" />
+                            }
+                        </button>
+                    }
+                </eui-chip-list-additional-content>
+            </eui-chip-list>
+            <!-- Optional Manage action -->
+            <button euiButton euiBasicButton euiPrimary euiSizeS>Manage</button>
+        </div>
+    </eui-page-header-sub-label>
+
+    <eui-page-header-action-items>
+        <button euiButton euiSecondary>Secondary action</button>
+        <button euiButton euiPrimary>Primary action</button>
+    </eui-page-header-action-items>
+
+    <eui-page-header-body>
+        <!-- Use a component here -->
+        <ng-content *ngTemplateOutlet="headerContent"></ng-content>
+    </eui-page-header-body>
+</eui-page-header>
+
+<div class="eui-u-pv-6xl"></div>
+
+<!-- This is typically a component -->
+<ng-template #headerContent>
+    <eui-card class="eui-u-mt-m">
+        <eui-card-header style="max-height: 20rem; overflow: auto;" class="eui-u-display-scrollbars">
+            <eui-card-header-subtitle>
+
+                <!-- MANDATORY INFOS -->
+                <div class="row">
+                    <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                        <div class="eui-u-c-text-light">Contract number</div>
+                        <div class="eui-u-text-truncate eui-u-f-bold">300032985</div>
+                    </div>
+                    <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                        <div class="eui-u-c-text-light">Maximum contract value</div>
+                        <div class="eui-u-text-truncate eui-u-f-bold">800 EUR</div>
+                    </div>
+                    <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                        <div class="eui-u-c-text-light">Contract title</div>
+                        <div class="eui-u-text-truncate eui-u-f-bold">SG 18052022 Audit Sanity</div>
+                    </div>
+                    <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                        <div class="eui-u-c-text-light">Leader</div>
+                        <div class="eui-u-text-truncate eui-u-f-bold">DELOITTE BEDRIJFSREVISOREN/REVISEURS D'ENTREPRISES</div>
+                    </div>
+                    <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                        <div class="eui-u-c-text-light">Start date</div>
+                        <div class="eui-u-text-truncate eui-u-f-bold">18/06/2022</div>
+                    </div>
+                    <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                        <div class="eui-u-c-text-light">End date</div>
+                        <div class="eui-u-text-truncate eui-u-f-bold">19/12/2022</div>
+                    </div>
+                    <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                        <div class="eui-u-c-text-light">Duration</div>
+                        <div class="eui-u-text-truncate eui-u-f-bold">220 day(s)</div>
+                    </div>
+                    <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                        <div class="eui-u-c-text-light">Procedure type</div>
+                        <div class="eui-u-text-truncate eui-u-f-bold">Specific contract under framework contract</div>
+                    </div>
+                    <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                        <div class="eui-u-c-text-light">Project ID</div>
+                        <div class="eui-u-text-truncate eui-u-f-bold">CCREF-ALERT-2024</div>
+                    </div>
+                    <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                        <div class="eui-u-c-text-light">Commitment type</div>
+                        <div class="eui-u-text-truncate eui-u-f-bold">&mdash;</div>
+                    </div>
+                    <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                        <div class="eui-u-c-text-light">Project owner</div>
+                        <div class="eui-u-text-truncate eui-u-f-bold">European Commission</div>
+                    </div>
+                    <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                        <div class="eui-u-c-text-light">Lot</div>
+                        <div class="eui-u-text-truncate eui-u-f-bold">&mdash;</div>
+                    </div>
+                </div>
+            
+                <!-- More/ Less -->
+                @if (hasSupplementaryItems) {
+                    <button euiButton euiPrimary euiOutline euiSizeS class="eui-u-mv-m" (click)="onShowMoreToggle($event)">
+                        @if (!showMore) {
+                            <eui-icon-svg icon="eui-add" />
+                            {{ 'eui.SHOW-MORE' | translate }}
+                        } @else {
+                            <eui-icon-svg icon="eui-remove" />
+                            {{ 'eui.SHOW-LESS' | translate }}
+                        }
+                    </button>
+
+                    <!-- MORE OPTIONAL INFOS -->
+                    @if (showMore) {
+                        <div class="row">
+                            <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                                <div class="eui-u-c-text-light">Process</div>
+                                <div class="eui-u-text-truncate eui-u-f-bold eui-u-c-warning-light">RoutingReferenceFlow</div>
+                            </div>
+                            <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                                <div class="eui-u-c-text-light">Process version</div>
+                                <div class="eui-u-text-truncate eui-u-f-bold">1</div>
+                            </div>
+                            <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                                <div class="eui-u-c-text-light">Task</div>
+                                <div class="eui-u-text-truncate eui-u-f-bold">User Task1</div>
+                            </div>
+                            <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                                <div class="eui-u-c-text-light">Facilitator</div>
+                                <div class="eui-u-text-truncate eui-u-f-bold">Vesta Considine</div>
+                            </div>
+                            <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                                <div class="eui-u-c-text-light">Task ID</div>
+                                <div class="eui-u-text-truncate eui-u-f-bold">51912</div>
+                            </div>
+                            <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                                <div class="eui-u-c-text-light">Creation date</div>
+                                <div class="eui-u-text-truncate eui-u-f-bold">30/05/2022 00:00:00</div>
+                            </div>
+                            <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                                <div class="eui-u-c-text-light">Task status</div>
+                                <div class="eui-u-text-truncate eui-u-f-bold">Completed</div>
+                            </div>
+                            <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                                <div class="eui-u-c-text-light">Contractor</div>
+                                <div class="eui-u-text-truncate eui-u-f-bold">Jane DOE</div>
+                            </div>
+                            <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                                <div class="eui-u-c-text-light">Domain</div>
+                                <div class="eui-u-text-truncate eui-u-f-bold">GRANTS</div>
+                            </div>
+                            <div class="col-xxxl-3 col-xxl-4 col-xl-6 eui-u-mb-xs">
+                                <div class="eui-u-c-text-light">Urgent</div>
+                                <div class="eui-u-text-truncate eui-u-f-bold">false</div>
+                            </div>
+                        </div>
+                    }
+                }
+            </eui-card-header-subtitle>
+        </eui-card-header>
+    </eui-card>
+</ng-template>

@@ -1,0 +1,15 @@
+<p class="eui-u-text-paragraph">This sample shows how the overlay component get relative scrolling reference from dialog body</p><br/>
+
+<button euiButton (click)="openDialog()">Open Dialog</button>
+
+<eui-dialog #dialog [title]="'Dialog title'">
+    <p class="eui-u-text-paragraph">Dialog content</p>
+    <eui-showcase-doc-lorem-ipsum [textSize]="'large'"></eui-showcase-doc-lorem-ipsum>
+    <button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover($event)">
+        <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+    </button>
+    <eui-popover #popover [title]="'This is popover title'">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+    </eui-popover>
+    <eui-showcase-doc-lorem-ipsum [textSize]="'large'"></eui-showcase-doc-lorem-ipsum>
+</eui-dialog>

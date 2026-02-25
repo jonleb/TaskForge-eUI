@@ -1,0 +1,10 @@
+<p class="eui-u-text-paragraph">This sample shows how to send data to a backend requiring some specificities.<br/>
+<br/>
+By default eUi provides a service to upload, it can be used locally and customise according to the needs.</p>
+<br/>
+
+<form [formGroup]="form" enctype="multipart/form-data">
+    <eui-file-upload formControlName="file" [progress]="progress">
+        <span class="eui-u-mr-xs"><button euiButton euiPrimary (click)="submit()">Submit</button></span>
+    </eui-file-upload>
+</form>

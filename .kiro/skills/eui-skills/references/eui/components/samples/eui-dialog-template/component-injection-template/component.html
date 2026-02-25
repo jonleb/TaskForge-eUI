@@ -1,0 +1,88 @@
+<p class="eui-u-text-paragraph">The following samples shows how to use and inject, on demand, components inside the Dialog window and make them communicate together.<br/>
+Injected components can be declared in a Template driven approach or through the EuiDialogService.</p>
+
+<p class="eui-u-text-paragraph"><code class="eui-u-text-code">Observable</code> can be used to refresh the view.</p>
+
+<p class="eui-u-text-paragraph">Note that when using Template driven approach, the OnInit and OnDestroy hooks of the injected components will be triggered with the ones of the parent page. To prevent this behaviour, the below samples work with the following solution:</p>
+<pre class="eui-u-text-pre">
+<code class="eui-u-text-code">
+&lt;eui-dialog #dialog&gt;
+    &#64;if (dialog.isOpen) &#123;
+        &lt;my-component&gt;&lt;/my-component&gt;
+    &#125;
+&lt;/eui-dialog&gt;
+</code>
+</pre>
+
+<p class="eui-u-text-paragraph">The source code of the injected component can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-dialog-template/dummy-components" target="_blank" class="eui-u-text-link-external">here</a>.</p>
+
+<div class="doc-sample-section-title">Inject component in dialog header</div>
+<button euiButton type="button" (click)="openDialog1()" aria-haspopup="dialog">Open Dialog</button>
+{{ injectedFormValues1 | json }}
+
+<div class="doc-sample-section-title">Inject component in dialog body and header</div>
+<button euiButton type="button" (click)="openDialog2()" aria-haspopup="dialog">Open Dialog</button>
+{{ injectedFormValues2 | json }}
+
+<div class="doc-sample-section-title">Inject component in dialog body and footer</div>
+<button euiButton type="button" (click)="openDialog3()" aria-haspopup="dialog">Open Dialog</button>
+{{ injectedFormValues3 | json }}
+
+<!-- DIALOG TEMPLATES -->
+<eui-dialog #dialog1
+    [title]="'Dialog title'"
+    [isHandleCloseOnAccept]="true"
+    [isHandleCloseOnDismiss]="true"
+    [isHandleCloseOnEscape]="true"
+    (accept)="onAccept1()"
+    (dismiss)="onDismiss1()"
+    (escape)="onClose1()"
+    (dialogClose)="onClose1()">
+    <eui-dialog-header>
+        @if (dialog1.isOpen) {
+            <dummy-header-template-component [actionButtons]="actionButtons"></dummy-header-template-component>
+        }
+    </eui-dialog-header>
+    @if (dialog1.isOpen) {
+        <dummy-body-template-component #bodyComponent1 (formValueChange)="onFormValueChange1($event)" (closeDialog)="onClose1()"></dummy-body-template-component>
+    }
+</eui-dialog>
+
+<eui-dialog #dialog2
+    [title]="'Dialog title'"
+    [isHandleCloseOnAccept]="true"
+    [isHandleCloseOnClose]="true"
+    [isHandleCloseOnEscape]="true"
+    (escape)="onClose2()"
+    (dialogClose)="onClose2()">
+    <eui-dialog-header>
+        @if (dialog2.isOpen) {
+            <dummy-header-template-component [actionButtons]="actionButtons"></dummy-header-template-component>
+        }
+    </eui-dialog-header>
+    @if (dialog2.isOpen) {
+        <dummy-body-template-component #bodyComponent2 (formValueChange)="onFormValueChange2($event)" (closeDialog)="onClose2()"></dummy-body-template-component>
+    }
+    <eui-dialog-footer>
+        @if (dialog2.isOpen) {
+            <dummy-footer-template-component (accept)="onAccept2()" (dismiss)="onDismiss2()"></dummy-footer-template-component>
+        }
+    </eui-dialog-footer>
+</eui-dialog>
+
+<eui-dialog #dialog3
+    [title]="'Dialog title'"
+    [isHandleCloseOnAccept]="true"
+    [isHandleCloseOnClose]="true"
+    [isHandleCloseOnEscape]="true"
+    (escape)="onClose3()"
+    (dialogClose)="onClose3()">
+    @if (dialog3.isOpen) {
+        <dummy-body-template-component #bodyComponent3 (formValueChange)="onFormValueChange3($event)" (closeDialog)="onClose3()"></dummy-body-template-component>
+    }
+    <eui-dialog-footer>
+        @if (dialog3.isOpen) {
+            <dummy-footer-template-component (accept)="onAccept3()" (dismiss)="onDismiss3()"></dummy-footer-template-component>
+        }
+    </eui-dialog-footer>
+</eui-dialog>

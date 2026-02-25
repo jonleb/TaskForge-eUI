@@ -1,0 +1,18 @@
+<p class="eui-u-text-paragraph">The following samples shows how to use and inject, on demand, components inside the Message Box window and make them communicate together.
+Injected components are declared through the EuiMessageBoxService.<br/>
+<br/>
+The source code of the injected component can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-message-box-service/dummy-components" target="_blank">here</a>.</p>
+
+
+
+<div class="doc-sample-section-title">Inject component in message box body and footer</div>
+<eui-alert>In the following sample, the component injected in the footer has a <code class="eui-u-text-code">selector</code> property then its content is embedded in a tag having this value. When <code class="eui-u-text-code">selector</code> property is not provided, Angular creates a ng-component tag instead. eUI sets ng-component width to 100%.<br/><br/>
+If a selector is needed, a class needs to be added on the host and width sets to 100% or, as shown in the footer, use <code class="eui-u-text-code">eui-u-flex</code> utility class:
+<pre class="eui-u-text-pre">
+    <code class="eui-u-text-code">
+    &#64;HostBinding('class') classes = 'eui-u-flex';
+    </code>
+</pre>
+The source code of the footer can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-message-box-service/dummy-components/dummy-footer-service-component.ts" target="_blank" class="eui-u-text-link">here</a>.</eui-alert><br/>
+
+<button euiButton type="button" (click)="openWithService()">Open Message Box</button>

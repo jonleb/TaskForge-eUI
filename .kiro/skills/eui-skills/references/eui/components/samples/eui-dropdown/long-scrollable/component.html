@@ -1,0 +1,11 @@
+<eui-dropdown>
+    <button euiButton euiPrimary [attr.aria-label]="'Menu items'">
+        <span euiLabel>Menu</span>
+        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+    </button>
+    <eui-dropdown-content>
+        @for (dropdownItem of dropdownItems; track $index) {
+            <button euiDropdownItem (click)="onClick(dropdownItem.label)" [attr.aria-label]="dropdownItem.label">{{ dropdownItem.label }}</button>
+        }
+    </eui-dropdown-content>
+</eui-dropdown>

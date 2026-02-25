@@ -1,0 +1,224 @@
+<div class="doc-sample-section-title">Input field with action button within an eui-card</div>
+<eui-card>
+    <eui-card-header>
+        <eui-card-header-title>Knowledge base solutions</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        <div euiInputGroup class="eui-u-mb-2xs">
+            <div euiInputGroupAddOn>
+                <input euiInputText id="solution_kb" value="" placeholder="Enter new incident solution" aria-label="Enter new incident solution"/>
+                <button euiButton euiPrimary euiIconButton aria-label="Add solution">
+                    <eui-icon-svg icon="eui-add" size="s"></eui-icon-svg>
+                </button>
+            </div>
+            <eui-feedback-message euiInfo>Please, describe the solution starting with one of the following keywords: what, how (many), where, which, etc.</eui-feedback-message>
+        </div>
+    </eui-card-content>
+</eui-card>
+
+
+<div class="doc-sample-section-title">Responsive layout using reactive forms and eui-input-group-addon class</div>
+<form [formGroup]="formValidation">
+    <div class="row">
+        <div class="col-md-6">
+            <div euiInputGroup>
+                <label euiLabel for="user" euiRequired>User</label>
+                <div euiInputGroupAddOn>
+                    <div euiInputGroupAddOnItem>
+                        <eui-icon-svg icon="eui-user" size="s"></eui-icon-svg>
+                    </div>
+                    <input euiInputText id="user" formControlName="userValue" placeholder="Enter user name or code" />
+                </div>
+                @if (validateRequired('userValue')) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+            </div>
+
+            <div euiInputGroup>
+                <label euiLabel euiRequired>eMail</label>
+                <div euiInputGroupAddOn>
+                    <div euiInputGroupAddOnItem>
+                        <eui-icon-svg icon="eui-email" size="s"></eui-icon-svg>
+                    </div>
+                    <input euiInputText formControlName="emailValue" placeholder="Email address" aria-label="Enter email address"/>
+                </div>
+                @if (validateRequired('emailValue')) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+                @if (validateEmail('emailValue')) {
+                    <eui-feedback-message euiDanger>
+                        Email address is invalid
+                    </eui-feedback-message>
+                }
+            </div>
+
+            <div euiInputGroup>
+                <label euiLabel for="country" euiRequired>Country</label>
+                <div euiInputGroupAddOn>
+                    <div euiInputGroupAddOnItem>
+                        <eui-icon-svg icon="globe-x:regular" size="s"></eui-icon-svg>
+                    </div>
+                    <select euiSelect id="country" formControlName="countryValue">
+                        @for (country of countries; track country.id) {
+                            <option euiPrimary [value]="country.id">{{country.name}}</option>
+                        }
+                    </select>
+                </div>
+                @if (validateRequired('countryValue')) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-6">
+
+            <div euiInputGroup>
+                <label euiLabel for="address" euiRequired>Address</label>
+                <div euiInputGroupAddOn>
+                    <div euiInputGroupAddOnItem>
+                        Address
+                    </div>
+                    <input euiInputText id="address" formControlName="addressValue" placeholder="Enter postal address"/>
+                </div>
+                @if (validateRequired('addressValue')) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+            </div>
+
+            <div euiInputGroup>
+                <label euiLabel for="amount" euiRequired>Donation amount</label>
+                <div euiInputGroupAddOn>
+                    <input euiInputNumber id="amount" formControlName="amountValue" placeholder="Total amount"/>
+                    <div euiInputGroupAddOnItem>
+                        <eui-icon-svg icon="eui-euro" size="s"></eui-icon-svg>
+                    </div>
+                </div>
+                @if (validateRequired('amountValue')) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="eui-u-flex eui-u-flex-justify-content-end">
+    <button euiButton euiPrimary (click)="onSubmitForm()">Submit</button>
+</div>
+
+<strong>Reactive Form content</strong>
+<div class="eui-showcase-demo eui-u-mt-m">
+    <div class="code" style="overflow-y: auto;" tabindex="0">
+        <pre class="eui-u-text-pre" tabindex="0">{{ formValidation.value | json }}</pre>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Using action buttons</div>
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <button euiButton euiPrimary euiOutline euiIconButton (click)="onActionButtonClicked($event, 'Left')" aria-label="Go back">
+            <eui-icon-svg icon="eui-arrow-left" size="s"></eui-icon-svg>
+        </button>
+
+        <input euiInputText type="search" placeholder="Search website..." aria-label="Search website"/>
+
+        <button euiButton euiPrimary euiIconButton (click)="onActionButtonClicked($event, 'Right')" aria-label="Search">
+            <eui-icon-svg icon="eui-search" size="s"></eui-icon-svg>
+        </button>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Using addon items</div>
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="eui-arrow-left"size="s"></eui-icon-svg>
+        </div>
+
+        <input euiInputText type="search" placeholder="Search website..." aria-label="Search website"/>
+
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="eui-search" size="s"></eui-icon-svg>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Using both button and addon item</div>
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="eui-email" size="s"></eui-icon-svg>
+        </div>
+
+        <input euiInputText placeholder="Enter email address..." aria-label="Enter email address"/>
+
+        <button euiButton euiPrimary euiOutline euiIconButton (click)="onActionButtonClicked($event, 'Search')" aria-label="Search">
+            <eui-icon-svg icon="eui-search" size="s"></eui-icon-svg>
+        </button>
+    </div>
+</div>
+
+<div class="doc-sample-section-title">Addon with euiMaxLength</div>
+<form [formGroup]="formValidation">
+
+    <div euiInputGroup>
+        <label euiLabel>Phone with max length</label>
+        <div euiInputGroupAddOn>
+            <div euiInputGroupAddOnItem>
+                <eui-icon-svg icon="circle-dashed:regular"></eui-icon-svg>
+            </div>
+            <input euiInputText [euiMaxlength]="50" mask="(00) 00000000||+00 (00) 00000000" aria-label="Phone number" />
+        </div>
+    </div>
+
+</form>
+
+
+<div class="doc-sample-section-title">Using textareas</div>
+<div class="row">
+    <div class="col-xl-4 col-md-6">
+        <div euiInputGroup>
+            <label euiLabel for="story_max_en">Tell us your story</label>
+            <div euiInputGroupAddOn>
+                <div euiInputGroupAddOnItem>
+                    English
+                </div>
+                <textarea euiTextArea id="story_max_en" name="story_en" rows="5">It was a dark and stormy night...</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6">
+        <div euiInputGroup>
+            <label euiLabel for="story_max_fr">Racontez-nous votre histoire</label>
+            <div euiInputGroupAddOn>
+                <div euiInputGroupAddOnItem>
+                    français
+                </div>
+                <textarea euiTextArea id="story_max_fr" name="story_fr" rows="5">C'était une nuit sombre et orageuse...</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6">
+        <div euiInputGroup>
+            <label euiLabel for="story_max_es">Cuéntanos tu historia</label>
+            <div euiInputGroupAddOn>
+                <div euiInputGroupAddOnItem>
+                    español
+                </div>
+                <textarea euiTextArea id="story_max_es" name="story_es" rows="5">Era una noche oscura y tormentosa...</textarea>
+            </div>
+        </div>
+    </div>
+</div>

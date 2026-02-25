@@ -1,0 +1,46 @@
+<eui-alert>The source code of the used service can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-table/services" class="eui-u-text-link-external" target="_blank">here</a>.</eui-alert><br/>
+
+<eui-paginator
+    #paginatorMultiple
+    [length]="data.length"
+    [pageSizeOptions]="multiplePageSizeOptions"
+    [page]="multiplePage"
+    [pageSize]="multiplePageSize"
+    (pageChange)="onMultiplePageChange($event)">
+</eui-paginator>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data" [paginator]="paginatorMultiple">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Country" nowrap><span class="flag-icon flag-icon-{{ row.iso.toLowerCase() }} mr-2"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator
+    [length]="data.length"
+    [pageSizeOptions]="multiplePageSizeOptions"
+    [page]="multiplePage"
+    [pageSize]="multiplePageSize"
+    (pageChange)="onMultiplePageChange($event)">
+</eui-paginator>

@@ -1,0 +1,24 @@
+<!-- <eui-calendar hasMonthlyView> -->
+<eui-calendar>
+
+    <!-- Calendar Header -->
+    <eui-calendar-header (todayClicked)="onTodayClicked($event)"
+        [(currentDate)]="date"
+        [mode]="Mode.Monthly"
+        [startingDay]="startDayOfWeek()"
+        class="header" />
+    
+    <!-- Monthly Calendar with Custom Day Template -->
+    <eui-calendar-monthly [events]="events()" [date]="date" />
+    
+    <!-- Day Template Definition -->
+    <ng-template #dayTemplate let-label="label" let-metadata="metadata" let-subLabel="subLabel">
+        <div class="eui-u-flex eui-u-flex-column eui-u-flex-gap-s eui-u-flex-align-items-start">
+            @if (metadata && metadata()) {
+                <eui-chip euiWarning euiSizeS>{{ metadata().location }}</eui-chip>
+                <eui-chip euiPrimary euiSizeS>{{ metadata().specificContract }}</eui-chip>
+            }
+        </div>
+    </ng-template>
+    
+</eui-calendar>

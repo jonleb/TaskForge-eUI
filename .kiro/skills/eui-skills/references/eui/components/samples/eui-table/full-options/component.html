@@ -1,0 +1,83 @@
+<eui-alert>The source code of the used service can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-table/services" class="eui-u-text-link-external" target="_blank">here</a>.</eui-alert>
+<br/>
+
+<div class="eui-u-mb-xs eui-u-flex eui-u-flex-justify-content-between">
+    <div>European Union <eui-badge euiPrimary>{{ dataLength }}</eui-badge> countries found</div>
+    <div class="eui-u-width-20">
+        <eui-table-filter placeholder="Search filter..." (filterChange)="onFilterChange($event)"></eui-table-filter>
+    </div>
+</div>
+<div class="eui-table__scrollable-wrapper eui-u-flex" style="height: 600px">
+    <eui-table
+        #euiTable
+        isVirtualScroll
+        hasStickyHeader
+        hasStickyFooter
+        hasStickyCols
+        isTableResponsive
+        isAsync
+        isColsOrderable
+        [virtualScrollAsyncItemsLength]="dataLength"
+        [data]="data"
+        [itemSize]="65"
+        [virtualScrollNbRows]="virtualScrollNbRows"
+        (scrollChange)="onScrollChange($event)"
+        cdkDropList (cdkDropListDropped)="onDropRow($event)" cdkDropListGroup
+        (sortChange)="onSortChange($event)"
+        style="width: 1400px">
+        <ng-template euiTemplate="header">
+            <tr cdkDropList cdkDropListOrientation="horizontal" cdkDropListLockAxis="x" (cdkDropListDropped)="onDrop($event)">
+                <th isStickyCol aria-hidden="true" width="56"></th>
+                @for (col of cols; track col.prop) {
+                    @if (col.prop === 'id') {
+                        <th class="eui-u-text-center" isStickyCol isSortable isMultiSortable sortOn="id" width="100">Id</th>
+                    } @else if (col.prop === 'country') {
+                        <th isStickyCol isSortable isMultiSortable sortOn="country" width="300">Country</th>
+                    } @else if (col.prop === 'coordinates') {
+                        <th class="eui-u-text-center" isSortable isMultiSortable sortOn="coordinates.lon" cdkDrag cdkDragPreviewClass="eui-table__orderable-cols-preview">Coordinates</th>
+                    } @else {
+                        <th class="eui-u-text-center" isSortable isMultiSortable [sortOn]="col.prop" cdkDrag cdkDragPreviewClass="eui-table__orderable-cols-preview">{{ col.label }}</th>
+                    }
+                }
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr cdkDrag cdkDragPreviewClass="eui-table__orderable-rows-preview" [cdkDragData]="row">
+                <td isStickyCol>
+                    <button cdkDragHandle euiButton euiRounded euiIconButton euiSizeS euiBasicButton euiTooltip="Click to drag & drop" aria-label="Click to drag & drop">
+                        <eui-icon-svg icon="dots-six-vertical:regular"></eui-icon-svg>
+                    </button>
+                </td>
+                @for (col of cols; track col.prop) {
+                    @if (col.prop === 'id') {
+                        <td isStickyCol class="eui-u-text-center" data-col-label="Id">{{ row.id }}</td>
+                    } @else if (col.prop === 'country') {
+                        <td isStickyCol data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                    } @else if (col.prop === 'population') {
+                        <td class="eui-u-text-center" data-col-label="Population">{{ row.population | number }}</td>
+                    } @else if (col.prop === 'coordinates') {
+                        <td class="eui-u-text-center" data-col-label="Coordinates">
+                            Lon: {{ row.coordinates.lon }}<br/>
+                            Lat: {{ row.coordinates.lat }}<br/>
+                        </td>
+                    } @else {
+                        <td class="eui-u-text-center" [attr.data-col-label]="col.label">{{ row[col.prop] }}</td>
+                    }
+                }
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td isStickyCol></td>
+                <td isStickyCol></td>
+                <td isStickyCol></td>
+                <td colspan="6" class="eui-u-text-center">Footer</td>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="noData">
+            <tr>
+                <td class="eui-u-text-center" colspan="9">There are currently no data to display</td>
+            </tr>
+        </ng-template>
+    </eui-table>
+</div>

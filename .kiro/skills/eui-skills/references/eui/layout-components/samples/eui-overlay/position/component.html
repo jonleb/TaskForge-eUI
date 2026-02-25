@@ -1,0 +1,35 @@
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">eui-overlay</code> panel <strong>position</strong> property defines where to display the panel. By default, at the right of the screen.</p>
+Overlay panel available positions values:
+<ul>
+    <li><strong>right</strong> : sets the overlay position to the right of the screen (default)</li>
+    <li><strong>center</strong> : sets the overlay position at center of the screen</li>
+    <li><strong>top-center</strong> : sets the overlay position to the top center of the screen</li>
+</ul>
+
+<div class="row">
+    <div class="col"><button euiButton euiOutline euiPrimary (click)="setOverlayPosition('right', $event)" aria-label="right">right</button></div>
+    <div class="col"><button euiButton euiOutline euiPrimary (click)="setOverlayPosition('center', $event)" aria-label="center">center</button></div>
+    <div class="col"><button euiButton euiOutline euiPrimary (click)="setOverlayPosition('top-center', $event)" aria-label="top-center">top-center</button></div>
+</div>
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-6">
+        <button euiButton euiOutline euiPrimary (click)="toggleOverlay($event)" aria-haspopup="dialog" aria-label="Overlay trigger button">Toggle overlay</button>
+    </div>
+    <div class="col-md-6">
+        Sample code:<br>
+        <div class="eui-showcase-demo">
+            <div class="code" style="overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre" tabindex="0">&lt;eui-overlay [isActive]="{{isOverlayActive}}" [position]="{{overlayPosition}}"&gt;&lt;/eui-overlay&gt;</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<eui-overlay [isActive]="isOverlayActive" (activeState)="updateActiveState($event)" [position]="overlayPosition">
+    <eui-overlay-header>Header</eui-overlay-header>
+    <eui-overlay-body class="eui-u-text-center eui-u-m-4xl">
+        <button euiButton euiOutline euiPrimary (click)="closeOverlay($event)" aria-label="Close Overlay">Close overlay</button>
+    </eui-overlay-body>
+    <eui-overlay-footer>Footer</eui-overlay-footer>
+</eui-overlay>

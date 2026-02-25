@@ -1,0 +1,230 @@
+<div class="doc-sample-section-title">Responsive home featured cards</div>
+<p class="eui-u-text-paragraph">Using the <code class="eui-u-text-code">eui-card-media</code> and <code class="eui-u-text-code">eui-card-content</code> content directives and the <code class="eui-u-text-code">euiNoShadow</code> option.</p>
+Optional links can be defined on click event of the card image. Use the <code class="eui-u-text-code">imageClickUrl</code> option to set an internal link Url (routerLink) or the <code class="eui-u-text-code">imageClickUrlExternal</code> option for any external Url.
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-4 eui-u-mb-m">
+        <eui-card euiNoShadow>
+            <eui-card-media imageUrl="./assets/images/cards/home-card-law.jpg" />
+            <eui-card-content style="height: 10rem;" tabindex="0">
+                <div class="eui-u-text-h4">Law | EUR Lex</div>
+                <p class="eui-u-text-paragraph">
+                    The Official Journal of the European Union, EU case law and other resources for EU law
+                </p>
+            </eui-card-content>
+        </eui-card>
+    </div>
+    <div class="col-md-4 eui-u-mb-m">
+        <eui-card euiNoShadow>
+            <eui-card-media imageUrl="./assets/images/cards/home-card-open-data.jpg" />
+            <eui-card-content style="height: 10rem;" tabindex="0">
+                <div class="eui-u-text-h4">EU Open Data</div>
+                <p class="eui-u-text-paragraph">
+                    Catalogue of datasets from the EU institutions and other bodies
+                </p>
+            </eui-card-content>
+        </eui-card>
+    </div>
+    <div class="col-md-4 eui-u-mb-m">
+        <eui-card euiNoShadow>
+            <eui-card-media
+                imageUrl="./assets/images/cards/home-card-eu-publications.jpg"
+                imageClickUrl="/style-guide/components/eui-card"
+                euiTooltip="Internal link Url defined pointing to this page">
+            </eui-card-media>
+            <eui-card-content style="height: 10rem;" tabindex="0">
+                <div class="eui-u-text-h4">EU Publications</div>
+                <p class="eui-u-text-paragraph">
+                    Reports, studies, information booklets, magazines and other publications from the EU institutions and other bodies
+                </p>
+            </eui-card-content>
+        </eui-card>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 eui-u-mb-m">
+        <eui-card euiNoShadow>
+            <eui-card-media imageUrl="./assets/images/cards/home-card-research-innovation.jpg"/>
+            <eui-card-content style="height: 10rem;" tabindex="0">
+                <div class="eui-u-text-h4">Research & Innovation CORDIS</div>
+                <p class="eui-u-text-paragraph">
+                    Information about the results of EU-funded projects
+                </p>
+            </eui-card-content>
+        </eui-card>
+    </div>
+    <div class="col-md-4 eui-u-mb-m">
+        <eui-card euiNoShadow>
+            <eui-card-media imageUrl="./assets/images/cards/home-card-eu-whoiswho.jpg"/>
+            <eui-card-content style="height: 10rem;" tabindex="0">
+                <div class="eui-u-text-h4">EU Whoiswho</div>
+                <p class="eui-u-text-paragraph">
+                    Official directory listing the members of the European Institutions (EU Parliament, Council, EU Commission, EU civil servants and organisation chart)
+                </p>
+            </eui-card-content>
+        </eui-card>
+    </div>
+    <div class="col-md-4 eui-u-mb-m">
+        <eui-card euiNoShadow>
+            <eui-card-media
+                imageUrl="./assets/images/cards/home-card-public-procurement.jpg"
+                imageClickUrlExternal="https://www.google.com/"
+                euiTooltip="External link Url defined pointing to Google's search page">
+            </eui-card-media>
+            <eui-card-content style="height: 10rem;" tabindex="0">
+                <div class="eui-u-text-h4">Business opportunities TED</div>
+                <p class="eui-u-text-paragraph">
+                    Public procurement notices from the European Union and beyond
+                </p>
+            </eui-card-content>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons>
+                    <button euiButton euiCTAButton (click)="onActionButtonClick('https://www.google.com/')">
+                        With action
+                    </button>
+                </eui-card-footer-action-buttons>
+                <eui-card-footer-action-icons>
+                    <eui-icon-toggle keyboardAccessKey="mf" iconSvgNameOn="eui-star-fill" iconSvgNameOff="eui-star" euiTooltip="Mark as favourite" aria-label="Mark as favourite" />
+                    <button euiButton euiRounded euiIconButton euiBasicButton euiPrimary euiTooltip="Share" aria-label="Share">
+                        <eui-icon-svg icon="share-network:regular" fillColor="secondary" />
+                    </button>
+                </eui-card-footer-action-icons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Hoverable responsive cards with action(s)</div>
+<p class="eui-u-text-paragraph">Using the <code class="eui-u-text-code">eui-card-media</code>, <code class="eui-u-text-code">eui-card-content</code> and  <code class="eui-u-text-code">eui-card-footer</code> content directives.
+    <br>
+    Extra option :  <code class="eui-u-text-code">euiHoverable</code>
+</p>
+
+<div class="row eui-u-mt-m">
+    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 eui-u-mb-m">
+        <eui-card euiHoverable>
+            <eui-card-media imageUrl="./assets/images/cards/home-card-law.jpg" />
+            <eui-card-content style="max-height: 11rem; min-height: 11rem;" tabindex="0">
+                <div class="eui-u-text-h4">Law | EUR Lex</div>
+                <p class="eui-u-text-paragraph">
+                    The Official Journal of the European Union, EU case law and other resources for EU law
+                </p>
+            </eui-card-content>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons class="eui-u-flex-justify-content-end">
+                    <button euiButton euiCTAButton euiSizeS class="eui-u-mr-none">
+                        CTAction
+                        <eui-icon-svg icon="eui-chevron-right" />
+                    </button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 eui-u-mb-m">
+        <eui-card euiHoverable>
+            <eui-card-media
+                imageUrl="./assets/images/cards/home-card-open-data.jpg">
+            </eui-card-media>
+            <eui-card-content style="max-height: 11rem; min-height: 11rem;" tabindex="0">
+                <div class="eui-u-text-h4">EU Open Data</div>
+                <p class="eui-u-text-paragraph">
+                    Catalogue of datasets from the EU institutions and other bodies
+                </p>
+            </eui-card-content>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons class="eui-u-flex-justify-content-end">
+                    <button euiButton euiCTAButton euiSizeS class="eui-u-mr-none">
+                        CTAction
+                        <eui-icon-svg icon="eui-chevron-right" />
+                    </button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 eui-u-mb-m">
+        <eui-card euiHoverable>
+            <eui-card-media
+                imageUrl="./assets/images/cards/home-card-eu-publications.jpg">
+            </eui-card-media>
+            <eui-card-content style="max-height: 11rem; min-height: 11rem;" tabindex="0">
+                <div class="eui-u-text-h4">EU Publications</div>
+                <p class="eui-u-text-paragraph">
+                    Reports, studies, information booklets, magazines and other publications from the EU institutions and other bodies
+                </p>
+            </eui-card-content>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons class="eui-u-flex-justify-content-end">
+                    <button euiButton euiCTAButton euiSizeS class="eui-u-mr-none">
+                        CTAction
+                        <eui-icon-svg icon="eui-chevron-right" />
+                    </button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 eui-u-mb-m">
+        <eui-card euiHoverable>
+            <eui-card-media
+                imageUrl="./assets/images/cards/home-card-research-innovation.jpg">
+            </eui-card-media>
+            <eui-card-content style="max-height: 11rem; min-height: 11rem;" tabindex="0">
+                <div class="eui-u-text-h4">Research & Innovation CORDIS</div>
+                <p class="eui-u-text-paragraph">
+                    Information about the results of EU-funded projects
+                </p>
+            </eui-card-content>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons class="eui-u-flex-justify-content-end">
+                    <button euiButton euiCTAButton euiSizeS class="eui-u-mr-none">
+                        CTAction
+                        <eui-icon-svg icon="eui-chevron-right" />
+                    </button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 eui-u-mb-m">
+        <eui-card euiHoverable>
+            <eui-card-media
+                imageUrl="./assets/images/cards/home-card-eu-whoiswho.jpg">
+            </eui-card-media>
+            <eui-card-content style="max-height: 11rem; min-height: 11rem;" tabindex="0">
+                <div class="eui-u-text-h4">EU Whoiswho</div>
+                <p class="eui-u-text-paragraph">
+                    Official directory listing the members of the European Institutions (EU Parliament, Council, EU Commission, EU civil servants and organisation chart)
+                </p>
+            </eui-card-content>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons class="eui-u-flex-justify-content-end">
+                    <button euiButton euiCTAButton euiSizeS class="eui-u-mr-none">
+                        CTAction
+                        <eui-icon-svg icon="eui-chevron-right" />
+                    </button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 eui-u-mb-m">
+        <eui-card euiHoverable>
+            <eui-card-media
+                imageUrl="./assets/images/cards/home-card-public-procurement.jpg">
+            </eui-card-media>
+            <eui-card-content style="max-height: 11rem; min-height: 11rem;" tabindex="0">
+                <div class="eui-u-text-h4">Business opportunities TED</div>
+                <p class="eui-u-text-paragraph">
+                    Public procurement notices from the European Union and beyond
+                </p>
+            </eui-card-content>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons class="eui-u-flex-justify-content-end">
+                    <button euiButton euiCTAButton euiSizeS class="eui-u-mr-none">
+                        CTAction
+                        <eui-icon-svg icon="eui-chevron-right" />
+                    </button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+</div>

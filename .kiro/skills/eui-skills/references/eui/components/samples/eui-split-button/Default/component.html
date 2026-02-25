@@ -1,0 +1,15 @@
+<eui-split-button>
+    <button euiButton (click)="onButtonClicked($event)">Default</button>
+    <eui-dropdown>
+        <button euiButton euiIconButton aria-label="Toggle Dropdown">
+            <eui-icon-svg icon="eui-chevron-down" size="xs" />
+        </button>
+        <eui-dropdown-content>
+            @for (item of listItems; track $index) {
+                <button euiDropdownItem [disabled]="item?.disabled" (click)="onListItemClicked(item)">
+                    <span euiLabel>{{item.label}}</span>
+                </button>
+            }
+        </eui-dropdown-content>
+    </eui-dropdown>
+</eui-split-button>

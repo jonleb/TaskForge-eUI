@@ -1,0 +1,210 @@
+<p class="eui-u-text-paragraph">Use the <code class="eui-u-text-code">transform</code> input option to apply some transformations to the icon. Transform accepts the following values :</p>
+<div class="eui-u-text-monospace">rotate-45 | rotate-90 | rotate-135 | rotate-180 | rotate-225 | rotate-270 | rotate-315 | flip-horizontal | flip-vertical | flip-both | stack | spin</div>
+
+<div class="doc-sample-section-title">transform="rotate-xx"</div>
+
+<table class="eui-table-default eui-table-default--bordered eui-table-default--compact">
+    <thead>
+        <tr>
+            <th>Original icon</th>
+            <th>rotate-45</th>
+            <th>rotate-90</th>
+            <th>rotate-135</th>
+            <th>rotate-180</th>
+            <th>rotate-225</th>
+            <th>rotate-270</th>
+            <th>rotate-315</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-redo" size="l" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-redo" size="l" transform="rotate-45" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-redo" size="l" transform="rotate-90" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-redo" size="l" transform="rotate-135" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-redo" size="l" transform="rotate-180" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-redo" size="l" transform="rotate-225" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-redo" size="l" transform="rotate-270" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-redo" size="l" transform="rotate-315" /></td>
+        </tr>
+        <tr>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-thumbs-up" size="l" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-thumbs-up" size="l" transform="rotate-45" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-thumbs-up" size="l" transform="rotate-90" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-thumbs-up" size="l" transform="rotate-135" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-thumbs-up" size="l" transform="rotate-180" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-thumbs-up" size="l" transform="rotate-225" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-thumbs-up" size="l" transform="rotate-270" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-thumbs-up" size="l" transform="rotate-315" /></td>
+        </tr>
+        <tr>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-arrow-left" size="l" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-arrow-left" size="l" transform="rotate-45" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-arrow-left" size="l" transform="rotate-90" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-arrow-left" size="l" transform="rotate-135" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-arrow-left" size="l" transform="rotate-180" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-arrow-left" size="l" transform="rotate-225" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-arrow-left" size="l" transform="rotate-270" /></td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-arrow-left" size="l" transform="rotate-315" /></td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="row eui-u-mt-xl">
+    <div class="col">
+        <div class="doc-sample-section-subtitle">Default (no transform)</div>
+        <eui-icon-svg icon="eui-home" size="l" />
+    </div>
+    <div class="col">
+        <div class="doc-sample-section-subtitle">transform="flip-horizontal"</div>
+        <eui-icon-svg icon="eui-home" size="l" transform="flip-horizontal" />
+    </div>
+    <div class="col">
+        <div class="doc-sample-section-subtitle">transform="flip-vertical"</div>
+        <eui-icon-svg icon="eui-home" size="l" transform="flip-vertical" />
+    </div>
+    <div class="col">
+        <div class="doc-sample-section-subtitle">transform="flip-both"</div>
+        <eui-icon-svg icon="eui-home" size="l" transform="flip-both" />
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">transform="stack"</div>
+<p class="eui-u-text-paragraph">In order to properly stack 2 Svg icons you need to follow some basic rules:</p>
+<ul>
+    <!-- <li>surround the 2 icons with any flex container using: <code class="eui-u-text-code">eui-u-flex</code>, <code class="eui-u-text-code">eui-u-display-flex</code> or <code class="eui-u-text-code">eui-u-inline-flex</code> CSS utility class.</li> -->
+    <li>first icon: choose a <strong>bigger</strong> size than the second one. It will act as the "background" icon.</li>
+    <li>second icon: choose a <strong>smaller</strong> size than the first icon and add the <code class="eui-u-text-code">transform="stack"</code> option</li>
+    <li>If the icons are not perfectly aligned, add a spacing utility class to the transform option.
+        Example: transform="stack eui-u-mr-s" will add some extra margin to the right of the second icon in order to be centered with the first one.
+        Of course, the extra spacing is depending on the size ratio between the 2 icons.
+        See the code source for more information.
+    </li>
+</ul>
+
+<p class="eui-u-text-paragraph">Some examples with different sizes</p>
+<div class="eui-u-flex eui-u-flex-wrap">
+    <div class="col">
+        <div class="eui-u-display-flex eui-u-m-m">
+            <eui-icon-svg icon="eui-circle-fill" size="2xl" fillColor="danger">
+                <eui-icon-svg icon="envelope-simple:regular" size="m" fillColor="white" transform="stack" />
+            </eui-icon-svg>
+        </div>
+    </div>
+    <div class="col">
+        <div class="eui-u-display-flex eui-u-m-m">
+            <eui-icon-svg icon="eui-circle-fill" size="2xl" fillColor="success">
+                <eui-icon-svg icon="eui-search" size="s" fillColor="white" transform="stack" />
+            </eui-icon-svg>
+        </div>
+    </div>
+    <div class="col">
+        <div class="eui-u-display-flex eui-u-m-m">
+            <eui-icon-svg icon="eui-circle-fill" size="3xl" fillColor="warning-surface">
+                <eui-icon-svg icon="eui-state-warning" size="m" fillColor="white" transform="stack eui-u-mb-2xs" />
+            </eui-icon-svg>
+        </div>
+    </div>
+    <div class="col">
+        <div class="eui-u-display-flex eui-u-m-m">
+            <eui-icon-svg icon="eui-circle-fill" size="4xl" fillColor="info-light">
+                <eui-icon-svg icon="question:fill" size="l" fillColor="white" transform="stack" />
+            </eui-icon-svg>
+        </div>
+    </div>
+    <div class="col">
+        <div class="eui-u-display-flex eui-u-m-m">
+            <eui-icon-svg icon="camera:fill" size="l">
+                <eui-icon-svg icon="plus-circle:fill" fillColor="danger-light" transform="stack" class="eui-u-mb-xl eui-u-ml-2xl" />
+            </eui-icon-svg>
+        </div>
+    </div>
+    <div class="col">
+        <div class="eui-u-display-flex eui-u-m-m">
+            <eui-icon-svg icon="image:fill" size="l">
+                <eui-icon-svg icon="plus-circle:fill" fillColor="danger-light" transform="stack" class="eui-u-mb-xl eui-u-ml-2xl" />
+            </eui-icon-svg>
+        </div>
+    </div>
+    <div class="col">
+        <div class="eui-u-display-flex eui-u-m-m">
+            <eui-icon-svg icon="triangle:fill" size="2xl" fillColor="danger-base">
+                <eui-icon-svg icon="airplane-landing:fill" size="s" fillColor="white" transform="stack" />
+            </eui-icon-svg>
+        </div>
+    </div>
+    <div class="col">
+        <div class="eui-u-display-flex eui-u-m-m">
+            <eui-icon-svg icon="file:fill" size="xl">
+                <eui-icon-svg icon="eui-search" size="s" fillColor="white" transform="stack" />
+            </eui-icon-svg>
+        </div>
+    </div>
+</div>
+
+
+<p class="eui-u-text-paragraph">You can combine first icon with <code class="eui-u-text-code">transform="spin"</code> and second icon with <code class="eui-u-text-code">transform="stack"</code>.</p>
+<div class="row">
+    <div class="col-md-3">
+        <div class="eui-u-display-flex">
+            <eui-icon-svg icon="ecl-spinner:ecl"size="2xl" fillColor="success" transform="spin">
+                <eui-icon-svg icon="circle-dashed:regular" size="s" fillColor="primary" transform="stack" />
+            </eui-icon-svg>
+        </div>
+    </div>
+     <div class="col-md-3">
+        <div class="eui-u-display-flex">
+            <eui-icon-svg icon="spinner:regular"size="2xl" fillColor="info" transform="spin">
+                <eui-icon-svg icon="circle-dashed:regular" size="s" fillColor="primary" transform="stack" />
+            </eui-icon-svg>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="eui-u-display-flex">
+            <eui-icon-svg icon="eui-star-fill" size="4xl" fillColor="warning-surface" transform="spin">
+                <eui-icon-svg icon="eui-logo" size="xl" transform="stack" />
+            </eui-icon-svg>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">transform="spin"</div>
+
+<eui-icon-svg icon="spinner:regular" transform="spin" />
+<eui-icon-svg icon="eui-refresh" transform="spin" />
+<eui-icon-svg icon="eui-settings" transform="spin" />
+<eui-icon-svg icon="eui-star-fill" transform="spin" />
+<eui-icon-svg icon="plus-circle:fill" transform="spin" />
+
+<br><br>
+
+<eui-icon-svg icon="spinner:regular" size="xl" fillColor="primary" transform="spin" />
+<eui-icon-svg icon="eui-settings" size="xl" fillColor="info" transform="spin" />
+<eui-icon-svg icon="eui-star-fill" size="xl" fillColor="warning-surface" transform="spin" />
+<eui-icon-svg icon="plus-circle:fill" size="xl" fillColor="danger" transform="spin" />
+
+<br><br>
+
+<eui-icon-svg icon="plus-circle:regular" size="xl" fillColor="secondary" transform="spin" />
+<eui-icon-svg icon="bowling-ball:regular" size="xl" fillColor="info" transform="spin" />
+<eui-icon-svg icon="flower:regular" size="xl" fillColor="success-base" transform="spin" />
+<eui-icon-svg icon="arrow-circle-right:regular" size="xl" fillColor="primary-base" transform="spin" />
+
+<br><br>
+
+<p class="eui-u-text-paragraph">Use case sample within an eui-card custom header:</p>
+<eui-card class="eui-u-width-20">
+    <eui-card-header>
+        <eui-card-header-title>
+            <span class="eui-u-f-l">Card title</span>
+        </eui-card-header-title>
+        <eui-card-header-subtitle>Card subtitle</eui-card-header-subtitle>
+        <eui-card-header-left-content>
+            <eui-icon-svg icon="eui-circle-fill" size="2xl">
+                <eui-icon-svg icon="eui-home" size="m" fillColor="white" transform="stack" />
+            </eui-icon-svg>
+        </eui-card-header-left-content>
+    </eui-card-header>
+</eui-card>

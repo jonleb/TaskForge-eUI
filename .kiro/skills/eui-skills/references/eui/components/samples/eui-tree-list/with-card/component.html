@@ -1,0 +1,213 @@
+<eui-card euiNoContentPadding>
+    <eui-card-header>
+        <eui-card-header-title>DocList Use case sample</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+
+        <eui-tree-list 
+            [isShowToolbar]="true"
+            filterLabel="Search filter..."
+            expandAllLabel=""
+            collapseAllLabel=""
+            [isExpanded]="true"
+            [filterFunction]="fullContentSearch"
+            (filter)="onFilter($event)"
+            (expandAll)="onExpandAll($event)"
+            (collapseAll)="onCollapseAll($event)"
+            (itemSelected)="onItemSelected($event)">
+
+            <eui-tree-list-item expanded="true">
+                <eui-tree-list-item-content>
+                    <eui-icon-svg icon="folder:regular" class="eui-u-mr-s"/>
+                    <div euiLabel><strong>Tools</strong></div>
+                </eui-tree-list-item-content>
+
+                <eui-tree-list>
+                    <eui-tree-list-item [isExpanded]="true">
+                        <eui-tree-list-item-content>
+                            <eui-icon-svg icon="folder:regular" class="eui-u-mr-s"/>
+                            <div euiLabel><strong>Toys</strong></div>
+                        </eui-tree-list-item-content>
+
+                        <eui-tree-list>
+                            <eui-tree-list-item [isExpanded]="true">
+                                <eui-tree-list-item-content>
+                                    <eui-icon-svg icon="folder:regular" class="eui-u-mr-s"/>
+                                    <div euiLabel><strong>Generic fresh pants</strong></div>
+
+                                    <div class="eui-u-ml-auto">
+                                        <eui-dropdown class="eui-u-ml-m">
+                                            <button euiButton euiPrimary euiOutline euiSizeS type="button">
+                                                Actions
+                                                <eui-icon-svg icon="eui-ellipsis-vertical"/>
+                                            </button>
+                                            <eui-dropdown-content>
+                                                <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-add" size="s" fillColor="secondary" class="eui-u-mr-s" />Action item 1</button>
+                                                <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-email" size="s" fillColor="secondary" class="eui-u-mr-s" />Action item 2</button>
+                                                <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-trash" size="s" fillColor="danger" class="eui-u-mr-s" />Action item 3</button>
+                                            </eui-dropdown-content>
+                                        </eui-dropdown>
+                                    </div>
+                                </eui-tree-list-item-content>
+
+                                <eui-tree-list>
+                                    <eui-tree-list-item [isExpanded]="true">
+                                        <eui-tree-list-item-content>
+                                            <div class="eui-u-flex eui-u-flex-justify-content-between">
+                                                <div class="eui-u-inline-flex eui-u-flex-justify-content-start eui-u-flex-gap-s">
+                                                    <eui-icon-svg icon="document:regular" />
+                                                    <div class="eui-u-flex eui-u-flex-column">
+                                                        <div class="eui-u-flex eui-u-flex-gap-s">
+                                                            Persistent ARes (10198)45281
+                                                            <eui-icon-svg icon="eui-state-info" fillColor="info-light" euiTooltip="Tooltip info message" aria-label="Tooltip info message" />
+                                                        </div>
+                                                        <div class="eui-u-flex eui-u-f-s eui-u-c-text-light">
+                                                            Created <span class="eui-u-c-neutral eui-u-ml-xs">10/07/2024</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="eui-u-inline-flex eui-u-flex-justify-content-end eui-u-flex-gap-m">
+                                                    <eui-icon-svg icon="eui-language-selector" euiTooltip="Global icon tooltip info" aria-label="Global icon tooltip info" />
+                                                    <eui-icon-svg icon="lock-simple:regular" euiTooltip="Lock icon tooltip info" aria-label="Lock icon tooltip info" />
+                                                    <eui-dropdown>
+                                                        <button euiButton euiPrimary euiOutline euiSizeS type="button">
+                                                            Actions
+                                                            <eui-icon-svg icon="eui-ellipsis-vertical" />
+                                                        </button>
+                                                        <eui-dropdown-content>
+                                                            <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-add" size="s" fillColor="secondary" class="eui-u-mr-s" />Action item 1</button>
+                                                            <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-email" size="s" fillColor="secondary" class="eui-u-mr-s" />Action item 2</button>
+                                                            <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-trash" size="s" fillColor="danger" class="eui-u-mr-s" />Action item 3</button>
+                                                        </eui-dropdown-content>
+                                                    </eui-dropdown>
+                                                </div>
+                                            </div>
+                                        </eui-tree-list-item-content>
+
+                                        <eui-tree-list>
+                                            <eui-tree-list-item>
+                                                <eui-tree-list-item-content>
+                                                    <div class="eui-u-flex eui-u-flex-justify-content-between">
+                                                        
+                                                        <div class="eui-u-inline-flex eui-u-flex-justify-content-start eui-u-flex-gap-s">
+                                                            <eui-icon-svg icon="eui-file-pdf-o" fillColor="danger" />
+                                                            <div class="eui-u-flex eui-u-flex-column">
+                                                                <div class="eui-u-flex eui-u-flex-gap-s">
+                                                                    <a class="eui-u-text-link" routerLink=".">Multi-tiered zero tolerance matrix</a>
+                                                                    <eui-icon-svg icon="eui-state-info" fillColor="info-light" euiTooltip="Tooltip info message" aria-label="Tooltip info message" />
+                                                                    <eui-chip euiSizeS euiVariant="info">FK</eui-chip>
+                                                                </div>
+                                                                <div class="eui-u-flex eui-u-f-s eui-u-c-text-light">
+                                                                    <div class="col eui-u-text-truncate">
+                                                                        Last updated
+                                                                        <div class="eui-u-c-neutral">10/07/2024</div>
+                                                                    </div>
+                                                                    <div class="col eui-u-text-truncate">
+                                                                        Last uploaded by
+                                                                        <div class="eui-u-c-neutral">Jane DOE</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="eui-u-inline-flex eui-u-flex-justify-content-end eui-u-flex-gap-m">
+                                                            <eui-chip euiSizeS euiVariant="secondary">Draft</eui-chip>
+                                                            <eui-dropdown>
+                                                                <button euiButton euiPrimary euiOutline euiSizeS type="button">
+                                                                    Actions
+                                                                    <eui-icon-svg icon="eui-ellipsis-vertical" size="s" />
+                                                                </button>
+                                                                <eui-dropdown-content>
+                                                                    <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-add" size="s" fillColor="secondary" class="eui-u-mr-s" />Action item 1</button>
+                                                                    <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-email" size="s" fillColor="secondary" class="eui-u-mr-s" />Action item 2</button>
+                                                                    <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-trash" size="s" fillColor="danger" class="eui-u-mr-s" />Action item 3</button>
+                                                                </eui-dropdown-content>
+                                                            </eui-dropdown>
+                                                        </div>
+                                                    </div>
+                                                </eui-tree-list-item-content>
+                                            </eui-tree-list-item>
+                                        </eui-tree-list>
+                                    </eui-tree-list-item>
+
+
+                                </eui-tree-list>
+
+                            </eui-tree-list-item>
+
+
+                        </eui-tree-list>
+
+                    </eui-tree-list-item>
+
+                </eui-tree-list>
+
+                <eui-tree-list>
+                    <eui-tree-list-item [isExpanded]="true">
+                        <eui-tree-list-item-content>
+                            <div class="eui-u-flex eui-u-flex-gap-s">
+                                <eui-icon-svg icon="folder:regular" />
+                                <strong>Toys 2</strong>
+                            </div>
+                        </eui-tree-list-item-content>
+
+                        <eui-tree-list>
+                            <eui-tree-list-item [isExpanded]="true">
+                                <eui-tree-list-item-content>
+                                    <div class="eui-u-flex eui-u-flex-gap-s">
+                                        <eui-icon-svg icon="folder-open:regular" />
+                                        <strong>Generic fresh pants</strong>
+
+                                        <div class="eui-u-ml-auto">
+                                            <eui-dropdown class="eui-u-ml-m">
+                                                <button euiButton euiPrimary euiOutline euiSizeS type="button">
+                                                    Actions
+                                                    <eui-icon-svg icon="eui-ellipsis-vertical" size="s" />
+                                                </button>
+                                                <eui-dropdown-content>
+                                                    <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-add" size="s" fillColor="secondary" class="eui-u-mr-s" />Action item 1</button>
+                                                    <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-email" size="s" fillColor="secondary" class="eui-u-mr-s" />Action item 2</button>
+                                                    <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-trash" size="s" fillColor="danger" class="eui-u-mr-s" />Action item 3</button>
+                                                </eui-dropdown-content>
+                                            </eui-dropdown>
+                                        </div>
+                                    </div>
+                                </eui-tree-list-item-content>
+                            </eui-tree-list-item>
+                        </eui-tree-list>
+
+                        <eui-tree-list>
+                            <eui-tree-list-item [isExpanded]="true">
+                                <eui-tree-list-item-content>
+                                    <div class="eui-u-flex eui-u-flex-gap-s">
+                                        <eui-icon-svg icon="folder-open:regular" />
+                                        <strong>Rustic cotton shirt</strong>
+
+                                        <div class="eui-u-ml-auto">
+                                            <eui-dropdown class="eui-u-ml-m">
+                                                <button euiButton euiPrimary euiOutline euiSizeS type="button">
+                                                    Actions
+                                                    <eui-icon-svg icon="eui-ellipsis-vertical" size="s" />
+                                                </button>
+                                                <eui-dropdown-content>
+                                                    <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-add" size="s" fillColor="secondary" class="eui-u-mr-s" />Action item 1</button>
+                                                    <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-email" size="s" fillColor="secondary" class="eui-u-mr-s" />Action item 2</button>
+                                                    <button euiDropdownItem (click)="onActionItemClick($event)"><eui-icon-svg icon="eui-trash" size="s" fillColor="danger" class="eui-u-mr-s" />Action item 3</button>
+                                                </eui-dropdown-content>
+                                            </eui-dropdown>
+                                        </div>
+                                    </div>
+                                </eui-tree-list-item-content>
+                            </eui-tree-list-item>
+                        </eui-tree-list>
+                    </eui-tree-list-item>
+
+                </eui-tree-list>
+
+            </eui-tree-list-item>
+
+        </eui-tree-list>
+
+    </eui-card-content>
+</eui-card>

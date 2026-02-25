@@ -1,0 +1,78 @@
+<div class="doc-sample-section-title">With Reactive forms setting a date range of one week</div>
+<form [formGroup]="form">
+    <div class="row">
+        <div class="col-md-7">
+            <div euiInputGroup>
+                <label euiLabel for="daterangeselector" euiRequired>Select a date range</label>
+                <eui-date-range-selector startDateId="daterangeselector" formControlName="daterangeselector" [isReadOnly]="isReadonly"></eui-date-range-selector>
+                @if (!isReadonly && render('daterangeselector')) {
+                    <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                }
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="doc-sample-section-title">Reactive Form content</div>
+            <div class="eui-showcase-demo eui-u-mt-s">
+                <div class="code" style="overflow-y: auto;" tabindex="0">
+                    <pre class="eui-u-text-pre" tabindex="0">{{ form.value | json }}</pre>
+                    <div class="eui-u-flex">
+                        <div class="eui-u-f-bold eui-u-mr-s">Form status</div>
+                        <eui-badge euiSizeS [euiSuccess]="form.status === 'VALID'" [euiDanger]="form.status !== 'VALID'">
+                            {{ form.status }}
+                        </eui-badge>
+                    </div>
+                </div>
+            </div>
+            <div class="eui-u-flex eui-u-flex-wrap eui-u-mt-s">
+                <button euiButton euiPrimary (click)="onSubmit()" class="eui-u-mr-s eui-u-mb-s">Submit form</button>
+                <button euiButton euiOutline euiPrimary (click)="isReadonly = !isReadonly" class="eui-u-mr-s eui-u-mb-s">Toggle readonly</button>
+                <button euiButton euiOutline euiPrimary (click)="toggleDisabled()" class="eui-u-mr-s eui-u-mb-s">Toggle disabled</button>
+                <button euiButton euiOutline euiPrimary (click)="onChangeValue()" class="eui-u-mr-s eui-u-mb-s">Change value</button>
+                <button euiButton euiOutline euiPrimary (click)="clear()" class="eui-u-mr-s eui-u-mb-s">Clear</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">Using euiStartEndDateValidator to check that start date isn't after the end date</div>
+<form [formGroup]="euiDateRangeValidatorsform">
+    <div class="row">
+        <div class="col">
+            <div euiInputGroup>
+                <label euiLabel>Select a date range</label>
+                <eui-date-range-selector formControlName="euiDaterangeValidators" [isReadOnly]="isReadonly"></eui-date-range-selector>
+                @if (!isReadonly && euiDateRangeValidatorsform.get('euiDaterangeValidators').hasError('euiDateRangeInvalid')) {
+                    <eui-feedback-message euiDanger>
+                        Invalid date range. Please provide a start date that is not later than the end date.
+                    </eui-feedback-message>
+                }
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">Ranges comparison</div>
+<p class="eui-u-text-paragraph">Compares two ranges and distinguishes the dates which overlap with different color.</p>
+
+<div class="eui-u-flex eui-u-flex-wrap">
+    <form [formGroup]="campaignOne" class="eui-u-mb-m eui-u-mr-m">
+        <eui-date-range-selector
+            formControlName="campaignOneRange"
+            [comparisonStart]="comparisonOneStartDate"
+            [comparisonEnd]="comparisonOneEndDate">
+        </eui-date-range-selector>
+    </form>
+
+    <form [formGroup]="campaignTwo" class="eui-u-mb-m eui-u-mr-m">
+        <eui-date-range-selector
+            formControlName="campaignTwoRange"
+            [comparisonStart]="comparisonTwoStartDate"
+            [comparisonEnd]="comparisonTwoEndDate">
+        </eui-date-range-selector>
+    </form>
+</div>
+
+<div class="row">
+    <pre class="eui-u-text-pre">{{ campaignOne.value | json }}</pre>
+    <pre class="eui-u-text-pre">{{ campaignTwo.value | json }}</pre>
+</div>

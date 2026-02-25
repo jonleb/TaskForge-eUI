@@ -1,0 +1,55 @@
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">eui-overlay</code> panel layout can be fully customized by using 3 different sections: the header, the body and the footer.</p>
+Use the following tags for each specific section :<br>
+
+<ul>
+    <li><strong>eui-overlay-header</strong> : displays the header of the overlay panel. Usually contains the overlay title and the close overlay's action button.</li>
+    <li><strong>eui-overlay-body</strong> : displays the scrollable main body content (text, forms, lists, etc.)</li>
+    <li><strong>eui-overlay-footer</strong> : displays the optional footer of the overlay panel. Usually gathers actions buttons.</li>
+</ul>
+
+<p class="eui-u-text-paragraph">See the code source for more information.</p>
+
+<button euiButton euiOutline euiPrimary (click)="toggleOverlay($event)" aria-haspopup="dialog" aria-label="Overlay trigger button">Toggle overlay</button>
+
+
+<eui-overlay [isActive]="isOverlayActive" (activeState)="updateActiveState($event)">
+
+    <eui-overlay-header>
+        <div class="eui-u-flex">
+            <div class="eui-u-flex">
+                <div class="eui-u-f-l eui-u-f-bold">Overlay panel title</div>
+            </div>
+            <div class="eui-u-flex eui-u-flex-justify-content-end">
+                <button euiButton euiRounded euiBasicButton euiIconButton aria-label="Close panel button" (click)="closeOverlay($event)">
+                    <eui-icon-svg icon="eui-close"></eui-icon-svg>
+                </button>
+            </div>
+        </div>
+    </eui-overlay-header>
+
+    <eui-overlay-body>
+        <div class="eui-u-flex eui-u-p-m">
+            <eui-showcase-doc-lorem-ipsum [textSize]="'large'"></eui-showcase-doc-lorem-ipsum>
+        </div>
+    </eui-overlay-body>
+
+    <eui-overlay-footer>
+        <div class="eui-u-flex">
+            <!-- Left section (optional) -->
+            <div class="eui-u-flex">
+                <button euiButton euiSecondary aria-label="Tertiary">Tertiary</button>
+            </div>
+            <!-- Middle section (optional)
+            <div class="eui-u-flex eui-u-flex-justify-content-center">
+                <button euiButton euiSecondary>Middle</button>
+            </div>
+             -->
+            <!-- Right section -->
+            <div class="eui-u-flex eui-u-flex-justify-content-end">
+                <button euiButton class="eui-u-mr-s" aria-label="Secondary">Secondary</button>
+                <button euiButton euiPrimary (click)="closeOverlay($event)" aria-label="Primary">Primary</button>
+            </div>
+        </div>
+    </eui-overlay-footer>
+
+</eui-overlay>

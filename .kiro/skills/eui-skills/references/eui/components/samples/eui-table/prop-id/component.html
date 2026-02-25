@@ -1,0 +1,29 @@
+<eui-alert>By default, <code class="eui-u-text-code">eui-table</code> uses <code class="eui-u-text-code">id</code> property as unique identifier for data item. This can be changed with <code class="eui-u-text-code">&#64;Input() propId</code> which expects as a string the property to be used as identifier. The sample below defines the property <code class="eui-u-text-code">dataID</code> as identifier.</eui-alert><br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data" [propId]="'dataID'" (rowsSelect)="onRowsSelect($event)">
+        <ng-template euiTemplate="header">
+            <tr isHeaderSelectable>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr [isDataSelectable]="row">
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>

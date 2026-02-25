@@ -1,0 +1,13 @@
+<p class="eui-u-text-paragraph">Use the <code class="eui-u-text-code">chipsLabelTruncateCount</code> input option to set the number of chip's label characters to display.</p>
+
+<div class="eui-u-flex">
+    <strong>chipsLabelTruncateCount = </strong>
+    <input type="number" euiInputNumber aria-label="Max Characters" id="maxchars" name="maxchars" min="1" max="10" [(ngModel)]="maxCharacters" class="eui-input-text eui-u-ml-s eui-u-width-4">
+</div>
+<br>
+
+<eui-chip-list>
+    @for (chip of chips; track chip.id) {
+        <eui-chip [euiVariant]="chip.variant"><span euiLabel>{{ chip.label | euiTruncate: maxCharacters }}</span></eui-chip>
+    }
+</eui-chip-list>

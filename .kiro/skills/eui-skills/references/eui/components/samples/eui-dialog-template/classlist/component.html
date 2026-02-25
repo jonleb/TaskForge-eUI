@@ -1,0 +1,16 @@
+<eui-alert>This option allows to add a custom class to the dropdown panel container and input. Here with
+    <code class="eui-u-text-code">eui-u-width-20</code> utility class.
+</eui-alert><br/>
+
+<button euiButton type="button" (click)="openDialog()" aria-haspopup="dialog">Open Dialog</button>
+
+<eui-dialog #dialog
+    [title]="'Dialog title'"
+    [classList]="'eui-u-width-20'"
+    (clickOutside)="onClickOutside()"
+    (close)="onClose()"
+    (open)="onOpen()"
+    (accept)="onAccept()"
+    (dismiss)="onDismiss()">
+    Dialog content
+</eui-dialog>

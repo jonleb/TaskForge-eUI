@@ -1,0 +1,13 @@
+<p class="eui-u-text-paragraph">The source code of the injected component can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-dialog-template/dummy-components" target="_blank" class="eui-u-text-link-external">here</a>.</p>
+
+<div class="doc-sample-section-title">Change title dynamically</div>
+
+<button euiButton type="button" (click)="openDialog()">Open Dialog</button>
+<div class="eui-u-flex eui-u-mt-m">
+    <button euiButton type="button" (click)="changeDialogTitle('Title 1')">Set title header to 'Title 1'</button>
+    <button euiButton type="button" class="eui-u-ml-s" (click)="changeDialogTitle('Title 2')">Set title header to 'Title 2'</button>
+</div>
+
+<eui-dialog #dialog [title]="dialogTitle$ | async">
+    <eui-showcase-doc-lorem-ipsum [textSize]="'small'"></eui-showcase-doc-lorem-ipsum>
+</eui-dialog>

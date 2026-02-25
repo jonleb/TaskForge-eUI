@@ -1,0 +1,50 @@
+<div class="doc-sample-section-title">Advanced custom layout</div>
+
+<p class="eui-u-text-paragraph">
+    The following sample features and advanced responsive custom layout for rendering the eui-tree items including eUI flag icons and helper icons with tooltips.
+</p>
+<br />
+
+<eui-tree isMultiselect
+          [nodes]="treeDataAllOptions"
+          [nodeTemplateRef]="customNodeTemplate"
+          [rightContextMenuTemplateRef]="rightContextMenuTemplateRef">
+</eui-tree>
+
+<ng-template let-node #customNodeTemplate let-onSelect="onSelect" let-id="id" let-children="children">
+    <div class="eui-u-flex eui-u-flex-gap-s eui-u-text-truncate">
+
+        <div class="eui-u-inline-flex eui-u-flex-gap-s eui-u-text-truncate">
+            @if (node && node.selectable) {
+                <input euiInputCheckBox
+                    type="checkbox"
+                    id="{{id}}"
+                    [checked]="node && node.isSelected"
+                    (change)="onSelect($event)"
+                    class="eui-u-mr-none" />
+            }
+            @if (node.treeContentBlock.iconClass) {
+                <span class="{{ node.treeContentBlock.iconClass }} eui-flag-icon-2x"></span>
+            }
+            <label for="{{id}}"
+                   class="eui-u-display-block eui-u-text-truncate"
+                   [class.eui-u-f-bold]="node.isSelected">
+                {{ node.treeContentBlock.label }}
+            </label>
+        </div>
+
+        <div class="eui-u-inline-flex">
+            @if (children?.length > 0) {
+                <eui-icon-svg icon="eui-state-info" size="s" fillColor="info" euiTooltip="Some tooltip text" />
+            }
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #rightContextMenuTemplateRef let-metadata>
+    @for (item of metadata.items; track $index) {
+        <button euiDropdownItem>{{item}}</button>
+    }
+</ng-template>
+
+<div class="eui-u-mt-4xl eui-u-mb-4xl">&nbsp;</div>

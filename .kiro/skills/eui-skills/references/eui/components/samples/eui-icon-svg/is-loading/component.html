@@ -1,0 +1,161 @@
+<div class="doc-sample-section-title">isLoading only animation</div>
+<p class="eui-u-text-paragraph">Add the <code class="eui-u-text-code">isLoading</code> input to the eui-icon-svg for loading animated icon.</p>
+
+<div class="eui-u-flex eui-u-flex-gap-m eui-u-mt-2xl">
+    <div class="eui-u-inline-flex eui-u-flex-column">
+        <span euiLabel>s</span>
+        <eui-icon-svg isLoading size="s"></eui-icon-svg>
+    </div>
+    <div class="eui-u-inline-flex eui-u-flex-column">
+        <span euiLabel>m</span>
+        <eui-icon-svg isLoading size="m"></eui-icon-svg>
+    </div>
+    <div class="eui-u-inline-flex eui-u-flex-column">
+        <span euiLabel>l</span>
+        <eui-icon-svg isLoading size="l"></eui-icon-svg>
+    </div>
+    <div class="eui-u-inline-flex eui-u-flex-column">
+        <span euiLabel>xl</span>
+        <eui-icon-svg isLoading size="xl"></eui-icon-svg>
+    </div>
+    <div class="eui-u-inline-flex eui-u-flex-column">
+        <span euiLabel>2xl</span>
+        <eui-icon-svg isLoading size="2xl"></eui-icon-svg>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Composition within buttons</div>
+
+<div class="eui-u-text-h6 eui-u-mv-m">Default sized buttons</div>
+
+<div class="eui-u-flex eui-u-flex-wrap eui-u-flex-gap-s">
+    <button euiButton>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading default</span>
+    </button>
+
+    <button euiButton euiPrimary>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading primary</span>
+    </button>
+
+    <button euiButton euiSecondary>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading secondary</span>
+    </button>
+
+    <button euiButton euiInfo>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading info</span>
+    </button>
+
+    <button euiButton euiSuccess>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading success</span>
+    </button>
+
+    <button euiButton euiWarning>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading warning</span>
+    </button>
+
+    <button euiButton euiDanger>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading danger</span>
+    </button>
+</div>
+
+<div class="eui-u-text-h6 eui-u-mt-2xl eui-u-mb-m">Small sized buttons</div>
+
+<div class="eui-u-flex eui-u-flex-wrap eui-u-flex-gap-s">
+    <button euiButton euiSizeS>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading default</span>
+    </button>
+
+    <button euiButton euiSizeS euiPrimary>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading primary</span>
+    </button>
+
+    <button euiButton euiSizeS euiSecondary>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading secondary</span>
+    </button>
+
+    <button euiButton euiSizeS euiInfo>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading info</span>
+    </button>
+
+    <button euiButton euiSizeS euiSuccess>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading success</span>
+    </button>
+
+    <button euiButton euiSizeS euiWarning>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading warning</span>
+    </button>
+
+    <button euiButton euiSizeS euiDanger>
+        <eui-icon-svg isLoading></eui-icon-svg>
+        <span euiLabel>Loading danger</span>
+    </button>
+</div>
+
+
+
+<div class="eui-u-text-h6 eui-u-mt-2xl eui-u-mb-m">With custom eui-dropdown button</div>
+
+<div class="row eui-u-flex-gap-m">
+
+    <div class="eui-u-flex eui-u-flex-gap-m">
+        <div euiLabel>Default size</div>
+        <div class="eui-dropdown-button">
+            <eui-dropdown>
+                <button euiButton>
+                    <eui-icon-svg isLoading></eui-icon-svg>
+                    <span euiLabel>Loading...</span>
+                    <span euiIconSvg icon="eui-chevron-down"></span>
+                </button>
+                <eui-dropdown-content>
+                    <div class="eui-u-p-m">
+                        Here comes the dropdown custom content...
+                    </div>
+                    @for (item of listItems; track $index) {
+                        <button euiDropdownItem [disabled]="item?.disabled" (click)="onListItemClicked(item)">
+                            <span euiIconSvg icon="{{item.icon}}" class="eui-u-mr-s"></span>
+                            <span euiLabel>{{item.label}}</span>
+                        </button>
+                    }
+                </eui-dropdown-content>
+            </eui-dropdown>
+        </div>
+    </div>
+
+    <div class="eui-u-flex eui-u-flex-gap-m">
+        <div euiLabel>Small size</div>
+        <div class="eui-dropdown-button">
+            <eui-dropdown>
+                <button euiButton euiSizeS>
+                    <eui-icon-svg isLoading size="s"></eui-icon-svg>
+                    <span euiLabel>Loading...</span>
+                    <span euiIconSvg icon="eui-chevron-down"></span>
+                </button>
+                <eui-dropdown-content>
+                    <div class="eui-u-p-m">
+                        Here comes the dropdown custom content...
+                    </div>
+                    @for (item of listItems; track $index) {
+                        <button euiDropdownItem [disabled]="item?.disabled" (click)="onListItemClicked(item)">
+                            <eui-icon-svg icon="{{item.icon}}" class="eui-u-mr-s" />
+                            <span euiLabel>{{item.label}}</span>
+                        </button>
+                    }
+                </eui-dropdown-content>
+            </eui-dropdown>
+        </div>
+    </div>
+</div>

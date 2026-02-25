@@ -1,0 +1,13 @@
+<eui-disable-content [isDisabled]="isDisabled()">
+    <eui-card>
+        <eui-card-content>
+            <input euiInputText aria-label="Block content input field" (keyup.enter)="onEnterKey()">
+            Hit <code class="eui-u-text-code">Enter</code> while typing to block content for 1 second or use button below
+        </eui-card-content>
+    </eui-card>
+</eui-disable-content>
+<br/>
+
+<button euiButton (click)="onBlockContent()">
+    {{ isDisabled() ? 'Enable' : 'Disable' }} Content
+</button>

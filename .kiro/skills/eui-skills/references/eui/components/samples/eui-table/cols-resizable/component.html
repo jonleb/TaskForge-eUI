@@ -1,0 +1,35 @@
+<eui-alert>
+Resizable columns can be set by using the <code class="eui-u-text-code">euiResizable</code> directive next to the table header <code class="eui-u-text-code">th</code> tag.
+<br>
+For more information, recommendations and usage, please see the <a routerLink="/style-guide/directives/eui-resizable" class="eui-u-text-link">eui-resizable</a>.
+<br>
+The source code of the used service can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-table/services" class="eui-u-text-link-external" target="_blank">here</a>.
+</eui-alert><br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th euiResizable>Country</th>
+                <th euiResizable>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.iso }}</td>
+                <td>{{ row.population | number }}</td>
+                <td>{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>

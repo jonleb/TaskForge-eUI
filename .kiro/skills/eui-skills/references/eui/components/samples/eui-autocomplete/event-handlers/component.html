@@ -1,0 +1,81 @@
+<eui-alert>Open the browser console to observe events.</eui-alert><br />
+
+<table class="eui-table-default eui-table-default--compact">
+    <thead>
+        <tr>
+            <th>Event handler</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>panelClose</td>
+        <td>Triggered when the option panel is closed.</td>
+    </tr>
+    <tr>
+        <td>panelOpen</td>
+        <td>Triggered when the option panel is opened.</td>
+    </tr>
+    <tr>
+        <td>inputFocus</td>
+        <td>Triggered when the field is focused.</td>
+    </tr>
+    <tr>
+        <td>inputBlur</td>
+        <td>Triggered when the field is blured.</td>
+    </tr>
+    <tr>
+        <td>clear</td>
+        <td>Triggered when the field is cleared.</td>
+    </tr>
+    <tr>
+        <td>selectionChange</td>
+        <td>Triggered when the chips selection is modified.</td>
+    </tr>
+    <tr>
+        <td>itemAdd</td>
+        <td>Triggered when a chip is added.</td>
+    </tr>
+    <tr>
+        <td>itemRemove</td>
+        <td>Triggered when a chip is removed.</td>
+    </tr>
+    <tr>
+        <td>inputChange</td>
+        <td>Triggered when the value of the text field changes.</td>
+    </tr>
+    <tr>
+        <td>chipDragStart</td>
+        <td>Triggered when a chip drag starts.</td>
+    </tr>
+    <tr>
+        <td>chipDragRelease</td>
+        <td>Triggered when a chip drag is released.</td>
+    </tr>
+    <tr>
+        <td>chipDrop</td>
+        <td>Triggered when a chip is dropped.</td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+<eui-autocomplete
+    (chipDragRelease)="onChipDragRelease($event)"
+    (chipDragStart)="onChipDragStart($event)"
+    (chipDrop)="onChipDrop($event)"
+    (clear)="onClear()"
+    (inputBlur)="onInputBlur()"
+    (inputChange)="onInputChanged($event)"
+    (inputFocus)="onInputFocus()"
+    (itemAdd)="onItemAdded($event)"
+    (itemRemove)="onItemRemoved($event)"
+    (panelClose)="onPanelClose()"
+    (panelOpen)="onPanelOpen()"
+    (selectionChange)="onSelectionChanged($event)"
+    [autocompleteDataSelected]="autocompleteDataSelected"
+    [autocompleteData]="autocompleteData"
+    [hasChips]="true"
+    isChipsDragAndDrop>
+</eui-autocomplete>

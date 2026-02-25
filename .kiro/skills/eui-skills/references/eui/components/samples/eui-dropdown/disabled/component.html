@@ -1,0 +1,51 @@
+<eui-alert>
+    <eui-alert-title>Remark on disabled items</eui-alert-title>
+    When having disabled menu items using click events (as in the last example),
+    to prevent the event from propagating to the sibling menu items and stop its propagation, be sure to use the <code class="eui-u-text-code">event.stopImmediatePropagation()</code>.
+    See TS source code for example.
+</eui-alert>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="doc-sample-section-title">HTML disable attribute</div>
+
+        <eui-dropdown>
+            <button euiButton disabled euiPrimary>
+                <label euiLabel>Actions</label>
+                <eui-icon-svg icon="eui-ellipsis-vertical" size="s" />
+            </button>
+            <eui-dropdown-content>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col-md-4">
+        <div class="doc-sample-section-title">euiDisabled directive</div>
+
+        <eui-dropdown>
+            <button euiButton euiDisabled euiPrimary>
+                <span euiLabel>Actions</span>
+                <eui-icon-svg icon="eui-ellipsis-vertical" size="s" />
+            </button>
+            <eui-dropdown-content>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col-md-4">
+        <div class="doc-sample-section-title">Item disabled</div>
+
+        <eui-dropdown>
+            <button euiButton euiPrimary aria-label="Menu button">
+                <span euiLabel>Actions</span>
+                <eui-icon-svg icon="eui-ellipsis-vertical" size="s" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Item 1', $event)" aria-label="item 1">item 1</button>
+                <button euiDropdownItem (click)="onClick('Item 2', $event)" aria-label="item 2">item 2</button>
+                <button euiDropdownItem disabled>I'm a disabled dropdown item</button>
+                <button euiDropdownItem (click)="onClick('Item 3', $event)" aria-label="item 3">item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>

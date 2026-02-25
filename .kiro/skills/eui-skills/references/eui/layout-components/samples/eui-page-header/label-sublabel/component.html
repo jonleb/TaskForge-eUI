@@ -1,0 +1,24 @@
+<div class="doc-sample-section-title">With page title and sub-title</div>
+<p class="eui-u-text-paragraph">The page title is <strong>mandatory</strong>. Page sub-title is optional.</p>
+
+<eui-page-header label="Page Title" subLabel="Page Sub-title"/>
+
+
+<div class="doc-sample-section-title">With long page title & sub-title</div>
+<p class="eui-u-text-paragraph">Title and sub-title are automatically "truncated" when they doesn't fit the page viewport.</p>
+
+<eui-page-header label="Page Title - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut massa tempus, posuere leo eget, scelerisque ipsum."
+                 subLabel="Page Sub-title : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut massa tempus, posuere leo eget, scelerisque ipsum."/>
+
+
+<div class="doc-sample-section-title">Full header title & subtitle display</div>
+<p class="eui-u-text-paragraph">Use the optional <code class="eui-u-text-code">isHeaderMultilines="true"</code> input option (default: false), if you need to display full text of the page title and/or subtitle.</p>
+
+<eui-page-header label="Page Title - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut massa tempus, posuere leo eget, scelerisque ipsum."
+                subLabel="Page Sub-title : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut massa tempus, posuere leo eget, scelerisque ipsum."
+                isHeaderMultilines="true">
+    <eui-page-header-action-items>
+        <button euiButton euiSecondary>Secondary action</button>
+        <button euiButton euiPrimary>Primary action</button>
+    </eui-page-header-action-items>
+</eui-page-header>

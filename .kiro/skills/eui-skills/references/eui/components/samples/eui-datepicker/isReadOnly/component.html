@@ -1,0 +1,26 @@
+<div class="doc-sample-section-title">Default</div>
+<eui-datepicker [isReadOnly]="true" [value]="value"></eui-datepicker>
+
+
+<div class="doc-sample-section-title">Responsive layout using eui-input-group-addon class</div>
+<div class="eui-u-flex">
+    <div euiInputGroup>
+        <label euiLabel>Label</label>
+        <div euiInputGroupAddOn>
+            <eui-datepicker [isReadOnly]="true" [value]="value"></eui-datepicker>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Responsive horizontal container</div>
+<div class="row">
+    <div class="col-md-6 eui-u-flex">
+        <div class="eui-u-mr-xl">Label</div>
+        <eui-datepicker [isReadOnly]="true" [value]="value"></eui-datepicker>
+    </div>
+    <div class="col-md-6 eui-u-flex">
+        <div class="eui-u-mr-xl">Label</div>
+        <eui-datepicker [isReadOnly]="true" [value]="value"></eui-datepicker>
+    </div>
+</div>

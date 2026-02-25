@@ -1,0 +1,113 @@
+<eui-alert>
+    <eui-alert-title>Important usage notice</eui-alert-title>
+    In order to use the eUI Flag icons library you need to <strong>import extra styles</strong> dependencies from your project's <strong>angular.json</strong> config file.
+    <br>
+    In the "styles" section, add the following <strong>stylesheet import</strong> :<br/>
+    <code class="eui-u-text-code eui-u-ml-m">"node_modules/&#64;eui/styles/dist/styles/eui-icons-flags.css",</code>
+</eui-alert>
+<br>
+<p class="eui-u-text-paragraph">Usage samples :</p>
+<pre class="eui-u-text-pre">
+    &lt;div&gt;
+        &lt;span class="eui-flag-icon eui-flag-icon-ad"&gt;&lt;/span&gt;
+        &lt;span class="eui-flag-icon eui-flag-icon-ae"&gt;&lt;/span&gt;
+        &lt;span class="eui-flag-icon eui-flag-icon-af"&gt;&lt;/span&gt;
+        &lt;span class="eui-flag-icon eui-flag-icon-ag"&gt;&lt;/span&gt;
+        . . .
+    &lt;/div&gt;
+</pre>
+
+<div class="eui-u-flex eui-u-mb-m">
+    <div class="eui-u-mr-m">Flag&nbsp;ratio&nbsp;:</div>
+    <button euiButton euiSizeS [euiPrimary]="flagRatio === '4x3'" class="eui-u-mr-s" (click)="setRatio('4x3')">4x3 (default)</button>
+    <button euiButton euiSizeS [euiPrimary]="flagRatio === '1x1'" class="eui-u-mr-s" (click)="setRatio('1x1')">1x1 (squared)</button>
+    @if (flagRatio === '1x1') {
+        <div class="eui-u-flex eui-u-ml-m">
+            <span class="eui-icon eui-icon-ecl-information eui-icon-2x eui-u-c-info eui-u-mr-s"></span>
+            <div class="eui-u-c-info">For squared flag icons, add the <strong>eui-flag-icon-squared</strong> class</div>
+        </div>
+    }
+</div>
+<div class="eui-u-flex eui-u-mb-m">
+    <div class="eui-u-mr-m">Scale size :</div>
+    <button euiButton euiSizeS [euiPrimary]="scaleSize === '1x'" class="eui-u-mr-s" (click)="setScaleSize('1x')">default</button>
+    <button euiButton euiSizeS [euiPrimary]="scaleSize === '2x'" class="eui-u-mr-s" (click)="setScaleSize('2x')">2x</button>
+    <button euiButton euiSizeS [euiPrimary]="scaleSize === '3x'" class="eui-u-mr-s" (click)="setScaleSize('3x')">3x</button>
+    <button euiButton euiSizeS [euiPrimary]="scaleSize === '4x'" class="eui-u-mr-s" (click)="setScaleSize('4x')">4x</button>
+    <button euiButton euiSizeS [euiPrimary]="scaleSize === '5x'" class="eui-u-mr-s" (click)="setScaleSize('5x')">5x</button>
+</div>
+
+<div class="eui-u-flex eui-u-mb-m">
+    <div class="eui-u-mr-m">Code sample :</div>
+    <div class="icons-demo">
+        <div class="eui-flag-icon-item-container">
+            <span class="eui-flag-icon eui-flag-icon-{{iconISO}} eui-flag-icon-{{scaleSize}}" [class.eui-flag-icon-squared]="flagRatio === '1x1'"></span>
+        </div>
+    </div>
+    <div class="eui-u-ml-m">
+        <code class="eui-u-text-code">
+        &lt;span class="eui-flag-icon eui-flag-icon-<strong>{{iconISO}}</strong> eui-flag-icon-<strong>{{scaleSize}}</strong> {{flagSquaredClass}}"&gt;&lt;/span&gt;
+        </code>
+    </div>
+</div>
+
+<div class="icons-demo">
+    @for (flagIcon of flagIcons; track $index) {
+        <div class="eui-flag-icon-item-container">
+            <span class="eui-flag-icon eui-flag-icon-{{flagIcon}} eui-flag-icon-{{scaleSize}}"
+                  [class.eui-flag-icon-squared]="flagRatio === '1x1'"
+                  euiTooltip="{{flagIcon}}"
+                  euiTooltipRounded
+                  id="{{flagIcon}}"
+                  (click)="onFlagChange(flagIcon)">
+            </span>
+        </div>
+    }
+</div>
+
+
+<div class="doc-sample-section-title">eUI Rounded flag icons</div>
+<p class="eui-u-text-paragraph">Rounded flag icons uses the <code class="eui-u-text-code">eui-flag-icon--rounded</code> extra class</p>
+
+<br>
+<p class="eui-u-text-paragraph">Usage samples :</p>
+<pre class="eui-u-text-pre">
+    &lt;div&gt;
+        &lt;span class="eui-flag-icon eui-flag-icon-ad eui-flag-icon--rounded"&gt;&lt;/span&gt;
+        &lt;span class="eui-flag-icon eui-flag-icon-ae eui-flag-icon--rounded"&gt;&lt;/span&gt;
+        &lt;span class="eui-flag-icon eui-flag-icon-af eui-flag-icon--rounded"&gt;&lt;/span&gt;
+        &lt;span class="eui-flag-icon eui-flag-icon-ag eui-flag-icon--rounded"&gt;&lt;/span&gt;
+        . . .
+    &lt;/div&gt;
+</pre>
+
+<div class="eui-u-flex eui-u-mb-m">
+    <div class="eui-u-mr-m">Scale size :</div>
+    <button euiButton euiSizeS [euiPrimary]="scaleSizeRounded === '1x'" class="eui-u-mr-s" (click)="setScaleSizeRounded('1x')">default</button>
+    <button euiButton euiSizeS [euiPrimary]="scaleSizeRounded === '2x'" class="eui-u-mr-s" (click)="setScaleSizeRounded('2x')">2x</button>
+    <button euiButton euiSizeS [euiPrimary]="scaleSizeRounded === '3x'" class="eui-u-mr-s" (click)="setScaleSizeRounded('3x')">3x</button>
+    <button euiButton euiSizeS [euiPrimary]="scaleSizeRounded === '4x'" class="eui-u-mr-s" (click)="setScaleSizeRounded('4x')">4x</button>
+    <button euiButton euiSizeS [euiPrimary]="scaleSizeRounded === '5x'" class="eui-u-mr-s" (click)="setScaleSizeRounded('5x')">5x</button>
+</div>
+
+<div class="eui-u-flex eui-u-mb-m">
+    <div class="eui-u-mr-m">Code sample :</div>
+    <div class="icons-demo">
+        <div class="eui-flag-icon-rounded-item-container">
+            <span class="eui-flag-icon eui-flag-icon-be eui-flag-icon--rounded eui-flag-icon-{{scaleSizeRounded}}"></span>
+        </div>
+    </div>
+    <div class="eui-u-ml-m">
+        <code class="eui-u-text-code">
+        &lt;span class="eui-flag-icon eui-flag-icon-be eui-flag-icon--rounded eui-flag-icon-{{scaleSizeRounded}}"&gt;&lt;/span&gt;
+        </code>
+    </div>
+</div>
+
+<div class="icons-demo">
+    @for (flagIcon of flagIcons; track $index) {
+        <div class="eui-flag-icon-rounded-item-container">
+            <span class="eui-flag-icon eui-flag-icon-{{ flagIcon}} eui-flag-icon--rounded eui-flag-icon-{{scaleSizeRounded}}" euiTooltip="{{flagIcon}}" euiTooltipRounded id="{{flagIcon}}"></span>
+        </div>
+    }
+</div>

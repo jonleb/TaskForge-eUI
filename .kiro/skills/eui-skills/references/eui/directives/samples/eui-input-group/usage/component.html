@@ -1,0 +1,225 @@
+<p class="eui-u-text-paragraph">The following sample is using a reactive form with responsive layout display featuring enhanced visuals (strict usage only) to respond to
+    some custom business rules which are affecting the form input states and their validation(s).</p>
+
+<br>
+
+<eui-alert euiWarning>
+    <eui-alert-title>Important usage notice</eui-alert-title>
+    This sample is using different background colors for the input fields (default: white) which are passing the WCAG2 AA accessibility tests.
+    It should be used wisely and in <strong>restricted usage only</strong> without diverging from original provided colors for the utility class names, at the risk of no longer being accessible.
+</eui-alert>
+
+<br>
+
+<eui-card euiCollapsible>
+    <eui-card-header>
+        <eui-card-header-title>Research, Innovation and Competitiveness</eui-card-header-title>
+        <eui-card-header-subtitle>Progress towards national spending objectives</eui-card-header-subtitle>
+        <eui-card-header-right-content>
+            <!-- Custom actions here -->
+        </eui-card-header-right-content>
+    </eui-card-header>
+
+    <eui-card-content>
+        <form [formGroup]="formValidation">
+            <div class="row">
+
+                <!-- HEADER -->
+                <div class="row eui-u-f-bold eui-u-mb-m">
+                    <div class="col-md-4">
+                        Public RIC expenditure
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-3">2020</div>
+                            <div class="col-md-3">2021</div>
+                            <div class="col-md-3">Target value</div>
+                            <div class="col-md-3">Target year</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROW 1 -->
+                <div class="row eui-u-mb-s">
+                    <div class="col-md-4">
+                        Total Yearly R&I public expenditure in clean energy and low-carbon technologies
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div euiInputGroup>
+                                    <div euiInputGroupAddOn>
+                                        <input euiInputNumber formControlName="numberValue1" placeholder="Value" aria-label="Enter a number"/>
+                                        <div euiInputGroupAddOnItem>M&euro;</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div euiInputGroup formGroupName="necessaryFormGroup">
+                                    <div euiInputGroupAddOn>
+                                        <input euiInputNumber formControlName="numberValuePercent1" placeholder="Value" max=100 min=0 [class.eui-u-c-bg-warning-surface-light]="isFieldNecessary" aria-label="Enter a percentage"/>
+                                        <div euiInputGroupAddOnItem>%</div>
+                                    </div>
+                                    @if (renderNecessary('numberValuePercent1')) {
+                                        <eui-feedback-message euiWarning>This field is necessary</eui-feedback-message>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div euiInputGroup formGroupName="requiredFormGroup">
+                                    <div euiInputGroupAddOn>
+                                        <input euiInputNumber formControlName="targetValue1" placeholder="Value" [class.eui-u-c-bg-danger-surface-light]="isFieldRequired" aria-label="Enter a number"/>
+                                        <div euiInputGroupAddOnItem>M&euro;</div>
+                                    </div>
+                                    @if (renderRequired('targetValue1')) {
+                                        <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div euiInputGroup formGroupName="requiredFormGroup">
+                                    <select euiSelect name="target-year1" id="target-year1" placeholder="Year" formControlName="targetYear1" [class.eui-u-c-bg-danger-surface-light]="isFieldRequired">
+                                        @for (option of yearsOptions; track $index) {
+                                            <option [ngValue]="option.value">{{option.label}}</option>
+                                        }
+                                    </select>
+                                    @if (renderRequired('targetYear1')) {
+                                        <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ROW 2 -->
+                <div class="row eui-u-mb-s">
+                    <div class="col-md-4">
+                        Total Yearly R&I public expenditure in clean energy and low-carbon technologies, as a percentage share of overall public R&I expenditure
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div euiInputGroup>
+                                    <div euiInputGroupAddOn>
+                                        <input euiInputNumber formControlName="numberValue2" placeholder="Value" aria-label="Enter a number" />
+                                        <div euiInputGroupAddOnItem>M&euro;</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div euiInputGroup formGroupName="necessaryFormGroup">
+                                    <div euiInputGroupAddOn>
+                                        <input euiInputNumber formControlName="numberValuePercent2" placeholder="Value" max=100 min=0 [class.eui-u-c-bg-warning-surface-light]="isFieldNecessary" aria-label="Enter a percentage" />
+                                    </div>
+                                    @if (renderNecessary('numberValuePercent2')) {
+                                        <eui-feedback-message euiWarning>This field is necessary</eui-feedback-message>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div euiInputGroup formGroupName="requiredFormGroup">
+                                    <div euiInputGroupAddOn>
+                                        <input euiInputNumber formControlName="targetValue2" placeholder="Value" [class.eui-u-c-bg-danger-surface-light]="isFieldRequired" aria-label="Enter a number"/>
+                                        <div euiInputGroupAddOnItem>M&euro;</div>
+                                    </div>
+                                    @if (renderRequired('targetValue2')) {
+                                        <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div euiInputGroup formGroupName="requiredFormGroup">
+                                    <select euiSelect name="target-year2" id="target-year2" placeholder="Year" formControlName="targetYear2" [class.eui-u-c-bg-danger-surface-light]="isFieldRequired">
+                                        @for (option of yearsOptions; track $index) {
+                                            <option [ngValue]="option.value">{{option.label}}</option>
+                                        }
+                                    </select>
+                                    @if (renderRequired('targetYear2')) {
+                                        <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div euiInputGroup formGroupName="necessaryFormGroup">
+                <label euiLabel>Textarea</label>
+                <div euiInputGroupAddOn>
+                    <div euiInputGroupAddOnItem>EN</div>
+                    <textarea euiTextArea formControlName="textareaValue" [euiMaxlength]="100" placeholder="Type some text" [class.eui-u-c-bg-warning-surface-light]="isFieldNecessary"></textarea>
+                    @if (renderNecessary('textareaValue')) {
+                        <eui-feedback-message euiWarning>This field is necessary</eui-feedback-message>
+                    }
+                </div>
+            </div>
+
+            <div euiInputGroup formGroupName="necessaryFormGroup">
+                <label euiLabel>Autocomplete</label>
+                <eui-autocomplete formControlName="autoComplete"
+                                [autocompleteData]="autocompleteDataFormAutocomplete"
+                                [isFreeValueAllowed]="true"
+                                placeholder="Select a fruit"
+                                [euiWarning] = "isFieldNecessary">
+                </eui-autocomplete>
+                @if (renderNecessary('autoComplete')) {
+                    <eui-feedback-message euiWarning>This field is necessary</eui-feedback-message>
+                }
+            </div>
+
+            <div euiInputGroup formGroupName="necessaryFormGroup">
+                <label euiLabel>Datepicker</label>
+                <eui-datepicker formControlName="datepicker" [euiWarning]="isFieldNecessary"></eui-datepicker>
+                @if (renderNecessary('datepicker')) {
+                    <eui-feedback-message euiWarning>This field is necessary</eui-feedback-message>
+                }
+            </div>
+        </form>
+    </eui-card-content>
+
+    <eui-card-footer>
+        <eui-card-footer-action-buttons>
+            <div class="eui-u-flex eui-u-flex-justify-content-start">
+                <button euiButton euiSecondary (click)="onResetForm()">Reset</button>
+                <button euiButton euiSecondary (click)="onDisableForm()">{{isFormDisabled ? 'Enable' : 'Disable'}}</button>
+            </div>
+            
+            <div class="eui-u-flex eui-u-flex-justify-content-center eui-u-flex-wrap eui-u-flex-gap-m">
+                <div class="eui-u-display-flex eui-u-flex-gap-s">
+                    <eui-icon-svg icon="eui-square-o" size="s" fillColor="secondary" />
+                    <em>Optional</em>
+                </div>
+                <div class="eui-u-display-flex eui-u-flex-gap-s">
+                    <eui-icon-svg icon="eui-square" size="s" fillColor="warning-surface-light" />
+                    <em>Necessary</em>
+                </div>
+                <div class="eui-u-display-flex eui-u-flex-gap-s">
+                    <eui-icon-svg icon="eui-square" size="s" fillColor="danger-surface-light" />
+                    <em>Required</em>
+                </div>
+            </div>
+
+            <div class="eui-u-flex eui-u-flex-justify-content-end">
+                <button euiButton euiPrimary euiOutline (click)="onSaveForm()">Save</button>
+                <button euiButton euiPrimary (click)="onSubmitForm()" [euiDisabled]="formValidation.status !== 'VALID'">Submit</button>
+            </div>
+        </eui-card-footer-action-buttons>
+    </eui-card-footer>
+</eui-card>
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-12">
+        <div class="eui-u-f-bold">Reactive Form content</div>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="code" style="overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre" tabindex="0">{{ formValidation.value | json }}</pre>
+            </div>
+        </div>
+
+        <div class="eui-u-f-bold eui-u-mt-l eui-u-mb-m">Form status</div>
+        <eui-badge [euiSuccess]="formValidation.status === 'VALID'" [euiDanger]="formValidation.status !== 'VALID'">
+            {{ formValidation.status }}
+        </eui-badge>
+    </div>
+</div>

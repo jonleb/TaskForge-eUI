@@ -1,0 +1,28 @@
+<eui-alert><code class="eui-u-text-code">getPage(page: number)</code> public method is called to change the
+    page.<br />
+    <br />
+    To prevent event to be emitted when the method is called, emitEvent option can be passed: <code
+        class="eui-u-text-code">getPage(page: 2, &#123; emitEvent: false &#125;)</code></eui-alert>
+<br>
+
+<form [formGroup]="form">
+    <div euiInputGroup>
+        <label euiLabel for="page">Select page to go</label>
+
+        <select euiSelect name="page" id="page" formControlName="controlValue">
+            @for (option of options; track $index) {
+                <option [ngValue]="option.value">{{ option.label }}</option>
+            }
+        </select>
+    </div>
+</form>
+<br>
+
+<eui-paginator
+    #setPaginator
+    [length]="dataSource.length"
+    [pageSize]="pageSize"
+    [page]="0"
+    [hasPageNumberNavigation]="true"
+    (pageChange)="onPageChange($event)">
+</eui-paginator>

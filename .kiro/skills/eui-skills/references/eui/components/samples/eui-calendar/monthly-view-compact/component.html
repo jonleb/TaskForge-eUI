@@ -1,0 +1,26 @@
+<!-- <eui-calendar hasMonthlyView> -->
+    
+<eui-calendar>
+    <!-- Calendar Header -->
+    <eui-calendar-header (todayClicked)="onTodayClicked($event)"
+                        [(currentDate)]="date"
+                        [mode]="Mode.Monthly"
+                        [startingDay]="startDayOfWeek()"
+                        class="header" />
+
+    <!-- Monthly Calendar with Custom Day Template -->
+    <eui-calendar-monthly [date]="date" [dayTemplate]="dayTemplate" mode="compact" />
+
+    <!-- Day Template Definition -->
+    <ng-template #dayTemplate let-label="day" let-today="isToday" let-day>
+        @if (!isNaN(day?.day)) {
+            <div class="custom-day">
+                <button [euiBasicButton]="!day?.isToday"
+                        [euiPrimary]="day?.isToday"
+                        euiButton
+                        euiRounded>{{ day?.day }}
+                </button>
+            </div>
+        }
+    </ng-template>
+</eui-calendar>

@@ -1,0 +1,27 @@
+<p class="eui-u-text-paragraph">
+    The <code class="eui-u-text-code">eui-tree</code> accepts all sets of eUI Svg icons. 
+    For eUI flag icons usage, please refer to the <a class="eui-u-text-link" routerLink="/style-guide/components/eui-tree" fragment="mix-advanced">Misc advanced custom layout</a> example.
+</p>
+
+<p class="eui-u-text-paragraph">Usage :</p>
+<ul>
+    <li><code class="eui-u-text-code">iconSvgName</code> : is the Svg icon name (using the default set=eui) or can be a combination of <strong>icon name</strong> and <strong>icon set</strong>, separated by a colon (icon:set).</li>
+    <li><code class="eui-u-text-code">iconTypeClass</code> : can be one of primary | secondary | info | success | warning | danger | accent or any <a class="eui-u-text-link" routerLink="/style-guide/components/eui-icon-svg" fragment="icon-colors">color token documented here</a>.</li>
+</ul>
+Example:<br />
+<pre class="eui-u-text-pre">
+    node: &#123;
+        treeContentBlock: &#123;
+            label: 'Notifications',
+            iconSvgName: 'eui-notifications',
+            iconTypeClass: 'primary',
+        &#125;,
+    &#125;,
+</pre>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree [nodes]="treeDataSvg"></eui-tree>
+    </div>
+</div>

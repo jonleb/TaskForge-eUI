@@ -1,0 +1,461 @@
+<p class="eui-u-text-paragraph">The following <code class="eui-u-text-code">eui-card</code> contains a reactive form with interactive layout display features allowing to switch from:
+<strong>vertical to horizontal</strong> layouts,
+<strong>compact to normal</strong> layout display,
+<strong>edit to readonly</strong> display modes.</p>
+
+<br>
+
+<eui-card>
+    <eui-card-header>
+        <eui-card-header-title>Reactive form validation sample</eui-card-header-title>
+        <eui-card-header-right-content>
+            <button euiButton euiPrimary euiOutline euiSizeS (click)="onToggleVerticalLayout()" euiTooltip="Toggle from vertical to horizontal layout display" class="eui-u-ml-m">
+                @if (!isVerticalLayout) {
+                    <span>Vertical layout</span>
+                }
+                @if (isVerticalLayout) {
+                    <span>Horizontal layout</span>
+                }
+            </button>
+            <button euiButton euiPrimary euiOutline euiSizeS (click)="onToggleCompact()" euiTooltip="Toggle from compact to normal layout display" class="eui-u-ml-m">
+                @if (!isCompact) {
+                    <span>Compact display</span>
+                }
+                @if (isCompact) {
+                    <span>Normal display</span>
+                }
+            </button>
+            <button euiButton euiPrimary euiOutline euiSizeS (click)="onToggleEdit()" euiTooltip="Toggle from edit to readonly mode display" class="eui-u-ml-m">
+                @if (!isEditActive) {
+                    <span>Edit mode</span>
+                }
+                @if (isEditActive) {
+                    <span>Readonly mode</span>
+                }
+            </button>
+        </eui-card-header-right-content>
+    </eui-card-header>
+
+    <eui-card-content>
+        <div class="row">
+            <form [formGroup]="formValidation" [class.eui-t-form-compact]="isCompact" class="col-md-8">
+                <!-- INJECT A COPONENT HERE -->
+                <!-- VERTICAL LAYOUT -->
+                @if (isVerticalLayout) {
+                    <div euiInputGroup>
+                        <label euiLabel [euiRequired]="isEditActive">Input text</label>
+                        <eui-helper-text>Any extra helper text should be displayed here, after the label</eui-helper-text>
+                        <div euiInputGroupAddOn>
+                            @if (isEditActive) {
+                                <div euiInputGroupAddOnItem>
+                                    <eui-icon-svg icon="eui-user" size="s"></eui-icon-svg>
+                                </div>
+                            }
+                            <input euiInputText formControlName="inputValue" placeholder="Type some text" [readonly]="!isEditActive" aria-label="Input text"/>
+                        </div>
+                        @if (render('inputValue')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label euiLabel [euiRequired]="isEditActive">
+                                Email <eui-icon-svg icon="eui-state-info" class="eui-u-ml-2xs" fillColor="info" euiTooltip="Enter your email address" />
+                        </label>
+                        <div euiInputGroupAddOn>
+                            @if (isEditActive) {
+                                <div euiInputGroupAddOnItem>
+                                    <eui-icon-svg icon="eui-email" size="s"></eui-icon-svg>
+                                </div>
+                            }
+                            <input euiInputText formControlName="mailBoxValue" placeholder="Enter a valid email address" [readonly]="!isEditActive" aria-label="Email address"/>
+                        </div>
+                        @if (render('mailBoxValue')) {
+                            <eui-feedback-message euiDanger>The email address is required</eui-feedback-message>
+                        }
+                        @if (checkEmail('mailBoxValue')) {
+                            <eui-feedback-message euiDanger>Not a valid email address</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label euiLabel [euiRequired]="isEditActive">Input text with button addon</label>
+                        <div euiInputGroupAddOn>
+                            <input euiInputText formControlName="inputValue2" placeholder="Type some text" [readonly]="!isEditActive" aria-label="Input text with button addon"/>
+                            @if (isEditActive) {
+                                <button euiButton euiPrimary euiOutline [euiDisabled]="isFormDisabled">Search</button>
+                            }
+                        </div>
+                        @if (render('inputValue2')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label euiLabel [euiRequired]="isEditActive">Input text with icon button</label>
+                        <div euiInputGroupAddOn>
+                            <input euiInputText formControlName="inputValue3" placeholder="Type some text" [readonly]="!isEditActive" aria-label="Input text with icon button"/>
+                            @if (isEditActive) {
+                                <button euiButton euiPrimary euiOutline euiIconButton [euiDisabled]="isFormDisabled" aria-label="Search">
+                                    <eui-icon-svg icon="eui-search"></eui-icon-svg>
+                                </button>
+                            }
+                        </div>
+                        @if (render('inputValue2')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label euiLabel [euiRequired]="isEditActive">Number</label>
+                        <input euiInputNumber formControlName="numberValue" placeholder="Type some numbers" [readonly]="!isEditActive" aria-label="Number"/>
+                        @if (render('numberValue')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label euiLabel [euiRequired]="isEditActive">Textarea</label>
+                        <div euiInputGroupAddOn>
+                            @if (isEditActive) {
+                                <div euiInputGroupAddOnItem>EN</div>
+                            }
+                            <textarea euiTextArea formControlName="textareaValue" [euiMaxlength]="100" placeholder="Type some text" [readonly]="!isEditActive"></textarea>
+                        </div>
+                        @if (render('textareaValue')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label for="select" euiLabel [euiRequired]="isEditActive">Select</label>
+                        <select id="select" euiSelect formControlName="selectValue" placeholder="Choose an option..." [readonly]="!isEditActive">
+                            @for (opt of selectOptions; track $index) {
+                                <option [value]="opt.value">{{opt.label}}</option>
+                            }
+                        </select>
+                        @if (render('selectValue')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label euiLabel [euiRequired]="isEditActive">Autocomplete</label>
+                        <eui-autocomplete formControlName="autoComplete"
+                                        [autocompleteData]="autocompleteDataFormAutocomplete"
+                                        [isFreeValueAllowed]="true"
+                                        placeholder="Select a fruit"
+                                        [isReadonly]="!isEditActive">
+                        </eui-autocomplete>
+                        @if (render('autoComplete')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label euiLabel [euiRequired]="isEditActive">Datepicker</label>
+                        <eui-datepicker isClearable formControlName="datepicker" [isReadOnly]="!isEditActive"></eui-datepicker>
+                        @if (render('datepicker')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label euiLabel [euiRequired]="isEditActive">Date range selector</label>
+                        <eui-date-range-selector formControlName="daterangeselector" [isReadOnly]="!isEditActive"></eui-date-range-selector>
+                        @if (isEditActive && render('daterangeselector')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label euiLabel euiRequired>Single mandatory checkbox</label>
+                        <div class="eui-u-inline-flex">
+                            <input id="agree" euiInputCheckBox formControlName="mySingleCheckbox" [readonly]="!isEditActive"/>
+                            <label euiLabel for="agree">I agree</label>
+                        </div>
+                        @if (isEditActive && render('mySingleCheckbox')) {
+                            <eui-feedback-message euiDanger>This checkbox is mandatory and must be checked</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup formGroupName="myCheckboxGroup">
+                        <label euiLabel [euiRequired]="isEditActive">Choose preferred language(s)</label>
+                        @for (checkbox of checkboxOptions; let i = $index; track $index) {
+                            <div class="eui-u-flex eui-u-mb-s">
+                                <input euiInputCheckBox id="reactive-vertical-checkid-{{i}}" name="checkbox-vertical" formControlName="{{checkbox.controlName}}" [readonly]="!isEditActive"/>
+                                <label euiLabel for="reactive-vertical-checkid-{{i}}">{{checkbox.label}}</label>
+                            </div>
+                        }
+                        @if (isEditActive && myCheckboxGroup?.errors?.requireCheckboxesToBeChecked && myCheckboxGroup.touched) {
+                            <eui-feedback-message euiDanger>At least one checkbox is required to be checked</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label euiLabel [euiRequired]="isEditActive">Radio options</label>
+                        @for (radio of radioOptions; let i = $index; track $index) {
+                            <div class="eui-u-flex" [class.eui-u-mb-s]="isEditActive">
+                                <input id="reactive-vertical-radio{{i}}" euiInputRadio name="radioForm-vertical" formControlName="radioValue" [value]="radio" [readonly]="!isEditActive" />
+                                <label euiLabel for="reactive-vertical-radio{{i}}">{{radio.label}}</label>
+                            </div>
+                        }
+                        @if (render('radioValue')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+                }
+
+
+
+                <!-- HORIZONTAL LAYOUT -->
+                @if (!isVerticalLayout) {
+                    <div euiInputGroup class="row">
+                        <div class="col-md-3">
+                            <label euiLabel [euiRequired]="isEditActive">Input text</label>
+                            <eui-helper-text>Any extra helper text should be displayed here, after the label</eui-helper-text>
+                        </div>
+                        <div class="col-md-9">
+                            <div euiInputGroupAddOn>
+                                @if (isEditActive) {
+                                    <div euiInputGroupAddOnItem>
+                                        <eui-icon-svg icon="eui-user" size="s"></eui-icon-svg>
+                                    </div>
+                                }
+                                <input euiInputText formControlName="inputValue" placeholder="Type some text" [readonly]="!isEditActive" aria-label="Input text" />
+                            </div>
+                            @if (render('inputValue')) {
+                                <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+
+                    <div euiInputGroup class="row">
+                        <div class="col-md-3">
+                            <label euiLabel [euiRequired]="isEditActive">
+                                Email <eui-icon-svg icon="eui-state-info" class="eui-u-ml-2xs" fillColor="info" euiTooltip="Enter your email address" />
+                            </label>
+                        </div>
+                        <div class="col-md-9">
+                            <div euiInputGroupAddOn>
+                                @if (isEditActive) {
+                                    <div euiInputGroupAddOnItem>
+                                        <eui-icon-svg icon="eui-email"></eui-icon-svg>
+                                    </div>
+                                }
+                                <input euiInputText formControlName="mailBoxValue" placeholder="Enter email address" [readonly]="!isEditActive" aria-label="Email address"/>
+                            </div>
+                            @if (render('mailBoxValue')) {
+                                <eui-feedback-message euiDanger>The email address is required</eui-feedback-message>
+                            }
+                            @if (checkEmail('mailBoxValue')) {
+                                <eui-feedback-message euiDanger>Not a valid email address</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+
+                    <div euiInputGroup class="row">
+                        <div class="col-md-3">
+                            <label euiLabel [euiRequired]="isEditActive">Input text with button addon</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div euiInputGroupAddOn>
+                                <input euiInputText formControlName="inputValue2" placeholder="Type some text" [readonly]="!isEditActive" aria-label="Input text with button addon"/>
+                                @if (isEditActive) {
+                                    <button euiButton euiSecondary euiOutline [euiDisabled]="isFormDisabled">Search</button>
+                                }
+                            </div>
+                            @if (render('inputValue2')) {
+                                <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+
+                    <div euiInputGroup class="row">
+                        <div class="col-md-3">
+                            <label euiLabel [euiRequired]="isEditActive">Input text with icon button</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div euiInputGroupAddOn>
+                                <input euiInputText formControlName="inputValue3" placeholder="Type some text" [readonly]="!isEditActive" aria-label="Input text with icon button"/>
+                                @if (isEditActive) {
+                                    <button euiButton euiSecondary euiOutline euiIconButton [euiDisabled]="isFormDisabled" aria-label="Search">
+                                        <eui-icon-svg icon="eui-search"></eui-icon-svg>
+                                    </button>
+                                }
+                            </div>
+                            @if (render('inputValue2')) {
+                                <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+
+                    <div euiInputGroup class="row">
+                        <div class="col-md-3">
+                            <label euiLabel [euiRequired]="isEditActive">Number</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input euiInputNumber formControlName="numberValue" placeholder="Type some numbers" [readonly]="!isEditActive" aria-label="Number"/>
+                            @if (render('numberValue')) {
+                                <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+
+                    <div euiInputGroup class="row">
+                        <div class="col-md-3">
+                            <label euiLabel [euiRequired]="isEditActive">Textarea</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div euiInputGroupAddOn>
+                                @if (isEditActive) {
+                                    <div euiInputGroupAddOnItem>EN</div>
+                                }
+                                <textarea euiTextArea formControlName="textareaValue" placeholder="Type some text" [euiMaxlength]="100" [readonly]="!isEditActive"></textarea>
+                            </div>
+                            @if (render('textareaValue')) {
+                                <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+
+                    <div euiInputGroup class="row">
+                        <div class="col-md-3">
+                            <label for="select2" euiLabel [euiRequired]="isEditActive">Select</label>
+                        </div>
+                        <div class="col-md-9">
+                            <select id="select2" euiSelect formControlName="selectValue" [readonly]="!isEditActive">
+                                @for (opt of selectOptions; track $index) {
+                                    <option [value]="opt.value">{{opt.label}}</option>
+                                }
+                            </select>
+                            @if (render('selectValue')) {
+                                <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+
+                    <div euiInputGroup class="row">
+                        <div class="col-md-3">
+                            <label euiLabel [euiRequired]="isEditActive">Autocomplete</label>
+                        </div>
+                        <div class="col-md-9">
+                            <eui-autocomplete formControlName="autoComplete"
+                                            [autocompleteData]="autocompleteDataFormAutocomplete"
+                                            [isFreeValueAllowed]="true"
+                                            placeholder="Select a fruit"
+                                            [isReadonly]="!isEditActive">
+                            </eui-autocomplete>
+                            @if (render('autoComplete')) {
+                                <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+
+                    <div euiInputGroup class="row">
+                        <div class="col-md-3">
+                            <label euiLabel [euiRequired]="isEditActive">Datepicker</label>
+                        </div>
+                        <div class="col-md-9">
+                            <eui-datepicker isClearable formControlName="datepicker" [isReadOnly]="!isEditActive"></eui-datepicker>
+                            @if (render('datepicker')) {
+                                <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+
+                    <div euiInputGroup class="row">
+                        <div class="col-md-3">
+                            <label euiLabel [euiRequired]="isEditActive">Date range selector</label>
+                        </div>
+                        <div class="col-md-9">
+                            <eui-date-range-selector formControlName="daterangeselector" [isReadOnly]="!isEditActive"></eui-date-range-selector>
+                            @if (isEditActive && render('daterangeselector')) {
+                                <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+
+                    <div euiInputGroup class="row">
+                        <div class="col-md-3">
+                            <label euiLabel [euiRequired]="isEditActive">Single mandatory checkbox</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="eui-u-flex">
+                                <input id="agree1" euiInputCheckBox formControlName="mySingleCheckbox" [readonly]="!isEditActive"/>
+                                <label euiLabel for="agree1">I agree</label>
+                            </div>
+                            @if (isEditActive && render('mySingleCheckbox')) {
+                                <eui-feedback-message euiDanger>This checkbox is mandatory and must be checked</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+
+                    <div euiInputGroup class="row" formGroupName="myCheckboxGroup">
+                        <div class="col-md-3">
+                            <label euiLabel [euiRequired]="isEditActive">Choose preferred language(s)</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="eui-u-flex eui-u-flex-wrap">
+                                @for (checkbox of checkboxOptions; let i = $index; track $index) {
+                                    <div class="eui-u-inline-flex eui-u-mb-s">
+                                        <input euiInputCheckBox name="checkbox" id="reactive-horizontal-checkid-{{i}}" formControlName="{{checkbox.controlName}}" [readonly]="!isEditActive"/>
+                                        <label euiLabel for="reactive-horizontal-checkid-{{i}}">{{checkbox.label}}</label>
+                                    </div>
+                                }
+                            </div>
+                            @if (isEditActive && myCheckboxGroup?.errors?.requireCheckboxesToBeChecked && myCheckboxGroup.touched) {
+                                <eui-feedback-message euiDanger>At least one checkbox is required to be checked</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+
+                    <div euiInputGroup class="row">
+                        <div class="col-md-3 eui-u-mb-s">
+                            <label euiLabel [euiRequired]="isEditActive">Radio options</label>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="eui-u-flex eui-u-flex-wrap">
+                                <ng-template ngFor let-radio [ngForOf]="radioOptions" let-i="index">
+                                    <div class="eui-u-inline-flex eui-u-mb-s">
+                                        <input euiInputRadio id="reactive-horizontal-radio-{{i}}" name="radioForm" formControlName="radioValue" [readonly]="!isEditActive" />
+                                        <label euiLabel for="reactive-horizontal-radio-{{i}}">{{radio.label}}</label>
+                                    </div>
+                                </ng-template>
+                            </div>
+                            @if (render('radioValue')) {
+                                <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+                }
+            </form>
+
+            <div class="col-md-4">
+                <div class="eui-u-f-bold">Reactive Form content</div>
+                <div class="eui-showcase-demo eui-u-mt-m">
+                    <div class="code" style="overflow-y: auto;" tabindex="0">
+                        <pre class="eui-u-text-pre" tabindex="0">{{ formValidation.value | json }}</pre>
+                    </div>
+                </div>
+
+                <div class="eui-u-f-bold eui-u-mt-l eui-u-mb-m">Form status</div>
+                <eui-badge [euiSuccess]="formValidation.status === 'VALID'" [euiDanger]="formValidation.status !== 'VALID'">
+                    {{ formValidation.status }}
+                </eui-badge>
+            </div>
+        </div>
+    </eui-card-content>
+
+    <eui-card-footer>
+        <eui-card-footer-action-buttons>
+            <div class="eui-u-flex eui-u-flex-justify-content-start">
+                <button euiButton euiSecondary (click)="onResetForm()">Reset</button>
+            </div>
+            <div class="eui-u-flex eui-u-flex-justify-content-end">
+                <button euiButton euiSecondary (click)="onDisableForm()">{{isFormDisabled ? 'Enable' : 'Disable'}}</button>
+                <button euiButton euiPrimary (click)="onSubmitForm()" [euiDisabled]="isFormDisabled">Submit</button>
+            </div>
+        </eui-card-footer-action-buttons>
+    </eui-card-footer>
+</eui-card>

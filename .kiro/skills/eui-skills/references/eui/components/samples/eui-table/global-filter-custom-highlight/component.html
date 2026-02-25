@@ -1,0 +1,51 @@
+<eui-alert>
+    Search string can be highlighted in the results of the table with the pipe: <code class="eui-u-text-code">euiTableHighlightFilter</code>.<br/>
+    Example: <code class="eui-u-text-code">&lt;span [innerHTML]="row.country | euiTableHighlightFilter : strFilter : 'highlight-class'"&gt;&lt;/span&gt;</code><br/>
+    First parameter is the search string of the field, second id the class to be used for highlighting, default is: <code class="eui-u-text-code">eui-table--highlighted</code>
+</eui-alert><br/>
+
+<div class="eui-u-mb-xs eui-u-flex eui-u-flex-justify-content-end">
+    <div class="eui-u-width-20">
+        <eui-table-filter #filter placeholder="Search filter..." (filterChange)="onFilterChange($event)"></eui-table-filter>
+    </div>
+</div>
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data" [paginator]="paginator" [filter]="filter">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Country" nowrap>
+                    <span class="eui-flag-icon eui-flag-icon--rounded eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>&nbsp;
+                    <span [innerHTML]="row.country | euiTableHighlight: strFilter : 'my-highlight'"></span>
+                </td>
+                <td data-col-label="Year"><span [innerHTML]="row.year | euiTableHighlight: strFilter : 'my-highlight'"></span></td>
+                <td data-col-label="ISO"><span [innerHTML]="row.iso | euiTableHighlight: strFilter : 'my-highlight'"></span></td>
+                <td data-col-label="Population">
+                    <span [innerHTML]="row.population | number | euiTableHighlight: strFilter : 'my-highlight'"></span>
+                </td>
+                <td data-col-label="Capital city">
+                    <span [innerHTML]="row.capital | euiTableHighlight: strFilter : 'my-highlight'"></span>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">Footer</td>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="noData">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">There are currently no data to display</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+<eui-paginator #paginator></eui-paginator>

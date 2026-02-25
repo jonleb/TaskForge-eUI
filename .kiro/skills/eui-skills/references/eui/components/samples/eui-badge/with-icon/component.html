@@ -1,0 +1,112 @@
+Ponderate the size of the <code class="eui-u-text-code">eui-icon</code> against the <code class="eui-u-text-code">eui-badge</code> size to match your design
+
+<br>
+
+<div class="doc-sample-section-title">Icon and badges with different sizes of badges</div>
+
+<div class="eui-u-flex">
+    <div class="eui-u-flex eui-u-flex-column eui-u-flex-justify-content-center eui-u-flex-gap-s">
+        <span>"dotted badge"</span>
+        <eui-icon-svg icon="eui-email">
+            <eui-badge euiDanger></eui-badge>
+        </eui-icon-svg>
+    </div>
+    <div class="eui-u-flex eui-u-flex-column eui-u-flex-justify-content-center eui-u-flex-gap-s">
+        <span>1 character</span>
+        <eui-icon-svg icon="eui-email">
+            <eui-badge euiDanger euiSizeS>9</eui-badge>
+        </eui-icon-svg>
+    </div>
+    <div class="eui-u-flex eui-u-flex-column eui-u-flex-justify-content-center eui-u-flex-gap-s">
+        <span>2 characters</span>
+        <eui-icon-svg icon="eui-email">
+            <eui-badge euiDanger euiSizeS>9+</eui-badge>
+        </eui-icon-svg>
+    </div>
+    <div class="eui-u-flex eui-u-flex-column eui-u-flex-justify-content-center eui-u-flex-gap-s">
+        <span>3 characters</span>
+        <eui-icon-svg icon="eui-email">
+            <eui-badge euiDanger euiSizeS>99+</eui-badge>
+        </eui-icon-svg>
+    </div>
+    <div class="eui-u-flex eui-u-flex-column eui-u-flex-justify-content-center eui-u-flex-gap-s">
+        <span>4 characters</span>
+        <eui-icon-svg icon="eui-email">
+            <eui-badge euiDanger euiSizeS>999+</eui-badge>
+        </eui-icon-svg>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">maxCharCount and charReplacement</div>
+
+<strong>Default</strong>
+<br><br>
+
+<eui-icon-svg icon="eui-email">
+    <eui-badge euiDanger euiSizeS [maxCharCount]="2">123456</eui-badge>
+</eui-icon-svg>
+<br><br>
+
+<strong>Provided replacement string</strong>
+<br><br>
+<eui-icon-svg icon="eui-email">
+    <eui-badge euiDanger euiSizeS [maxCharCount]="2" charReplacement="++">123456</eui-badge>
+</eui-icon-svg>
+
+
+
+
+
+<div class="doc-sample-section-title">Icon sizes VS badge sizes examples</div>
+
+<div euiInputGroup class="eui-u-mv-m">
+    <label euiLabel>Enter badge label</label>
+    <input euiInputNumber id="badge-label" name="badge-label" [(ngModel)]="badgeLabel" value="" placeholder="Badge label..." [euiMaxlength]="10" />
+</div>
+
+@for (size of sizes; track size.size ) {
+    <strong>badge size : {{size.size}}</strong>
+
+    <div class="eui-u-flex">
+        @for (iconSize of size.iconSizes; track iconSize.s) {
+            <div class="eui-u-flex eui-u-flex-column eui-u-flex-justify-content-center">
+                <span>icon size {{iconSize.s}}</span>
+                @if (iconSize.v) {
+                    <eui-icon-svg icon="eui-notifications" [size]="iconSize.s">
+                        <eui-badge [euiSizeVariant]="size.size" euiDanger [maxCharCount]="2">{{badgeLabel}}</eui-badge>
+                    </eui-icon-svg>
+                    <br>
+                    <eui-icon-svg icon="eui-email" [size]="iconSize.s">
+                        <eui-badge [euiSizeVariant]="size.size" euiDanger [maxCharCount]="2">{{badgeLabel}}</eui-badge>
+                    </eui-icon-svg>
+                } @else {
+                    <abbr>N/A</abbr>
+                }
+            </div>
+        }
+    </div>
+}
+
+<br><br>
+
+<strong>Dotted badges (empty content)</strong>
+
+<div class="eui-u-flex">
+    @for (iconSize of iconSizes; track iconSize) {
+        <div class="eui-u-flex eui-u-flex-column eui-u-flex-justify-content-center">
+            <span>icon size {{iconSize}}</span>
+            @if (iconSize) {
+                <eui-icon-svg icon="eui-notifications" [size]="iconSize">
+                    <eui-badge euiDanger></eui-badge>
+                </eui-icon-svg>
+                <br>
+                <eui-icon-svg icon="eui-email" [size]="iconSize">
+                    <eui-badge euiDanger></eui-badge>
+                </eui-icon-svg>
+            } @else {
+                <abbr>N/A</abbr>
+            }
+        </div>
+    }
+</div>

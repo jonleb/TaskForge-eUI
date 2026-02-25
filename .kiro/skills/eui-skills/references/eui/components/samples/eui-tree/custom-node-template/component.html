@@ -1,0 +1,86 @@
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree [nodes]="treeData" [nodeTemplateRef]="nodeTemplateCustom" isMultiselect (selectionChange)="onSelectionChange($event)"></eui-tree>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre class="eui-u-text-pre">{{addedLabels}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{removedLabels}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionLabels}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template let-node #nodeTemplateCustom let-onSelect="onSelect" let-id="id" let-children="children">
+    @if (node && node.selectable) {
+        <input euiInputCheckBox
+               type="checkbox"
+               id="{{id}}"
+               [checked]="node && node.isSelected"
+               (change)="onSelect($event)" />
+    }
+    <label euiLabel for="{{id}}" class="eui-u-text-truncate eui-u-mr-m" [class.eui-label--selected]="node.isSelected">
+        {{ node.treeContentBlock.label + ' CUSTOM' }}
+    </label>
+    @if (children?.length > 0) {
+        <eui-icon-svg icon="eui-state-info" size="s" fillColor="info" euiTooltip="Some tooltip text" class="eui-u-ml-s"></eui-icon-svg>
+    }
+</ng-template>
+
+<div class="row">
+    <p>In this example we create a custom note template which doesn't use the input to select,
+        but still doing the action via onSelect(evt :{{'{'}} target: {{'{'}} checked: boolean {{'}' + '}'}}) method and
+        react on provided node instance.</p>
+    <div class="col-md-6">
+        <eui-tree [nodes]="treeData2" [nodeTemplateRef]="nodeTemplateCustom2" isSingleSelect showLines (selectionChange)="onSelectionChange2($event)"></eui-tree>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre>{{addedLabels2}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre>{{removedLabels2}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre>{{selectionLabels2}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template let-node #nodeTemplateCustom2 let-onSelect="onSelect" let-id2="id" let-children>
+    <div (click)="onSelect({ target: { checked: !node.isSelected } })" class="eui-tree-node-wrapper__container-middle">
+        <label
+            euiLabel
+            class="eui-u-text-truncate eui-u-p-2xs"
+            [class.eui-label--selected]="node?.isSelected"
+            [class.eui-u-cursor-pointer]="node?.selectable">
+            {{ node?.treeContentBlock?.label }}
+        </label>
+    </div>
+
+    @if (node?.treeContentBlock?.rightContent) {
+        <div (click)="onSelect({ target: { checked: !node.isSelected } })" class="eui-tree-node-wrapper__container-right">
+            @for (badge of node.treeContentBlock.rightContent?.badges; track $index) {
+                <eui-badge euiSizeM euiOutline [euiVariant]="badge.typeClass || 'secondary'" class="eui-u-ml-xs">
+                    <span euiLabel>{{ badge.label }}</span>
+                </eui-badge>
+            }
+        </div>
+    }
+</ng-template>

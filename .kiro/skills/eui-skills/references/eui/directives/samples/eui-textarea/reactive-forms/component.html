@@ -1,0 +1,106 @@
+<div class="row">
+    <div class="col-md-7">
+        <div class="doc-sample-section-title">Reactive forms</div>
+
+        <form [formGroup]="form">
+
+            <div euiInputGroup>
+                <label euiLabel euiRequired for="story-form">Tell us your story</label>
+                <textarea euiTextArea
+                        #textarea
+                        id="story-form"
+                        name="story-form"
+                        rows="5"
+                        formControlName="control"
+                        placeholder="Compose an epic..."
+                        [readonly]="!isEditActive">
+                </textarea>
+                @if (render('control')) {
+                    <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                }
+            </div>
+
+            <div euiInputGroup>
+                <label euiLabel euiRequired for="story_max1000">Tell us your story (euiMaxlength={{maxLength}})</label>
+                <textarea euiTextArea
+                        id="story_max{{maxLength}}"
+                        name="large-story"
+                        rows="8"
+                        formControlName="largeControl"
+                        [readonly]="!isEditActive"
+                        [euiMaxlength]="maxLength"
+                        (maxLengthReached)="onMaxLengthReached($event)">
+                </textarea>
+                @if (render('largeControl')) {
+                    <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                }
+                @if (isMaxLengthReached) {
+                    <eui-feedback-message euiWarning>The maximum length of {{maxLength}} characters has been reached !</eui-feedback-message>
+                }
+            </div>
+        </form>
+    </div>
+    <div class="col-md-5">
+        <div class="doc-sample-section-title">Reactive Form content</div>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="code" style="overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre" tabindex="0">{{form.getRawValue() | json}}</pre>
+                <div class="eui-u-flex">
+                    <div class="eui-u-f-bold eui-u-mr-m">Form status</div>
+                    <eui-badge euiSizeS [euiSuccess]="form.status === 'VALID'" [euiDanger]="form.status !== 'VALID'">
+                        {{ form.status }}
+                    </eui-badge>
+                </div>
+            </div>
+        </div>
+        <div class="eui-u-flex eui-u-flex-wrap eui-u-mt-m">
+            <button euiButton euiPrimary (click)="onSubmit()" class="eui-u-mr-m eui-u-mb-m">Submit form</button>
+            <button euiButton euiPrimary euiOutline (click)="onToggleReadonly()" class="eui-u-mr-m eui-u-mb-m">Toggle Readonly</button>
+            <button euiButton euiPrimary euiOutline (click)="onToggleDisabled()" class="eui-u-mr-m eui-u-mb-m">Toggle Disabled</button>
+            <button euiButton euiPrimary euiOutline (click)="changeState()" class="eui-u-mr-m eui-u-mb-m">Change value</button>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-7">
+        <div class="doc-sample-section-title">Two-way data binding (ngModel)</div>
+        <form #myForm="ngForm" id="my-form" novalidate (ngSubmit)="onSubmitModel(myForm)">
+            <div euiInputGroup>
+                <label euiLabel euiRequired for="template_driven">Tell us your story</label>
+                <textarea euiTextArea
+                        id="template_driven"
+                        name="story"
+                        rows="5"
+                        [(ngModel)]="model"
+                        [readonly]="!isEditActive"
+                        [disabled]="isDisabled"
+                        required
+                        #story="ngModel">
+                </textarea>
+                @if (isEditActive && story.errors?.required) {
+                    <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                }
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-5">
+        <div class="doc-sample-section-title">NgModel content</div>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="code" style="overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre" tabindex="0">{{ myForm.value | json }}</pre>
+                <div class="eui-u-flex">
+                    <div class="eui-u-f-bold eui-u-mr-m">Form status</div>
+                    <eui-badge euiSizeS [euiSuccess]="myForm.status === 'VALID'" [euiDanger]="myForm.status !== 'VALID'">
+                        {{ myForm.status }}
+                    </eui-badge>
+                </div>
+            </div>
+        </div>
+        <div class="eui-u-flex eui-u-flex-wrap eui-u-mt-m">
+            <button form="my-form" type="submit" euiButton euiPrimary class="eui-u-mr-m eui-u-mb-m">Submit form</button>
+            <button euiButton euiOutline euiPrimary (click)="changeState()" class="eui-u-mr-m eui-u-mb-m">Change value </button>
+        </div>
+    </div>
+</div>

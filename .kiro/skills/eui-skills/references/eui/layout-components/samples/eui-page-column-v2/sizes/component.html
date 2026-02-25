@@ -1,0 +1,80 @@
+<p class="eui-u-text-paragraph">
+    Columns can be sized using the <code class="eui-u-text-code">size</code> input option.
+    Allowed values ranges from <strong>euiSizeS</strong> for the smallest size to <strong>euiSize4xl</strong> for the largest one.
+</p>
+
+
+<eui-page>
+    <eui-page-content>
+        <eui-page-columns>
+            <eui-page-column label="euiSizeS" euiSizeS isCollapsible=true></eui-page-column>
+            <eui-page-column label="euiSizeM" euiSizeM isCollapsible=true></eui-page-column>
+            <eui-page-column label="euiSizeL" euiSizeL isCollapsible=true></eui-page-column>
+            <eui-page-column label="euiSizeXL" euiSizeXL isCollapsible=true></eui-page-column>
+            <eui-page-column label="euiSize2XL" euiSize2XL isCollapsible=true></eui-page-column>
+            <eui-page-column label="euiSize3XL" euiSize3XL isCollapsible=true></eui-page-column>
+            <eui-page-column label="euiSize4XL" euiSize4XL isCollapsible=true></eui-page-column>
+        </eui-page-columns>
+    </eui-page-content>
+</eui-page>
+
+
+
+
+<p class="eui-u-text-paragraph eui-u-mt-2xl">
+    If no size is provided, column adjust proportionally to the width of their container (here the eui-page/eui-page-columns wrapper)
+</p>
+
+
+<eui-page>
+    <eui-page-content>
+        <eui-page-columns>
+            <eui-page-column label="Column 1" isCollapsible=true></eui-page-column>
+            <eui-page-column label="Column 2" isCollapsible=true></eui-page-column>
+        </eui-page-columns>
+    </eui-page-content>
+</eui-page>
+
+
+
+
+
+<eui-alert class="eui-u-mt-2xl">
+    For responsive design, it is recommended to <strong>never set a size</strong> for the <strong>main column</strong> which automatically grows based on the page layout and content.
+    If all columns have no defined size value, their sizes will be evenly distributed in proportion to their parent container (eui-page-columns).
+</eui-alert>
+
+<p class="eui-u-text-paragraph">Set column size width (using euiSizeVariant with string size):</p>
+
+<div class="eui-u-flex eui-u-flex-wrap eui-u-mb-m">
+    <button euiButton [euiSuccess]="dynamicSize === 's'" euiSizeS (click)="changeSize('s')" class="eui-u-mb-xs eui-u-mr-s">s</button>
+    <button euiButton [euiSuccess]="dynamicSize === 'm'" euiSizeS (click)="changeSize('m')" class="eui-u-mb-xs eui-u-mr-s">m</button>
+    <button euiButton [euiSuccess]="dynamicSize === 'l'" euiSizeS (click)="changeSize('l')" class="eui-u-mb-xs eui-u-mr-s">l</button>
+    <button euiButton [euiSuccess]="dynamicSize === 'xl'" euiSizeS (click)="changeSize('xl')" class="eui-u-mb-xs eui-u-mr-s">xl</button>
+    <button euiButton [euiSuccess]="dynamicSize === '2xl'" euiSizeS (click)="changeSize('2xl')" class="eui-u-mb-xs eui-u-mr-s">2xl</button>
+    <button euiButton [euiSuccess]="dynamicSize === '3xl'" euiSizeS (click)="changeSize('3xl')" class="eui-u-mb-xs eui-u-mr-s">3xl</button>
+    <button euiButton [euiSuccess]="dynamicSize === '4xl'" euiSizeS (click)="changeSize('4xl')" class="eui-u-mb-xs eui-u-mr-s">4xl</button>
+</div>
+
+
+
+<eui-page>
+    <eui-page-content>
+        <eui-page-columns>
+
+            <eui-page-column label="Side column - {{ dynamicSize }}" [euiSizeVariant]="dynamicSize" isCollapsible=true>
+                <eui-page-column-body>
+                    <em>column body content</em>
+                </eui-page-column-body>
+            </eui-page-column>
+
+            <eui-page-column label="Main column">
+                <eui-page-column-body>
+                    <eui-showcase-doc-lorem-ipsum textSize="small"></eui-showcase-doc-lorem-ipsum>
+                </eui-page-column-body>
+            </eui-page-column>
+
+        </eui-page-columns>
+    </eui-page-content>
+
+</eui-page>

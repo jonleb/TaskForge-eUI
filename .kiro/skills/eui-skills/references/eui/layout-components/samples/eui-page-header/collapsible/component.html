@@ -1,0 +1,51 @@
+<div class="doc-sample-section-title">With collapsible custom header body content</div>
+
+<eui-page-header label="Page Title - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut massa tempus, posuere leo eget, scelerisque ipsum."
+                subLabel="Page Sub-title : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut massa tempus, posuere leo eget, scelerisque ipsum."
+                [isCollapsible]="true"
+                [isCollapsed]="false">
+    <eui-page-header-body>
+        <div class="eui-u-flex eui-u-pv-m">
+            This is the collapsible page header's custom body content.
+            <br>
+            Its usage is to display page information that should be always be visible on top of the page like a "summary" for example.
+        </div>
+    </eui-page-header-body>
+</eui-page-header>
+
+
+
+<div class="doc-sample-section-title">With collapsible custom header rich body content</div>
+
+<eui-page-header label="Prepare Grant Agreement - CCREF-ALERT-2021-11589623"
+                [isCollapsible]="true"
+                [isCollapsed]="false">
+    <eui-page-header-body>
+        <div class="eui-u-flex eui-u-pt-2xs eui-u-pb-xs eui-u-flex-gap-m">
+            <div class="eui-u-c-bg-secondary-surface-dark eui-u-pv-4xs eui-u-ph-2xs">
+                Task / Process
+            </div>
+            <eui-chip euiSizeS>
+                Status: claimed by Jane DOE on 30/01/2024
+            </eui-chip>
+        </div>
+    </eui-page-header-body>
+
+    <eui-page-header-action-items>
+        <button euiButton euiSecondary>Secondary action</button>
+        <button euiButton euiPrimary>
+            <eui-icon-svg icon="eui-add" />
+            Primary action
+        </button>
+        <eui-dropdown>
+            <button euiButton euiPrimary euiOutline euiTooltip="More actions" [attr.aria-label]="'More actions menu'">
+                More
+                <eui-icon-svg icon="eui-ellipsis-vertical" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem>Extra page action 1</button>
+                <button euiDropdownItem>Extra page action 2</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </eui-page-header-action-items>
+</eui-page-header>

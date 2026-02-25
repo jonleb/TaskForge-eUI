@@ -1,0 +1,75 @@
+<p class="eui-u-text-paragraph">
+	By default, the feedback message is muted (isMuted=true), which means it doesn't show the status icon before the message.
+</p>
+
+<eui-alert>
+    Please note that in order to be fully aligned with the Design System, this option will change in the next major release of eUI and will display the status icon by default.
+</eui-alert>
+
+<div class="row eui-u-mt-xl">
+	<div class="col-md-6">
+		<div class="doc-sample-section-title">isMuted=true</div>
+		<div euiInputGroup>
+			<input euiInputText id="primary-feedback-muted" aria-label="Primary feedback muted" />
+			<eui-feedback-message [isMuted]="true" euiPrimary>This is the <strong>primary</strong> feedback message</eui-feedback-message>
+		</div>
+
+		<div euiInputGroup>
+			<input euiInputText id="secondary-feedback-muted" aria-label="Secondary feedback muted" />
+			<eui-feedback-message [isMuted]="true" euiSecondary>This is the <strong>secondary</strong> feedback message</eui-feedback-message>
+		</div>
+
+		<div euiInputGroup>
+			<input euiInputText id="info-feedback-muted" aria-label="Info feedback muted" />
+			<eui-feedback-message [isMuted]="true" euiInfo>This is the <strong>info</strong> feedback message</eui-feedback-message>
+		</div>
+
+		<div euiInputGroup>
+			<input euiInputText id="success-feedback-muted" aria-label="Success feedback muted" />
+			<eui-feedback-message [isMuted]="true" euiSuccess>This is the <strong>success</strong> feedback message</eui-feedback-message>
+		</div>
+
+		<div euiInputGroup>
+			<input euiInputText id="warning-feedback-muted" aria-label="Warning feedback muted" />
+			<eui-feedback-message [isMuted]="true" euiWarning>This is the <strong>warning</strong> feedback message</eui-feedback-message>
+		</div>
+
+		<div euiInputGroup>
+			<input euiInputText id="danger-feedback-muted" aria-label="Danger feedback muted" />
+			<eui-feedback-message [isMuted]="true" euiDanger>This is the <strong>danger</strong> feedback message</eui-feedback-message>
+		</div>
+	</div>
+
+	<div class="col-md-6">
+		<div class="doc-sample-section-title">isMuted=false</div>
+		<div euiInputGroup>
+			<input euiInputText id="primary-feedback-muted-false" aria-label="Primary feedback muted false" />
+			<eui-feedback-message [isMuted]="false" euiPrimary>This is the <strong>primary</strong> feedback message</eui-feedback-message>
+		</div>
+
+		<div euiInputGroup>
+			<input euiInputText id="secondary-feedback-muted-false" aria-label="Secondary feedback muted false" />
+			<eui-feedback-message [isMuted]="false" euiSecondary>This is the <strong>secondary</strong> feedback message</eui-feedback-message>
+		</div>
+
+		<div euiInputGroup>
+			<input euiInputText id="info-feedback-muted-false" aria-label="Info feedback muted false" />
+			<eui-feedback-message [isMuted]="false" euiInfo>This is the <strong>info</strong> feedback message</eui-feedback-message>
+		</div>
+
+		<div euiInputGroup>
+			<input euiInputText id="success-feedback-muted-false" aria-label="Success feedback muted false" />
+			<eui-feedback-message [isMuted]="false" euiSuccess>This is the <strong>success</strong> feedback message</eui-feedback-message>
+		</div>
+
+		<div euiInputGroup>
+			<input euiInputText id="warning-feedback-muted-false" aria-label="Warning feedback muted false" />
+			<eui-feedback-message [isMuted]="false" euiWarning>This is the <strong>warning</strong> feedback message</eui-feedback-message>
+		</div>
+
+		<div euiInputGroup>
+			<input euiInputText id="danger-feedback-muted-false" aria-label="Danger feedback muted false" />
+			<eui-feedback-message [isMuted]="false" euiDanger>This is the <strong>danger</strong> feedback message</eui-feedback-message>
+		</div>
+	</div>
+</div>

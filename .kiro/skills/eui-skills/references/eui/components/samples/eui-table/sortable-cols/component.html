@@ -1,0 +1,218 @@
+<eui-alert>
+    Sorting is activated by adding <code class="eui-u-text-code">isSortable</code> on a <code class="eui-u-text-code">th</code>. Multi-sorting is activated by adding <code class="eui-u-text-code">isMultiSortable</code> and <code class="eui-u-text-code">isSortable</code>.<br/>
+    Simple sort and multi-sort can be used in the same table.<br/>
+    The property on which the sort will be done needs to be specified in the <code class="eui-u-text-code">sortOn</code> option.<br/>
+    Sort changes will emit an event accessible through output <code class="eui-u-text-code">sortChange</code>.
+</eui-alert><br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data" [paginator]="paginator1" (sortChange)="onSortChange($event)">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th isSortable sortOn="id">Id</th>
+                <th isSortable sortOn="country">Country</th>
+                <th isSortable sortOn="year">Year</th>
+                <th isSortable sortOn="iso">ISO</th>
+                <th isSortable sortOn="population">Population</th>
+                <th isSortable sortOn="capital">Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Id"><span euiBadge>{{ row.id }}</span></td>
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator #paginator1></eui-paginator>
+
+
+<div class="doc-sample-section-title">Multi-sort</div>
+<eui-alert>The following sample shows multi-sort and simple sort working together.</eui-alert><br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data" [paginator]="paginator2" (sortChange)="onSortChange($event)">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th isSortable isMultiSortable sortOn="id">Id</th>
+                <th isSortable isMultiSortable sortOn="country">Country</th>
+                <th isSortable isMultiSortable sortOn="year">Year</th>
+                <th isSortable sortOn="iso">ISO</th>
+                <th isSortable sortOn="population">Population</th>
+                <th isSortable sortOn="capital">Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Id"><span euiBadge>{{ row.id }}</span></td>
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer</td>
+            </tr>
+        </ng-template>+
+    </table>
+</div>
+
+<eui-paginator #paginator2></eui-paginator>
+
+<div class="doc-sample-section-title">Sort on child properties</div>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data2" [paginator]="paginator3" (sortChange)="onSortChange($event)">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th isSortable isMultiSortable sortOn="id">Id</th>
+                <th isSortable isMultiSortable sortOn="country.country">Country</th>
+                <th isSortable isMultiSortable sortOn="country.year">Year</th>
+                <th isSortable sortOn="country.iso">ISO</th>
+                <th isSortable sortOn="country.population">Population</th>
+                <th isSortable sortOn="country.capital">Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Id"><span euiBadge>{{ row.id }}</span></td>
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.country.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country.country }}</td>
+                <td data-col-label="Year">{{ row.country.year }}</td>
+                <td data-col-label="ISO">{{ row.country.iso }}</td>
+                <td data-col-label="Population">{{ row.country.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.country.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator #paginator3></eui-paginator>
+
+<div class="doc-sample-section-title">Disable sort feature dynamically</div>
+
+No sorting feature <eui-slide-toggle (slideToggleChange)="onChange($event)" [isChecked]="!sortDisabled"></eui-slide-toggle> With sorting feature
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data" [paginator]="paginator4" (sortChange)="onSortChange($event)">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th isSortable isMultiSortable sortOn="id" [sortDisabled]="sortDisabled">Id</th>
+                <th isSortable isMultiSortable sortOn="country" [sortDisabled]="sortDisabled">Country</th>
+                <th isSortable isMultiSortable sortOn="year" [sortDisabled]="sortDisabled">Year</th>
+                <th isSortable sortOn="iso" [sortDisabled]="sortDisabled">ISO</th>
+                <th isSortable sortOn="population" [sortDisabled]="sortDisabled">Population</th>
+                <th isSortable sortOn="capital" [sortDisabled]="sortDisabled">Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Id"><span euiBadge>{{ row.id }}</span></td>
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator #paginator4></eui-paginator>
+
+
+<div class="doc-sample-section-title">Default sort value and change value dynamically</div>
+
+<button euiButton (click)="setSort()">Change sort dynamically</button>&nbsp;<button euiButton (click)="resetSort()">Reset sort dynamically</button><br/><br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table #euiTable5 euiTable isTableResponsive [data]="data2" [paginator]="paginator5" (sortChange)="onSortChange($event)">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th isSortable isMultiSortable sortOn="id">Id</th>
+                <th isSortable isMultiSortable sortOn="country.country" defaultOrder sortOrder="asc">Country</th>
+                <th isSortable isMultiSortable sortOn="country.year">Year</th>
+                <th isSortable sortOn="country.iso">ISO</th>
+                <th isSortable sortOn="country.population">Population</th>
+                <th isSortable sortOn="country.capital">Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Id"><span euiBadge>{{ row.id }}</span></td>
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.country.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country.country }}</td>
+                <td data-col-label="Year">{{ row.country.year }}</td>
+                <td data-col-label="ISO">{{ row.country.iso }}</td>
+                <td data-col-label="Population">{{ row.country.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.country.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator #paginator5></eui-paginator>
+
+
+<div class="doc-sample-section-title">Default multi-sort value and change value dynamically</div>
+
+<button euiButton (click)="setMultiSort()">Change multi-sort dynamically</button>&nbsp;<button euiButton (click)="resetMultiSort()">Reset multi-sort dynamically</button><br/><br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table #euiTable6 euiTable isTableResponsive [data]="data" [paginator]="paginator6" (sortChange)="onSortChange($event)">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th isSortable isMultiSortable sortOn="id">Id</th>
+                <th isSortable isMultiSortable sortOn="country">Country</th>
+                <th isSortable isMultiSortable sortOn="year">Year</th>
+                <th isSortable sortOn="iso">ISO</th>
+                <th isSortable sortOn="population">Population</th>
+                <th isSortable sortOn="capital">Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Id"><span euiBadge>{{ row.id }}</span></td>
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator #paginator6></eui-paginator>

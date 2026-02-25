@@ -1,0 +1,20 @@
+<eui-alert>Open the browser console to observe events.</eui-alert><br />
+
+<table class="eui-table-default eui-table-default--compact">
+    <thead>
+        <tr>
+            <th>Event handler</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>buttonClick</td>
+            <td>Triggered when the button is click.</td>
+        </tr>
+    </tbody>
+</table>
+
+<br>
+
+<eui-icon-button icon="eui-state-info" (buttonClick)="onClick($event)" ariaLabel="information"/>

@@ -1,0 +1,19 @@
+<eui-card>
+    <eui-card-header>
+        <eui-card-header-title>EDITOR 2</eui-card-header-title>
+        <eui-card-header-right-content>
+            <button euiButton euiPrimary euiOutline euiSizeS (click)="setFocus()">Focus on editor 2</button>
+        </eui-card-header-right-content>
+    </eui-card-header>
+    <eui-card-content>
+
+        <form [formGroup]="form">
+            <eui-editor isMinimalToolbar
+                formControlName="editorContent"
+                [placeholder]="placeholder"
+                (editorCreate)="onEditorCreate($event)">
+            </eui-editor>
+        </form>
+
+    </eui-card-content>
+</eui-card>

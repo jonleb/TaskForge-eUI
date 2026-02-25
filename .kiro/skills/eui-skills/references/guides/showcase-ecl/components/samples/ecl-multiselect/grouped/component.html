@@ -1,0 +1,15 @@
+<div eclFormGroup>
+    <label id="label-multi-grouped" eclFormLabel isOptional>Select countries</label>
+    <div id="helper-multi-grouped" eclHelpBlock>This is help block</div>
+    <select eclMultiselect ariaLabeledby="label-multi-grouped" ariaDescribedby="helper-multi-grouped"
+        eclPlaceholder="Custom placeholder">
+        @for (group of groups; track group.name) {
+        <optgroup eclMultiselectOptgroup [label]="group.name">
+            @for (country of group.countries; track country.id) {
+            <option eclMultiselectOption [value]="country.id" [label]="country.name"></option>
+            }
+        </optgroup>
+        }
+        <option eclMultiselectOption value="alone" label="Standalone option"></option>
+    </select>
+</div>

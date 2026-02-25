@@ -1,0 +1,138 @@
+<div class="doc-sample-section-title">Default</div>
+
+<eui-toolbar euiSecondary>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+</eui-toolbar>
+
+
+
+<div class="doc-sample-section-title">eui-toolbar-environment</div>
+
+<eui-toolbar euiSecondary>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-environment>ENV</eui-toolbar-environment>
+</eui-toolbar>
+
+
+
+
+<div class="doc-sample-section-title">button within eui-toolbar-items</div>
+
+<eui-toolbar euiSecondary>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <button euiButton euiSecondary euiSizeS>Button item</button>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+<div class="doc-sample-section-title">eui-icon-button within eui-toolbar-item</div>
+
+<eui-alert euiWarning class="eui-u-mb-m">
+    Strongly recommended for accessibility reason
+</eui-alert>
+
+<eui-toolbar euiSecondary>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-icon-button icon="eui-state-info" ariaLabel="Information"></eui-icon-button>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+
+<div class="doc-sample-section-title">with eui-toolbar-item and eui-user-profile</div>
+
+<eui-toolbar euiSecondary>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+<p>
+    with eui-user-profile-menu
+</p>
+
+<eui-toolbar euiSecondary>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile>
+                <eui-user-profile-menu>
+                    <eui-user-profile-menu-item>
+                        <eui-icon-svg icon="eui-user" size="s"/>
+                        View profile information
+                    </eui-user-profile-menu-item>
+                    <eui-user-profile-menu-item>
+                        <eui-icon-svg icon="eui-sign-out" size="s"/>
+                        Sign out
+                    </eui-user-profile-menu-item>
+                </eui-user-profile-menu>
+            </eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+<div class="doc-sample-section-title">with eui-toolbar-center</div>
+
+<eui-toolbar euiSecondary>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-center>
+        <button euiButton euiSecondary euiSizeS>Button item</button>
+    </eui-toolbar-center>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+
+<div class="doc-sample-section-title">with eui-toolbar-search</div>
+
+<eui-toolbar euiSecondary>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-center>
+        <eui-toolbar-item>
+            <eui-toolbar-search [searchResults]="results" placeholderLabel="Search" (search)="onSearch($event)" (selectionChange)="onSelectionChange($event)"></eui-toolbar-search>
+        </eui-toolbar-item>
+    </eui-toolbar-center>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+<eui-toolbar euiSecondary>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-center>
+        <eui-toolbar-item>
+            <eui-toolbar-search isInputText hasSearchButton placeholderLabel="Search" (searchClick)="onSearch($event)"></eui-toolbar-search>
+        </eui-toolbar-item>
+    </eui-toolbar-center>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+
+

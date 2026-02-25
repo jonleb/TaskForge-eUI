@@ -1,0 +1,25 @@
+<eui-alert>
+    In order to activate the click outside feature, you need to set: <br/>
+    - hasClosedOnClickOutside option<br/>
+    - isActive=true option<br/>
+    - add stopPropagation() on trigger element click event<br/>
+</eui-alert><br/>
+
+<button aria-haspopup="dialog" aria-label="Overlay trigger button" euiButton euiOutline euiPrimary (click)="toggleOverlay($event)">Overlay isActive = {{ isOverlay }}</button>
+
+@if (isOverlay) {
+    <eui-overlay [isActive]="true" hasClosedOnClickOutside (activeState)="updateActiveState($event)">
+        <eui-overlay-header>
+            <div class="eui-u-flex">
+                <div class="eui-u-flex">
+                    <div class="eui-u-f-l eui-u-f-bold">Overlay panel title</div>
+                </div>
+                <div class="eui-u-flex eui-u-flex-justify-content-end">
+                    <button euiButton euiRounded euiBasicButton euiIconButton aria-label="Close panel button" (click)="closeOverlay($event)">
+                        <eui-icon-svg icon="eui-close"></eui-icon-svg>
+                    </button>
+                </div>
+            </div>
+        </eui-overlay-header>
+    </eui-overlay>
+}

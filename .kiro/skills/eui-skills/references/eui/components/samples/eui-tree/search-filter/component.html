@@ -1,0 +1,240 @@
+<div class="doc-sample-section-title">With filter toolbar</div>
+
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="eui-ecl-search"></eui-icon-svg>
+        </div>
+        <input euiInputText [formControl]="filterInputControl" euiClearable placeholder="Search from tree list items..."/>
+
+        @if (!isExpandedAll['compInstance']) {
+            <button euiButton euiSecondary euiOutline (click)="expandAll('compInstance')">
+                <span euiLabel>Expand all</span>
+                <eui-icon-svg icon="eui-level-down" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+        }
+        @if (isExpandedAll['compInstance']) {
+            <button euiButton euiSecondary euiOutline (click)="collapseAll('compInstance')">
+                <span euiLabel>Collapse all</span>
+                <eui-icon-svg icon="eui-level-up" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+        }
+
+        @if (!isSelectedAll['compInstance']) {
+            <button euiButton euiSecondary euiOutline (click)="selectAll('compInstance')">
+                <span euiLabel>Select all</span>
+                <eui-icon-svg icon="eui-checkbox" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+        }
+        @if (isSelectedAll['compInstance']) {
+            <button euiButton euiSecondary euiOutline (click)="deselectAll('compInstance')">
+                <span euiLabel>Deselect all</span>
+                <eui-icon-svg icon="eui-checkbox-outline" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree #compInstance [nodes]="treeData" (selectionChange)="onSelectionChange($event)"></eui-tree>
+    </div>
+
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre class="eui-u-text-pre">{{selectionChange?.added | json}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionChange?.removed | json}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionChange?.selection | json}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Within eui-dropdown</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <eui-dropdown [hasTabNavigation]="true">
+            <button euiButton euiPrimary euiOutline euiResponsive>
+                <label euilabel>{{ selectionLabels  || defaultSelectionLabel }}</label>
+                <eui-icon-svg icon="chevron-down:sharp" size="m" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+            <eui-dropdown-content>
+                <div class="eui-u-flex eui-u-flex-column eui-u-flex-align-items-start eui-u-p-s">
+                    <div euiInputGroup>
+                        <div class="eui-u-flex">
+                            <div euiInputGroupAddOn>
+                                <input euiInputText euiClearable [formControl]="filterInputMultiControl" placeholder="Search filter..."/>
+                            </div>
+
+                            @if (!isExpandedAll['compInstanceDropdown']) {
+                                <button euiButton euiIconButton euiSecondary euiOutline (click)="expandAll('compInstanceDropdown')" class="eui-u-ml-s" euiTooltip="Expand all">
+                                    <eui-icon-svg icon="eui-level-down"></eui-icon-svg>
+                                </button>
+                            }
+                            @if (isExpandedAll['compInstanceDropdown']) {
+                                <button euiButton euiIconButton euiSecondary euiOutline (click)="collapseAll('compInstanceDropdown')" class="eui-u-ml-s" euiTooltip="Collapse all">
+                                    <eui-icon-svg icon="eui-level-up"></eui-icon-svg>
+                                </button>
+                            }
+
+                            @if (!isSelectedAll['compInstanceDropdown']) {
+                                <button euiButton euiIconButton euiSecondary euiOutline (click)="selectAll('compInstanceDropdown')" class="eui-u-ml-s" euiTooltip="Select all">
+                                    <eui-icon-svg icon="eui-checkbox"></eui-icon-svg>
+                                </button>
+                            }
+                            @if (isSelectedAll['compInstanceDropdown']) {
+                                <button euiButton euiIconButton euiSecondary euiOutline (click)="deselectAll('compInstanceDropdown')" class="eui-u-ml-s" euiTooltip="Deselect all">
+                                    <eui-icon-svg icon="eui-checkbox-outline"></eui-icon-svg>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                    <eui-tree #compInstanceDropdown isMultiselect [nodes]="treeData" (selectionChange)="onSelectionChangeDropdown($event)"></eui-tree>
+                </div>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>
+<div class="eui-u-mt-4xl eui-u-mb-4xl">&nbsp;</div>
+
+<div class="doc-sample-section-title">Custom filter key</div>
+If you need to target another property in your content, you can use filterKey parameter of filterTerm function.
+<code class="eui-u-text-code">{{'.filterTerm(val,\'custom\');'}}</code> then If you add
+<code class="eui-u-text-code">{{'{custom: string }'}</code> property to your EuiTreeContentBlockModel,
+It will check the search text against your custom property. Here we defined '121','122','123' for 'Belgium','Benelux','Europe'
+When you search for '123' It will show Europe. You can also create some custom properties like '121-Belgium' in order to combine the results for both ID & Label.
+<br />
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="eui-ecl-search"></eui-icon-svg>
+        </div>
+        <input euiInputText [formControl]="filterKeyInputControl" euiClearable placeholder="Search from tree list items..."/>
+
+        @if (!isExpandedAll['compInstanceFilterKey']) {
+            <button euiButton euiSecondary euiOutline (click)="expandAll('compInstanceFilterKey')">
+                <span euiLabel>Expand all</span>
+                <eui-icon-svg icon="eui-level-down" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+        }
+        @if (isExpandedAll['compInstanceFilterKey']) {
+            <button euiButton euiSecondary euiOutline (click)="collapseAll('compInstanceFilterKey')">
+                <span euiLabel>Collapse all</span>
+                <eui-icon-svg icon="eui-level-up" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+        }
+
+        @if (!isSelectedAll['compInstanceFilterKey']) {
+            <button euiButton euiSecondary euiOutline (click)="selectAll('compInstanceFilterKey')">
+                <span euiLabel>Select all</span>
+                <eui-icon-svg icon="eui-checkbox" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+        }
+        @if (isSelectedAll['compInstanceFilterKey']) {
+            <button euiButton euiSecondary euiOutline (click)="deselectAll('compInstanceFilterKey')">
+                <span euiLabel>Deselect all</span>
+                <eui-icon-svg icon="eui-checkbox-outline" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree #compInstanceFilterKey [nodes]="treeDataFilterKey" (selectionChange)="onSelectionChange2($event)"></eui-tree>
+    </div>
+
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre class="eui-u-text-pre">{{selectionChange2?.added | json}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionChange2?.removed | json}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionChange2?.selection | json}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="doc-sample-section-title">Showing children of the matched items</div>
+When recursive selection is activated, If user filters, parent item will try to select all of the rendered children.
+When there is no children, the selection will not fire because of its recursive nature. (if there is no selected children It will be not selected).
+If you pass showChildrenOfMatchedItems as true <code class="eui-u-text-code">{{'.filterTerm(val, undefined, true);'}}</code>
+It will be rendering children of matched items, to not confuse to the user only matched item will be rendered as toggled, the children will be rendered collapsed.
+<br />
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="eui-ecl-search"></eui-icon-svg>
+        </div>
+        <input euiInputText [formControl]="showChildrenOfMatchedItemsControl" euiClearable placeholder="Search from tree list items..."/>
+
+        @if (!isExpandedAll['compInstanceShowChildrenOfMatchedItems']) {
+            <button euiButton euiSecondary euiOutline (click)="expandAll('compInstanceShowChildrenOfMatchedItems')">
+                <span euiLabel>Expand all</span>
+                <eui-icon-svg icon="eui-level-down" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+        }
+        @if (isExpandedAll['compInstanceShowChildrenOfMatchedItems']) {
+            <button euiButton euiSecondary euiOutline (click)="collapseAll('compInstanceShowChildrenOfMatchedItems')">
+                <span euiLabel>Collapse all</span>
+                <eui-icon-svg icon="eui-level-up" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+        }
+
+        @if (!isSelectedAll['compInstanceShowChildrenOfMatchedItems']) {
+            <button euiButton euiSecondary euiOutline (click)="selectAll('compInstanceShowChildrenOfMatchedItems')">
+                <span euiLabel>Select all</span>
+                <eui-icon-svg icon="eui-checkbox" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+        }
+        @if (isSelectedAll['compInstanceShowChildrenOfMatchedItems']) {
+            <button euiButton euiSecondary euiOutline (click)="deselectAll('compInstanceShowChildrenOfMatchedItems')">
+                <span euiLabel>Deselect all</span>
+                <eui-icon-svg icon="eui-checkbox-outline" class="eui-u-ml-s"></eui-icon-svg>
+            </button>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree #compInstanceShowChildrenOfMatchedItems isRecursiveSelection [nodes]="treeDataShowChildrenOfMatchedItems" (selectionChange)="onSelectionChange3($event)"></eui-tree>
+    </div>
+
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre class="eui-u-text-pre">{{selectionChange3?.added | json}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionChange3?.removed | json}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionChange3?.selection | json}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>

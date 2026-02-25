@@ -1,0 +1,49 @@
+<eui-content-card isBookmarkable [isBookmarked]="isCardBookmarked" (cardBookmark)="onCardBookmark($event)">
+    <eui-content-card-header>
+        <eui-content-card-header-end>
+            <eui-icon-button icon="eui-ellipsis-vertical" euiRounded fillColor="primary" size="s"/>
+        </eui-content-card-header-end>        
+        <eui-content-card-header-title>
+            <a class="eui-u-text-link" href="javascript:void(0)">
+                This is a title
+            </a>
+        </eui-content-card-header-title>
+    </eui-content-card-header>
+
+    <eui-content-card-body>
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+        laborum."
+    </eui-content-card-body>
+</eui-content-card>
+
+
+<div class="doc-sample-section-subtitle">Bookmark output state - using cardBookmark output event</div>
+<code class="eui-u-mr-xl">card bookmarked: {{ isCardBookmarked }}</code>
+
+
+
+<div class="doc-sample-section-title">isBookmarkable / isBookmarked</div>
+
+<eui-content-card isBookmarkable isBookmarked>
+    <eui-content-card-header>
+        <eui-content-card-header-end>
+            <eui-icon-button icon="eui-ellipsis-vertical" euiRounded fillColor="primary" size="s"/>
+        </eui-content-card-header-end>        
+        <eui-content-card-header-title>
+            <a class="eui-u-text-link" href="javascript:void(0)">
+                This is a title
+            </a>
+        </eui-content-card-header-title>
+    </eui-content-card-header>
+
+    <eui-content-card-body>
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+        laborum."
+    </eui-content-card-body>
+</eui-content-card>

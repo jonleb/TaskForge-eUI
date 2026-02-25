@@ -1,0 +1,57 @@
+<div class="doc-sample-section-title">Default - no options set</div>
+
+<eui-user-profile></eui-user-profile>
+
+
+<div class="doc-sample-section-title">With dropdown menu items - and control closing of the dropdown menu</div>
+
+<br>
+<eui-alert>
+    click on the user profile to reveal the user-profile menu
+</eui-alert>
+<br>
+
+<!-- <eui-alert euiWarning class="eui-u-mb-m">
+    In order for keyboard navigation to work on the user profile menu, make sure that you project directly the eui-user-profile-menu-item components without using *ngTemplateOutlet. When EuiUserProfileMenuItemComponent is instantiated by *ngTemplateOutlet from the userProfileMenuItems, templates are not considered direct content children of eui-user-profile-menu in the way &#64;ContentChildren expects and thus the first item is not focused. More info can be found here: <a href="https://github.com/angular/angular/issues/14842" target="_blank">Angular issue #14842</a>.
+ </eui-alert>
+ <br> -->
+
+<eui-user-profile #userProfile>
+    <eui-user-profile-menu>
+        <eui-user-profile-menu-item (click)="onItemClick('view-profile')">
+            <eui-icon-svg icon="eui-user" size="s"/>
+            View profile information
+        </eui-user-profile-menu-item>
+        <eui-user-profile-menu-item (click)="onItemClick('sign-out')">
+            <eui-icon-svg icon="eui-sign-out" size="s"/>
+            Sign out
+        </eui-user-profile-menu-item>
+    </eui-user-profile-menu> 
+</eui-user-profile>
+
+
+
+<div class="doc-sample-section-title">Using eui-user-profile-card and hasTabNavigation option to navigate to inner interactive elements with the Tab key</div>
+
+<br>
+<eui-alert>
+    click on the user profile to reveal the user-profile menu
+</eui-alert>
+<br>
+
+<eui-user-profile hasTabNavigation>
+    <eui-user-profile-menu>
+        <eui-user-profile-menu-item>
+            <eui-user-profile-card/>
+        </eui-user-profile-menu-item>
+        <eui-user-profile-menu-item>
+            <eui-icon-svg icon="eui-user" size="s"/>
+            View profile information
+        </eui-user-profile-menu-item>
+        <eui-user-profile-menu-item>
+            <eui-icon-svg icon="eui-sign-out" size="s"/>
+            Sign out
+        </eui-user-profile-menu-item>
+    </eui-user-profile-menu>
+</eui-user-profile>
+

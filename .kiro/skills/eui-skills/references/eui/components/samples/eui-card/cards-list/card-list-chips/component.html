@@ -1,0 +1,26 @@
+<eui-chip-list euiSizeS euiInfo euiOutline euiRounded>
+    @for (chip of aChips; let i = $index; track $index) {
+        @if (isMaxVisibleChipsOpened || i <= maxVisibleChipsCount) {
+            <eui-chip><span euiLabel>{{ chip }}</span></eui-chip>
+        }
+    }
+    <eui-chip-list-additional-content>
+        @if (maxVisibleChipsCount && aChips && aChips.length > maxVisibleChipsCount) {
+            <button
+                euiButton
+                euiBasicButton
+                euiSecondary
+                euiSizeS
+                type="button"
+                class="eui-chip-list__expand-button"
+                (click)="toggleTags()">
+
+                @if (isMaxVisibleChipsOpened) {
+                    <eui-icon-svg icon="eui-chevron-left" aria-label="Collapse icon" />
+                } @else {
+                    <eui-icon-svg icon="eui-chevron-right" aria-label="Expand icon" />
+                }
+            </button>
+        }
+    </eui-chip-list-additional-content>
+</eui-chip-list>

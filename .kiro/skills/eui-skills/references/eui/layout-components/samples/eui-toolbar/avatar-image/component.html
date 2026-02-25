@@ -1,0 +1,47 @@
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile avatarUrl="assets/images/avatars/small/panda.png"></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+<br>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile [isShowUserInfos]="false" avatarUrl="assets/images/avatars/small/panda.png"></eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+<br>
+
+<p>
+    with eui-user-profile-menu
+</p>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-user-profile [isShowUserInfos]="false" avatarUrl="assets/images/avatars/small/panda.png">
+                <eui-user-profile-menu>
+                    <eui-user-profile-menu-item>
+                        <eui-icon-svg icon="eui-user" size="s"/>
+                        View profile information
+                    </eui-user-profile-menu-item>
+                    <eui-user-profile-menu-item>
+                        <eui-icon-svg icon="eui-sign-out" size="s"/>
+                        Sign out
+                    </eui-user-profile-menu-item>
+                </eui-user-profile-menu>
+            </eui-user-profile>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>

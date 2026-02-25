@@ -1,0 +1,80 @@
+<eui-comment-thread isOpen [isCollapsable]="false" [currentAuthorAvatarUrl]="'assets/images/sass.png'" (commentSend)="onCommentSend($event)" (commentCancel)="onCommentCancel()">
+    @for (comment of comments; track comment.id) {
+        <eui-comment-item
+            [authorAvatarUrl]="comment.authorAvatarUrl"
+            [authorName]="comment.authorName"
+            [createdAt]="comment.createdAt | date"
+            [currentAuthorAvatarUrl]="'assets/images/sass.png'"
+            [hasChildren]="comment.children?.length > 0"
+            (commentSend)="onCommentSend($event, comment.id)"
+            (commentCancel)="onCommentCancel(comment.id)">
+            {{ comment.content }}
+
+            <eui-comment-item-right-actions>
+                <ng-container *ngTemplateOutlet="rightActions; context: { $implicit: comment.id }"></ng-container>
+            </eui-comment-item-right-actions>
+
+            @for (level2 of comment.children; track level2.id) {
+                <eui-comment-item
+                    [authorAvatarUrl]="level2.authorAvatarUrl"
+                    [authorName]="level2.authorName"
+                    [createdAt]="level2.createdAt | date"
+                    [currentAuthorAvatarUrl]="'assets/images/sass.png'"
+                    [hasChildren]="level2.children?.length > 0"
+                    (commentSend)="onCommentSend($event, level2.id)"
+                    (commentCancel)="onCommentCancel(level2.id)">
+                    {{ level2.content }}
+
+                    <eui-comment-item-right-actions>
+                        <ng-container *ngTemplateOutlet="rightActions; context: { $implicit: level2.id }"></ng-container>
+                    </eui-comment-item-right-actions>
+
+                    @for (level3 of level2.children; track level3.id) {
+                        <eui-comment-item
+                            [authorAvatarUrl]="level3.authorAvatarUrl"
+                            [authorName]="level3.authorName"
+                            [createdAt]="level3.createdAt | date"
+                            [currentAuthorAvatarUrl]="'assets/images/sass.png'"
+                            [hasChildren]="level3.children?.length > 0"
+                            (commentSend)="onCommentSend($event, level3.id)"
+                            (commentCancel)="onCommentCancel(level3.id)">
+                            {{ level3.content }}
+
+                            <eui-comment-item-right-actions>
+                                <ng-container *ngTemplateOutlet="rightActions; context: { $implicit: level3.id }"></ng-container>
+                            </eui-comment-item-right-actions>
+
+                            @for (level4 of level3.children; track level4.id) {
+                                <eui-comment-item
+                                    [authorAvatarUrl]="level4.authorAvatarUrl"
+                                    [authorName]="level4.authorName"
+                                    [createdAt]="level4.createdAt | date"
+                                    [currentAuthorAvatarUrl]="'assets/images/sass.png'"
+                                    (commentSend)="onCommentSend($event, level4.id)"
+                                    (commentCancel)="onCommentCancel(level4.id)">
+                                    {{ level4.content }}
+
+                                    <eui-comment-item-right-actions>
+                                        <ng-container *ngTemplateOutlet="rightActions; context: { $implicit: level4.id }"></ng-container>
+                                    </eui-comment-item-right-actions>
+                                </eui-comment-item>
+                            }
+                        </eui-comment-item>
+                    }
+                </eui-comment-item>
+            }
+        </eui-comment-item>
+    }
+</eui-comment-thread>
+
+<ng-template #rightActions let-commentId>
+    <eui-dropdown>
+        <button euiButton euiRounded euiIconButton euiBasicButton euiPrimary [attr.aria-label]="'More options'">
+            <eui-icon-svg icon="eui-ellipsis-vertical" size="s" />
+        </button>
+        <eui-dropdown-content>
+            <button euiDropdownItem (click)="onEdit(commentId)" aria-label="Edit">Edit</button>
+            <button euiDropdownItem (click)="onDelete(commentId)" aria-label="Delete">Delete</button>
+        </eui-dropdown-content>
+    </eui-dropdown>
+</ng-template>

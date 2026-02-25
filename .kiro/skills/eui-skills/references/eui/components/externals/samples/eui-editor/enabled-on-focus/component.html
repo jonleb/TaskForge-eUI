@@ -1,0 +1,10 @@
+<form [formGroup]="form">
+    <input euiInputText placeholder="Place the mouse cursor on this field and use the TAB key to go to the next editor's field to trigger it" />
+    <br/><br/>
+    <eui-editor
+        formControlName="htmlContent"
+        format="html"
+        [isEnabledOnFocus]="isEnabledOnFocus"
+        [isReadOnly]="true">
+    </eui-editor>
+</form>

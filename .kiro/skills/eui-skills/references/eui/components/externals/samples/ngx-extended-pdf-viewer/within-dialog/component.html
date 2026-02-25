@@ -1,0 +1,7 @@
+<button euiButton (click)="openDialog()">Open Dialog</button>
+
+<eui-dialog #dialog [title]="'Dialog title'" [height]="'auto'" width="800px" hasNoBodyPadding [hasFooter]="false" (dialogClose)="onClose()">
+    @if (filepathNeme) {
+        <ngx-extended-pdf-viewer height="800px" width="800px" [src]="filepathNeme"></ngx-extended-pdf-viewer>
+    }
+</eui-dialog>

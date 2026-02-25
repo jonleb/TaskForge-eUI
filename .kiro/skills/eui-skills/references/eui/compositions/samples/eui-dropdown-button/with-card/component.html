@@ -1,0 +1,26 @@
+<eui-card>
+    <eui-card-header>
+        <eui-card-header-title>Card title</eui-card-header-title>
+        <eui-card-header-right-content>
+
+            <eui-dropdown>
+                <button euiButton euiPrimary euiSizeS euiOutline euiTooltip="Actions menu">
+                    <span euiLabel>Actions</span>
+                    <eui-icon-svg icon="eui-chevron-down" size="xs" />
+                </button>
+                <eui-dropdown-content>
+                    @for (item of listItems; track $index) {
+                        <button euiDropdownItem (click)="onListItemClicked(item)">
+                            <span euiLabel>{{item.label}}</span>
+                        </button>
+                    }
+                </eui-dropdown-content>
+            </eui-dropdown>
+
+        </eui-card-header-right-content>
+    </eui-card-header>
+
+    <eui-card-content>
+        <p class="eui-u-text-paragraph">Card content...</p>
+    </eui-card-content>
+</eui-card>

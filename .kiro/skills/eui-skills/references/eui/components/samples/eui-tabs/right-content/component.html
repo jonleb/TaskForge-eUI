@@ -1,0 +1,31 @@
+<eui-tabs>
+    @for (tab of tabs; let i = $index; track tab) {
+        <eui-tab>
+            <eui-tab-header>
+                <eui-tab-header-label>
+                   {{ tab.tabLabel }}
+                </eui-tab-header-label>
+                <eui-tab-header-sub-label>
+                    {{ tab.tabSubLabel }}
+                </eui-tab-header-sub-label>
+            </eui-tab-header>
+            <eui-tab-body>{{ tab.tabContent }}</eui-tab-body>
+        </eui-tab>
+    }
+    <eui-tabs-right-content>
+        <button euiButton euiPrimary euiOutline euiBasicButton euiSizeS euiTooltip="Action 1" [attr.aria-label]="'Action 1'" class="eui-u-mr-s">Action 1</button>
+        <button euiButton euiPrimary euiOutline euiBasicButton euiSizeS euiTooltip="Action 2" [attr.aria-label]="'Action 2'">Action 2</button>
+        <eui-dropdown>
+            <button euiButton euiRounded euiIconButton euiBasicButton euiSecondary euiTooltip="More actions" [attr.aria-label]="'More actions'">
+                <eui-icon-svg icon="eui-menu"></eui-icon-svg>
+            </button>
+            <eui-dropdown-content>
+                <div>
+                    <button euiDropdownItem>Menu item 1</button>
+                    <button euiDropdownItem>Menu item 2</button>
+                    <button euiDropdownItem>Menu item 3</button>
+                </div>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </eui-tabs-right-content>
+</eui-tabs>

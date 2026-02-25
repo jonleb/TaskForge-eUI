@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-md-7">
+        <div class="doc-sample-section-title">Reactive form</div>
+        <form [formGroup]="formGroup">
+
+            <div euiInputGroup>
+                <label euiLabel euiRequired for="input-amount-1">Enter amount</label>
+                <div euiInputGroupAddOn>
+                    <input euiInputNumber  id="input-amount-1" formControlName="amount1" aria-label="within form" fractionDigits="2" [readonly]="readonly"/>
+                    @if (!readonly) {
+                        <button euiButton euiPrimary euiOutline (click)="onSubmit()">Submit</button>
+                    }
+                </div>
+                @if (render('amount1')) {
+                    <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                }
+            </div>
+            <div euiInputGroup>
+                <label euiLabel for="input-amount-2">Enter amount</label>
+                <div euiInputGroupAddOn>
+                    @if (!readonly) {
+                        <div euiInputGroupAddOnItem>
+                            <eui-icon-svg icon="eui-euro" size="s" fillColor="secondary"></eui-icon-svg>
+                        </div>
+                    }
+                    <input euiInputNumber
+                            id="input-amount-2"
+                            name="input-amount-2"
+                            formControlName="amount2"
+                            aria-label="with addon"
+                            fractionDigits="2"
+                            [readonly]="readonly"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-5">
+        <div class="doc-sample-section-title">Reactive Form content</div>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="code" style="overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre" tabindex="0">{{ formGroup.value | json }}</pre>
+                <div class="eui-u-flex">
+                    <div class="eui-u-f-bold mr-3">Form status</div>
+                    <eui-badge euiSizeS [euiSuccess]="formGroup.status === 'VALID'" [euiDanger]="formGroup.status !== 'VALID'">
+                        {{ formGroup.status }}
+                    </eui-badge>
+                </div>
+            </div>
+        </div>
+        <div class="eui-u-flex eui-u-flex-wrap eui-u-mt-m">
+            <button euiButton euiPrimary (click)="onSubmit()" class="eui-u-mr-m eui-u-mb-m">Submit form</button>
+            <button euiButton euiOutline euiPrimary (click)="onToggleReadonly()" class="eui-u-mr-m eui-u-mb-m">Toggle read-only</button>
+            <button euiButton euiOutline euiPrimary (click)="onToggleDisabled()" class="eui-u-mr-m eui-u-mb-m">Toggle disabled</button>
+            <button euiButton euiOutline euiPrimary (click)="onPatchValue()" class="eui-u-mr-m eui-u-mb-m">Change value</button>
+        </div>
+    </div>
+</div>

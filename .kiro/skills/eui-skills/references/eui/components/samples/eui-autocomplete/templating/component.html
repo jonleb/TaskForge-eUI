@@ -1,0 +1,40 @@
+<eui-alert euiWarning>
+    This feature requires the import of <code class="eui-u-text-code">EuiTemplateDirective</code><br/>
+    <code class="eui-u-text-code">import &#123; EuiTemplateDirective &#125; from '&#64;eui/components/directives';</code>
+</eui-alert><br/>
+<eui-alert><code class="eui-u-text-code">eui-autocomplete</code> will return <code
+    class="eui-u-text-code">let-option</code> and <code class="eui-u-text-code">let-optgroup</code> which can be reused
+    in the provided template.
+</eui-alert>
+
+<div class="doc-sample-section-title">Group templating</div>
+<eui-autocomplete [autocompleteData]="autocompleteData" [groupBy]="'metadata.continent'">
+    <ng-template euiTemplate="dropdownOptGroup" let-optgroup>
+        <eui-icon-svg icon="eui-language-selector"></eui-icon-svg>
+        <span>{{ optgroup.label }}</span>
+    </ng-template>
+</eui-autocomplete>
+
+<div class="doc-sample-section-title">Option templating</div>
+<eui-autocomplete [autocompleteData]="autocompleteData">
+    <ng-template euiTemplate="dropdownOption" let-option>
+        <div class="eui-u-flex">
+            <eui-icon-svg icon="eui-chevron-right"></eui-icon-svg>
+            {{ option.id }} - {{ option.label }}
+        </div>
+    </ng-template>
+</eui-autocomplete>
+
+<div class="doc-sample-section-title">Both templating</div>
+<eui-autocomplete [autocompleteData]="autocompleteData" [groupBy]="'metadata.continent'">
+    <ng-template euiTemplate="dropdownOptGroup" let-optgroup>
+        <eui-icon-svg icon="eui-language-selector"></eui-icon-svg>
+        <span>{{ optgroup.label }}</span>
+    </ng-template>
+    <ng-template euiTemplate="dropdownOption" let-option>
+        <div class="eui-u-flex">
+            <eui-icon-svg icon="eui-chevron-right"></eui-icon-svg>
+            {{ option.id }} - {{ option.label }}
+        </div>
+    </ng-template>
+</eui-autocomplete>

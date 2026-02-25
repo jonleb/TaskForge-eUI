@@ -1,0 +1,5 @@
+<eui-chip-list>
+    @for (chip of chips; track chip.id) {
+        <eui-chip [data]="{ id: chip.id }" [euiVariant]="chip.variant" isChipRemovable (remove)="onRemove($event)"><span euiLabel>{{ chip.label }}</span></eui-chip>
+    }
+</eui-chip-list>

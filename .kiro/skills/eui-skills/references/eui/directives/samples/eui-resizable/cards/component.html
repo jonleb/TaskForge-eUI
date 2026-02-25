@@ -1,0 +1,71 @@
+<p class="eui-u-text-paragraph">Resizing cards allows to change the card's size width from <strong>minimum 10rem</strong> to the maximum size of the parent container (default behaviour).
+    The default minimum size is set by the <code class="eui-u-text-code">--eui-card-resizable-min-width</code> CSS variable.
+    <br>
+    The following example is using the <code class="eui-u-text-code">max-width</code> property set to 640px.
+</p>
+
+<eui-card euiCollapsible euiResizable style="max-width: 640px">
+    <eui-card-header avatarUrl="./assets/images/cards/shiba1.jpg" >
+        <eui-card-header-title>Card title goes here</eui-card-header-title>
+        <eui-card-header-subtitle>Subtitle text label goes here</eui-card-header-subtitle>
+    </eui-card-header>
+    <eui-card-media
+        imageUrl="./assets/images/cards/shiba1.jpg"
+        imageLegend="Shiba Inu | Dog Breed"
+        imageClickUrlExternal="https://en.wikipedia.org/wiki/Shiba_Inu">
+    </eui-card-media>
+    <eui-card-content style="max-height: 11rem">
+        <p class="eui-u-text-paragraph">The <strong>Shiba Inu</strong> is a Japanese breed of hunting dog. A small-to-medium breed, it is the smallest of the six original and distinct spitz breeds of dog native to Japan.
+        A small, agile dog that copes very well with mountainous terrain and hiking trails, the <a class="eui-u-text-link-external" href="https://en.wikipedia.org/wiki/Shiba_Inu" target="_blank">Shiba Inu</a> was originally bred for hunting.</p>
+        <p class="eui-u-mb-none">It looks similar to and is often mistaken for other Japanese dog breeds like the Akita Inu or Hokkaido, but the Shiba Inu is a different breed with a distinct blood line, temperament, and smaller size than other Japanese dog breeds.</p>
+    </eui-card-content>
+</eui-card>
+
+
+<div class="doc-sample-section-title">Responsive Flexbox cards</div>
+<div class="eui-u-display-flex eui-u-flex-align-items-stretch eui-u-flex-wrap">
+    <div class="col eui-u-mb-m eui-u-mr-l">
+        <eui-card euiResizable euiHoverable>
+            <eui-card-media
+                imageUrl="./assets/images/cards/home-card-law.jpg"
+                imageLegend="Law | EUR Lex">
+            </eui-card-media>
+            <eui-card-content style="min-height: 10rem;">
+                The Official Journal of the European Union, EU case law and other resources for EU law
+            </eui-card-content>
+        </eui-card>
+    </div>
+    <div class="col eui-u-mb-m eui-u-mr-l">
+        <eui-card euiResizable euiHoverable>
+            <eui-card-media
+                imageUrl="./assets/images/cards/home-card-open-data.jpg"
+                imageLegend="EU Open Data">
+            </eui-card-media>
+            <eui-card-content style="min-height: 10rem;">
+                Catalogue of datasets from the EU institutions and other bodies
+            </eui-card-content>
+        </eui-card>
+    </div>
+    <div class="col eui-u-mb-m eui-u-mr-l">
+        <eui-card euiResizable euiHoverable>
+            <eui-card-media
+                imageUrl="./assets/images/cards/home-card-research-innovation.jpg"
+                imageLegend="Research & Innovation CORDIS">
+            </eui-card-media>
+            <eui-card-content style="min-height: 10rem;">
+                Information about the results of EU-funded projects
+            </eui-card-content>
+        </eui-card>
+    </div>
+    <div class="col eui-u-mb-m">
+        <eui-card euiResizable euiHoverable>
+            <eui-card-media
+                imageUrl="./assets/images/cards/home-card-public-procurement.jpg"
+                imageLegend="Business opportunities TED">
+            </eui-card-media>
+            <eui-card-content style="min-height: 10rem;">
+                Public procurement notices from the European Union and beyond
+            </eui-card-content>
+        </eui-card>
+    </div>
+</div>

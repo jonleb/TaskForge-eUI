@@ -1,0 +1,17 @@
+Use the <code class="eui-u-text-code">(pageChange)</code> output property to tackle the pagination event's
+            changes.
+            <br>
+
+<eui-paginator
+    [length]="dataSource.length"
+    [pageSize]="5"
+    [page]="0"
+    [hasPageNumberNavigation]="true"
+    [nbPageNumberNavigation]="5"
+    (pageChange)="onPageChange($event)">
+</eui-paginator>
+
+Pagination Event:<br>
+<pre class="eui-u-text-pre">
+    <span class="eui-u-text-small">{{ pagination | json }}</span>
+</pre>

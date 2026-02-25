@@ -1,0 +1,46 @@
+<h6 class="section-title">Link with Icon</h6>
+<div>
+    <p class="ecl-u-type-paragraph">
+      The European Commission is the executive of
+      <a eclLink routerLink="/">
+        <span eclLinkLabel>The European Union</span>
+        <ecl-icon icon="external" size="fluid" ariaHidden="false" role="img">
+            <title>Links to an external domain</title>
+        </ecl-icon>
+      </a>
+      and promotes its general interest.
+    </p>
+</div>
+
+<div>
+    <p class="ecl-u-type-paragraph">
+      The European Commission is the executive of
+      <a eclLink routerLink="/">
+        <ecl-icon icon="external" size="fluid" ariaHidden="false" role="img">
+            <title>Links to an external domain</title>
+        </ecl-icon>
+        <span eclLinkLabel>The European Union</span>
+      </a>
+      and promotes its general interest.
+    </p>
+</div>
+
+<h6 class="section-title">Icon only link</h6>
+<div>
+    <a routerLink="/" eclLink isIconOnly>
+        <ecl-icon icon="calendar" size="m" ariaHidden="false" role="img">
+        </ecl-icon>
+        <span eclLinkLabel>Default</span>
+    </a>
+</div>
+
+<h6 class="section-title">Icon only link with indicator</h6>
+<div>
+    <a routerLink="/" eclLink isIconOnly>
+        <span eclLinkIconContainer>
+            <ecl-icon icon="calendar" size="m" ariaHidden="false" role="img"></ecl-icon>
+            <span eclIndicator>8</span>
+        </span>
+        <span eclLinkLabel>Default</span>
+    </a>
+</div>

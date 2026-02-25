@@ -1,0 +1,32 @@
+<div class="doc-sample-section-title">Use the close icon to retrieve the data from (remove) event</div>
+<div class="eui-u-flex eui-u-flex-wrap eui-u-mt-m">
+    <eui-chip isChipRemovable (remove)="onRemove($event)" [data]="{id: 1, label: 'Chip label', typeClass: 'primary'}" euiPrimary>
+        Chip label
+    </eui-chip>
+    <eui-chip isChipRemovable (remove)="onRemove($event)" [data]="{id: 2, label: 'Chip label', typeClass: 'secondary'}" euiSecondary>
+        Chip label
+    </eui-chip>
+    <eui-chip isChipRemovable (remove)="onRemove($event)" [data]="{id: 3, label: 'Chip label', typeClass: 'info'}" euiInfo>
+        Chip label
+    </eui-chip>
+    <eui-chip isChipRemovable (remove)="onRemove($event)" [data]="{id: 4, label: 'Chip label', typeClass: 'success'}" euiSuccess>
+        Chip label
+    </eui-chip>
+    <eui-chip isChipRemovable (remove)="onRemove($event)" [data]="{id: 5, label: 'Chip label', typeClass: 'warning'}" euiWarning>
+        Chip label
+    </eui-chip>
+    <eui-chip isChipRemovable (remove)="onRemove($event)" [data]="{id: 6, label: 'Chip label', typeClass: 'danger'}" euiDanger>
+        Chip label
+    </eui-chip>
+</div>
+
+<div class=" eui-u-mt-m"><strong>On (remove) output :</strong></div>
+@if (removed) {
+    <div class="eui-showcase-demo eui-u-mt-s">
+        <div class="code" style="overflow-y: auto;" tabindex="0">
+            <pre class="eui-u-text-pre" tabindex="0">{{ removed | json }}</pre>
+        </div>
+    </div>
+}
+
+<p class="eui-u-text-paragraph">For chips removal management, please see <a class="eui-u-text-link" href="/style-guide/components/eui-chip-list" class="eui-u-text-link"><code class="eui-u-text-code">eui-chip-list</code></a>.</p>

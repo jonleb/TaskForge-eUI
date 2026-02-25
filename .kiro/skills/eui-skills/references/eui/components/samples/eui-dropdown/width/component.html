@@ -1,0 +1,85 @@
+<p class="eui-u-text-paragraph">The <strong>width</strong> of the dropdown panel can be set using the <code class="eui-u-text-code">width</code> input option.
+    Value needs to be one of the following measurement units: <code class="eui-u-text-code">px</code>, <code class="eui-u-text-code">vw</code> or <code class="eui-u-text-code">rem</code>.
+    Default value: <code class="eui-u-text-code">auto</code>
+    <br/><br/>
+    Default size width is set to auto which automatically defines the width to best fit the content within its container.
+    <br/>
+    If content is longer than the content container, it will be automatically truncated by ellipsis to fit the container.
+    <br/>
+    Please note that for UX reasons, the minimum width is set by default to 8rem.
+</p>
+
+<eui-alert>
+    In order to have long labels <strong>automatically truncated</strong> by ellipsis, the label should be surrounded by the <code class="eui-u-text-code">euiLabel</code> directive or by the <code class="eui-u-text-code">eui-label</code> tag.
+</eui-alert><br/>
+
+<div class="eui-u-inline-flex eui-u-flex-wrap">
+    <div class="col eui-u-mr-2xl">
+        <eui-dropdown #dropdown width="15rem">
+            <button euiButton euiPrimary [attr.aria-label]="'Menu'">
+                <span euiLabel>Dropdown set to 15rem</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1">
+                    <eui-icon-svg icon="tag:regular" size="s" class="eui-u-mr-s"></eui-icon-svg>
+                    <span euiLabel>Menu item 1 with very very long label that will be automatically truncated by ellipsis</span>
+                </button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2">
+                    <eui-icon-svg icon="tag:regular" size="s" class="eui-u-mr-s"></eui-icon-svg>
+                    <span euiLabel>Menu item 2</span>
+                </button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3">
+                    <eui-icon-svg icon="tag:regular" size="s" class="eui-u-mr-s"></eui-icon-svg>
+                    <span euiLabel>Menu item 3</span>
+                </button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+
+    <div class="col eui-u-mr-2xl">
+        <eui-dropdown #dropdown width="300px">
+            <button euiButton euiPrimary [attr.aria-label]="'Menu'">
+                <span euiLabel>Dropdown set to 300px</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1">
+                    <eui-icon-svg icon="tag:regular" size="s" class="eui-u-mr-s"></eui-icon-svg>
+                    <span euiLabel>Menu item 1 with very very long label that will be automatically truncated by ellipsis</span>
+                </button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2">
+                    <eui-icon-svg icon="tag:regular" size="s" class="eui-u-mr-s"></eui-icon-svg>
+                    <span euiLabel>Menu item 2</span>
+                </button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3">
+                    <eui-icon-svg icon="tag:regular" size="s" class="eui-u-mr-s"></eui-icon-svg>
+                    <span euiLabel>Menu item 3</span>
+                </button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+
+    <div class="col eui-u-mr-2xl">
+        <eui-dropdown #dropdown width="25vw">
+            <button euiButton euiPrimary [attr.aria-label]="'Menu'">
+                <span euiLabel>Dropdown set to 25vw</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1">
+                    <eui-icon-svg icon="tag:regular" size="s" class="eui-u-mr-s"></eui-icon-svg>
+                    <span euiLabel>Menu item 1 with very very long label that will be automatically truncated by ellipsis</span>
+                </button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2">
+                    <eui-icon-svg icon="tag:regular" size="s" class="eui-u-mr-s"></eui-icon-svg>
+                    <span euiLabel>Menu item 2</span>
+                </button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3">
+                    <eui-icon-svg icon="tag:regular" size="s" class="eui-u-mr-s"></eui-icon-svg>
+                    <span euiLabel>Menu item 3</span>
+                </button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>

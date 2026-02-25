@@ -1,0 +1,152 @@
+<div class="doc-sample-section-title">With dropdown filter</div>
+<form [formGroup]="searchForm">
+    <div euiInputGroup>
+        <div euiInputGroupAddOn>
+            <input euiInputText
+                   type="search"
+                   formControlName="searchField"
+                   placeholder="Search website..."
+                   aria-label="Search website"
+                   (keypress.enter)="onSearch()"
+                   euiClearable />
+            <select euiSelect
+                    name="database_selected"
+                    aria-label="database selected"
+                    style="width: 10rem"
+                    (change)="onSelect($event)">
+                <option value="digit">DIGIT</option>
+                <option value="ares"
+                        selected>Ares</option>
+                <option value="class">Class</option>
+            </select>
+            <button euiButton euiPrimary euiOutline euiIconButton (click)="onSearch()" aria-label="Search">
+                <eui-icon-svg icon="eui-search"></eui-icon-svg>
+            </button>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">With dropdown filter and validation (at least 2 characters)</div>
+<form [formGroup]="searchFormValidated">
+    <div euiInputGroup>
+        <div euiInputGroupAddOn>
+            <input euiInputText
+                   type="search"
+                   formControlName="searchFieldValidated"
+                   placeholder="Search website..."
+                   aria-label="Search website"
+                   (keypress.enter)="onSearchValidated()"
+                   euiClearable />
+            <select euiSelect
+                    name="database_selected"
+                    aria-label="database selected"
+                    style="width: 10rem"
+                    (change)="onSelect($event)">
+                <option value="digit">DIGIT</option>
+                <option value="ares"
+                        selected>Ares</option>
+                <option value="class">Class</option>
+            </select>
+            <button euiButton euiPrimary euiOutline euiIconButton (click)="onSearchValidated()" aria-label="Search">
+                <eui-icon-svg icon="eui-search"></eui-icon-svg>
+            </button>
+        </div>
+        <eui-feedback-message class="form-text text-muted">Type at least 2 characters</eui-feedback-message>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">With autocomplete async data</div>
+<form [formGroup]="searchFormAsync">
+    <div euiInputGroup>
+        <div euiInputGroupAddOn>
+            <eui-autocomplete placeholder="Search country information..."
+                              async
+                              formControlName="autoComplete"
+                              [autocompleteData]="itemsServiceData"
+                              [isFreeValueAllowed]="true"
+                              [isLoading]="itemsDataLoading">
+            </eui-autocomplete>
+            <button euiButton euiPrimary euiOutline euiIconButton (click)="onSearchAsync()" aria-label="Search">
+                <eui-icon-svg icon="eui-search"></eui-icon-svg>
+            </button>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">With advanced search filter</div>
+<form [formGroup]="searchFormAdvanced1">
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <input euiInputText
+                type="search"
+                formControlName="searchAdvancedField"
+                placeholder="Search website..."
+                aria-label="Search website"
+                (keypress.enter)="onSearchAdvanced()"
+                euiClearable />
+
+        <eui-dropdown>
+            <button euiButton euiPrimary euiOutline>
+                Advanced filter
+                <eui-icon-svg icon="eui-chevron-down"></eui-icon-svg>
+            </button>
+            <eui-dropdown-content>
+                <form [formGroup]="searchFormAdvanced"
+                      (click)="$event.stopPropagation()">
+                    <div class="eui-u-m-m">
+                        <input euiInputCheckBox
+                               formControlName="checkboxPdf"
+                               aria-label="pdf"
+                               id="checkboxPdf"
+                               name="checkboxPdf" />
+                        <label euiLabel for="checkboxPdf">PDF files</label>
+
+                        <input euiInputCheckBox
+                                formControlName="checkboxWord"
+                                aria-label="word"
+                                id="checkboxWord"
+                                name="checkboxWord"
+                                label="Word files" />
+                        <label euiLabel for="checkboxWord">Word files</label>
+
+                        <p class="eui-u-text-paragraph"><strong>Select date range</strong></p>
+                        <!-- <div class="col"> -->
+                            <div euiInputGroup>
+                                <label euiLabel>From</label>
+                                <eui-datepicker
+                                    formControlName="datepickerFrom"
+                                    euiYearFormat
+                                    type="year"
+                                    (dateSelect)="onDateSelectedFrom($event)"
+                                    (inputChange)="onInputChanged($event)">
+                                </eui-datepicker>
+                            </div>
+                        <!-- </div>
+                        <div class="col"> -->
+                            <div euiInputGroup>
+                                <label euiLabel>To</label>
+                                <eui-datepicker
+                                    formControlName="datepickerTo"
+                                    euiYearFormat
+                                    type="year"
+                                    (dateSelect)="onDateSelectedTo($event)"
+                                    (inputChange)="onInputChanged($event)">
+                                </eui-datepicker>
+                            </div>
+                        <!-- </div> -->
+                    </div>
+                </form>
+                <div class="eui-u-flex eui-u-p-m">
+                    <button euiButton euiSecondary>Cancel</button>
+                    <div class="eui-u-ml-auto">
+                        <button euiButton euiPrimary (click)="applyAdvancedFilter($event)">Apply</button>
+                    </div>
+                </div>
+            </eui-dropdown-content>
+        </eui-dropdown>
+        <button euiButton euiPrimary euiIconButton (click)="onSearchAdvanced()" aria-label="Search">
+            <eui-icon-svg icon="eui-search" size="m" fillColor="white"></eui-icon-svg>
+        </button>
+    </div>
+</div>
+</form>

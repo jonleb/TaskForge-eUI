@@ -1,0 +1,61 @@
+#chart,
+#chart1 {
+    margin: 1rem auto;
+    max-width: 650px;
+
+    .apexcharts-xaxis-annotation-label {
+        &-consumed {
+            fill: #fff !important;
+            padding: 0;
+        }
+
+        &-paused {
+            fill: #333 !important;
+            padding: 0;
+        }
+
+        &-remaining {
+            fill: #333 !important;
+            padding: 0;
+        }
+    }
+
+    .apexcharts-point-annotation-label {
+        &-start,
+        &-paused,
+        &-estimated,
+        &-end {
+            fill: #333 !important;
+        }
+    }
+}
+
+#chart2 {
+    margin: 1rem auto;
+    width: 100%;
+
+    .apexcharts-xaxis-annotation-label {
+        &-consumed {
+            fill: #fff !important;
+        }
+
+        &-paused {
+            fill: #fff !important;
+        }
+
+        &-remaining {
+            fill: #333 !important;
+        }
+    }
+
+    .apexcharts-point-annotation-label {
+        fill: #fff !important;
+    }
+}
+
+// GLOBAL
+.apexcharts-canvas {
+    .apexcharts-title-text {
+        font-weight: 900;
+    }
+}

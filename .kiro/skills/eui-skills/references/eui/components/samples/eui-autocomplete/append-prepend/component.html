@@ -1,0 +1,100 @@
+<div class="doc-sample-section-title">Prepend content</div>
+
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <button euiButton euiIconButton euiPrimary euiOutline type="button" aria-label="Search">
+            <eui-icon-svg icon="eui-search"/>
+        </button>
+        <eui-autocomplete [autocompleteData]="autocompleteData"></eui-autocomplete>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div euiInputGroup>
+            <div euiInputGroupAddOn>
+                <button euiButton euiPrimary euiOutline type="button">Search fruit</button>
+                <eui-autocomplete [autocompleteData]="autocompleteData"></eui-autocomplete>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div euiInputGroup>
+            <div euiInputGroupAddOn>
+                <div euiInputGroupAddOnItem>
+                    <eui-icon-svg icon="eui-search"/>
+                </div>
+                <eui-autocomplete [autocompleteData]="autocompleteData"></eui-autocomplete>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="doc-sample-section-title">Append content</div>
+<div class="row">
+    <div class="col-md-6">
+        <div euiInputGroup>
+            <div euiInputGroupAddOn>
+                <eui-autocomplete [autocompleteData]="autocompleteData"></eui-autocomplete>
+                <div euiInputGroupAddOnItem>
+                    <eui-icon-svg icon="eui-search"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div euiInputGroup>
+            <div euiInputGroupAddOn>
+                <eui-autocomplete [autocompleteData]="autocompleteData"></eui-autocomplete>
+                <button euiButton euiPrimary euiOutline euiIconButton type="button" aria-label="Search">
+                    <eui-icon-svg icon="eui-search"/>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div euiInputGroup>
+            <div euiInputGroupAddOn>
+                <eui-autocomplete [autocompleteData]="autocompleteData"></eui-autocomplete>
+                <button euiButton euiPrimary euiOutline type="button">Search fruit</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div euiInputGroup>
+            <div euiInputGroupAddOn>
+                <eui-autocomplete [autocompleteData]="autocompleteData"></eui-autocomplete>
+                <button euiButton euiPrimary euiOutline euiIconButton type="button" aria-label="Search">
+                    <eui-icon-svg icon="eui-search"/>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="doc-sample-section-title">Both append & prepend content</div>
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <div euiInputGroupAddOnItem>
+            <span class="eui-u-f-l">€</span>
+        </div>
+        <eui-autocomplete [autocompleteData]="autocompleteData"></eui-autocomplete>
+        <button euiButton euiIconButton euiPrimary euiOutline type="button" aria-label="Search">
+            <eui-icon-svg icon="eui-search"/>
+        </button>
+    </div>
+</div>
+
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="circle-dashed:regular"></eui-icon-svg>
+        </div>
+        <eui-autocomplete [autocompleteData]="autocompleteData"></eui-autocomplete>
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="eui-search"/>
+        </div>
+    </div>
+</div>

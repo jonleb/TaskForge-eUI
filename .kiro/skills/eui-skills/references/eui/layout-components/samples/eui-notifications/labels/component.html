@@ -1,0 +1,20 @@
+<eui-alert>This sample shows how to customize labels of the notifications overlay. i18n key can be passed.</eui-alert><br/>
+
+<eui-toolbar>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-notifications
+                [items]="items"
+                unreadLabel="Custom unread label"
+                totalLabel="Custom total label"
+                markAsReadLabel="Custom mark as read label"
+                markAsUnReadLabel="Custom mark as unread label"
+                markAllAsReadLabel="Custom mark all as read label"
+                settingsLabel="Custom settings label"
+                refreshLabel="Custom refresh label"
+                viewAllNotificationsLabel="Custom view all notifications label"
+                headerTitleLabel="Custom header title label"
+                noNotificationFoundLabel="Custom no notifications found label"/>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>

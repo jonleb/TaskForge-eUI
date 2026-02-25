@@ -1,0 +1,32 @@
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td nowrap data-col-label="Country"><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">Footer</td>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="noData">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">There are currently no data to display</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>

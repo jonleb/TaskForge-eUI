@@ -1,0 +1,15 @@
+<eui-tabs>
+    @for (tab of tabs; let i = $index; track tab) {
+        <eui-tab [euiVariant]="tab.variant">
+            <eui-tab-header>
+                <eui-tab-header-label>
+                   {{ tab.tabLabel }}
+                </eui-tab-header-label>
+                <eui-tab-header-sub-label>
+                    {{ tab.tabSubLabel }}
+                </eui-tab-header-sub-label>
+            </eui-tab-header>
+            <eui-tab-body>{{ tab.tabContent }}</eui-tab-body>
+        </eui-tab>
+    }
+</eui-tabs>

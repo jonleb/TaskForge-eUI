@@ -1,0 +1,19 @@
+<div class="doc-sample-section-title">Tailwind</div>
+
+@for (colorPalette of colorPalettes; track colorPalette) {
+    <eui-chip colorPalette="{{colorPalette}}">Chip label</eui-chip>
+}
+<br><br>
+@for (colorPalette of colorPalettes; track colorPalette) {
+    <eui-chip isFilled colorPalette="{{colorPalette}}">Chip label</eui-chip>
+}
+
+<div class="doc-sample-section-title">ECL</div>
+
+@for (colorPalette of colorPalettesEcl; track colorPalette) {
+    <eui-chip colorPalette="{{colorPalette}}">Chip label</eui-chip>
+}
+<br><br>
+@for (colorPalette of colorPalettesEcl; track colorPalette) {
+    <eui-chip isFilled colorPalette="{{colorPalette}}">Chip label</eui-chip>
+}

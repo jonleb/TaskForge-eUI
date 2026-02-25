@@ -1,0 +1,27 @@
+<h6 class="section-title">Default</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label for="range2" id="range2-id-label" eclFormLabel>Label</label>
+    <div eclHelpBlock id="range2-id-helper">This is the help text</div>
+    <input id="range2" rangeValueId="range2-id-value" eclRange aria-describedby="range2-id-value"
+      formControlName="default" type="range" max="10" step="2" (rangeChange)="onRangeChange($event)" />
+    <div class="ecl-u-mt-m">
+      <button eclButton variant="primary" (click)="onChangeReactiveFormValue()">
+        Change value
+      </button>
+    </div>
+  </div>
+</form>
+
+<h6 class="section-title">Two-way Data Binding</h6>
+<div eclFormGroup>
+  <label for="range3" id="range3-id-label" eclFormLabel>Label</label>
+  <div eclHelpBlock id="range3-id-helper">This is the help text</div>
+  <input id="range3" rangeValueId="range3-id-value" eclRange aria-describedby="range3-id-value"
+    [(ngModel)]="model" type="range" max="10" step="2" (rangeChange)="onRangeChange($event)" />
+  <div class="ecl-u-mt-m">
+    <button eclButton variant="primary" (click)="onChangeValue()">
+      Change value
+    </button>
+  </div>
+</div>

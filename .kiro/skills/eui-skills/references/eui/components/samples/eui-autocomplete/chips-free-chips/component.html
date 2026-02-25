@@ -1,0 +1,20 @@
+<eui-alert>
+    The following options are meant to be used only with chips <code
+    class="eui-u-text-code">[hasChips]="true"</code>.<br />
+    In no-chips version, if you want to restrict the choice to the available option, you need to use a <a
+    href="/style-guide/components/eui-autocomplete#validators">validator</a>.
+</eui-alert>
+
+<div class="doc-sample-section-title">Allowed (default)</div>
+<eui-autocomplete (selectionChange)="onSelectionChanged1($event)" [autocompleteData]="autocompleteData"
+                  [hasChips]="true"></eui-autocomplete>
+
+<div class="doc-sample-section-title">Allowed with free chips added on blur field</div>
+<eui-autocomplete (selectionChange)="onSelectionChanged2($event)" [autocompleteData]="autocompleteData"
+                  [hasChips]="true"
+                  isAddOnBlur></eui-autocomplete>
+
+<div class="doc-sample-section-title">Not allowed</div>
+<eui-autocomplete (selectionChange)="onSelectionChanged3($event)" [autocompleteData]="autocompleteData"
+                  [hasChips]="true"
+                  [isFreeValueAllowed]="false"></eui-autocomplete>

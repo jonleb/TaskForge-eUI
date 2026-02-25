@@ -1,0 +1,34 @@
+<h6 class="section-title">Default</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup aria-describedby="help-def">
+    <label for="example-input-def" eclFormLabel>Label</label>
+    <div eclHelpBlock id="help-def">This is the input help text</div>
+    <input id="example-input-def" eclTextInput formControlName="default" />
+  </div>
+</form>
+
+<h6 class="section-title">Disabled</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup aria-describedby="help-dis">
+    <label for="example-input-dis" eclFormLabel isDisabled>Label</label>
+    <div eclHelpBlock id="help-dis">This is the input help text</div>
+    <input id="example-input-dis" eclTextInput formControlName="disabled" />
+  </div>
+</form>
+
+<h6 class="section-title">Required</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup aria-describedby="help-req">
+    <label for="example-input-req" eclFormLabel isRequired>Label</label>
+    <div eclHelpBlock id="help-req">This is the input help text</div>
+    <input id="example-input-req" eclTextInput formControlName="required" />
+    @if (validateRequired()) {
+    <div eclFeedbackMessage>
+        <ecl-icon icon="error" size="s" ariaHidden="false" role="img">
+            <title>Error</title>
+        </ecl-icon>
+        This field is required
+    </div>
+    }
+  </div>
+</form>

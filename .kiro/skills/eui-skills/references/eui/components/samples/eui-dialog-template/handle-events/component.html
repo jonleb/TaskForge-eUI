@@ -1,0 +1,30 @@
+<p class="eui-u-text-paragraph">Closing a Dialog window can be managed in your component using the following input options:</p>
+<div class="eui-u-ml-m">
+    <ul>
+        <li>isHandleCloseOnDismiss</li>
+        <li>isHandleCloseOnClose</li>
+        <li>isHandleCloseOnAccept</li>
+        <li>isHandleCloseOnClickOutside</li>
+        <li>isHandleCloseOnEscape</li>
+    </ul>
+</div>
+<p class="eui-u-text-paragraph">You need to call the <code class="eui-u-text-code">closeDialog()</code> method to effectively close the Dialog window.</p>
+
+<button euiButton type="button" (click)="openDialog()" aria-haspopup="dialog">Open Dialog</button>
+
+<eui-dialog #dialog
+    hasClosedOnClickOutside
+    [title]="'Dialog title'"
+    [isHandleCloseOnDismiss]="true"
+    [isHandleCloseOnClose]="true"
+    [isHandleCloseOnAccept]="true"
+    [isHandleCloseOnClickOutside]="true"
+    [isHandleCloseOnEscape]="true"
+    (clickOutside)="onClickOutside()"
+    (dialogClose)="onClose()"
+    (escape)="onEscape()"
+    (dialogOpen)="onOpen()"
+    (accept)="onAccept()"
+    (dismiss)="onDismiss()">
+    <p class="eui-u-text-paragraph">Dialog content</p>
+</eui-dialog>

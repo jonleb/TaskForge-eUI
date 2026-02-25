@@ -1,0 +1,31 @@
+<div class="eui-u-flex eui-u-flex-justify-content-center">
+    <eui-slide-toggle euiSizeXL (slideToggleChange)="onCheckboxClicked($event)"></eui-slide-toggle>
+    <span class="eui-u-ml-m">Yes, I have read and accept the <strong>Terms and Conditions</strong></span>
+</div>
+
+<div class="row eui-u-mt-xl">
+    <div class="col-md-1"></div>
+    <div class="col-md-5">
+        <eui-dashboard-card
+            euiSuccess
+            isClickeable
+            iconSvgName="eui-close"
+            label="New submission"
+            subLabel="This is the sub label of the card"
+            [euiDisabled]="!isChecked"
+            (cardClick)="onCardNewClicked($event)">
+        </eui-dashboard-card>
+    </div>
+    <div class="col-md-5">
+        <eui-dashboard-card
+            euiWarning
+            isClickeable
+            iconSvgName="eui-close"
+            label="Resume draft"
+            subLabel="Submission ID: 300005627"
+            [euiDisabled]="!isChecked"
+            (cardClick)="onCardNResumeClicked($event)">
+        </eui-dashboard-card>
+    </div>
+    <div class="col-md-1"></div>
+</div>

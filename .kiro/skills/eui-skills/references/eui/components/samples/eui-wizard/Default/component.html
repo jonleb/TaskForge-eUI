@@ -1,0 +1,93 @@
+<div class="doc-sample-section-title">Basic wizard steps</div>
+
+
+<eui-wizard (selectStep)="onSelectStepDefault($event)">
+
+    <eui-wizard-step label="STEP 1">
+        <div class="eui-u-pv-m">
+            <div class="eui-u-text-h5">STEP 1 title</div>
+            Step 1 content...
+        </div>
+    </eui-wizard-step>
+
+    <eui-wizard-step label="STEP 2">
+        <div class="eui-u-pv-m">
+            <div class="eui-u-text-h5">STEP 2 title</div>
+            Step 2 content...
+        </div>
+    </eui-wizard-step>
+</eui-wizard>
+
+
+
+<div class="doc-sample-section-title">With states</div>
+
+
+<div class="eui-u-flex">
+    <button euiButton euiPrimary (click)="onToggleNavigation($event)">
+        <span>
+        @if (isNavigationAllowed) {
+            Deactivate navigation
+        } @else {
+            Activate navigation
+        }
+        </span>
+    </button>
+    <div class="eui-u-ml-l">
+        <code class="eui-u-text-code">isNavigationAllowed = {{isNavigationAllowed}}</code>
+    </div>
+</div>
+
+<br><br>
+
+<eui-wizard (selectStep)="onSelectStep($event)" [isNavigationAllowed]="isNavigationAllowed">
+
+    <eui-wizard-step label="STEP 1" subLabel="completed" [isCompleted]="true">
+        <div class="eui-u-pv-m">
+            <div class="eui-u-text-h5">STEP 1 title</div>
+            Step 1 content...
+        </div>
+    </eui-wizard-step>
+
+    <eui-wizard-step label="STEP 2" subLabel="active" [isActive]="true">
+        <div class="eui-u-pv-m">
+            <div class="eui-u-text-h5">STEP 2 title</div>
+            Step 2 content...
+        </div>
+    </eui-wizard-step>
+
+    <eui-wizard-step label="STEP 3" subLabel="default">
+        <div class="eui-u-pv-m">
+            <div class="eui-u-text-h5">STEP 3 title</div>
+            Step 3 content...
+        </div>
+    </eui-wizard-step>
+
+    <eui-wizard-step label="STEP 4" subLabel="invalid" [isInvalid]="true">
+        <div class="eui-u-pv-m">
+            <div class="eui-u-text-h5">STEP 4 title</div>
+            Step 4 content...
+        </div>
+    </eui-wizard-step>
+
+    <eui-wizard-step label="STEP 5" subLabel="warning" [isWarning]="true">
+        <div class="eui-u-pv-m">
+            <div class="eui-u-text-h5">STEP 5 title</div>
+            Step 5 content...
+        </div>
+    </eui-wizard-step>
+
+    <eui-wizard-step label="STEP 6" subLabel="disabled" [isDisabled]="true">
+        <div class="eui-u-pv-m">
+            <div class="eui-u-text-h5">STEP 6 title</div>
+            Step 6 content...
+        </div>
+    </eui-wizard-step>
+</eui-wizard>
+
+<div class="doc-sample-section-title">Event status : selectStep()</div>
+<pre class="eui-u-f-s">
+    @if (stepSelected) {
+        {{ stepSelected | json }}
+    }
+</pre>

@@ -1,0 +1,9 @@
+<eui-alert>With <code class="eui-u-text-code">isDismissable</code> set on false, the popover is not closed when the user click outside it. The close button is the only way to close it.</eui-alert>
+<br>
+
+<button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover($event)">
+    <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+</button>
+<eui-popover #popover [title]="'This is the popover title'" [isDismissable]="false">
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+</eui-popover>

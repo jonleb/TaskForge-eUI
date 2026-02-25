@@ -1,0 +1,29 @@
+<p class="eui-u-text-paragraph">Using Bootstrap grid layout <code class="eui-u-text-code">col-%</code> class to resize the sidebar menu width.
+   <br>
+   Please note that the <em>Module 4</em> has <code class="eui-u-text-code">visible: false</code> property defined and therefore is not shown.
+</p>
+
+<div class="eui-u-flex eui-u-flex-wrap eui-u-mt-m">
+    <div *ngFor="let size of menuSizes; let i = index" class="eui-u-ml-m">
+        <input euiInputRadio
+               name="size"
+               id="size-{{i}}"
+               [value]="size.value"
+               [attr.checked]="size.default ? 'true' : null"
+               [(ngModel)]="menuSize"
+               [ngModelOptions]="{standalone: true}"/>
+        <label for="size-{{i}}">{{ size.label }}</label>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-{{menuSize}}">
+        <eui-sidebar-menu [items]="sidebarItems"
+                          hasIcons="true"
+                          hasFilter="true"
+                          hasTooltip="true"
+                          expandAllItems="true"
+                          fragmentId="responsive">
+        </eui-sidebar-menu>
+    </div>
+</div>

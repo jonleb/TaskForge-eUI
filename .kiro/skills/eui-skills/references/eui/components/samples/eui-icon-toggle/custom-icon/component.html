@@ -1,0 +1,28 @@
+<div class="eui-u-flex eui-u-flex-column">
+    <div class="eui-u-flex">
+        <eui-icon-toggle keyboardAccessKey="x" iconSvgNameOn="folder-open:regular" iconSvgNameOff="folder:regular"
+                        iconSvgFillColorOff="secondary" iconSvgFillColorOn="primary"
+                        (toggle)="onOpenFolderToggle1($event)">
+        </eui-icon-toggle>
+        <span class="eui-u-ml-m">Folder 1</span>
+        @if (isFolderOpen1) {
+            <span>&nbsp;opened</span>
+        }
+        @if (!isFolderOpen1) {
+            <span>&nbsp;closed</span>
+        }
+    </div>
+    <div class="eui-u-flex">
+        <eui-icon-toggle keyboardAccessKey="o" iconSvgNameOn="folder-open:regular" iconSvgNameOff="folder:regular"
+                        iconSvgFillColorOff="secondary" iconSvgFillColorOn="primary"
+                        (toggle)="onOpenFolderToggle2($event)">
+        </eui-icon-toggle>
+        <span class="eui-u-ml-m">Folder 2</span>
+        @if (isFolderOpen2) {
+            <span>&nbsp;opened</span>
+        }
+        @if (!isFolderOpen2) {
+            <span>&nbsp;closed</span>
+        }
+    </div>
+</div>

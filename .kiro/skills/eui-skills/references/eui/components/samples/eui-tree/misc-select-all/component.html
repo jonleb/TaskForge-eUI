@@ -1,0 +1,9 @@
+<div class="doc-sample-section-title">Select All Checkbox</div>
+
+<input id="default-checkbox0"
+       aria-label="default checkbox unchecked"
+       name="default-checkbox"
+       [formControl]="selectAllCheckboxControl"
+       euiInputCheckBox />
+<label euiLabel for="default-checkbox0">Select All</label>
+<eui-tree isMultiselect #selectAllTreeInstance euiTreeFormControl [formControl]="selectAllTreeControl" [nodes]="treeDataSelectAll" class="eui-u-ml-xs" />

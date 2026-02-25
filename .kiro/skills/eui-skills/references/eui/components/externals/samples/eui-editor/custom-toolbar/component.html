@@ -1,0 +1,365 @@
+<p class="eui-u-text-paragraph">
+    Toolbar can be customized to only enable the desired plugins based on the <code class="eui-u-text-code">ToolbarItemConfig</code> model (see code source for example).
+    Translated localized labels can also be used for custom tooltip messages as well as extra options property to enable sub-features.
+</p>
+<b>isMinimalToolbar=true</b> option can be added to the eui-editor tag to enable a minimal set of predefined plugins.
+
+<div class="doc-sample-section-title">List of available plugins</div>
+<table class="eui-table-default eui-table-default--compact">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Label (tooltip) & options</th>
+            <th>isMinimalToolbar</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>headings</td>
+            <td>Style - Apply an HTML tag or CSS class to the selected text
+                <br>
+                options: 1, 2, 3, 4, 5, 6 to enable h1, h2, h3, h4, h5, h6 headings</td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>font</td>
+            <td>Font - Change the font face</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>bold</td>
+            <td>Bold (Ctrl + B) - Make the selected text bold</td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>italic</td>
+            <td>Italic (Ctrl + I) - Italicize the selected text</td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>underline</td>
+            <td>Underline (Ctrl + U) - Underline the selected text</td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>strike</td>
+            <td>Strikethrough - Draw a line to the middle of the selected text</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>fontColor</td>
+            <td>Font Color - Change the text color</td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>fontBackground</td>
+            <td>Font Background - Change the text background color</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>subscript</td>
+            <td>Subscript - Create ssmall letters below the text baseline</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>superscript</td>
+            <td>Superscript - Create small letters above the line of the text</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>textAlign</td>
+            <td>Text Align - Align the text to the selected position: left (default), center, right or justify</td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>orderedList</td>
+            <td>Numbering - Start an ordered list</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>bulletList</td>
+            <td>Bullets - Start a bulleted list</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>indentLess</td>
+            <td>Decrease Indent - Decrease the indent level of the paragraph</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>indentMore</td>
+            <td>Increase Indent - Increase the indent level of the paragraph</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>blockquote</td>
+            <td>Blockquote - Create a quoted block of the selected text</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>codeBlock</td>
+            <td>Insert Code Block - Insert a code block at the cursor row position</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>link</td>
+            <td>Insert Hyperlink (Ctrl + K) - Create a link to a Web page, a picture, an e-mail address or a program</td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>image</td>
+            <td>Insert Picture - Insert a picture from a file</td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>imageUrl</td>
+            <td>Insert Picture from URL - Insert a picture from a remote URL
+                <br>
+                option: dialogMessage ('Enter image link URL')
+            </td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>video</td>
+            <td>Insert Video - Insert a video from a file</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>table</td>
+            <td>Insert Table - Inserts a 3x3 rows/cols table</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>clean</td>
+            <td>Remove Styles - Remove the styles of the selected text</td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>delete</td>
+            <td>Delete content - Permanently deletes editor\'s contents</td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>undo</td>
+            <td>Undo (Ctrl + Z) - Cancels the previous action</td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>redo</td>
+            <td>Redo (Ctrl + Y) - Do the next history action again</td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+        <tr>
+            <td>counters</td>
+            <td>Counters - Characters and words counters (stripped Html)
+                <br>
+                options: characters, words
+            <td class="eui-u-text-center"><eui-icon-svg icon="eui-checkmark" fillColor="success"></eui-icon-svg></td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="eui-u-flex eui-u-mt-xl">
+    <eui-slide-toggle
+        class="eui-u-mr-m"
+        [isChecked]="isReadOnly"
+        (slideToggleChange)="toggleReadOnly()">
+    </eui-slide-toggle>
+    <strong>Interactive toggle &mdash; isReadOnly = {{ isReadOnly }}</strong>
+</div>
+
+<form [formGroup]="form" class="form--large-labels eui-u-mt-xl">
+    <div class="doc-sample-section-title">Custom toolbar</div>
+    <div euiInputGroup>
+        <label euiLabel>Description</label>
+        <eui-editor formControlName="editorContentEmptyValue"
+                    [placeholder]="placeholder"
+                    [isReadOnly]="isReadOnly"
+                    [customToolbarConfig]="customToolbar">
+        </eui-editor>
+    </div>
+
+    <div class="doc-sample-section-title">With <strong>isMinimalToolbar=true</strong> option</div>
+    <div euiInputGroup>
+        <label euiLabel>Description</label>
+        <eui-editor isMinimalToolbar
+                    formControlName="editorContentTextValue"
+                    [isReadOnly]="isReadOnly"
+                    [placeholder]="placeholder">
+        </eui-editor>
+    </div>
+
+
+    <div class="doc-sample-section-title">Custom using the <strong>euiEditorCustomToolbar</strong> content directive (toolbar HTML structure)</div>
+    <p class="eui-u-text-paragraph">The <code class="eui-u-text-code">euiEditorCustomToolbar</code> content directive offers the most customizable and flexible way of building a custom toolbar with almost all the available extra features we have added like undo & redo, counters display, tooltips, etc.</p>
+    Undo & Redo custom buttons uses the QuillEditor instance's history module which can be accessible by getting it from <code class="eui-u-text-code">onEditorCreated</code> (deprecated) or <code class="eui-u-text-code">editorCreate</code> event emitter.
+    <p class="eui-u-text-paragraph">Also for characters and words counters you can use the <code class="eui-u-text-code">eui-editor-counters</code> component and pass the input values of your own (custom function) or use the EuiEditor default calculated values coming from <code class="eui-u-text-code">getCharactersCounter</code> (deprecated) or <code class="eui-u-text-code">charactersCountChange</code> and <code class="eui-u-text-code">getWordsCounter</code> (deprecated) or <code class="eui-u-text-code">wordsCountChange</code> events emitters.</p>
+    See code source for more information.<br/><br/>
+
+    <div euiInputGroup>
+        <label euiLabel>Description</label>
+        <eui-editor
+            formControlName="editorContentTextValue"
+            [isReadOnly]="isReadOnly"
+            [placeholder]="placeholder"
+            (getCharactersCounter)="getCharactersCounter($event)"
+            (getWordsCounter)="getWordsCounter($event)"
+            (editorCreate)="onEditorCreated($event)">
+            <euiEditorCustomToolbar>
+                <span class="ql-formats" title="Style{{crlf}}Apply an HTML tag or CSS class to the selected text">
+                    <select class="ql-header">
+                        <option value="1">Heading 1</option>
+                        <option value="2">Heading 2</option>
+                        <option value="3">Heading 3</option>
+                        <option value="4">Heading 4</option>
+                        <option value="5">Heading 5</option>
+                        <option value="6">Heading 6</option>
+                        <option selected>Normal</option>
+                    </select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-bold" aria-label="Bold (Ctrl + B)" title="Bold (Ctrl + B){{crlf}}Make the selected text bold"></button>
+                    <button class="ql-italic" aria-label="Italic (Ctrl + I)" title="Italic (Ctrl + I){{crlf}}Italicize the selected text"></button>
+                    <button class="ql-underline" aria-label="Underline (Ctrl + U)" title="Underline (Ctrl + U){{crlf}}Underline the selected text"></button>
+                    <button class="ql-strike" aria-label="Strikethrough" title="Strikethrough{{crlf}}Draw a line to the middle of the selected text"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color" aria-label="Font Color" title="Font Color{{crlf}}Change the text color"></select>
+                    <select class="ql-background" aria-label="Text Highlight Color" title="Text Highlight Color{{crlf}}Change the background color of the text"></select>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-align" aria-label="Text Align" title="Text Align{{crlf}}Align the text to the selected position: left (default), center, right or justify">
+                        <option selected></option>
+                        <option value="center"></option>
+                        <option value="right"></option>
+                        <option value="justify"></option>
+                    </select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-clean" aria-label="Remove Styles" title="Remove Styles{{crlf}}Remove the styles of the selected text"></button>
+                </span>
+                <span class="ql-formats">
+                    <button aria-label="Undo (Ctrl + Z)" title="Undo (Ctrl + Z){{crlf}}Cancels the previous action" (click)="editorUndo()">
+                        <eui-icon-svg icon="eui-undo:eui" />
+                    </button>
+                    <button aria-label="Redo (Ctrl + Y)" title="Redo (Ctrl + Y){{crlf}}Do the next history action again" (click)="editorRedo()">
+                        <eui-icon-svg icon="eui-redo:eui" />
+                    </button>
+                </span>
+                <span class="ql-formats">
+                    <eui-editor-counters
+                        [charactersCounter]="charactersCount"
+                        [charactersLabel]="charactersLabel"
+                        [isMaxLengthValid]="isMaxLengthValid"
+                        [wordsCounter]="wordsCount"
+                        [wordsLabel]="wordsLabel"
+                        aria-label="Counters">
+                    </eui-editor-counters>
+                </span>
+            </euiEditorCustomToolbar>
+        </eui-editor>
+    </div>
+
+    <p class="eui-u-text-paragraph">The following sample is using the <code class="eui-u-text-code">euiTooltip</code> directive to display the tooltip text. See the code source and the euiTooltip for more information.<br/><br/></p>
+    <div euiInputGroup>
+        <label euiLabel>Description</label>
+        <eui-editor
+            formControlName="editorContentTextValueTooltip"
+            [placeholder]="placeholder"
+            [isReadOnly]="isReadOnly"
+            (getCharactersCounter)="getCharactersCounter2($event)"
+            (getWordsCounter)="getWordsCounter2($event)"
+            (editorCreate)="onEditorCreated2($event)">
+            <euiEditorCustomToolbar>
+                <span class="ql-formats" euiTooltip="Style&#10;&#13;Apply an HTML tag or CSS class to the selected text" content="left">
+                    <select class="ql-header">
+                        <option value="1">Heading 1</option>
+                        <option value="2">Heading 2</option>
+                        <option value="3">Heading 3</option>
+                        <option value="4">Heading 4</option>
+                        <option value="5">Heading 5</option>
+                        <option value="6">Heading 6</option>
+                        <option selected>Normal</option>
+                    </select>
+                </span>
+                <span class="ql-formats" euiTooltip="Font&#10;&#13;Change the font face" content="left">
+                    <select class="ql-font">
+                        <option selected>Sans Serif</option>
+                        <option value="serif">Serif</option>
+                        <option value="monospace">Monospace</option>
+                    </select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-bold" aria-label="Bold (Ctrl + B)" euiTooltip="Bold (Ctrl + B)&#10;&#13;Make the selected text bold" content="left"></button>
+                    <button class="ql-italic" aria-label="Italic (Ctrl + I)" euiTooltip="Italic (Ctrl + I)&#10;&#13;Italicize the selected text" content="left"></button>
+                    <button class="ql-underline" aria-label="Underline (Ctrl + U)" euiTooltip="Underline (Ctrl + U)&#10;&#13;Underline the selected text" content="left"></button>
+                    <button class="ql-strike" aria-label="Strikethrough" euiTooltip="Strikethrough&#10;&#13;Draw a line to the middle of the selected text" content="left"></button>
+                </span>
+                <span class="ql-formats">
+                    <span euiTooltip="Font Color&#10;&#13;Change the text color" content="left">
+                        <select class="ql-color" aria-label="Font Color"></select>
+                    </span>
+                    <span euiTooltip="Text Highlight Color&#10;&#13;Change the background color of the text" content="left">
+                        <select class="ql-background" aria-label="Text Highlight Color"></select>
+                    </span>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-script" value="sub" aria-label="Subscript" euiTooltip="Subscript&#10;&#13;Create ssmall letters below the text baseline" content="left"></button>
+                    <button class="ql-script" value="super" aria-label="Superscript" euiTooltip="Superscript&#10;&#13;Create small letters above the line of the text" content="left"></button>
+                </span>
+                <span class="ql-formats" euiTooltip="Text Align&#10;&#13;Align the text to the selected position: left (default), center, right or justify" content="left">
+                    <select class="ql-align" aria-label="Text Align">
+                        <option selected></option>
+                        <option value="center"></option>
+                        <option value="right"></option>
+                        <option value="justify"></option>
+                    </select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered" aria-label="Ordered List" euiTooltip="Numbering&#10;&#13;Start an ordered list" content="left"></button>
+                    <button class="ql-list" value="bullet" aria-label="Unordered List" euiTooltip="Bullets&#10;&#13;Start a bulleted list" content="left"></button>
+                    <button class="ql-indent" value="-1" type="button" aria-label="Decrease Indent" euiTooltip="Decrease Indent&#10;&#13;Decrease the indent level of the paragraph" content="left"></button>
+                    <button class="ql-indent" value="+1" type="button" aria-label="Increase Indent" euiTooltip="Increase Indent&#10;&#13;Increase the indent level of the paragraph" content="left"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-blockquote" aria-label="Blockquote" euiTooltip="Blockquote&#10;&#13;Create a quoted block of the selected text" content="left"></button>
+                    <button class="ql-code-block" aria-label="Insert Code Block" euiTooltip="Insert Code Block&#10;&#13;Insert a code block at the cursor row position" content="left"></button>
+                    <button class="ql-link" aria-label="Insert Link" euiTooltip="Insert Hyperlink (Ctrl + K)&#10;&#13;Create a link to a Web page, a picture, an e-mail address or a program" content="left"></button>
+                    <button class="ql-image" aria-label="Insert Image" euiTooltip="Insert Picture&#10;&#13;Insert a picture from a file" content="left"></button>
+                    <button class="ql-video" aria-label="Insert Video" euiTooltip="Insert Video&#10;&#13;Insert a video from a file" content="left"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-clean" aria-label="Remove Styles" euiTooltip="Remove Styles&#10;&#13;Remove the styles of the selected text" content="left"></button>
+                </span>
+                <span class="ql-formats">
+                    <button aria-label="Undo (Ctrl + Z)" euiTooltip="Undo (Ctrl + Z)&#10;&#13;Cancels the previous action" (click)="editorUndo2()">
+                        <eui-icon-svg icon="eui-undo:eui" />
+                    </button>
+                    <button aria-label="Redo (Ctrl + Y)" euiTooltip="Redo (Ctrl + Y)&#10;&#13;Do the next history action again" (click)="editorRedo2()">
+                        <eui-icon-svg icon="eui-redo:eui" />
+                    </button>
+                </span>
+                <span class="ql-formats">
+                    <eui-editor-counters
+                        euiTooltip="Counters&#10;&#13;Characters and words counters (stripped Html)"
+                        [charactersCounter]="charactersCount2"
+                        [charactersLabel]="charactersLabel"
+                        [isMaxLengthValid]="isMaxLengthValid2"
+                        [wordsCounter]="wordsCount2"
+                        [wordsLabel]="wordsLabel"
+                        aria-label="Counters">
+                    </eui-editor-counters>
+                </span>
+            </euiEditorCustomToolbar>
+        </eui-editor>
+
+        <!-- @if (!isReadOnly) {
+            <div class="eui-showcase-demo eui-u-mt-m">
+                <div class="doc-sample-section-title">Editor's contents</div>
+                <div class="code" tabindex="0" style="height: auto;">
+                    <pre style="white-space: pre-wrap;">{{ form.get('editorContentTextValueTooltip').value }}</pre>
+                </div>
+            </div>
+        } -->
+    </div>
+</form>

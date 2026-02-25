@@ -1,0 +1,45 @@
+<h6 class="section-title">Default</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label eclFormLabel for="input-react-1" isOptional>Label</label>
+    <div eclHelpBlock id="input-react-1-helper">This is the help text</div>
+    <input eclTextInput id="input-react-1" formControlName="default" aria-describedby="input-react-1-helper" />
+  </div>
+</form>
+
+<h6 class="section-title">Disabled</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label eclFormLabel for="input-react-2" isDisabled isOptional>Label</label>
+    <div eclHelpBlock id="input-react-2-helper">This is the help text</div>
+    <input eclTextInput id="input-react-2" formControlName="disabled" aria-describedby="input-react-2-helper" />
+  </div>
+</form>
+
+<h6 class="section-title">Required</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label eclFormLabel for="input-react-3" isRequired>Label</label>
+    <div eclHelpBlock id="input-react-3-helper">This is the help text</div>
+    <input eclTextInput id="input-react-3" formControlName="required"
+      aria-describedby="input-react-3-helper input-react-3-feedback" />
+    @if(validateRequired()) {
+    <div eclFeedbackMessage id="input-react-3-feedback">
+      <ecl-icon icon="error" size="s" ariaHidden="false" role="img">
+          <title>Error</title>
+      </ecl-icon>
+      This field is required
+    </div>
+    }
+  </div>
+</form>
+
+<h6 class="section-title">Two-way Data Binding</h6>
+<div eclFormGroup>
+  <label eclFormLabel for="input-react-4" isOptional>Label</label>
+  <div eclHelpBlock id="input-react-4-helper">This is the help text</div>
+  <input eclTextInput id="input-react-4" [(ngModel)]="model" aria-describedby="input-react-4-helper" />
+  <div class="ecl-u-mt-m">
+    <button eclButton variant="primary" (click)="onChangeValue()">Change value</button>
+  </div>
+</div>

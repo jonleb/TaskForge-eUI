@@ -1,0 +1,22 @@
+<div class="doc-sample-section-title">Disable close on escape</div>
+<button euiButton type="button" (click)="openDialog1()" class="eui-u-mr-m eui-u-mb-m" aria-haspopup="dialog">Open Dialog</button>
+
+<eui-dialog #dialog1 [title]="'Dialog title'" [hasClosedOnEscape]="false">
+    <p class="eui-u-text-paragraph">Dialog content</p>
+</eui-dialog>
+
+
+<div class="doc-sample-section-title">Enable close on click outside dialog</div>
+<button euiButton type="button" (click)="openDialog2()" class="eui-u-mr-m eui-u-mb-m" aria-haspopup="dialog">Open Dialog</button>
+
+<eui-dialog #dialog2 [title]="'Dialog title'" [hasClosedOnClickOutside]="true">
+    <p class="eui-u-text-paragraph">Dialog content</p>
+</eui-dialog>
+
+
+<div class="doc-sample-section-title">No close button</div>
+<button euiButton type="button" (click)="openDialog3()" class="eui-u-mr-m eui-u-mb-m" aria-haspopup="dialog">Open Dialog</button>
+
+<eui-dialog #dialog3 [title]="'Dialog title'" [hasCloseButton]="false">
+    <p class="eui-u-text-paragraph">Dialog content</p>
+</eui-dialog>

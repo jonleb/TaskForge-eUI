@@ -1,0 +1,60 @@
+<p class="eui-u-text-paragraph"> The <code class="eui-u-text-code">eui-dialog</code> uses scalable relative length units for setting the height and width of the Dialog window.
+Recommended usage is to use the <strong>viewport size</strong> ie. the browser window size which works like percentages:</p>
+<div class="eui-u-ml-xl">
+    <ul>
+        <li>vh : to set the <strong>v</strong>iewport <strong>h</strong>eight</li>
+        <li>vw : to set the <strong>v</strong>iewport <strong>w</strong>idth</li>
+    </ul>
+</div>
+
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">hasMobileCustomSize</code> option allows to override the default full screen display when in mobile mode and to set your own height and width sizes.</p>
+
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">isSizeFullScreen</code> option allows to sets automatically the width and height to 100% and overrides the width and height parameters.</p>
+
+<div class="eui-u-flex eui-u-flex-wrap">
+    <button euiButton type="button" (click)="openDialog1()" class="eui-u-mr-m eui-u-mb-m" aria-haspopup="dialog">Open Dialog (50% width)</button>
+    <button euiButton type="button" (click)="openDialog2()" class="eui-u-mr-m eui-u-mb-m" aria-haspopup="dialog">Open Dialog (50% height)</button>
+    <button euiButton type="button" (click)="openDialog3()" class="eui-u-mr-m eui-u-mb-m" aria-haspopup="dialog">Open Dialog (100% width, 100% height)</button>
+    <button euiButton type="button" (click)="openDialog4()" class="eui-u-mr-m eui-u-mb-m" aria-haspopup="dialog">Open custom size Dialog</button>
+    <button euiButton type="button" (click)="openDialog5()" class="eui-u-mr-m eui-u-mb-m" aria-haspopup="dialog">Open Dialog (fullscreen)</button>
+</div>
+
+<eui-dialog #dialog1 [title]="'Dialog title'" [width]="'50vw'">
+    @if (dialog1.isOpen) {
+        <eui-showcase-doc-lorem-ipsum [textSize]="'small'"></eui-showcase-doc-lorem-ipsum>
+    }
+</eui-dialog>
+
+<eui-dialog #dialog2 [title]="'Dialog title'" [height]="'50vh'">
+    @if (dialog2.isOpen) {
+        <eui-showcase-doc-lorem-ipsum [textSize]="'medium'"></eui-showcase-doc-lorem-ipsum>
+    }
+</eui-dialog>
+
+<eui-dialog #dialog3 [title]="'Dialog title'" [height]="'100vh'" [width]="'100vw'">
+    @if (dialog3.isOpen) {
+        <eui-showcase-doc-lorem-ipsum [textSize]="'large'"></eui-showcase-doc-lorem-ipsum>
+    }
+</eui-dialog>
+
+<eui-dialog #dialog4 [title]="'Welcome to EU Sign'" [width]="'320px'" [hasMobileCustomSize]="true">
+    <eui-dialog-header>
+        <div class="eui-u-f-2xl eui-u-text-center">
+            <span class="eui-u-c-primary"><strong>Welcome</strong></span> to EU Sign
+        </div>
+    </eui-dialog-header>
+
+    <div class="eui-u-text-center eui-u-m-m">
+        Please connect to your EU Login account to access EU Sign.
+    </div>
+
+    <eui-dialog-footer>
+        <button euiButton type="button" euiPrimary (click)="onDialogLogin()">Log in</button>
+    </eui-dialog-footer>
+</eui-dialog>
+
+<eui-dialog #dialog5 [title]="'Dialog title in full screen'" [isFullScreen]="true">
+    @if (dialog5.isOpen) {
+        <eui-showcase-doc-lorem-ipsum [textSize]="'large'"></eui-showcase-doc-lorem-ipsum>
+    }
+</eui-dialog>

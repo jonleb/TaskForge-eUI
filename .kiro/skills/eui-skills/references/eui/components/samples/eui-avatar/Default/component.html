@@ -1,0 +1,58 @@
+<div class="doc-sample-section-title">eui-avatar-icon content</div>
+
+<eui-avatar>
+    <eui-avatar-icon>
+        <eui-icon-svg icon="eui-user" />
+    </eui-avatar-icon>
+</eui-avatar>
+
+
+<div class="doc-sample-section-title">eui-avatar-text content</div>
+
+<eui-avatar>
+    <eui-avatar-text>eUI</eui-avatar-text>
+</eui-avatar>
+
+
+<div class="doc-sample-section-title">eui-avatar-image content (default)</div>
+
+<eui-avatar>
+    <eui-avatar-image></eui-avatar-image>
+</eui-avatar>
+
+
+<div class="doc-sample-section-title">With label content</div>
+<eui-avatar>
+    <eui-avatar-image></eui-avatar-image>
+    <eui-avatar-content>
+        <eui-avatar-content-label>
+            John Doe
+        </eui-avatar-content-label>
+        <eui-avatar-content-sublabel>
+            john.doe&#64;ec.europa.eu
+        </eui-avatar-content-sublabel>
+    </eui-avatar-content>
+</eui-avatar>
+
+
+<div class="doc-sample-section-title">Button actionable avatar with eui-dropdown</div>
+
+<p class="eui-u-text-paragraph">
+    Click on the avatar to expand the menu items
+</p>
+
+
+
+
+<eui-dropdown>
+    <button euiButton euiRounded euiIconButton euiBasicButton euiAvatarButton [attr.aria-label]="'More options'">
+        <eui-avatar>
+            <eui-avatar-image></eui-avatar-image>
+        </eui-avatar>
+    </button>
+    <eui-dropdown-content>
+        <button euiDropdownItem aria-label="Item 1">Option item 1</button>
+        <button euiDropdownItem aria-label="Item 2">Option item 2</button>
+        <button euiDropdownItem aria-label="Item 3">Option item 3</button>
+    </eui-dropdown-content>
+</eui-dropdown>

@@ -1,0 +1,14 @@
+<p class="eui-u-text-paragraph">
+    When the process time cannot be evaluated, the progress indicator receives an <strong>indeterminate state</strong> and displays an infinite animation.
+    <br>
+    To enable the <strong>indeterminate state</strong> use the <code class="eui-u-text-code">isIndeterminate</code> input option.
+</p>
+
+<div class="eui-u-flex">
+    <div class="eui-u-inline-flex eui-u-mr-m">
+        <label euiLabel>Uploading 70%...</label>
+    </div>
+    <div class="eui-u-flex-col">
+        <eui-progress-bar [progress]="70"></eui-progress-bar>
+    </div>
+</div>

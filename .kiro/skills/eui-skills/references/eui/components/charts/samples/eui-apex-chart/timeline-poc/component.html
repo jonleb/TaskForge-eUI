@@ -1,0 +1,93 @@
+<div class="doc-sample-section-title">Timeline with annotations within eui-card containers</div>
+
+<eui-card euiNoContentPadding>
+    <eui-card-header>
+        <eui-card-header-title>Fixed size container with custom icons</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        <div id="chart" #chart>
+            <eui-apex-chart
+                [annotations]="chartOptions.annotations"
+                [chart]="chartOptions.chart"
+                [colors]="chartOptions.colors"
+                [dataLabels]="chartOptions.dataLabels"
+                [fill]="chartOptions.fill"
+                [grid]="chartOptions.grid"
+                [labels]="chartOptions.labels"
+                [legend]="chartOptions.legend"
+                [plotOptions]="chartOptions.plotOptions"
+                [series]="chartOptions.series"
+                [stroke]="chartOptions.stroke"
+                [title]="chartOptions.title"
+                [subtitle]="chartOptions.subtitle"
+                [tooltip]="chartOptions.tooltip"
+                [xaxis]="chartOptions.xaxis"
+                [yaxis]="chartOptions.yaxis"
+            >
+            </eui-apex-chart>
+        </div>
+    </eui-card-content>
+</eui-card>
+
+<br /><br />
+
+<eui-card euiNoContentPadding>
+    <eui-card-header>
+        <eui-card-header-title>Fixed size container with Material icons</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        <div id="chart1" #chart1>
+            <eui-apex-chart
+                [annotations]="chartOptions1.annotations"
+                [chart]="chartOptions1.chart"
+                [colors]="chartOptions1.colors"
+                [dataLabels]="chartOptions1.dataLabels"
+                [fill]="chartOptions1.fill"
+                [grid]="chartOptions1.grid"
+                [labels]="chartOptions1.labels"
+                [legend]="chartOptions1.legend"
+                [plotOptions]="chartOptions1.plotOptions"
+                [series]="chartOptions1.series"
+                [stroke]="chartOptions1.stroke"
+                [subtitle]="chartOptions1.subtitle"
+                [title]="chartOptions1.title"
+                [tooltip]="chartOptions1.tooltip"
+                [xaxis]="chartOptions1.xaxis"
+                [yaxis]="chartOptions1.yaxis"
+            >
+            </eui-apex-chart>
+        </div>
+    </eui-card-content>
+</eui-card>
+
+<br /><br />
+
+<eui-card euiNoContentPadding>
+    <eui-card-header>
+        <eui-card-header-title>Responsive container</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+
+        <div id="chart2" #chart2>
+            <eui-apex-chart
+                [annotations]="chartOptions2.annotations"
+                [chart]="chartOptions2.chart"
+                [colors]="chartOptions2.colors"
+                [dataLabels]="chartOptions2.dataLabels"
+                [fill]="chartOptions2.fill"
+                [grid]="chartOptions2.grid"
+                [labels]="chartOptions2.labels"
+                [legend]="chartOptions2.legend"
+                [plotOptions]="chartOptions2.plotOptions"
+                [series]="chartOptions2.series"
+                [stroke]="chartOptions2.stroke"
+                [subtitle]="chartOptions2.subtitle"
+                [title]="chartOptions2.title"
+                [tooltip]="chartOptions2.tooltip"
+                [xaxis]="chartOptions2.xaxis"
+                [yaxis]="chartOptions2.yaxis"
+            >
+            </eui-apex-chart>
+        </div>
+    </eui-card-content>
+</eui-card>

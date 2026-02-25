@@ -1,0 +1,224 @@
+# ecl-gallery
+
+## Overview
+
+A media gallery is a collection of images, videos or audio files that allows a user to browse media related to the page content. The media gallery can include multiple formats.
+<br>
+<more-info componentPartUrl="media/gallery/usage/"></more-info>
+
+## API
+
+API content
+
+## Samples
+
+### Default
+
+```html
+<ecl-gallery (share)="onShare($event)" (show)="onShow($event)" (hide)="onHide($event)"
+    (itemSwitch)="onItemSwitch($event)" [maxVisibleItems]="6" aria-label="Open gallery items to view images in original size, watch videos and share them">
+    <ecl-gallery-item src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image11.jpg"
+        itemId="ecl-gallery-item-gallery-id-0" meta="Copyright, Author, Licence for image 1" title="EU in brief"
+        description="The EU in brief, institutions and bodies, countries, symbols, history, facts and
+                      figures. [Image with thumbnail]">
+        <picture eclGalleryThumbnail hasZoom>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image.jpg"
+                alt="Image 1" />
+        </picture>
+        <picture eclGalleryPicture>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image11.jpg"
+                alt="Image 1" loading="lazy" />
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://www.youtube.com/embed/fgi-GSCB6ho"
+        meta="Copyright, Author, Licence for embedded media" title="New digital strategy" description="Digital technologies have greatly changed our daily life. Therefore, Europe wants to
+                      make sure, that the digital transformation works for all its citizens. [Embedded video (Youtube)
+                      with a thumbnail]" icon="video" mediaType="externalVideo" isShareable="false"
+        srVideoAudioDescription="In the video below, there is no audio description available because all
+                      the content is in the captions and default audio track">
+        <picture eclGalleryThumbnail hasZoom>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-external-video.jpg"
+                alt="New digital strategy - Video" />
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image4.jpg"
+        meta="Copyright, Author, Licence for image 2" title="Agriculture and culture"
+        description="Information on agriculture, business, culture, health, etc. [Image with sources and thumbnail]">
+        <picture eclGalleryThumbnail hasZoom>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image2.jpg"
+                alt="Image 2" />
+        </picture>
+        <picture eclGalleryPicture>
+            <source srcset="https://inno-ecl.s3.amazonaws.com/media/examples/example-image2.jpg"
+                media="(min-width: 996px)">
+            <source srcset="https://inno-ecl.s3.amazonaws.com/media/examples/example-image3.jpg"
+                media="(min-width: 768px)">
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image4.jpg" alt="Image 2"
+                loading="lazy" />
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://audiovisual.ec.europa.eu/embed/index.html?ref=I-223223&lg=EN"
+        meta="Copyright, Author, Licence for image 3" title="In the EU" description="Living, working, travelling in the EU. [Embedded video (AV Portal) with picture
+                      instead of thumbnail]" mediaType="externalVideo"
+        srVideoAudioDescription="In the video below, there is no audio description available yet">
+        <picture eclGalleryThumbnail hasZoom>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image3.jpg"
+                alt="Image 3 - Video" />
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://www.dailymotion.com/embed/video/x8m9tp1?"
+        meta="Copyright, Author, Licence for image 4" title="Taxes and business" description="Information on taxes, customs, importing and exporting goods, financial support
+                       for businesses. [Embedded video (Dailymotion) with thumbnail]" mediaType="externalVideo">
+        <picture eclGalleryThumbnail hasZoom>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image4.jpg"
+                alt="Image 4 - Video" />
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://vod.prd.commavservices.eu/12/224712/LR_I224712EN1W.mp4" icon="video"
+        meta="Copyright, Author, Licence for image 5" title="Visit the European Commission - Video"
+        description="The European Commission Visitors' Centre provides the public with an understanding of how the European Commission works and its 3 policies and priorities. [HTML video]"
+        mediaType="video">
+        <video eclGalleryImage hasZoom poster="https://vod.prd.commavservices.eu/12/224712/THUMB_I224712EN1W_V_1.jpg"
+            aria-label="Visit the European Commission - Video">
+            <source src="https://vod.prd.commavservices.eu/12/224712/LR_I224712EN1W.mp4" type="video/mp4" />
+        </video>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://player.vimeo.com/video/813227141?h=077b905b65"
+        meta="Copyright, Author, Licence for image 6" title="Lorem ipsum" description="Lorem ipsum dolor sit amet,
+            consectetur adipiscing elit. Vivamus a diam dignissim, suscipit augue in, fermentum nibh. Donec vestibulum
+            justo cursus quam luctus, quis maximus nisi feugiat. Nullam lobortis tellus libero, vitae lobortis nisl
+            suscipit ac. [Embedded video (Vimeo) with thumbnail]" mediaType="externalVideo" srVideoAudioDescription="In the video below, there is no audio description available because all
+                       the content is in the captions and default audio track">
+        <picture eclGalleryThumbnail hasZoom>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image6.jpg"
+                alt="Image 6 - Video" />
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image7.jpg"
+        meta="Copyright, Author, Licence for image 7" title="Teaching material"
+        description="Teaching material about the EU, including books and maps. [Image with sources and no thumbnail]">
+        <picture eclGalleryThumbnail hasZoom>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image7.jpg" alt="Image 7" />
+            <source srcset="https://inno-ecl.s3.amazonaws.com/media/examples/example-image6.jpg"
+                media="(min-width: 1140px)">
+        </picture>
+        <picture eclGalleryPicture hasZoom>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image7.jpg" alt="Image 7"
+                loading="lazy" />
+            <source srcset="https://inno-ecl.s3.amazonaws.com/media/examples/example-image6.jpg"
+                media="(min-width: 1140px)">
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image8.jpg"
+        meta="Copyright, Author, Licence image 8" title="Climate change"
+        description="Climate change and protect nature. [Image without thumbnail]">
+        <picture eclGalleryThumbnail hasZoom>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image8.jpg"
+                alt="Climate change and protect nature" />
+        </picture>
+        <picture eclGalleryPicture>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image8.jpg"
+                alt="Climate change and protect nature" loading="lazy" />
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image9.jpg"
+        meta="Copyright, Author, Licence for image 9" title="About the EU. [Image without thumbnail]"
+        description="About the EU">
+        <picture eclGalleryThumbnail hasZoom>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image9.jpg" alt="Image 9" />
+        </picture>
+        <picture eclGalleryPicture>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image9.jpg" alt="Image 9"
+                loading="lazy" />
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image10.jpg"
+        meta="Copyright, Author, Licence for image 10" title="EU by topic"
+        description="EU by topic. [Image without thumbnail]">
+        <picture eclGalleryThumbnail hasZoom>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image10.jpg"
+                alt="Image 10"/>
+        </picture>
+        <picture eclGalleryPicture>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image10.jpg"
+                alt="Image 10" loading="lazy" />
+        </picture>
+    </ecl-gallery-item>
+
+    <ecl-gallery-footer>
+        <a eclLink routerLink="/" variant="standalone">
+            <span eclLinkLabel>Further media items</span>
+            <ecl-icon icon="external" size="2xs" role="img" ariaHidden="false">
+                <title>
+                    Link to an external domain
+                </title>
+            </ecl-icon>
+        </a>
+    </ecl-gallery-footer>
+</ecl-gallery>
+```
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { EclGalleryHideEvent, EclGalleryItemEvent, EclGalleryShareEvent, EclGalleryShowEvent, EUI_ECL_GALLERY } from '@eui/ecl/components/ecl-gallery';
+import { EUI_ECL_ICON } from '@eui/ecl/components/ecl-icon';
+import { EUI_ECL_LINK } from '@eui/ecl/components/ecl-link';
+
+@Component({
+    // tslint:disable-next-line
+    selector: 'Default',
+    templateUrl: 'component.html',
+    imports: [RouterLink, ...EUI_ECL_GALLERY, ...EUI_ECL_ICON, ...EUI_ECL_LINK],
+})
+export class DefaultComponent implements OnInit {
+    sources: Array<any>;
+    tracks: Array<any>;
+
+
+    ngOnInit() {
+
+        this.sources = [
+            {
+                src: 'https://inno-ecl.s3.amazonaws.com/media/videos/big_buck_bunny.mp4',
+                type: 'video/mp4',
+            },
+            {
+                src: 'https://inno-ecl.s3.amazonaws.com/media/videos/big_buck_bunny.webm',
+                type: 'video/webm',
+            }
+        ];
+
+        this.tracks = [
+            {
+                src: '/captions/bunny-en.vtt',
+                kind: 'captions',
+                srcLang: 'en',
+                label: 'English',
+            },
+            {
+                src: '/captions/bunny-fr.vtt',
+                kind: 'captions',
+                srcLang: 'fr',
+                label: 'français',
+            }
+        ];
+    }
+
+    onShare(evt: EclGalleryShareEvent) {
+        console.log('sharing..', evt);
+    }
+
+    onShow(evt: EclGalleryShowEvent) {
+        console.log('show', evt);
+    }
+
+    onHide(evt: EclGalleryHideEvent) {
+        console.log('hide', evt);
+    }
+
+    onItemSwitch(evt: EclGalleryItemEvent) {
+        console.log('switch', evt);
+    }
+}
+```

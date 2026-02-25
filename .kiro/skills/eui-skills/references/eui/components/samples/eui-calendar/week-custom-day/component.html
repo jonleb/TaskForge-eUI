@@ -1,0 +1,22 @@
+<eui-calendar>
+    <eui-calendar-weekly [(date)]="date"
+                        [eventContentTemplate]="dayTemplate"
+                        [events]="events()"
+                        [showWeekends]="true"
+                        [startingDay]="startDayOfWeek()"/>
+
+    <ng-template #dayTemplate let-label="label" let-metadata="metadata" let-subLabel="subLabel">
+        <eui-card euiPrimary>
+            <eui-card-header>
+                <eui-card-header-title>
+                    <div euiLabel euiSizeS><b>{{label()}}</b></div>
+                </eui-card-header-title>
+                @if (subLabel() !== undefined && subLabel() !== '' ) {
+                    <eui-card-header-subtitle>
+                        <div euiSublabel>{{subLabel()}}</div>
+                    </eui-card-header-subtitle>
+                }
+            </eui-card-header>
+        </eui-card>
+    </ng-template>
+</eui-calendar>

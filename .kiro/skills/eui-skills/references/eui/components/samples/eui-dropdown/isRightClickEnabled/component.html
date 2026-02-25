@@ -1,0 +1,167 @@
+<eui-alert>
+    <eui-alert-title>Usability notice</eui-alert-title>
+    <p class="eui-u-text-paragraph">
+        The <code class="eui-u-text-code">eui-dropdown</code> with the <code class="eui-u-text-code">isRightClickEnabled</code> option allows to trigger a menu using the right mouse click event instead of the regular left click.
+        This behaviour is known as "contextual menu" which usually lacks the visual trigger.
+    </p>
+    <p class="eui-u-text-paragraph">
+        Contextual menus offers a limited set of choices that are available in the current state or context of the application to which they belongs.
+        Usually the available choices are <strong>quick actions</strong> menu items related to the selected/targeted element.
+    </p>
+    <p class="eui-u-text-paragraph eui-u-mb-none">
+        Also note that contextual menus have received some criticism from usability analysts when improperly used, as some applications make
+        certain features only available in context menus, which may confuse even experienced users.
+        <br>
+        So please, be aware that the <strong>usage of the contextual menus should be very limited</strong> to some special use cases.
+    </p>
+</eui-alert>
+
+<br>
+
+<eui-alert euiWarning>
+    <eui-alert-title>UX recommendations</eui-alert-title>
+    <p class="eui-u-text-paragraph">
+        Contextual menus without any visual trigger displayed on the GUI <strong>should be announced and documented properly</strong> to the users.
+        Usually, the contextual menu appears below the position of the pointer or near the focused element at the cursor position.
+    </p>
+    <p class="eui-u-text-paragraph eui-u-mb-none">
+        We do NOT recommend to trigger it on the full page in order to not interfere with the browser's default context menu
+        which might provide additional functionalities configured by your organization.
+        <br>
+        Regarding tables, when using the contextual menu for data row actions (see example below), its usage should be clearly informed to the user on how to proceed.
+        <br>
+        We <strong>recommend to use the "action column"</strong> instead.
+        See <a class="eui-u-text-link-external" href="https://eui.ecdevops.eu/eui-showcase-ux-components-21.x/showcase-design-patterns/patterns/table-list-anatomy" target="_blank">Design pattern sample here</a>.
+    </p>
+</eui-alert>
+
+<br>
+
+<eui-alert euiDanger>
+    <eui-alert-title>Important accessibility notice</eui-alert-title>
+    <p class="eui-u-text-paragraph eui-u-mb-none">
+        Please note that contextual menus <strong>are NOT accessible</strong> by nature and thus, not announced by screen readers (see UX recommendations hereup).
+    </p>
+</eui-alert>
+
+
+<div class="doc-sample-section-title">NOT accessible contextual menus</div>
+<p class="eui-u-text-paragraph">
+    The following examples are <strong>not accessible</strong> and needs to be clearly informed to the user in order
+    to know that a contextual menu can be revealed by performing some action (right click on the image for example).
+</p>
+
+<div class="eui-u-display-flex">
+    <eui-dropdown isRightClickEnabled>
+        <div class="eui-u-flex eui-u-flex-column">
+            <eui-badge euiInfo class="eui-u-mb-s">Use the right click on the image for menu options</eui-badge>
+            <img src="https://material.angular.io/assets/img/examples/shiba1.jpg" width="400px" alt="Shiba Inu">
+        </div>
+        <eui-dropdown-content>
+            <button euiDropdownItem aria-label="View item" (click)="onImgView()">
+                <eui-icon-svg icon="eui-add" size="s" fillColor="primary" class="eui-u-mr-s"></eui-icon-svg>
+                <span euiLabel>View</span>
+            </button>
+            <button euiDropdownItem aria-label="Delete item" (click)="onImgDelete()">
+                <eui-icon-svg icon="eui-trash" size="s" fillColor="danger" class="eui-u-mr-s"></eui-icon-svg>
+                <span euiLabel>Delete</span>
+            </button>
+        </eui-dropdown-content>
+    </eui-dropdown>
+</div>
+
+<eui-dialog #dialog
+    [title]="'Image viewer'"
+    [hasFooter]="false"
+    (accept)="onDialogAccept()"
+    (dismiss)="onDialogDismiss()"
+    [hasClosedOnClickOutside]="true">
+    <eui-card>
+        <eui-card-media
+            imageUrl="https://material.angular.io/assets/img/examples/shiba1.jpg"
+            imageLegend="A small, alert, and agile dog that copes very well with mountainous terrain and hiking trails, the Shiba Inu was originally bred for hunting.">
+        </eui-card-media>
+    </eui-card>
+</eui-dialog>
+
+
+<div class="doc-sample-section-title">Within an eui-table</div>
+<eui-alert>
+    <strong>Usage notice:</strong> use the mouse <kbd class="eui-u-text-kbd">right click</kbd> on a table row to reveal the contextual menu.
+</eui-alert>
+<br>
+
+<table euiTable isTableResponsive [data]="dataSource" [paginator]="paginator">
+    <ng-template euiTemplate="header">
+        <tr>
+            <th class="eui-u-text-center">Id</th>
+            <th sortable sortOn="country">Country</th>
+            <th sortable sortOn="year" class="eui-u-text-center">Year</th>
+            <th sortable sortOn="iso" class="eui-u-text-center">ISO</th>
+            <th sortable sortOn="population">Population</th>
+            <th sortable sortOn="capital" class="eui-u-text-left">Capital city</th>
+        </tr>
+    </ng-template>
+    <ng-template let-row let-index="index" euiTemplate="body">
+        <tr (contextmenu)="onTableRowRightClick($event, row)">
+            <td data-col-label="Id" class="eui-u-text-center">{{ row.dataID }}</td>
+            <td data-col-label="Country" nowrap>
+                <eui-dropdown isRightClickEnabled>
+                    <span class="eui-u-text-link eui-u-text-kbd">{{ row.country }}</span>
+                    <eui-dropdown-content>
+                        <div class="eui-u-flex eui-u-flex-justify-content-center eui-u-c-bg-primary-bg">
+                            <span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-flag-icon-3x eui-u-text-center eui-u-m-xs"></span>
+                        </div>
+                        @for (dropdownItem of dropdownItems; track $index) {
+                            <button euiDropdownItem (click)="onClickItem(dropdownItem.label)" [attr.aria-label]="dropdownItem.label">{{ dropdownItem.label }}</button>
+                        }
+                    </eui-dropdown-content>
+                </eui-dropdown>
+            </td>
+            <td data-col-label="Year">{{ row.year }}</td>
+            <td data-col-label="ISO">{{ row.iso }}</td>
+            <td data-col-label="Population">{{ row.population | number }}</td>
+            <td data-col-label="Capital city">{{ row.capital }}</td>
+        </tr>
+    </ng-template>
+    <ng-template euiTemplate="footer">
+        <tr>
+            <td colspan="4" class="eui-u-text-right"><strong>TOTAL</strong></td>
+            <td><strong>{{ totalPopulation | number}}</strong></td>
+            <td>&nbsp;</td>
+        </tr>
+    </ng-template>
+</table>
+<eui-paginator #paginator [pageSizeOptions]="[5, 10, 25, 50]" [pageSize]="10"></eui-paginator>
+
+
+<!-- This is the contextual menu for eui-table row called on right click event -->
+<eui-dropdown isRightClickEnabled #contextualMenu>
+    <eui-dropdown-content>
+        <button euiDropdownItem aria-label="Edit item" (click)="onRowEdit(selectedItemData)">
+            <eui-icon-svg icon="eui-add" size="s" fillColor="primary" class="eui-u-mr-s"></eui-icon-svg>
+            <span euiLabel>Edit</span>
+        </button>
+        <button euiDropdownItem aria-label="Delete item" (click)="onRowDelete(selectedItemData)">
+            <eui-icon-svg icon="eui-trash" size="s" fillColor="danger" class="eui-u-mr-s"></eui-icon-svg>
+            <span euiLabel>Delete</span>
+        </button>
+    </eui-dropdown-content>
+</eui-dropdown>
+
+<eui-message-box #messageBoxWarning
+    euiWarning
+    [title]="'Confirm deletion'"
+    (accept)="onAccept()"
+    (dismiss)="onDismiss()">
+    <div class="eui-u-flex eui-u-flex-column eui-u-flex-justify-content-start">
+        <div class="eui-u-text-h5">
+            Are you sure you want to delete the selected item ?
+        </div>
+        <div class="eui-u-flex eui-u-flex-column eui-u-flex-align-items-start eui-u-mt-m">
+            <li>Country: {{selectedItemData?.country}}</li>
+            <li>Id: {{selectedItemId}}</li>
+            <li>Capital city: {{selectedItemData?.capital}}</li>
+        </div>
+    </div>
+</eui-message-box>

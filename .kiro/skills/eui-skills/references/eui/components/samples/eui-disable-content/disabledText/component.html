@@ -1,0 +1,14 @@
+<p><code class="eui-u-text-code">disabledText</code> option content will be displayed as a growl when the user will click on the disabled area.</p>
+
+<eui-disable-content [isDisabled]="isDisabled()" disabledText="This is the disabled message">
+    <eui-card>
+        <eui-card-content>
+            <input euiInputText (keyup.enter)="onEnterKey()" aria-label="Hit Enter to block content"> Hit <code class="eui-u-text-code">Enter</code> while typing to block content for 1 second or use button below
+        </eui-card-content>
+    </eui-card>
+</eui-disable-content>
+<br/>
+
+<button euiButton (click)="onBlockContent()">
+    {{ isDisabled() ? 'Enable' : 'Disable' }} Content
+</button>

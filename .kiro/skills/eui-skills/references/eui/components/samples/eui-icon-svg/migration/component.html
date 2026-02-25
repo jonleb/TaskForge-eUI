@@ -1,0 +1,47 @@
+<eui-alert>
+    <eui-alert-title>Migration notice</eui-alert-title>
+    In order to facilitate the migration from the deprecated eUI webfont icons to the new <strong>eUI SVG icons</strong> the following list provides
+    the replacements for all icons.
+
+    <p class="eui-u-text-paragraph">
+        Please note that some icons are not exactly the same and we have provided equivalences matching the
+        <a class="eui-u-text-link-external" href="https://www.figma.com/community/file/1052857333027422402" target="_blank">Design System tokens</a>
+        or composition using the transformations feature.
+    </p>
+</eui-alert>
+
+<div class="doc-sample-section-title">List of eUI 19 icons - eUI 21 icons</div>
+<table class="eui-table-default eui-table-default--compact eui-table-default--align-middle">
+    <thead>
+        <tr>
+            <th class="eui-u-text-left">OLD deprecated icons</th>
+            <th class="eui-u-text-left">NEW Svg icon replacement</th>
+            <th class="eui-u-width-8">Preview</th>
+        </tr>
+    </thead>
+    <tbody>
+    @for (icon of euiIconsv19; track icon) {
+        <tr>
+            <td>
+                {{ icon.oldIcon }}
+            </td>
+            <td>
+                {{ icon.newIcon }}
+                @if (icon?.comment) {
+                    <button euiButton euiInfo euiBasicButton euiRounded euiIconButton euiSizeS euiTooltip="{{ icon.comment }}" euiTooltipInfo>
+                        <eui-icon-svg icon="eui-alert-circle" />
+                    </button>
+                }
+            </td>
+            <td class="eui-u-text-center"><eui-icon-svg icon="{{ icon.newIcon }}" /></td>
+        </tr>
+    } @empty {
+        <tr>
+            <td rowspan="4">
+                <p class="eui-u-text-paragraph">No icons found.</p>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+

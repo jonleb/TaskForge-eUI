@@ -1,0 +1,99 @@
+<eui-card [euiCollapsible]="isCollapsible"
+          [euiCollapsed]="isCollapsed"
+          [euiSelected]="isSelected"
+          [euiUrgent]="data.urgent">
+
+    <eui-card-header hasFullTitle [hasBottomExpander]="hasBottomExpander">
+
+        <eui-card-header-left-content>
+            <input euiInputCheckBox id="checkbox_{{ data.taskId }}" name="checkbox" [(ngModel)]="isSelected" [ngModelOptions]="{standalone: true}">
+        </eui-card-header-left-content>
+
+        <eui-card-header-title>
+            <a routerLink="{{ data.detailLink }}" (click)="onCardTitleLinkClicked($event)" class="eui-u-text-link">
+                {{ data.localizedTitle }}
+                &nbsp;&mdash;&nbsp;
+                Process instance ID - {{ data.businessTaskData.PROCESS_INSTANCE_ID }}
+            </a>
+        </eui-card-header-title>
+
+        <eui-card-header-subtitle>
+            <div class="row eui-u-flex eui-u-flex-wrap">
+                <div class="col">
+                    <small>Task/exercise Id</small><br>
+                    <span class="eui-u-text-truncate">{{ data.taskId }}/{{ data.businessTaskData.EXERCISE_ID }}</span>
+                </div>
+                <div class="col">
+                    <small>Created on</small><br>
+                    <span class="eui-u-text-truncate">{{ data.createDate | date : 'dd/LL/yyyy HH:mm:ss' }}</span>
+                </div>
+                <div class="col">
+                    <small>Assignee</small><br>
+                    <span class="eui-u-text-truncate">
+                        @if (data.assigneeObject) {
+                            <span>{{ data.assigneeObject?.firstName }} {{ data.assigneeObject?.lastName }}</span>
+                        }
+                        @if (!data.assigneeObject) {
+                            <span>&mdash;</span>
+                        }
+                    </span>
+                </div>
+            </div>
+        </eui-card-header-subtitle>
+
+        <eui-card-header-right-content>
+            <eui-chip euiOutline euiRounded euiSizeS euiSuccess euiTooltip="Status" class="eui-u-mr-l">
+                {{ data.taskState }}
+            </eui-chip>
+        </eui-card-header-right-content>
+    </eui-card-header>
+
+    <eui-card-content style="height: 10rem;"  tabindex="0">
+        <span>{{ data.localizedDescription }}</span>
+        <div class="eui-u-flex align-items-start">
+            <pre class="eui-u-text-pre"><small><code class="eui-u-text-code">{{ data.businessTaskData | json }}</code></small></pre>
+        </div>
+    </eui-card-content>
+
+    <eui-card-footer>
+        <eui-card-footer-action-buttons class="eui-u-flex eui-u-flex-justify-content-between">
+            <div class="eui-u-flex">
+                <card-list-chips [data]="data.businessTaskData['MB:ACTIVEBULLETS']"></card-list-chips>
+            </div>
+
+            <div class="eui-u-ml-auto eui-u-inline-flex">
+                <eui-card-footer-action-icons>
+                    <eui-icon-toggle [keyboardAccessKey]="'f-' + data.taskId" iconSvgNameOn="eui-star-fill" iconSvgNameOff="eui-star"
+                        (toggle)="onFavouriteToggle($event)"
+                        [isChecked]="data.favourite || isFavourite"
+                        [euiTooltip]="data.favourite ? 'Unmark from favourites' : 'Mark as favourite'"
+                        [attr.aria-label]="data.favourite ? 'Unmark from favourites' : 'Mark as favourite'"
+                    />
+                    <button euiButton euiRounded euiIconButton euiBasicButton euiPrimary euiTooltip="Share" aria-label="Share">
+                        <eui-icon-svg icon="share-network:regular" fillColor="secondary" />
+                    </button>
+                </eui-card-footer-action-icons>
+
+                <eui-card-footer-menu>
+                    <eui-dropdown isDropDownRightAligned euiTooltip="Actions menu">
+                        <button
+                            euiButton
+                            euiPrimary
+                            euiOutline
+                            type="button"
+                            class="eui-u-mr-none">
+                            Actions
+                            <eui-icon-svg icon="eui-ellipsis-vertical" />
+                        </button>
+                        <eui-dropdown-content>
+                            <button euiDropdownItem>Action 1</button>
+                            <button euiDropdownItem>Action 2</button>
+                            <button euiDropdownItem>Action 3</button>
+                        </eui-dropdown-content>
+                    </eui-dropdown>
+                </eui-card-footer-menu>
+            </div>
+
+        </eui-card-footer-action-buttons>
+    </eui-card-footer>
+</eui-card>

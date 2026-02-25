@@ -1,0 +1,90 @@
+<eui-page>
+    <eui-page-header label="eui-page-columns"></eui-page-header>
+
+    <eui-page-content>
+        <eui-page-columns>
+            <eui-page-column euiResizable label="M" size="m" [isCollapsible]="true">
+                <eui-page-column-body>
+                    <eui-showcase-doc-lorem-ipsum></eui-showcase-doc-lorem-ipsum>
+                </eui-page-column-body>
+            </eui-page-column>
+
+            <eui-page-column euiResizable label="L" size="l" [isCollapsible]="true">
+                <eui-page-column-header-body>
+                    <div class="eui-u-f-s eui-u-c-neutral-darker"><strong><em>This is the column header body which remains sticky when scrolling into the column's content</em></strong></div>
+                </eui-page-column-header-body>
+                <eui-page-column-body>
+
+                    <p class="eui-u-text-paragraph"><b>This column can be scrolled to show how overlay components get the relative scrolling reference from the column.</b></p>
+
+                    <eui-showcase-doc-lorem-ipsum></eui-showcase-doc-lorem-ipsum>
+                </eui-page-column-body>
+                <!-- <eui-page-column-footer>
+                    Default column footer
+                </eui-page-column-footer> -->
+            </eui-page-column>
+
+            <eui-page-column euiResizable label="Dynamic column" size="3xl" [isCollapsible]="true">
+                <eui-page-column-header-right-content>
+                    <eui-dropdown>
+                        <button euiButton euiBasicButton euiSecondary euiRounded euiIconButton euiSizeS>
+                            <eui-icon-svg icon="eui-ellipsis-vertical" size="s" fillColor="secondary"></eui-icon-svg>
+                        </button>
+                        <eui-dropdown-content>
+                            <div euiList>
+                                <button euiListItem>Menu item 1</button>
+                                <button euiListItem>Menu item 2</button>
+                                <button euiListItem>Menu item 3</button>
+                            </div>
+                        </eui-dropdown-content>
+                    </eui-dropdown>
+                </eui-page-column-header-right-content>
+
+                <eui-page-column-body>
+                    <p class="eui-u-text-paragraph"><b>This column can be scrolled to show how overlay components get the relative scrolling reference from the column.</b></p><br/>
+                    <eui-showcase-doc-lorem-ipsum></eui-showcase-doc-lorem-ipsum>
+                </eui-page-column-body>
+                <!-- <eui-page-column-footer>
+                    <div class="eui-u-f-s eui-u-c-neutral-darker"><strong><em>Custom auto-sized column's footer content</em></strong></div>
+                </eui-page-column-footer> -->
+            </eui-page-column>
+
+            <eui-page-column>
+                <eui-page-column-header-left-content>
+                    <div class="eui-u-flex">
+                        <strong>Main column</strong>
+                        <eui-icon-svg icon="eui-state-info" size="s" fillColor="secondary" euiTooltip="This column auto-grows with its content" euiTooltipAccent></eui-icon-svg>
+                    </div>
+                </eui-page-column-header-left-content>
+                <eui-page-column-header-right-content>
+                    <button euiButton euiOutline euiSecondary euiSizeS class="eui-u-mr-s">Secondary action</button>
+                    <button euiButton euiPrimary euiSizeS class="eui-u-mr-s">Primary action</button>
+                    <eui-dropdown>
+                        <button euiButton euiBasicButton euiSecondary euiRounded euiIconButton euiSizeS title="More actions">
+                            <eui-icon-svg icon="eui-ellipsis-vertical" size="s" fillColor="secondary"></eui-icon-svg>
+                        </button>
+                        <eui-dropdown-content>
+                            <div euiList>
+                                <button euiListItem>Menu item 1</button>
+                                <button euiListItem>Menu item 2</button>
+                                <button euiListItem>Menu item 3</button>
+                            </div>
+                        </eui-dropdown-content>
+                    </eui-dropdown>
+                </eui-page-column-header-right-content>
+
+                <eui-page-column-body>
+                    <eui-card>
+                        <eui-card-header>
+                            <eui-card-header-title>This is the main column with left & right custom content</eui-card-header-title>
+                        </eui-card-header>
+                        <eui-card-content>
+                            <p class="eui-u-text-paragraph"><strong>This is the content of the card.</strong></p>
+                            <eui-showcase-doc-lorem-ipsum></eui-showcase-doc-lorem-ipsum>
+                        </eui-card-content>
+                    </eui-card>
+                </eui-page-column-body>
+            </eui-page-column>
+        </eui-page-columns>
+    </eui-page-content>
+</eui-page>

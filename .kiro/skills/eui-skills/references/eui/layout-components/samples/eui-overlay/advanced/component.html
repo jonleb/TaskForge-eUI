@@ -1,0 +1,167 @@
+<p class="eui-u-text-paragraph">This advanced <code class="eui-u-text-code">eui-overlay</code> panel layout uses a vertical list / detail pattern in order to edit content from a cards list.
+The overlay footer section is used to edit the content of the card with related action buttons.</p>
+<p class="eui-u-text-paragraph">See the code source for more information.</p>
+
+<button euiButton euiOutline euiPrimary (click)="toggleOverlay($event)" aria-haspopup="dialog" aria-label="Overlay trigger button">Toggle overlay</button>
+
+<eui-overlay [isActive]="isOverlayActive" (activeState)="updateActiveState($event)" [fixedWidth]="'35'" aria-label="Advanced overlay panel example">
+
+    <eui-overlay-header>
+        <div class="eui-u-f-l-bold">Overlay panel title</div>
+        <button euiButton euiRounded euiBasicButton euiIconButton class="eui-u-ml-auto" aria-label="Close panel button" (click)="closeOverlay($event)">
+            <eui-icon-svg icon="eui-close"></eui-icon-svg>
+        </button>
+    </eui-overlay-header>
+
+    <eui-overlay-body class="eui-u-p-m">
+
+        This administration screen allows to manage external content widgets that will be part of the list of available widgets.
+
+        <eui-fieldset label="List of external content widgets" class="eui-u-mt-m">
+            <euiFieldsetLabelExtraContent>
+                <eui-badge euiInfo class="eui-u-ml-s eui-u-mr-m">3</eui-badge>
+            </euiFieldsetLabelExtraContent>
+
+            <euiFieldsetLabelRightContent>
+                <button euiButton euiPrimary euiOutline euiSizeS (click)="onCreateClick()" aria-labelledby="create">
+                    <eui-icon-svg icon="eui-add" fillColor="primary" class="eui-u-mr-2xs"></eui-icon-svg>
+                    <span id="create" euiLabel>Create</span>
+                </button>
+            </euiFieldsetLabelRightContent>
+
+            <!-- Cards list -->
+            <div class="eui-u-flex eui-u-flex-wrap">
+
+                <eui-card class="eui-u-mb-m">
+                    <eui-card-header class="eui-u-flex-align-items-start eui-u-flex-justify-content-start">
+                        <eui-card-header-left-content>
+                            <div class="eui-u-inline-flex eui-u-flex-align-items-start">
+                                <eui-icon-svg icon="shuffle:regular" fillColor="secondary"></eui-icon-svg>
+                            </div>
+                        </eui-card-header-left-content>
+                        <eui-card-header-title>
+                            Wikipedia
+                        </eui-card-header-title>
+                        <eui-card-header-subtitle>
+                            <eui-chip euiOutline>
+                                <small>ACCESS_WIKI_WIDGET</small>
+                            </eui-chip>
+                        </eui-card-header-subtitle>
+                        <eui-card-header-right-content>
+                            <button euiButton euiBasicButton euiPrimary euiSizeS (click)="onEditClick()" aria-labelledby="edit1">
+                                <eui-icon-svg icon="eui-add"></eui-icon-svg>
+                                <span id="edit1">Edit</span>
+                            </button>
+                        </eui-card-header-right-content>
+                    </eui-card-header>
+                </eui-card>
+
+                <eui-card class="eui-u-mb-m">
+                    <eui-card-header class="eui-u-flex-align-items-start eui-u-flex-justify-content-start">
+                        <eui-card-header-left-content>
+                            <div class="eui-u-inline-flex eui-u-flex-align-items-start">
+                                <eui-icon-svg icon="shuffle:regular" fillColor="secondary"></eui-icon-svg>
+                            </div>
+                        </eui-card-header-left-content>
+                        <eui-card-header-title>
+                            Grafana
+                        </eui-card-header-title>
+                        <eui-card-header-subtitle>
+                            <eui-chip euiOutline>
+                                <small>ACCESS_GRAFANA_WIDGET</small>
+                            </eui-chip>
+                        </eui-card-header-subtitle>
+                        <eui-card-header-right-content>
+                            <button euiButton euiBasicButton euiPrimary euiSizeS (click)="onEditClick()" aria-labelledby="edit2">
+                                <eui-icon-svg icon="eui-add"></eui-icon-svg>
+                                <span id="edit2">Edit</span>
+                            </button>
+                        </eui-card-header-right-content>
+                    </eui-card-header>
+                </eui-card>
+
+                <eui-card class="eui-u-mb-m">
+                    <eui-card-header class="eui-u-flex-align-items-start eui-u-flex-justify-content-start">
+                        <eui-card-header-left-content>
+                            <div class="eui-u-inline-flex eui-u-flex-align-items-start">
+                                <eui-icon-svg icon="shuffle:regular" fillColor="secondary"></eui-icon-svg>
+                            </div>
+                        </eui-card-header-left-content>
+                        <eui-card-header-title>
+                            Business report - Open Search
+                        </eui-card-header-title>
+                        <eui-card-header-subtitle>
+                            <eui-chip euiOutline>
+                                <small>ACCESS_GRAFANA_WIDGET</small>
+                            </eui-chip>
+                        </eui-card-header-subtitle>
+                        <eui-card-header-right-content>
+                            <button euiButton euiBasicButton euiPrimary euiSizeS (click)="onEditClick()" aria-labelledby="edit3">
+                                <eui-icon-svg icon="eui-add"></eui-icon-svg>
+                                <span id="edit3" euiLabel>Edit</span>
+                            </button>
+                        </eui-card-header-right-content>
+                    </eui-card-header>
+                </eui-card>
+
+            </div>
+
+        </eui-fieldset>
+    </eui-overlay-body>
+
+    <eui-overlay-footer>
+        @if (isEditActive || isCreateActive) {
+            <eui-fieldset [label]="isEditActive ? 'Widget details' : 'Create a new external content widget'" isLarge>
+                <form [formGroup]="form">
+                    <div euiInputGroup>
+                        <label for="widget-title" euiLabel euiRequired>Widget title</label>
+                        <input id="widget-title" formControlName="widgetTitle" placeholder="Give the widget a name" />
+                        @if (render('widgetTitle')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label for="secunda-task-id" euiLabel euiRequired>Secunda Task ID</label>
+                        <input id="secunda-task-id" euiInputText formControlName="secundaId" placeholder="Enter permission's task id" />
+                        @if (render('secundaId')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+
+                    <div euiInputGroup>
+                        <label for="url" euiLabel euiRequired>URL</label>
+                        <input id="url" euiInputText formControlName="widgetUrl" placeholder="Enter the full Url address of the widget's content" />
+                        @if (render('widgetUrl')) {
+                            <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                        }
+                    </div>
+                </form>
+            </eui-fieldset>
+
+            <div class="eui-u-flex eui-u-flex-justify-content-between">
+                <!-- Left section -->
+                <div class="eui-u-flex">
+                    <button euiButton euiSecondary (click)="closeOverlay($event)" aria-label="Cancel">Cancel</button>
+                </div>
+                <!-- Right section -->
+                <div class="eui-u-flex eui-u-flex-justify-content-end">
+                    @if (isEditActive) {
+                        <button euiButton euiDanger class="eui-u-mr-s" aria-label="Delete">Delete</button>
+                    }
+                    <button euiButton euiPrimary (click)="submitForm()" aria-label="Save">Save</button>
+                </div>
+            </div>
+        }
+
+        @if (!isEditActive && !isCreateActive) {
+            <div class="eui-u-flex eui-u-flex-justify-content-between">
+                <div class="eui-u-flex eui-u-flex-justify-content-end">
+                    <button euiButton euiPrimary (click)="closeOverlay($event)" aria-label="Close">Close</button>
+                </div>
+            </div>
+        }
+
+    </eui-overlay-footer>
+
+</eui-overlay>

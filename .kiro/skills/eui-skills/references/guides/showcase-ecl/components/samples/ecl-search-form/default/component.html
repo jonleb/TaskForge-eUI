@@ -1,0 +1,21 @@
+<ecl-search-form 
+    (searchEvent)="onSearch($event)"></ecl-search-form>
+
+<h6 class="section-title">Custom Placeholder</h6>
+<ecl-search-form 
+    placeholder="Find users, events and more"
+    (searchEvent)="onSearch($event)"></ecl-search-form>
+
+<h6 class="section-title">Custom Button Label</h6>
+<ecl-search-form 
+    searchButtonLabel="Find.."
+    (searchEvent)="onSearch($event)"></ecl-search-form>
+
+<h6 class="section-title">Custom Button Icon (mobile only)</h6>
+<ecl-search-form 
+    searchButtonIcon="data"
+    (searchEvent)="onSearch($event)"></ecl-search-form>
+
+<h6 class="section-title">Extra classes for button and input</h6>
+<ecl-search-form [buttonExtraClassses]="buttonExtraClassses" [inputExtraClassses]="inputExtraClassses"
+    (searchEvent)="onSearch($event)"></ecl-search-form>

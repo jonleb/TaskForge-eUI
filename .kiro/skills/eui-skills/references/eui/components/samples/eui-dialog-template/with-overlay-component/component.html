@@ -1,0 +1,27 @@
+<p class="eui-u-text-paragraph">The source code of the injected component can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-dialog-template/dummy-components" target="_blank" class="eui-u-text-link-external">here</a>.</p>
+
+<button euiButton type="button" (click)="openDialog()">Open Dialog</button>
+
+<eui-dialog #dialog [title]="'Dialog title'">
+    <eui-showcase-doc-lorem-ipsum [textSize]="'small'"></eui-showcase-doc-lorem-ipsum>
+    <eui-autocomplete [autocompleteData]="autocompleteData"></eui-autocomplete>
+    <eui-showcase-doc-lorem-ipsum [textSize]="'small'"></eui-showcase-doc-lorem-ipsum>
+    <button
+        euiButton
+        euiRounded
+        euiBasicButton
+        euiIconButton
+        euiSizeS
+        aria-label="Popover Icon Button"
+        (click)="openPopover($event)">
+        <eui-icon-svg icon="eui-circle-fill"></eui-icon-svg>
+    </button>
+    <eui-popover #popover [title]="'This is popover title'">
+        <ul class="example-list">
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </ul>
+    </eui-popover>
+    <eui-showcase-doc-lorem-ipsum [textSize]="'large'"></eui-showcase-doc-lorem-ipsum>
+</eui-dialog>

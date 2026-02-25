@@ -1,0 +1,45 @@
+<p class="eui-u-text-paragraph">The source code of the injected component can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-dialog-template/dummy-components" target="_blank" class="eui-u-text-link-external">here</a>.</p>
+
+<p class="eui-u-text-paragraph">The following public methods can be called through a <code class="eui-u-text-code">ViewChild</code> on <code class="eui-u-text-code">eui-dialog</code> tag as shown is the samples below.</p>
+<table class="eui-table-default eui-table-default--compact eui-u-mb-m">
+    <thead>
+        <tr>
+            <th>Public method</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>disableAcceptButton</td>
+            <td>Disable Accept button of default eui-dialog footer.</td>
+        </tr>
+        <tr>
+            <td>enableAcceptButton</td>
+            <td>Enable Accept button of default eui-dialog footer.</td>
+        </tr>
+        <tr>
+            <td>disableDismissButton</td>
+            <td>Disable Dismiss button of default eui-dialog footer.</td>
+        </tr>
+        <tr>
+            <td>enableDismissButton</td>
+            <td>Enable Dismiss button of default eui-dialog footer.</td>
+        </tr>
+    </tbody>
+</table>
+
+<button euiButton type="button" (click)="openDialog()" aria-haspopup="dialog">Open Dialog</button>
+{{ injectedFormValues | json }}
+
+<eui-dialog #dialog [title]="'Dialog title'" (accept)="onAccept()">
+    @if (dialog.isOpen) {
+        <dialog-template-disable-buttons-component
+            #bodyComponent
+            (acceptButtonDisable)="onAcceptButtonDisable()"
+            (acceptButtonEnable)="onAcceptButtonEnable()"
+            (dismissButtonDisable)="onDismissButtonDisable()"
+            (dismissButtonEnable)="onDismissButtonEnable()"
+            (formValueChange)="onFormValueChange($event)">
+        </dialog-template-disable-buttons-component>
+    }
+</eui-dialog>

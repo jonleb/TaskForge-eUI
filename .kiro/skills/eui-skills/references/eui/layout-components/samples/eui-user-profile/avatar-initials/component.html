@@ -1,0 +1,51 @@
+<div class="doc-sample-section-title">Default - no options set</div>
+
+<eui-user-profile isShowAvatarInitials></eui-user-profile>
+
+
+<div class="doc-sample-section-title">With dropdown menu items</div>
+
+<br>
+<eui-alert>
+    click on the user profile to reveal the user-profile menu
+</eui-alert>
+<br>
+
+<eui-user-profile isShowAvatarInitials>
+    <eui-user-profile-menu>
+        <eui-user-profile-menu-item>
+            <eui-icon-svg icon="eui-user" size="s"/>
+            View profile information
+        </eui-user-profile-menu-item>
+        <eui-user-profile-menu-item>
+            <eui-icon-svg icon="eui-sign-out" size="s"/>
+            Sign out
+        </eui-user-profile-menu-item>
+    </eui-user-profile-menu>
+</eui-user-profile>
+
+
+
+<div class="doc-sample-section-title">Using eui-user-profile-card and hasTabNavigation option to navigate to inner interactive elements with the Tab key</div>
+
+<br>
+<eui-alert>
+    click on the user profile to reveal the user-profile menu
+</eui-alert>
+<br>
+
+<eui-user-profile hasTabNavigation isShowAvatarInitials>
+    <eui-user-profile-menu>
+        <eui-user-profile-menu-item>
+            <eui-user-profile-card isShowAvatarInitials></eui-user-profile-card>
+        </eui-user-profile-menu-item>
+        <eui-user-profile-menu-item>
+            <eui-icon-svg icon="eui-user" size="s"/>
+            View profile information
+        </eui-user-profile-menu-item>
+        <eui-user-profile-menu-item>
+            <eui-icon-svg icon="eui-sign-out" size="s"/>
+            Sign out
+        </eui-user-profile-menu-item>
+    </eui-user-profile-menu>
+</eui-user-profile>

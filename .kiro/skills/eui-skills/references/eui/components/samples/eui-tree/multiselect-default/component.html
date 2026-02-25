@@ -1,0 +1,33 @@
+<p class="eui-u-text-paragraph">Tree <strong>multiselect</strong> feature is available by using the <code class="eui-u-text-code">isMultiselect</code> input (When you define
+    <code class="eui-u-text-code">isMultiselect</code> on inputs, it will update all the nodes of your meta-data on runtime as selectable:true).
+    Coupled with the <code class="eui-u-text-code">(selectionChange)</code> event it allows to manipulate tree items when the selection changes
+    (select / unselect a tree item).</p>
+
+<div class="doc-sample-section-title">Multi Level Example</div>
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree [nodes]="treeData" isMultiselect (selectionChange)="onSelectionChange($event)"></eui-tree>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre class="eui-u-text-pre">{{addedLabels}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{removedLabels}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionLabels}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="doc-sample-section-title">Single Level Example</div>
+<div class="row">
+    <eui-tree [nodes]="treeDataSingleLevel" isMultiselect></eui-tree>
+</div>

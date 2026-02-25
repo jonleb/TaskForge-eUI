@@ -1,0 +1,50 @@
+<div class="doc-sample-section-title">expand / collapse / select / deselect All</div>
+<div class="eui-u-mb-l">
+    <button euiButton euiButton euiPrimary euiOutline class="eui-u-mr-m" (click)="expandAll()">
+        Expand All
+        <eui-icon-svg icon="eui-level-down" class="eui-u-ml-s"></eui-icon-svg>
+    </button>
+    <button euiButton euiButton euiPrimary euiOutline class="eui-u-mr-m" (click)="collapseAll()">
+        Collapse All
+        <eui-icon-svg icon="eui-level-up" class="eui-u-ml-s"></eui-icon-svg>
+    </button>
+    <button euiButton euiButton euiPrimary euiOutline class="eui-u-mr-m" (click)="selectAll()">
+        Select All
+        <eui-icon-svg icon="check-square:regular" />
+    </button>
+    <button euiButton euiButton euiPrimary euiOutline class="eui-u-mr-m" (click)="deselectAll()">
+        Deselect All
+        <eui-icon-svg icon="square:regular" />
+    </button>
+</div>
+
+<eui-tree #compInstance [nodes]="treeData"></eui-tree>
+
+<div class="doc-sample-section-title">expandAt</div>
+It accepts the <code class="eui-u-text-code">path:string</code> of the targeted node in tree-data.
+<br />
+The indexes of children items will be interpreted as index of multi-dimensional-array for expand feature.
+<br />
+"." is the separator for path syntax. expandAt('IndexA.IndexB.IndexC....IndexN')
+<br />
+<b>f.e:</b> If you target 2nd item on treeData: expandAt('1')
+<br />
+<b>f.e:</b> If you target 1st item's 1st child: expandAt('0.0')
+<br />
+<b>f.e:</b> If you target 3rd item's 2nd child's 1st child:'s expandAt('2.1.0')
+<br />
+<br />
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <input euiInputText euiClearable value="0.0.0" placeholder="IndexA.IndexB.IndexC....IndexN" (change)="setPath($event)" /><br/>
+        <button euiButton euiButton euiPrimary euiOutline (click)="expandAt(path)">
+            Expand At '{{path}}'
+            <eui-icon-svg icon="eui-level-down" class="eui-u-ml-s"></eui-icon-svg>
+        </button>
+        <button class="eui-u-ml-xs" euiButton euiButton euiPrimary euiOutline (click)="collapseAt(path)">
+            Collapse At '{{path}}'
+            <eui-icon-svg icon="eui-level-up" class="eui-u-ml-s"></eui-icon-svg>
+        </button>
+    </div>
+</div>
+<eui-tree #compInstance2 [nodes]="treeData2"></eui-tree>

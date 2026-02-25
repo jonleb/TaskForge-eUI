@@ -1,0 +1,65 @@
+<p class="eui-u-text-paragraph">
+    Rich eui-dropdown content can be accessible by using the <code class="eui-u-text-code">hasTabNavigation</code> input option.
+    This will set default navigation by using the <kbd class="eui-u-text-kbd">Tab</kbd> and <kbd class="eui-u-text-kbd">Shift+Tab</kbd> keys.
+</p>    
+
+<div class="doc-sample-section-title">Rich content with list items</div>
+<eui-dropdown #dropdownRef hasTabNavigation width="400px">
+    <button euiButton euiPrimary aria-label="Dropdown options">
+        <span euiLabel>Filters list</span>
+        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+    </button>
+    <eui-dropdown-content>
+        <ul euiList>
+            <li euiListItem>
+                <div euiIcon iconClass="eui-icon-filter eui-u-c-info"></div>
+                <div euiLabel class="eui-u-text-truncate eui-u-text-link">
+                    <a class="eui-u-text-link" href="javascript:void(0)" (click)="onItemLinkClicked('Filter 1')" (keydown.enter)="onEnterkeyPress('Filter 1', dropdownRef)">My custom filter containing too many flters that it can't be displayed on a single line here</a>
+                </div>
+                <div euiLabel euiSizeS class="eui-u-text-truncate"><em>Last update: 08-09-2021 17:45:00</em></div>
+            </li>
+            <li euiListItem>
+                <div euiIcon iconClass="eui-icon-filter eui-u-c-info"></div>
+                <div euiLabel class="eui-u-text-truncate eui-u-text-link">
+                    <a href="javascript:void(0)" (click)="onItemLinkClicked('Filter 2')" (keydown.enter)="onEnterkeyPress('Filter 2', dropdownRef)">My supervised tasks filter</a>
+                </div>
+                <div euiLabel euiSizeS class="eui-u-text-truncate"><em>Last update: 08-09-2021 18:00:00</em></div>
+                <div class="eui-u-ml-auto">
+                    <button euiButton euiOutline euiDanger euiSizeS class="eui-u-ml-s" (click)="onDeleteItemClicked('Filter 2', $event)">
+                        <span euiLabel>Delete</span>
+                    </button>
+                </div>
+            </li>
+        </ul>
+    </eui-dropdown-content>
+</eui-dropdown>
+<div class="eui-u-mt-4xl eui-u-mb-4xl">&nbsp;</div>
+
+
+<div class="doc-sample-section-title">Rich content using the eui-tree</div>
+<eui-dropdown hasTabNavigation>
+    <button euiButton euiPrimary aria-label="Dropdown options">
+        <label euilabel>Menu</label>
+        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+    </button>
+    <eui-dropdown-content class="eui-u-p-m">
+        <eui-tree [nodes]="treeData"></eui-tree>
+    </eui-dropdown-content>
+</eui-dropdown>
+
+<div class="eui-u-mt-4xl eui-u-mb-4xl">&nbsp;</div>
+
+
+<div class="doc-sample-section-title">Rich content using eui-sidebar-menu</div>
+<eui-dropdown hasTabNavigation>
+    <button euiButton euiPrimary aria-label="Dropdown options">
+        <span euiLabel>Menu</span>
+        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+    </button>
+    <eui-dropdown-content>
+        <eui-sidebar-menu [items]="sidebarItems" hasIcons="true" fragmentId="misc"></eui-sidebar-menu>
+    </eui-dropdown-content>
+</eui-dropdown>
+
+<div class="eui-u-mt-4xl eui-u-mb-4xl">&nbsp;</div>
+<div class="eui-u-mt-4xl eui-u-mb-4xl">&nbsp;</div>

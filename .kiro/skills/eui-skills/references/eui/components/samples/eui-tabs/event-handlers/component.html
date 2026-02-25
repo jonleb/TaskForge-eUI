@@ -1,0 +1,33 @@
+<table class="eui-table-default eui-table-default--compact eui-u-mb-m">
+    <thead class="ng-star-inserted">
+        <tr class="ng-star-inserted">
+            <th>Event handler</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>tabClose<code class="eui-u-text-code">&lt;&lbrace; tab: EuiTabComponent; index: number &rbrace;&gt;</code></td>
+            <td>Triggered when the close button is clicked.</td>
+        </tr>
+        <tr>
+            <td>tabActivate<code class="eui-u-text-code">&lt;&lbrace; tab: EuiTabComponent; index: number &rbrace;&gt;</code></td>
+            <td>Triggered when the tab is activated.</td>
+        </tr>
+        <tr>
+            <td>tabClick<code class="eui-u-text-code">&lt;&lbrace; tab: EuiTabComponent; index: number &rbrace;&gt;</code></td>
+            <td>Triggered when the tab is clicked.</td>
+        </tr>
+    </tbody>
+</table>
+
+<eui-tabs (tabActivate)="onTabActivated($event)" (tabClose)="onTabClosed($event)" (tabClick)="onTabClicked($event)">
+    @for (tab of tabs; let i = $index; track tab) {
+        <eui-tab isClosable>
+            <eui-tab-header>
+                <eui-tab-header-label>{{ tab.tabLabel }}</eui-tab-header-label>
+            </eui-tab-header>
+            <eui-tab-body>{{ tab.tabContent }}</eui-tab-body>
+        </eui-tab>
+    }
+</eui-tabs>

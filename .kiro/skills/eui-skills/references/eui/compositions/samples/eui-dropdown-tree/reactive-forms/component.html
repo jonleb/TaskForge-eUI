@@ -1,0 +1,52 @@
+<ng-template #buttonTemplate let-label>
+    <button euiButton euiPrimary>
+        <div class="eui-u-flex">
+            <div class="eui-u-flex eui-u-flex-justify-content-start eui-u-text-truncate">
+                <label euilabel class="eui-u-text-truncate">{{label}}</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-flex-justify-content-end eui-u-ml-s">
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </div>
+        </div>
+    </button>
+</ng-template>
+
+<div class="row">
+    <div class="col-md-6">
+        <form [formGroup]="form">
+            <eui-dropdown hasTabNavigation [hasClosedOnClickInside]="false" euiDropdownTree [buttonTemplateRef]="buttonTemplate" isBlock>
+                <eui-dropdown-content class="eui-u-p-m">
+                    <div class="eui-u-flex">
+                        <div euiInputGroup>
+                            <div euiInputGroupAddOn>
+                                <div euiInputGroupAddOnItem>
+                                    <eui-icon-svg icon="eui-search" fillColor="secondary" />
+                                </div>
+                                <input euiInputText formControlName="search" placeholder="Search from tree list items..."/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="eui-u-p-m">
+                        <eui-tree #componentInstance [nodes]="treeData" isMultiselect euiTreeFormControl formControlName="tree"
+                                (selectionChange)="onSelectionChange($event)">
+
+                        </eui-tree>
+                    </div>
+                </eui-dropdown-content>
+            </eui-dropdown>
+        </form>
+        
+        <br/>
+
+        <button euiButton (click)="onPatch()">Patch eui-tree value</button>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Selection" isExpandable>
+                    <pre class="eui-u-text-pre">{{ componentInstance.getSelection() | json}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>

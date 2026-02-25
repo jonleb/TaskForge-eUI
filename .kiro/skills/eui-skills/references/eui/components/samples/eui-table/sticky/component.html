@@ -1,0 +1,137 @@
+<div class="doc-sample-section-title">Sticky header & footer</div>
+<eui-alert>
+    In order to use eui-table <strong>sticky header / column</strong> feature and control the scrolling overflow, we recommend to wrap the table with the provided <code class="eui-u-text-code">eui-table__scrollable-wrapper</code> class and set your custom table width and/or height.<br/>
+    <br/>
+    <b>Only first or latest columns can be sticky.</b>
+</eui-alert><br/>
+
+<div class="eui-table__scrollable-wrapper" style="height: 600px; overflow-y: auto;" tabindex="0">
+    <table euiTable isTableResponsive hasStickyHeader hasStickyFooter [data]="data">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.iso }}</td>
+                <td>{{ row.population | number }}</td>
+                <td>{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+
+<div class="doc-sample-section-title">Sticky column</div>
+<eui-alert>Please note the table needs to be inside a container having the eui class <code class="eui-u-text-code">eui-table__scrollable-wrapper</code>, the table needs to have a width.</eui-alert><br/>
+
+<p class="eui-u-f-bold">First cols sticky</p>
+<div class="eui-table__scrollable-wrapper" style="width: 800px; height: 600px; overflow: auto" tabindex="0">
+    <table euiTable hasStickyHeader hasStickyFooter hasStickyCols [data]="data" style="width: 1400px">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th isStickyCol>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td isStickyCol nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.iso }}</td>
+                <td>{{ row.population | number }}</td>
+                <td>{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td isStickyCol class="eui-u-text-center">Footer</td>
+                <td class="eui-u-text-center">Footer</td>
+                <td class="eui-u-text-center">Footer</td>
+                <td class="eui-u-text-center">Footer</td>
+                <td class="eui-u-text-center">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<p class="eui-u-f-bold">Two first cols sticky</p>
+<div class="eui-table__scrollable-wrapper" style="width: 800px; height: 600px; overflow: auto" tabindex="0">
+    <table euiTable hasStickyHeader hasStickyFooter hasStickyCols [data]="data" style="width: 1400px">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th width="300" isStickyCol>Country</th>
+                <th isStickyCol>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td isStickyCol nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td isStickyCol>{{ row.year }}</td>
+                <td>{{ row.iso }}</td>
+                <td>{{ row.population | number }}</td>
+                <td>{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td isStickyCol class="eui-u-text-center">Footer</td>
+                <td isStickyCol class="eui-u-text-center">Footer</td>
+                <td class="eui-u-text-center">Footer</td>
+                <td class="eui-u-text-center">Footer</td>
+                <td class="eui-u-text-center">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<p class="eui-u-f-bold">Last col sticky</p>
+<div class="eui-table__scrollable-wrapper" style="width: 800px; height: 600px; overflow: auto" tabindex="0">
+    <table euiTable hasStickyHeader hasStickyFooter hasStickyCols [data]="data" style="width: 1400px">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th isStickyCol>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.iso }}</td>
+                <td>{{ row.population | number }}</td>
+                <td isStickyCol>{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center">Footer</td>
+                <td class="eui-u-text-center">Footer</td>
+                <td class="eui-u-text-center">Footer</td>
+                <td class="eui-u-text-center">Footer</td>
+                <td isStickyCol class="eui-u-text-center">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>

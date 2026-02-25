@@ -1,0 +1,18 @@
+Badges (on the left side of the node label) can be added to a tree node element by using the following properties (script part).
+<br />
+<ul>
+    <li><code class="eui-u-text-code">typeLabel</code> : is the label of the badge.</li>
+    <li><code class="eui-u-text-code">typeClass</code> : is the color type which can be one of: primary | secondary | info | success | warning | danger | accent.</li>
+</ul>
+Example:<br />
+<pre class="eui-u-text-pre">
+    node: &#123;
+        treeContentBlock: &#123;
+            label: 'Node 1',
+            typeLabel: 'badge',
+            typeClass: 'primary',
+        &#125;,
+    &#125;,
+</pre>
+
+<eui-tree #compInstance [nodes]="treeData"></eui-tree>

@@ -1,0 +1,77 @@
+<div class="doc-sample-section-title">euiCollapsible</div>
+
+<eui-card euiCollapsible>
+    <eui-card-header>
+        <eui-card-header-title>Card title</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        Card content...
+    </eui-card-content>
+</eui-card>
+
+
+<div class="doc-sample-section-title">euiCollapsible - euiCollapsed</div>
+
+<eui-card euiCollapsible euiCollapsed>
+    <eui-card-header>
+        <eui-card-header-title>Card title</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        <div style="overflow-y: auto;" tabindex="0">
+            Card content...
+        </div>
+    </eui-card-content>
+</eui-card>
+
+
+<div class="doc-sample-section-title">euiCollapsible - hasLeftExpander</div>
+
+<eui-card euiCollapsible hasLeftExpander>
+    <eui-card-header>
+        <eui-card-header-title>Card title</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        Card content...
+    </eui-card-content>
+</eui-card>
+
+
+<div class="doc-sample-section-title">Collapsible header with hasBottomExpander option</div>
+
+<p class="eui-u-text-paragraph">The bottom expander option <code class="eui-u-text-code">hasBottomExpander</code> is recommended to be used when having complex custom header right content and/or displaying a list of cards.</p>
+<p class="eui-u-text-paragraph">Usage: eui-card-header hasBottomExpander</p>
+<br>
+<eui-card euiCollapsible euiCollapsed>
+	<eui-card-header hasBottomExpander>
+        <eui-card-header-title>
+            Card Title
+        </eui-card-header-title>
+        <eui-card-header-subtitle>
+            Card subtitle
+        </eui-card-header-subtitle>
+    </eui-card-header>
+	<eui-card-content>
+        <div style="overflow-y: auto;" tabindex="0">
+            I am the content of the card container...
+        </div>
+    </eui-card-content>
+</eui-card>
+
+
+
+<div class="doc-sample-section-title">Programmatically toggling collapsible / collapsed / hasLeftExpander properties</div>
+
+<button euiButton [euiOutline]="!isCollapsible" euiPrimary (click)="toggleIsCollapsible()">Toggle euiCollapsible</button>
+<button euiButton [euiOutline]="!isCollapsed" euiPrimary (click)="toggleIsCollapsed()" class="eui-u-ml-m">Toggle euiCollapsed</button>
+<button euiButton [euiOutline]="!hasLeftExpander" euiPrimary (click)="toggleHasLeftExpander()" class="eui-u-ml-m">Toggle hasLeftExpander</button>
+
+<br><br>
+
+<eui-card [euiCollapsible]="isCollapsible" [euiCollapsed]="isCollapsed" [hasLeftExpander]="hasLeftExpander">
+    <eui-card-header>
+        <eui-card-header-title>Card title</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        Card content...
+    </eui-card-content>
+</eui-card>

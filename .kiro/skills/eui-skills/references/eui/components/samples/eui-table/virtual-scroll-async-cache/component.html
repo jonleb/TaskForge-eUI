@@ -1,0 +1,35 @@
+<eui-alert euiWarning><code class="eui-u-text-code">eui-table</code> selector needs to be used in order to make virtual scroll working properly.</eui-alert><br/>
+<eui-alert>
+    The table needs to be inside a container having height defined in px or vw/vh.<br/>
+    To make the virtual scroll working properly, each rows needs to have the same height.<br/>
+    The source code of the used service can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-table/services" class="eui-u-text-link-external" target="_blank">here</a>.</eui-alert>
+    <p>With <code class="eui-u-text-code">isVirtualScrollCache</code> option, the table does trigger scrollChange for the data already loaded.</p>
+<br/>
+
+<div class="eui-table__scrollable-wrapper" style="height: 600px">
+    <eui-table isVirtualScroll isVirtualScrollCache isTableResponsive isAsync [virtualScrollAsyncItemsLength]="dataLength" [data]="data" [virtualScrollNbRows]="virtualScrollNbRows" (scrollChange)="onScrollChange($event)">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th>Id</th>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.country }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.iso }}</td>
+                <td>{{ row.population | number }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">Footer</td>
+            </tr>
+        </ng-template>
+    </eui-table>
+</div>

@@ -1,0 +1,38 @@
+<eui-alert>
+    The following sample is using <a href="https://material.angular.io/cdk/drag-drop/api">CDK Drad and Drop Module</a> to make the rows re-orderable.<br/>
+    Please note: To give styles to the drag and preview, CSS class <code class="eui-u-text-code">eui-table__orderable-rows-preview</code> needs to be added on the <code class="eui-u-text-code">cdkDragPreviewClass</code> option.
+</eui-alert><br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data" cdkDropList (cdkDropListDropped)="drop($event)" cdkDropListGroup>
+        <ng-template euiTemplate="header">
+            <tr>
+                <th width="60" aria-hidden="true"></th>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr cdkDrag cdkDragPreviewClass="eui-table__orderable-rows-preview" [cdkDragData]="row">
+                <td>
+                    <button cdkDragHandle euiButton euiRounded euiIconButton euiSizeS euiBasicButton euiTooltip="Click to drag & drop" aria-label="Click to drag & drop">
+                        <eui-icon-svg icon="dots-six-vertical:regular"></eui-icon-svg>
+                    </button>
+                </td>
+                <td nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.iso }}</td>
+                <td>{{ row.population | number }}</td>
+                <td>{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>

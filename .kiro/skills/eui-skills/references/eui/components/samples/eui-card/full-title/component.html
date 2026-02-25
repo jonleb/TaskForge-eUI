@@ -1,0 +1,39 @@
+<div class="doc-sample-section-title">Collapsible header with full title and bottom expander options</div>
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">hasFullTitle</code> option allows to display the title within the full card container's width. It is recommended to use with the <code class="eui-u-text-code">hasBottomExpander</code> option on card's list layout pattern screens.</p>
+<p class="eui-u-text-paragraph">Usage: eui-card-header hasFullTitle hasBottomExpander</p>
+<br>
+<eui-card euiCollapsible euiCollapsed>
+	<eui-card-header hasFullTitle hasBottomExpander>
+        <eui-card-header-title>
+            <div>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris feugiat, risus sit amet ultricies finibus, diam dolor congue leo, vel vehicula nisl metus eget eros. Praesent mattis mollis velit ut euismod
+                Quisque eu mi nisi. Maecenas ac quam purus. Donec erat enim, ultricies eget consectetur ut, maximus vitae leo. Etiam nec ante lacus.
+            </div>
+        </eui-card-header-title>
+        <eui-card-header-subtitle>
+            <div class="eui-u-text-truncate">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent rutrum turpis erat, eu lobortis sapien hendrerit vel.</div>
+            <div class="eui-u-text-truncate">Nulla finibus viverra felis sit amet vestibulum. Quisque eu posuere lectus. Donec a nulla vitae enim scelerisque molestie.</div>
+        </eui-card-header-subtitle>
+        <eui-card-header-right-content>
+            <button euiButton euiPrimary euiOutline euiSizeS (click)="onAddButtonClick($event)">
+                <eui-icon-svg icon="eui-add"></eui-icon-svg>
+                Add
+            </button>
+            <eui-dropdown class="eui-u-ml-s" (click)="dropdownClick($event)">
+                <button euiButton euiPrimary euiBasicButton euiRounded euiIconButton euiTooltip="More actions" aria-label="More Actions">
+                    <eui-icon-svg icon="eui-ellipsis-vertical"></eui-icon-svg>
+                </button>
+                <eui-dropdown-content>
+                    <button euiDropdownItem>Action 1</button>
+                    <button euiDropdownItem>Action 2</button>
+                    <button euiDropdownItem>Action 3</button>
+                </eui-dropdown-content>
+            </eui-dropdown>
+        </eui-card-header-right-content>
+    </eui-card-header>
+	<eui-card-content>
+        <div style="overflow-y: auto;" tabindex="0">
+            I am the content of the card container...
+        </div>
+    </eui-card-content>
+</eui-card>

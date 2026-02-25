@@ -1,0 +1,38 @@
+The <strong>isReadOnly</strong> option allows to display the <code class="eui-u-text-code">eui-editor</code> content in read only mode.
+Recommended usage is to map the isReadOnly value to the edit mode's active state value.
+Example: <code class="eui-u-text-code">[isReadOnly]="isEditActive"</code>.
+<br>
+Please note that this option <u>overrides and has precedence</u> on the <code class="eui-u-text-code">isEnabledOnFocus=true</code> option when used together.
+
+<div class="eui-u-flex eui-u-mt-xl">
+    <eui-slide-toggle [isChecked]="isReadOnly" (slideToggleChange)="toggleReadOnly()" class="eui-u-mr-m"></eui-slide-toggle>
+    <strong>Interactive toggle &mdash; isReadOnly = {{isReadOnly}}</strong>
+</div>
+
+<form [formGroup]="form" class="eui-u-mt-xl">
+
+    <div class="doc-sample-section-title">Html content</div>
+    <eui-editor formControlName="htmlContent"
+                format="html"
+                [isReadOnly]="isReadOnly"
+                debug="true">
+    </eui-editor>
+
+    <div class="doc-sample-section-title">Quill formatted lists</div>
+    <eui-editor formControlName="htmlContent2"
+                format="html"
+                [isReadOnly]="isReadOnly">
+    </eui-editor>
+
+    <div class="doc-sample-section-title">Html formatted lists</div>
+    <eui-editor formControlName="htmlContent3"
+                format="html"
+                [isReadOnly]="isReadOnly">
+    </eui-editor>
+
+    <div class="doc-sample-section-title">JSON content</div>
+    <eui-editor formControlName="jsonContent"
+                format="json"
+                [isReadOnly]="isReadOnly">
+    </eui-editor>
+</form>

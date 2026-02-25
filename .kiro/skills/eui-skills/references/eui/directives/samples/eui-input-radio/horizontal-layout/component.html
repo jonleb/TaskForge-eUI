@@ -1,0 +1,85 @@
+<eui-alert>
+    <eui-alert-title>Remark about horizontal vs vertical alignements</eui-alert-title>
+    By <strong>default</strong>, the layout display of an input <strong>radio + label</strong> is <strong>horizontal</strong> (inline).
+    In order to have multiple elements displayed horizontally, a flexbox div wrapper should be used around each input + label elements by using any flex container utility class:<br>
+    <ul>
+        <li><code class="eui-u-text-code">eui-inline-flex</code> wrapper: is usually used for horizontal layout, gathering the input + label together.</li>
+        <li><code class="eui-u-text-code">eui-u-flex / eui-u-display-flex</code> wrappers: are usually used for vertical layout and for the parent main wrapper.</li>
+        
+    </ul>
+    Spacings (paddings & margins) can also be controlled through the <a class="eui-u-text-link-external" href="https://eui.ecdevops.eu/eui-showcase-ux-components-19.x/showcase-design-system/css-utilities#Padding" target="_blank">eUI utility classes</a>
+    and from Flexbox gap utility classes.
+    See <a class="eui-u-text-link-external" href="https://eui.ecdevops.eu/eui-showcase-ux-components-19.x/showcase-design-system/css-utilities#Flex" target="_blank">eUI Flex utility classes</a>.
+    <br>
+    Recommended spacing size is <strong>S</strong>(mall). 
+    Recommended usage is to use the <code class="eui-u-text-code">eui-u-flex-gap-s</code> utility class at parent flexbox wrapper in order to preserve both horizontal and vertical spacings.
+    See the code sources of the following samples for more information.
+</eui-alert>
+
+<br>
+
+<div class="eui-u-flex eui-u-flex-wrap eui-u-flex-gap-s">
+    <div class="eui-u-inline-flex">
+        <input euiInputRadio id="default-radio-horizontal-1" name="dyn-radio-horizontal" [value]="'one'">
+        <label for="default-radio-horizontal-1">One</label>
+    </div>
+    <div class="eui-u-inline-flex">
+        <input euiInputRadio id="default-radio-horizontal-2" name="dyn-radio-horizontal" [value]="'two'" checked>
+        <label for="default-radio-horizontal-2">Two</label>
+    </div>
+    <div class="eui-u-inline-flex">
+        <input euiInputRadio id="default-radio-horizontal-3" name="dyn-radio-horizontal" [value]="'three'">
+        <label for="default-radio-horizontal-3">Three</label>
+    </div>
+    <div class="eui-u-inline-flex">
+        <input euiInputRadio id="default-radio-horizontal-4" name="dyn-radio-horizontal" [value]="'four'">
+        <label for="default-radio-horizontal-4">Four</label>
+    </div>
+    <div class="eui-u-inline-flex">
+        <input euiInputRadio id="default-radio-horizontal-5" name="dyn-radio-horizontal" [value]="'five'">
+        <label for="default-radio-horizontal-5">Five</label>
+    </div>
+</div>
+
+<div class="doc-sample-section-title">Responsive Flexbox layout radios</div>
+<div class="row">
+    <div class="col-md-3">
+        <label euiLabel>How do you like your chocolate ?</label>
+    </div>
+    <div class="col-md-9">
+        <div class="eui-u-flex eui-u-flex-wrap eui-u-flex-gap-s">
+            <div class="eui-u-inline-flex">
+                <input euiInputRadio id="choco-white" name="chocolate" value="choco-white">
+                <label euiLabel for="choco-white">white</label>
+            </div>
+            <div class="eui-u-inline-flex">
+                <input euiInputRadio id="choco-milk" name="chocolate" value="choco-milk">
+                <label euiLabel for="choco-milk">milk</label>
+            </div>
+            <div class="eui-u-inline-flex">
+                <input euiInputRadio id="choco-dark" name="chocolate" value="choco-dark">
+                <label euiLabel for="choco-dark">dark</label>
+            </div>
+            <div class="eui-u-inline-flex">
+                <input euiInputRadio id="choco-nutty" name="chocolate" value="choco-nutty">
+                <label euiLabel for="choco-nutty">nutty</label>
+            </div>
+            <div class="eui-u-inline-flex">
+                <input euiInputRadio id="choco-fudge" name="chocolate" value="choco-fudge">
+                <label euiLabel for="choco-fudge">fudge</label>
+            </div>
+            <div class="eui-u-inline-flex">
+                <input euiInputRadio id="choco-caramel" name="chocolate" value="choco-caramel">
+                <label euiLabel for="choco-caramel">caramelicious</label>
+            </div>
+            <div class="eui-u-inline-flex">
+                <input euiInputRadio id="choco-fruity" name="chocolate" value="choco-fruity">
+                <label euiLabel for="choco-fruity">fruity</label>
+            </div>
+            <div class="eui-u-inline-flex">
+                <input euiInputRadio id="choco-liquor" name="chocolate" value="choco-liquor">
+                <label euiLabel for="choco-liquor">liquor</label>
+            </div>
+        </div>
+    </div>
+</div>

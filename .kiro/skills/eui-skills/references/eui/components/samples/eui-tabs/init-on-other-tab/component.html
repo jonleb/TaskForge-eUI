@@ -1,0 +1,39 @@
+<eui-alert>
+    This example demonstrates how to load a component inside a tab only when the tab is activated. It uses the <code class="eui-u-text-code">isActive</code> property of the tab reference. As a result, the <code class="eui-u-text-code">OnInit</code> hook of the component is triggered when the tab is activated, and the <code class="eui-u-text-code">OnDestroy</code> hook is triggered when it is deactivated.
+</eui-alert><br/>
+
+<eui-tabs [activeTabIndex]="activeTabIndex" (tabActivate)="onTabActivated($event)">
+    <eui-tab #tab1>
+        <eui-tab-header>
+            <eui-tab-header-label>Tab 1</eui-tab-header-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            @if (tab1.isActive) {
+                <one-comp></one-comp>
+            }
+        </eui-tab-body>
+    </eui-tab>
+    <eui-tab #tab2>
+        <eui-tab-header>
+            <eui-tab-header-label>Tab 2</eui-tab-header-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            @if (tab2.isActive) {
+                <two-comp></two-comp>
+            }
+        </eui-tab-body>
+    </eui-tab>
+    <eui-tab #tab3>
+        <eui-tab-header>
+            <eui-tab-header-label>Tab 3</eui-tab-header-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            @if (tab3.isActive) {
+                <three-comp></three-comp>
+            }
+        </eui-tab-body>
+    </eui-tab>
+</eui-tabs>
+<button euiButton euiSizeS (click)="activeTabIndex = 0">Change activeTabIndex to 0</button>&nbsp;
+<button euiButton euiSizeS (click)="activeTabIndex = 1">Change activeTabIndex to 1</button>&nbsp;
+<button euiButton euiSizeS (click)="activeTabIndex = 2">Change activeTabIndex to 2</button>&nbsp;

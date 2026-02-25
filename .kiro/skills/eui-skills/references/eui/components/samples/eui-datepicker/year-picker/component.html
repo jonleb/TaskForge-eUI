@@ -1,0 +1,10 @@
+<eui-datepicker type="year"  euiYearFormat (dateSelect)="onDateSelected($event)" (inputChange)="onInputChanged($event)"></eui-datepicker>
+<br/>
+Selected date(deserialized toISOString): {{ selectedDate }}<br/>
+Input date(deserialized toISOString): {{ inputDate }}
+
+<div class="doc-sample-section-title">With dateOutputFormat defined</div>
+<eui-datepicker type="year" dateOutputFormat="YYYY"  euiYearFormat (dateSelect)="onDateSelected2($event)" (inputChange)="onInputChanged2($event)"></eui-datepicker>
+<br/>
+Selected date: {{ selectedDate2 }}<br/>
+Input date: {{ inputDate2 }}

@@ -1,0 +1,53 @@
+<div class="doc-sample-section-title">Chips position top with append & prepend addons</div>
+
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="shopping-cart-simple:regular" />
+        </div>
+        <eui-autocomplete [autocompleteDataSelected]="autocompleteDataSelected"
+                          [autocompleteData]="autocompleteData"
+                          [chipsPosition]="'top'"
+                          [hasChips]="true">
+        </eui-autocomplete>
+        <button euiButton euiIconButton type="button" aria-label="Search">
+            <eui-icon-svg icon="eui-search" />
+        </button>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Chips position bottom with append & prepend addons</div>
+
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="shopping-cart-simple:regular" />
+        </div>
+        <eui-autocomplete [autocompleteDataSelected]="autocompleteDataSelected"
+                          [autocompleteData]="autocompleteData"
+                          [chipsPosition]="'bottom'"
+                          [hasChips]="true" />
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="eui-search" />
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Chips position inside with append & prepend addons</div>
+
+<div euiInputGroup>
+    <div euiInputGroupAddOn>
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="shopping-cart-simple:regular" />
+        </div>
+        <eui-autocomplete [autocompleteDataSelected]="autocompleteDataSelected"
+                          [autocompleteData]="autocompleteData"
+                          [chipsPosition]="'inside'"
+                          [hasChips]="true" />
+        <div euiInputGroupAddOnItem>
+            <eui-icon-svg icon="eui-search" />
+        </div>
+    </div>
+</div>

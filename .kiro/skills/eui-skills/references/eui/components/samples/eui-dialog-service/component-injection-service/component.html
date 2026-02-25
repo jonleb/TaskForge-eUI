@@ -1,0 +1,28 @@
+<eui-alert>
+<p class="eui-u-text-paragraph">The following samples shows how to use and inject, on demand, components inside the Dialog window and make them communicate together.
+Injected components are declared through <code class="eui-u-text-code">EuiDialogService</code>.<br/>
+<br/>
+<code class="eui-u-text-code">Observable</code> can be used to refresh the view.<br/>
+<br/>
+The source code of the injected component can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-dialog-service/dummy-components" target="_blank">here</a>.<br/>
+<br/>
+In the following sample, the component injected in the footer has a <code class="eui-u-text-code">selector</code> property then its content is embedded in a tag having this value. When <code class="eui-u-text-code">selector</code> property is not provided, Angular creates a ng-component tag instead. eUI sets ng-component width to 100%.<br/><br/>
+If a selector is needed, a class needs to be added on the host and width sets to 100% or, as shown in the footer, use <code class="eui-u-text-code">eui-u-flex</code> utility class:
+<code class="eui-u-text-code">&#64;HostBinding('class') classes = 'eui-u-flex';</code><br/>
+<br/>
+The source code of the footer can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-dialog-service/dummy-components/dummy-footer-service-component.ts" target="_blank" class="eui-u-text-link-external">here</a>.
+</p>
+</eui-alert>
+
+<div class="doc-sample-section-title">Inject component in dialog header</div>
+<button euiButton type="button" (click)="openWithService1()" aria-haspopup="dialog">Open Dialog</button>
+{{ injectedFormValues1 | json }}
+
+<div class="doc-sample-section-title">Inject component in dialog body</div>
+<button euiButton type="button" (click)="openWithService2()" aria-haspopup="dialog">Open Dialog</button>
+{{ injectedFormValues2 | json }}
+
+<div class="doc-sample-section-title">Inject component in dialog body and footer</div>
+
+<button euiButton type="button" (click)="openWithService3()" aria-haspopup="dialog">Open Dialog</button>
+{{ injectedFormValues3 | json }}

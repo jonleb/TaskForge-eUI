@@ -1,0 +1,16 @@
+<div eclFormGroup class="col-md-4 eui-u-mb-m">
+  <label eclFormLabel>Horizontal alignment:</label>
+  <select eclSelect [(ngModel)]="horizontalAlignment" aria-label="Horizontal alignment">
+    <option value="left">left</option>
+    <option value="right">right</option>
+  </select>
+</div>
+<ecl-social-media-follow description="Follow us" [horizontalAlignment]="horizontalAlignment">
+  <ecl-social-media-follow-item icon="facebook" href="http://facebook.com">Facebook</ecl-social-media-follow-item>
+  <ecl-social-media-follow-item icon="instagram"
+    href="http://instagram.com">Instagram</ecl-social-media-follow-item>
+  <ecl-social-media-follow-item icon="linkedin" href="http://linkedin.com">Linkedin</ecl-social-media-follow-item>
+  <ecl-social-media-follow-item icon="mastodon" href="http://mastodon.com">Mastodon</ecl-social-media-follow-item>
+  <ecl-social-media-follow-item icon="telegram" href="http://telegram.com">Telegram</ecl-social-media-follow-item>
+  <ecl-social-media-follow-item icon="chain" routerLink="/">Other</ecl-social-media-follow-item>
+</ecl-social-media-follow>

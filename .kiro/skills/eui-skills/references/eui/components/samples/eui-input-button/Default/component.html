@@ -1,0 +1,16 @@
+<div class="doc-sample-section-title">Default</div>
+
+<div class="row">
+    <div class="col-md-4">        
+        <eui-input-button>
+            <input euiInputText
+                [euiClearable]="true"
+                (input)="onSearch($event)"
+                placeholder="Search..."
+                aria-label="Search"/>
+            <button euiButton>
+                <eui-icon-svg icon="eui-search" aria-label="Search Icon"/>
+            </button>
+        </eui-input-button>
+    </div>
+</div>

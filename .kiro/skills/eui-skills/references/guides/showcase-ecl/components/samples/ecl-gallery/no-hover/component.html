@@ -1,0 +1,91 @@
+<ecl-gallery (share)="onShare($event)"
+             class="display-block"
+             isShowTitleOnHover="false" aria-label="Open gallery items to view images in original size, watch videos and share them">
+    <ecl-gallery-item src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image11.jpg"
+                      meta="Copyright, Author, Licence for image 1"
+                      description="The EU in brief, institutions and bodies, countries, symbols, history, facts and
+                      figures. [Image with thumbnail]">
+        <picture eclGalleryThumbnail>
+            <img eclGalleryImage
+                 src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image.jpg"
+                 alt="Image 1" />
+        </picture>
+        <picture eclGalleryPicture>
+            <img eclGalleryImage
+                 src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image11.jpg"
+                 alt="Image 1"
+                 loading="lazy"/>
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://www.youtube.com/embed/fgi-GSCB6ho"
+                      meta="Copyright, Author, Licence for embedded media"
+                      description="Digital technologies have greatly changed our daily life. Therefore, Europe wants to
+                      make sure, that the digital transformation works for all its citizens. [Embedded video (Youtube)
+                      with a thumbnail]"
+                      icon="video"
+                      mediaType="externalVideo"
+                      isShareable="false"
+                      srVideoAudioDescription="In the video below, there is no audio description available because all
+                      the content is in the captions and default audio track">
+        <picture eclGalleryThumbnail>
+            <img eclGalleryImage
+                 src="https://inno-ecl.s3.amazonaws.com/media/examples/example-external-video.jpg"
+                 alt="New digital strategy - Video"/>
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image4.jpg"
+                      meta="Copyright, Author, Licence for image 2"
+                      description="Information on agriculture, business, culture, health, etc. [Image with sources and thumbnail]">
+        <picture eclGalleryThumbnail>
+            <img eclGalleryImage
+                 src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image2.jpg"
+                 alt="Image 2" />
+        </picture>
+        <picture eclGalleryPicture>
+            <source srcset="https://inno-ecl.s3.amazonaws.com/media/examples/example-image2.jpg"
+                    media="(min-width: 996px)">
+            <source srcset="https://inno-ecl.s3.amazonaws.com/media/examples/example-image3.jpg"
+                    media="(min-width: 768px)">
+            <img eclGalleryImage
+                 src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image4.jpg"
+                 alt="Image 2"
+                 loading="lazy"/>
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://audiovisual.ec.europa.eu/embed/index.html?ref=I-223223&lg=EN"
+                      meta="Copyright, Author, Licence for image 3"
+                      description="Living, working, travelling in the EU. [Embedded video (AV Portal) with picture
+                      instead of thumbnail]"
+                      mediaType="externalVideo"
+                      srVideoAudioDescription="In the video below, there is no audio description available yet">
+        <picture eclGalleryThumbnail>
+            <img eclGalleryImage
+                 src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image3.jpg"
+                 alt="Image 3  - Video" />
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://www.dailymotion.com/embed/video/x8m9tp1?"
+                      meta="Copyright, Author, Licence for image 4"
+                      description="Information on taxes, customs, importing and exporting goods, financial support
+                       for businesses. [Embedded video (Dailymotion) with thumbnail]"
+                      mediaType="externalVideo">
+        <picture eclGalleryThumbnail>
+            <img eclGalleryImage
+                 src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image4.jpg"
+                 alt="Image 4 - Video" />
+        </picture>
+    </ecl-gallery-item>
+
+    <ecl-gallery-footer>
+        <a eclLink
+           routerLink="/"
+           variant="standalone">
+            <span eclLinkLabel>Further media items</span>
+            <ecl-icon icon="external" size="2xs" role="img" ariaHidden="false">
+                <title>
+                    Link to an external domain
+                </title>
+            </ecl-icon>
+        </a>
+    </ecl-gallery-footer>
+</ecl-gallery>

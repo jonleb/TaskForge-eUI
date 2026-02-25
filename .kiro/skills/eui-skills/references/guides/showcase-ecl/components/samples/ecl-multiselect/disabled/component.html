@@ -1,0 +1,10 @@
+<div eclFormGroup>
+    <label id="label-multi-disabled" eclFormLabel isDisabled>Select countries</label>
+    <div id="helper-multi-disabled" eclHelpBlock>This is disabled component</div>
+    <select eclMultiselect ariaLabeledby="label-multi-disabled"
+        ariaDescribedby="helper-multi-disabled"  toggleLabel="Custom toggle label" eclPlaceholder="Custom placeholder" disabled>
+        @for (country of countries; track country.id) {
+        <option eclMultiselectOption [selected]="isSelected(country)" [value]="country.id" [label]="country.name"></option>
+        }
+    </select>
+</div>

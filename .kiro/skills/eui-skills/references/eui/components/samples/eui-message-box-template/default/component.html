@@ -1,0 +1,12 @@
+<button euiButton type="button" (click)="openMessageBox()" aria-haspopup="dialog">Open Message Box</button><br/><br/>
+
+<eui-message-box #messageBox
+    [title]="'Message box title'"
+    (messageBoxClose)="onClose()"
+    (messageBoxOpen)="onOpen()"
+    (accept)="onAccept()"
+    (dismiss)="onDismiss()">
+    <div class="eui-u-flex">
+        Message box content
+    </div>
+</eui-message-box>

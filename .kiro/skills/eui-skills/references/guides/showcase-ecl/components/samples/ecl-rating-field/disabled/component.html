@@ -1,0 +1,10 @@
+<fieldset eclFormGroup aria-describedby="rating-field-helper-disabled">
+    <legend eclFormLabel id="rating-field-label-disabled" isRequired>Please Rate</legend>
+    <div eclHelpBlock id="rating-field-helper-disabled">This is the group's helper text.</div>
+
+    <ecl-rating-field name="disabled"
+                      rating="3"
+                      disabled
+                      (ratingChange)="onRatingChange($event)">
+    </ecl-rating-field>
+</fieldset>

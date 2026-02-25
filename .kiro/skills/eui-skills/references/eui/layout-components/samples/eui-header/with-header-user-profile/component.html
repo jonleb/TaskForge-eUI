@@ -1,0 +1,52 @@
+<eui-alert>
+    For more options regarding the user-profile see the <strong>eui-user-profile</strong> page.
+</eui-alert>
+
+
+<eui-header>
+    <eui-header-logo></eui-header-logo>
+    <eui-header-app appName="appName"></eui-header-app>
+    <eui-header-user-profile></eui-header-user-profile>
+</eui-header>
+
+<eui-header>
+    <eui-header-logo></eui-header-logo>
+    <eui-header-app appName="appName"></eui-header-app>
+    <eui-header-user-profile isShowAvatarInitials></eui-header-user-profile>
+</eui-header>
+
+<eui-header>
+    <eui-header-logo></eui-header-logo>
+    <eui-header-app appName="appName"></eui-header-app>
+    <eui-header-user-profile avatarUrl="assets/images/avatars/small/rabbit.png"></eui-header-user-profile>
+</eui-header>
+
+<eui-header>
+    <eui-header-logo></eui-header-logo>
+    <eui-header-app appName="appName"></eui-header-app>
+    <eui-header-user-profile subInfos="eUI developer"></eui-header-user-profile>
+</eui-header>
+
+<p>
+   <strong>with eui-user-profile-menu-item</strong>
+</p>
+<eui-alert euiWarning class="eui-u-mb-m">
+   In order for keyboard navigation to work on the user profile menu, make sure that you project directly the eui-user-profile-menu-item components without using *ngTemplateOutlet. When EuiUserProfileMenuItemComponent is instantiated by *ngTemplateOutlet from the userProfileMenuItems, templates are not considered direct content children of eui-user-profile-menu in the way &#64;ContentChildren expects and thus the first item is not focused. More info can be found here: <a href="https://github.com/angular/angular/issues/14842" target="_blank">Angular issue #14842</a>.
+</eui-alert>
+
+<eui-header>
+    <eui-header-logo></eui-header-logo>
+    <eui-header-app appName="appName"></eui-header-app>
+    <eui-header-user-profile subInfos="eUI developer">
+        <eui-user-profile-menu>
+            <eui-user-profile-menu-item>
+                <eui-icon-svg icon="old-eui-person-thin"></eui-icon-svg>
+                View profile information
+            </eui-user-profile-menu-item>
+            <eui-user-profile-menu-item>
+                <eui-icon-svg icon="old-eui-sign-out"></eui-icon-svg>
+                Sign out
+            </eui-user-profile-menu-item>
+        </eui-user-profile-menu>
+    </eui-header-user-profile>
+</eui-header>

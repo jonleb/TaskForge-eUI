@@ -1,0 +1,10 @@
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">euiLoading</code> input option displays a loading icon to the right of the form control when the loading state is triggered.
+The loading state visual improves the user exeprience which can be enhanced by disabling the input form control during the loading state.</p>
+<br>
+<div euiInputGroup>
+    <div class="eui-u-flex">
+        <input euiInputNumber [euiLoading]="isLoading" value="" placeholder="Enter some numbers" [disabled]="isLoading" aria-label="Input number sample with loading visual status" />
+    </div>
+</div>
+<br>
+<button euiButton euiPrimary euiOutline (click)="changeState()">{{isLoading ? 'Disable':'Enable'}} loading state</button>

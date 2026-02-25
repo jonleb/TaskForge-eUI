@@ -1,0 +1,10 @@
+<label euiLabel for="maxlength-custom-calc">Ignore 'a' character</label>
+<input #myInput="ngModel"
+       (maxLengthReached)="textMaxLengthReached($event)"
+       [euiMaxlength]="10"
+       [ngModel]="'sample text'"
+       euiInputText
+       id="maxlength-custom-calc" />
+<pre class="eui-u-text-pre">Has max length reached? {{ textMax }}</pre>
+<p class="eui-u-text-paragraph">Value: {{ myInput.value }}</p>
+<p class="eui-u-text-paragraph">Valid: {{ myInput.valid }}</p>

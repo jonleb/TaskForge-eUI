@@ -1,0 +1,21 @@
+<h6 class="section-title">Reactive Forms</h6>
+<form [formGroup]="fg">
+  <fieldset eclFormGroup role="radiogroup" aria-required="true">
+    <legend eclFormLabel isRequired>Select your country</legend>
+    <div eclHelpBlock>This is the group's helper text</div>
+
+    <div eclRadio>
+      <input eclRadioInput type="radio" formControlName="choice" id="radio-reactive1" value="lu">
+      <label for="radio-reactive1" eclRadioLabel>Luxembourg</label>
+    </div>
+
+    <div eclRadio>
+      <input eclRadioInput type="radio" formControlName="choice" id="radio-reactive2" value="be">
+      <label for="radio-reactive2" eclRadioLabel>Belgium</label>
+    </div>
+    <div eclRadio>
+      <input eclRadioInput type="radio" formControlName="choice" id="radio-reactive3" value="pl">
+      <label for="radio-reactive3" eclRadioLabel>Poland</label>
+    </div>
+  </fieldset>
+</form>

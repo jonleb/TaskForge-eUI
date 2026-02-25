@@ -1,0 +1,11 @@
+<div class="doc-sample-section-title">Click event returns the selected button on radio buttons</div>
+
+<eui-button-group isRadioButtons (buttonClick)="onButtonClick($event)">
+    <button euiButton id="1">button 1</button>
+    <button euiButton id="2">button 2</button>
+    <button euiButton id="3">button 3</button>
+</eui-button-group>
+
+<br><br><br>
+Clicked button id : <strong>{{ clickedButton?.id }}</strong>
+

@@ -1,0 +1,47 @@
+<p class="eui-u-text-paragraph">This advanced sample features a custom dropdown when clicking on sort numbers as well as a local dropdown menu for each table row.</p>
+
+<table euiTable [data]="dataSource" (sortChange)="onSortChange($event)">
+    <ng-template euiTemplate="header">
+        <tr>
+            <th isSortable sortOn="country" defaultOrder sortOrder="asc">Country</th>
+            <th isSortable sortOn="year" sortOrder="desc">Year</th>
+            <th isSortable sortOn="iso">ISO</th>
+            <th isSortable sortOn="population">Population</th>
+            <th isSortable sortOn="capital">Capital city</th>
+            <th scope="col">
+                <span class="eui-u-visually-hidden">Actions</span>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template let-row euiTemplate="body">
+        <tr>
+            <td>{{ row.country }}</td>
+            <td>{{ row.year }}</td>
+            <td>{{ row.iso }}</td>
+            <td>{{ row.population | number }}</td>
+            <td>{{ row.capital }}</td>
+            <td>
+                <eui-dropdown>
+                    <button euiButton euiPrimary euiBasicButton euiRounded euiIconButton [attr.aria-label]="'Menu'">
+                        <eui-icon-svg icon="eui-ellipsis-vertical" size="s"></eui-icon-svg>
+                    </button>
+                    <eui-dropdown-content>
+                        <button euiDropdownItem (click)="onClick(row)" aria-label="Edit">
+                            <eui-icon-svg icon="eui-add" size="s" fillColor="secondary" class="eui-u-mr-s"></eui-icon-svg>
+                            <span euiLabel>Edit</span>
+                        </button>
+                        <button euiDropdownItem (click)="onClick(row)" aria-label="Delete">
+                            <eui-icon-svg icon="eui-trash" size="s" fillColor="secondary" class="eui-u-mr-s"></eui-icon-svg>
+                            <span euiLabel>Delete</span>
+                        </button>
+                    </eui-dropdown-content>
+                </eui-dropdown>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template euiTemplate="emptyMessage">
+        <tr>
+            <td class="eui-u-text-center" colspan="5">No data</td>
+        </tr>
+    </ng-template>
+</table>

@@ -1,0 +1,51 @@
+<h6 class="section-title">Default</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label id="label-multi-react1" eclFormLabel>Select countries</label>
+    <div id="helper-multi-react1" eclHelpBlock>This is the help text</div>
+    <select ariaLabeledby="label-multi-react1" ariaDescribedby="helper-multi-react1" eclMultiselect eclPlaceholder="Custom placeholder" formControlName="default">
+        @for (country of countries; track country.id) {
+        <option eclMultiselectOption [value]="country.id" [label]="country.name"></option>
+        }
+  </select>
+  </div>
+</form>
+
+<h6 class="section-title">Disabled</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label id="label-multi-react2" eclFormLabel isDisabled>Select countries</label>
+    <div id="helper-multi-react2" eclHelpBlock>This is the help text</div>
+    <select ariaLabeledby="label-multi-react2" ariaDescribedby="helper-multi-react2" eclMultiselect eclPlaceholder="Custom placeholder" formControlName="disabled">
+        @for (country of countries; track country.id) {
+        <option eclMultiselectOption [value]="country.id" [label]="country.name"></option>
+        }
+  </select>
+  </div>
+</form>
+
+<h6 class="section-title">Required</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label id="label-multi-react3" eclFormLabel isRequired>Select countries</label>
+    <div id="helper-multi-react3" eclHelpBlock>This is the help text</div>
+    <select ariaLabeledby="label-multi-react3" ariaDescribedby="helper-multi-react3" name="Select country"
+      eclMultiselect eclPlaceholder="Custom placeholder" [isInvalid]="validateRequired()" formControlName="required">
+      @for (country of countries; track country.id) {
+      <option eclMultiselectOption [value]="country.id" [label]="country.name"></option>
+      }
+  </select>
+      @if(validateRequired()){
+          <div eclFeedbackMessage>
+              <ecl-icon icon="error" size="s" ariaHidden="false" role="img">
+                  <title>Error</title>
+              </ecl-icon>
+              This field is required
+          </div>
+      }
+  </div>
+</form>
+<br>
+<div>
+    <button eclButton variant="primary" (click)="onClickReset()">Reset</button>
+</div>

@@ -1,0 +1,6 @@
+<div class="eui-u-flex">
+    <button euiButton euiPrimary euiTooltip="Info about the action" [isDisabled]="isDisabled">Action</button>
+    <div class="eui-u-ml-xl">
+        <eui-slide-toggle (slideToggleChange)="onChange()" [isChecked]="!isDisabled"></eui-slide-toggle> Toggle tooltip
+    </div>
+</div>

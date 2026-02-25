@@ -1,0 +1,29 @@
+<div class="doc-sample-section-title">Using the eui-card component containing eui-accordion-item(s)</div>
+
+<eui-alert>
+    <eui-alert-title>Important remark on Form usage</eui-alert-title>
+    To avoid some layout issues when using a <strong>form</strong> inside the eui-accordion-item, make sure to add the <code class="eui-u-text-code">eui-u-flex</code> utility class to avoid breaking the flexbox chain.
+</eui-alert>
+<br><br>
+
+<eui-card euiNoContentPadding>
+    <eui-card-content>
+
+        <eui-accordion>
+            @for (accordionItem of accordionItems; track $index) {
+                <eui-accordion-item>
+                    <eui-accordion-item-header>{{ accordionItem.title }}</eui-accordion-item-header>
+                    {{ accordionItem.content }}
+                </eui-accordion-item>
+            }
+            <!-- This last item contains the form -->
+            <eui-accordion-item>
+                <eui-accordion-item-header>Item 4 (contains a form)</eui-accordion-item-header>
+                <form class="eui-u-flex">
+                    Form content here...
+                </form>
+            </eui-accordion-item>
+        </eui-accordion>
+
+    </eui-card-content>
+</eui-card>

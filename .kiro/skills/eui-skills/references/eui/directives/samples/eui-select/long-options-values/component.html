@@ -1,0 +1,25 @@
+<eui-alert>
+    <eui-alert-title>Usage & recommendation when having long options values</eui-alert-title>
+    Due to limitations when styling the drop-down options list which is <strong>OS-dependent</strong> and not part of the HTML/browser,
+    it is recommended to use the <a class="eui-u-text-link" routerLink="/style-guide/pipes/eui-truncate">euiTruncate</a> pipe to "reduce" very long values.
+    See the code source for example.
+</eui-alert>
+<br><br>
+
+<form #myForm="ngForm" id="my-misc-form" novalidate>
+
+    <label euiLabel for="long-value">Super long values</label>
+    <select #mySelect euiSelect name="long-value" id="long-value" ngModel [placeholder]="superLongPlaceholder | euiTruncate:100">
+        <option [value]="superLongText" selected>{{ superLongText }}</option>
+        <option [value]="longValue">{{ longValue | euiTruncate:100 }}</option>
+        <option [value]="longValue2">{{ longValue2 | euiTruncate:100 }}</option>
+    </select>
+
+</form>
+
+<div class="eui-u-f-bold eui-u-mt-m">Selected value</div>
+<div class="eui-showcase-demo eui-u-mt-m">
+    <div class="code" style="overflow-y: auto;" tabindex="0">
+        <pre class="eui-u-text-pre" tabindex="0">{{ myForm.value | json }}</pre>
+    </div>
+</div>

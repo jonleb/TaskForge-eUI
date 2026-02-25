@@ -1,0 +1,36 @@
+<eui-alert>
+    Responsive tables can be obtained by adding the <code class="eui-u-text-code">isTableResponsive</code> template directive next to the table tag.<br>
+    As a general recommendation, responsive tables allows scrolling on smaller devices viewports as well as a more readable layout like "cards" for mobile and tablets.<br>
+    <br/>
+    For doing so, you need to add the <code class="eui-u-text-code">data-col-label</code> attribute next to each <code class="eui-u-text-code">td</code> with the corresponding column label. See code source for example.<br/>
+    <br/>
+    Try to resize your browser to see it in action.
+</eui-alert><br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td nowrap data-col-label="Country"><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>

@@ -1,0 +1,27 @@
+<p class="eui-u-text-paragraph">
+    Use the <code class="eui-u-text-code">iconSvgName</code> menu item property to set the icon 
+    (see <a class="eui-u-text-link" routerLink="https://eui.ecdevops.eu/eui-showcase-ux-components-19.x/style-guide/components/eui-icon-svg">eui-icon-svg</a> for full icons sets in default color.
+</p>
+
+<div class="doc-sample-section-title">with iconSvg usage</div>
+
+<button euiButton euiSizeS (click)="onToggleCollapsed()">Toggle collapsed</button>
+<br><br>
+
+<eui-sidebar-menu [items]="sidebarItemsIconSvg" hasIcons [isCollapsed]="isCollapsed"></eui-sidebar-menu>
+
+
+
+<div class="doc-sample-section-title">with iconSvg usage and iconTypeClass</div>
+<p class="eui-u-text-paragraph eui-u-mb-m">
+    Add the <code class="eui-u-text-code">iconTypeClass</code> menu item property along with the <code class="eui-u-text-code">iconSvgName</code> to set the icon color.
+    <br>
+    Please refer to <a class="eui-u-text-link-external" href="https://eui.ecdevops.eu/eui-showcase-design-system-19.x/design-tokens/colors#Context%20colors" target="_blank">
+        eUI - Design System Context colors
+    </a> for more information.
+</p>
+
+<button euiButton euiSizeS (click)="onToggleCollapsed2()">Toggle collapsed</button>
+<br><br>
+
+<eui-sidebar-menu [items]="sidebarItemsIconSvgTypeClass" hasIcons [isCollapsed]="isCollapsed2"></eui-sidebar-menu>

@@ -1,0 +1,148 @@
+<eui-alert>
+    Please note that you have to import <strong>EuiTreeFormControlDirectiveModule</strong> from eui-tree. Then You'll be able to define euiTreeFormControl directive on eui-tree level.
+</eui-alert><br/>
+
+<div class="row">
+    <p><code class="eui-u-text-code">import {{'{'}}EuiTreeFormControlDirectiveModule{{'}'}} from {{'@eui/components/eui-tree'}}{{';'}}</code></p>
+    <p>When <code class="eui-u-text-code">euiTreeFormControl</code> directive is combined with [formControl] (or formControlName) it will write on the control's model.</p>
+    <p><code class="eui-u-text-code">customControlValueSetter</code> is there to map chosen items to model. If you don't define it, model control will be populated with tree items. Check the code to see how to map the IDs as model. [id1,id2..] </p>
+    <p><code class="eui-u-text-code">customControlModelMapper</code> is there to map model to ids in order to render initial selection.</p>
+</div>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <form [formGroup]="form">
+            <div euiInputGroup>
+                <label euiLabel euiRequired for="tree">Departments</label>
+                <div id="tree" euiInputGroupAddOn>
+                    <eui-tree #componentInstance [nodes]="treeData" isMultiselect euiTreeFormControl formControlName="myControlName"
+                              (selectionChange)="onSelectionChange($event)">
+
+                    </eui-tree>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{componentInstance?.getSelection() | json}}</pre>
+                </eui-fieldset>
+                <eui-fieldset label="Control value" isExpandable>
+                    <pre class="eui-u-text-pre">{{form?.get('myControlName')?.value | json}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">formControl binding</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree [nodes]="treeData" isMultiselect euiTreeFormControl
+                  [formControl]="control"
+                  (selectionChange)="onSelectionChange($event)">
+
+        </eui-tree>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionLabels}}</pre>
+                </eui-fieldset>
+                <eui-fieldset label="Control value" isExpandable>
+                    <pre class="eui-u-text-pre">{{control?.value | json}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="doc-sample-section-title">Initial selection (via formControl)</div>
+
+<button euiButton (click)="toggle = !toggle">Show / Hide tree</button>
+@if (!toggle) {
+    <div class="row">
+        <div class="col-md-6">
+            <eui-tree [nodes]="treeData" isMultiselect euiTreeFormControl
+                      [formControl]="controlInitialData">
+    
+            </eui-tree>
+        </div>
+        <div class="col-md-6">
+            <div class="eui-showcase-demo">
+                <div class="code" style="max-height: 25rem; overflow-y: auto;">
+    
+                    <eui-fieldset label="Control value" isExpandable>
+                        <pre class="eui-u-text-pre">{{controlInitialData?.value | json}}</pre>
+                    </eui-fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="doc-sample-section-title">Initial selection (via metadata isSelected:true)</div>
+<eui-alert>
+    Please note that If you combine the meta-data driven initial selection with tree control, the control <strong>will
+    not be initialised</strong> as expected. If the control value is <code class="eui-u-text-code">undefined</code> or <code class="eui-u-text-code">null</code>  all the tree will be set as unselected.
+</eui-alert><br/>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree [nodes]="treeDataSelected" isMultiselect euiTreeFormControl
+                  [formControl]="controlInitialSelectionViaMetaData"
+                  (selectionChange)="onSelectionChange2($event)">
+
+        </eui-tree>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+
+                <eui-fieldset label="Control value" isExpandable>
+                    <pre class="eui-u-text-pre">{{controlInitialSelectionViaMetaData?.value | json}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Custom model for tree control (treeContentBlock's optional id property is used in
+    model)</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree [nodes]="treeData" isMultiselect euiTreeFormControl
+                  [formControl]="customModelControl"
+                  [euiTreeControlValueSetter]="customControlValueSetter"
+                  [euiTreeControlModelMapper]="customControlModelMapper"
+                  (selectionChange)="onSelectionChange2($event)">
+
+        </eui-tree>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+
+                <eui-fieldset label="Control value" isExpandable>
+                    <pre class="eui-u-text-pre">{{customModelControl?.value | json}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionLabels2}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

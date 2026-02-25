@@ -1,0 +1,48 @@
+
+<eui-block-content [isBlocked]="isBlocked">
+    <eui-card>
+        <eui-card-header>
+            <eui-card-header-title>Information</eui-card-header-title>
+        </eui-card-header>
+        <eui-card-content>
+            <input euiInputText (keyup.enter)="onDataSubmit()" aria-label= "Block content Input field"> Hit <code class="eui-u-text-code">Enter</code> while typing to block content for 1 second or use button below
+
+            <eui-block-content role="presentation" ariaLabel="Nested block" [isBlocked]="isNestedBlocked">
+                <eui-card class="eui-u-mt-xl">
+                    <eui-card-header>
+                        <eui-card-header-title><strong>Nested content</strong></eui-card-header-title>
+                    </eui-card-header>
+                    <eui-card-content>
+                        Nested content can also be subject to block document...
+                    </eui-card-content>
+                </eui-card>
+            </eui-block-content>
+
+        </eui-card-content>
+    </eui-card>
+</eui-block-content>
+
+<br>
+
+<div class="row">
+    <div class="col">
+        <button euiButton euiPrimary (click)="onBlockContent()">
+            @if (isBlocked) {
+                <span>Unblock Content</span>
+            }
+            @if (!isBlocked) {
+                <span>Block Content</span>
+            }
+        </button>
+    </div>
+    <div class="col">
+        <button euiButton euiPrimary euiOutline (click)="onBlockNestedContent()">
+            @if (isNestedBlocked) {
+                <span>Unblock nested Content</span>
+            }
+            @if (!isNestedBlocked) {
+                <span>Block nested Content</span>
+            }
+        </button>
+    </div>
+</div>

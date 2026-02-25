@@ -1,0 +1,48 @@
+<p class="eui-u-text-paragraph">This advanced sample uses a small Service calling the incrementValue() method to automatically increase the progress indicator value.
+We subscribe to it and once the progress value is 100% (completed), we display the progress bar status icon and a success feedback message.</p>
+
+<br>
+
+@if (uploadProgress === 0) {
+    <button euiButton euiPrimary euiOutline euiSizeS class="eui-u-mb-m" (click)="startFileUpload($event)">Start file upload</button>
+}
+
+<eui-progress-bar [progress]="uploadProgress" label="File Upload" size="large" hasStatusIcon [euiSuccess]="isProcessCompleted"></eui-progress-bar>
+@if (!isProcessCompleted) {
+    <eui-feedback-message>Uploading file {{ uploadProgress }}%</eui-feedback-message>
+}
+@if (isProcessCompleted) {
+    <eui-feedback-message euiSuccess>File upload successfully completed.</eui-feedback-message>
+}
+
+
+<div class="doc-sample-section-title">Using different states</div>
+<p class="eui-u-text-paragraph">This advanced sample uses a function to simulate importing items and increments the progress indicator value.
+It displays the "completed" status icon and adapts the feeedback message accordingly, once the import process is finished.</p>
+
+<button euiButton euiPrimary euiOutline euiSizeS class="eui-u-mb-m" (click)="startImport($event)">Start import</button>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-progress-bar [progress]="importProgress/maxProgress * 100" label="Import items" hasStatusIcon [euiSuccess]="isImportCompleted"></eui-progress-bar>
+        <eui-feedback-message [euiSuccess]="isImportCompleted">
+            <div class="eui-u-flex">
+                <span>Importing item {{ importProgress }} / {{ maxProgress }}</span>
+                @if (isImportCompleted) {
+                    <span>&nbsp;sucessfully completed!</span>
+                }
+            </div>
+        </eui-feedback-message>
+    </div>
+
+    <div class="col-md-6">
+        <eui-progress-bar
+            label="Import items (with isIndeterminate)"
+            [progress]="importProgress/maxProgress * 100"
+            [isIndeterminate]="importProgress > 0 && importProgress < maxProgress"
+            hasStatusIcon
+            [euiSuccess]="isImportCompleted">
+        </eui-progress-bar>
+        <eui-feedback-message>Importing item {{ importProgress }} / {{ maxProgress }}</eui-feedback-message>
+    </div>
+</div>

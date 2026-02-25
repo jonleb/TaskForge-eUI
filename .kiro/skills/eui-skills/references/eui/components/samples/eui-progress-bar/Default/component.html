@@ -1,0 +1,32 @@
+<p class="eui-u-text-paragraph">Use the <code class="eui-u-text-code">progress</code> input to set the percentage value of the progress indicator (0 - 100).</p>
+
+<div class="doc-sample-section-title">Ongoning progress</div>
+<eui-progress-bar [progress]="progress1"></eui-progress-bar>
+
+
+<div class="doc-sample-section-title">Completed</div>
+<eui-progress-bar [progress]="100"></eui-progress-bar>
+
+
+<div class="doc-sample-section-title">Dynamic changes of inputs</div>
+<button euiButton (click)="progress2 = 100">set progress to 100</button>
+<br><br>
+<eui-progress-bar [progress]="progress2"></eui-progress-bar>
+
+<br><br>
+
+<button euiButton (click)="variant = 'warning'">set to warning</button>
+<br><br>
+<eui-progress-bar [euiVariant]="variant"></eui-progress-bar>
+
+<br><br>
+
+<button euiButton (click)="statusIcon = true">set statusIcon</button>
+<br><br>
+<eui-progress-bar label="Progress bar title" [progress]="100" euiWarning [hasStatusIcon]="statusIcon"></eui-progress-bar>
+
+<br><br>
+
+<button euiButton (click)="indeterminate = true">set indeterminate</button>
+<br><br>
+<eui-progress-bar label="Progress bar title" [progress]="100" [isIndeterminate]="indeterminate"></eui-progress-bar>

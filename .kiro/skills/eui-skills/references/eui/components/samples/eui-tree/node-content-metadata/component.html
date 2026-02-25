@@ -1,0 +1,9 @@
+<div class="doc-sample-section-title">Custom template injection with treeContentBlock's metadata</div>
+
+<eui-tree [nodes]="treeData" [nodeContentMetadataTemplateRef]="nodeContentMetaData"></eui-tree>
+
+<ng-template #nodeContentMetaData let-metadata>
+    <div class="eui-u-inline-flex">
+        <strong>{{metadata?.title}}</strong>
+    </div>
+</ng-template>

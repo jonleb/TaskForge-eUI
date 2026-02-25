@@ -1,0 +1,90 @@
+<eui-alert>
+    <code class="eui-u-text-code">label</code> tag surrounding the label of the field can be linked, through
+    <code class="eui-u-text-code">for</code> attribute, to <code
+    class="eui-u-text-code">eui-autocomplete</code> with <code class="eui-u-text-code">inputId</code>
+    option.
+</eui-alert>
+
+<p>The source code of the used service can be found <a
+    class="eui-u-text-link-external"
+    href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-autocomplete/samples/reactive-forms/services"
+    target="_blank">here</a>.<p>
+
+        <div class="doc-sample-section-title">Reactive Form Support</div>
+<form [formGroup]="form">
+
+    <div euiInputGroup>
+        <label [euiRequired]="true" euiLabel for="autocomplete-1">Select a fruit</label>
+        <eui-autocomplete
+            [attr.aria-readonly]="isReadOnly ? true : null"
+            [autocompleteData]="autocompleteDataFormAutocomplete"
+            [isFreeValueAllowed]="true"
+            [isReadonly]="isReadOnly"
+            formControlName="autoComplete"
+            inputId="autocomplete-1"
+            placeholder="Select a fruit">
+        </eui-autocomplete>
+        @if (renderForm('autoComplete')) {
+            <eui-feedback-message euiDanger>This field is <strong>required</strong></eui-feedback-message>
+        }
+    </div>
+    <br />
+
+    <button (click)="onResetForm()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Reset</button>
+    <button (click)="onDisableField()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Toggle
+        disabled
+    </button>
+    <button (click)="onReadOnlyField()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Toggle
+        readonly
+    </button>
+    <button (click)="onPatchValue()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Patch value
+    </button>
+    <button (click)="onSubmit()" class="eui-u-mr-xs" euiButton euiPrimary type="button">Submit</button>
+
+    <br />
+
+    <pre>{{ form.value | json }}</pre>
+</form>
+
+<div class="doc-sample-section-title">Reactive Form Support with async data</div>
+<eui-alert>
+    To work properly with async datas, <code class="eui-u-text-code">eui-autocomplete</code> needs to have <code
+    class="eui-u-text-code">isAsync</code> option activated.
+</eui-alert><br />
+<form [formGroup]="formAsync">
+
+    <div euiInputGroup>
+        <label [euiRequired]="true" euiLabel for="autocomplete-2">Select a country</label>
+        <eui-autocomplete
+            [autocompleteData]="itemsServiceData"
+            [isFreeValueAllowed]="true"
+            [isLoading]="itemsDataLoading"
+            [isReadonly]="isReadOnlyAsync"
+            [placeholder]="'EU country name'"
+            formControlName="autoComplete"
+            inputId="autocomplete-2"
+            isAsync>
+        </eui-autocomplete>
+        @if (renderFormAsync('autoComplete')) {
+            <eui-feedback-message euiDanger>This field is <strong>required</strong></eui-feedback-message>
+        }
+    </div>
+    <br />
+
+    <button (click)="onResetFormAsync()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Reset
+    </button>
+    <button (click)="onDisableFieldFormAsync()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Toggle
+        disabled
+    </button>
+    <button (click)="onReadOnlyFieldFormAsync()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">
+        Toggle readonly
+    </button>
+    <button (click)="onPatchValueFormAsync()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Patch
+        value
+    </button>
+    <button (click)="onSubmitFormAsync()" class="eui-u-mr-xs" euiButton euiPrimary type="button">Submit</button>
+
+    <br />
+
+    <pre>{{ formAsync.value | json }}</pre>
+</form>

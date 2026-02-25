@@ -1,0 +1,149 @@
+<div eclFormGroup>
+    <label eclFormLabel>Variant</label>
+    <select eclSelect [(ngModel)]="variant" aria-label="Variant">
+        <option value="">default</option>
+        <option value="information">information</option>
+        <option value="success">success</option>
+        <option value="warning">warning</option>
+        <option value="error">error</option>
+    </select>
+</div>
+
+<p>
+    Static inline modals are rendered directly on page and their visibility
+    can be controlled using variety of ways described here.
+</p>
+
+<h6 class="section-title">Controlling modal with directives</h6>
+
+<p>Using set of directives to control opening and closing modal</p>
+
+<dl eclDescriptionList>
+    <dt eclDescriptionListTerm><code>eclModalClose</code></dt>
+    <dd eclDescriptionListDefinition>
+        Closes the modal when host element is clicked.
+        Assigning optional value to this property allows to read it back in <code>modalClose</code> event as <code>eclModalData</code>.
+        The host element must be inside ecl modal component.
+    </dd>
+
+    <dt eclDescriptionListTerm><code>eclModalRole</code></dt>
+    <dd eclDescriptionListDefinition>
+        Provides close intention (like cancel, confirm etc).
+        Value of this property allows to read it back in <code>modalClose</code>
+        The host element must be inside ecl modal component.
+    </dd>
+
+    <dt eclDescriptionListTerm><code>eclModalTriggerFor</code></dt>
+    <dd eclDescriptionListDefinition>
+        Opens the modal when host element is clicked.
+        Assign modal reference Id to control its visibility.
+    </dd>
+</dl>
+
+<br><br>
+
+<dialog #modal1 eclModal [variant]="variant" (modalClose)="onClose($event)" (modalOpen)="onOpen($event)">
+    <header eclModalHeader>
+        Lorem ipsum dolor sit amet
+    </header>
+    <div eclModalBody>
+        Lorem ipsum dolor est
+    </div>
+    <footer eclModalFooter>
+        <button eclButton eclModalRole="cancel" eclModalClose variant="secondary">Close</button>
+        <button eclButton eclModalRole="confirm" [eclModalClose]="'Luxembourg'" variant="primary">Submit</button>
+    </footer>
+</dialog>
+
+<div>
+    <button eclButton variant="secondary" [eclModalTriggerFor]="modal1">Open modal</button>
+</div>
+
+<h6 class="section-title">Controlling modal with API</h6>
+
+<p>Ecl Modal component has few methods to control its visibility</p>
+
+<dialog #modal2 eclModal [variant]="variant" (modalClose)="onClose($event)" (modalOpen)="onOpen($event)">
+    <header eclModalHeader>
+        Lorem ipsum dolor sit amet
+    </header>
+    <div eclModalBody>
+        Lorem ipsum dolor est
+    </div>
+    <footer eclModalFooter>
+        <button eclButton (click)="modal2.closeModal({ eclModalRole: 'cancel'})" variant="secondary">Close</button>
+        <button eclButton (click)="modal2.closeModal({ eclModalRole: 'confirm', eclModalData: 'some data..'})" variant="primary">Submit</button>
+    </footer>
+</dialog>
+
+<div>
+    <button eclButton variant="secondary" (click)="modal2.openModal()">Open modal</button>
+</div>
+
+<h6 class="section-title">Disable closing modal dialog</h6>
+
+<p>Preventing default close action on submit conditionally</p>
+
+<dialog #modal3 eclModal [variant]="variant" (modalClose)="onCloseWithPreventDefault($event)" (modalOpen)="onOpen($event)">
+    <header eclModalHeader>
+        Lorem ipsum dolor sit amet
+    </header>
+    <div eclModalBody>
+        This dialog won't close on submit action
+    </div>
+    <footer eclModalFooter>
+        <button eclButton eclModalClose eclModalRole="cancel" variant="secondary">Close</button>
+        <button eclButton eclModalClose eclModalRole="confirm" variant="primary">Submit</button>
+    </footer>
+</dialog>
+
+<div>
+    <button eclButton variant="secondary" [eclModalTriggerFor]="modal3">Open modal</button>
+</div>
+
+<h6 class="section-title">Data, validation, buttons status </h6>
+
+<p>This example shows how modal can read data and read back data gathered from modal dialog</p>
+
+<dialog #modal4 eclModal [variant]="variant" (modalClose)="onCloseWithData($event)">
+    <header eclModalHeader>
+        Lorem ipsum dolor sit amet
+    </header>
+    <div eclModalBody>
+        <div eclFormGroup>
+            <label eclFormLabel isRequired>First name</label>
+            <input [(ngModel)]="firstName" eclTextInput />
+            @if (!firstName) {
+            <div eclFeedbackMessage>
+                <ecl-icon icon="error" size="s" ariaHidden="false" role="img">
+                    <title>Error</title>
+                </ecl-icon>
+                This field is required
+            </div>
+            }
+        </div>
+    </div>
+    <footer eclModalFooter>
+        <button
+            eclButton
+            eclModalRole="cancel"
+            eclModalClose
+            variant="secondary">Close</button>
+        <button
+            eclButton
+            eclModalRole="confirm"
+            [eclModalClose]="firstName"
+            variant="primary"
+            [attr.disabled]="!firstName || null">Submit</button>
+    </footer>
+</dialog>
+
+<div eclFormGroup class="ecl-u-mv-m">
+    <label eclFormLabel isOptional>User name</label>
+    <div class="ecl-u-d-flex">
+        <input eclTextInput disabled aria-label="Provide user name" [value]="result || '--No user--'"/>
+        <button eclButton variant="secondary" [eclModalTriggerFor]="modal4">Provide user name</button>
+    </div>
+
+    <div eclHelpBlock>Please use modal to provide user name</div>
+</div>

@@ -1,0 +1,14 @@
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">eui-overlay</code> panel is displayed when the <code class="eui-u-text-code">isActive</code> property is set to true.</p>
+
+<button aria-haspopup="dialog" aria-label="Overlay trigger button" euiButton euiOutline euiPrimary (click)="toggleOverlay($event)">Overlay isActive = {{ isOverlayActive }}</button>
+
+<eui-overlay [isActive]="isOverlayActive" (activeState)="updateActiveState($event)"></eui-overlay>
+
+
+<button aria-haspopup="dialog" aria-label="Overlay trigger button (custom content)" euiButton euiOutline euiPrimary (click)="toggleOverlayCustom($event)">custom Overlay isActive = {{ isOverlayActiveCustom }}</button>
+
+<eui-overlay [isActive]="isOverlayActiveCustom" (activeState)="updateActiveStateCustom($event)">
+    <eui-overlay-content>
+        custom content
+    </eui-overlay-content>
+</eui-overlay>

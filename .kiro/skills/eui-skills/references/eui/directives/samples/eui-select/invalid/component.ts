@@ -1,0 +1,12 @@
+import { Component } from '@angular/core';
+
+import { EUI_SELECT } from '@eui/components/eui-select';
+
+@Component({
+    // tslint:disable-next-line
+    selector: 'invalid',
+    templateUrl: 'component.html',
+    imports: [...EUI_SELECT],
+})
+export class InvalidComponent {
+}

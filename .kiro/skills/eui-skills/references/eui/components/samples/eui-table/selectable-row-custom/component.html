@@ -1,0 +1,60 @@
+<eui-alert>The following sample shows how to implement the selection feature in a custom way to be able to prevent some rows to be selected.</eui-alert><br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data" [paginator]="paginator">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th class="eui-table__cell-select">
+                    <div class="eui-table__cell-select-checkbox-container">
+                        @if(!areAllChecked && !areSomeChecked) {
+                            <input aria-label="Unchecked" euiInputCheckBox checked="false" (click)="toggleCheckAllState(true)" />
+                        }
+                        @if(areSomeChecked) {
+                            <input aria-label="Indeterminate" euiInputCheckBox indeterminate (click)="toggleCheckAllState(false)" />
+                        }
+                        @if(areAllChecked) {
+                            <input aria-label="Checked" euiInputCheckBox checked="true" (click)="toggleCheckAllState(false)" />
+                        }
+                    </div>
+                </th>
+                <th>Country</th>
+                <th>Year</th>
+                <th>ISO</th>
+                <th>Population</th>
+                <th>Capital city</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                @if(row.selectable) {
+                    <td class="eui-table__cell-select">
+                        <div class="eui-table__cell-select-checkbox-container">
+                            <input euiInputCheckBox [checked]="row.selected" (click)="toggleCheckedState($event, row)" />
+                        </div>
+                    </td>
+                }
+                @if(!row.selectable) {
+                    <td class="eui-table__cell-select">
+                        <div class="eui-table__cell-select-checkbox-container">
+                            <input aria-label="default checkbox unchecked" euiInputCheckBox checked="false" disabled />
+                        </div>
+                    </td>
+                }
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator #paginator></eui-paginator>
+
+<button euiButton (click)="getSelected()">Get selected</button>

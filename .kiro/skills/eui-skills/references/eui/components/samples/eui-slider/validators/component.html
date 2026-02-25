@@ -1,0 +1,34 @@
+<eui-alert>
+    <p class="eui-u-text-paragraph">The <code class="eui-u-text-code">eui-slider</code> provides built-in ready to use validators to help user to validate their forms.</p>
+    Usage : <code class="eui-u-text-code">import &#123; sliderValidator &#125; from '&#64;eui/components/eui-slider';</code><br/>
+    <br/>
+    Validator: <code class="eui-u-text-code">sliderValidator(&#123; startMin?: number, startMax?: number, endMin?: number, endMax?: number &#125;)</code><br/>
+    Description: Validator the min and max for start and end values.
+</eui-alert><br/>
+
+<div [formGroup]="form">
+    <eui-slider formControlName="slider" />
+    @if (this.form?.get('slider').invalid && this.form?.get('slider').touched && this.form?.get('slider').hasError('startMin')) {
+        <eui-feedback-message euiDanger>The start value need to be bigger than <strong>{{ this.form?.get('slider').errors.startMin.required }}</strong></eui-feedback-message>
+    }
+    @if (this.form?.get('slider').invalid && this.form?.get('slider').touched && this.form?.get('slider').hasError('startMax')) {
+        <eui-feedback-message euiDanger>The start value need to be smaller than <strong>{{ this.form?.get('slider').errors.startMax.required }}</strong></eui-feedback-message>
+    }
+    <br/>
+    <br/>
+    <eui-slider formControlName="rangeSlider" [hasRange]="true" />
+    @if (this.form?.get('rangeSlider').invalid && this.form?.get('rangeSlider').touched && this.form?.get('rangeSlider').hasError('startMin')) {
+        <eui-feedback-message euiDanger>The start value need to be bigger than <strong>{{ this.form?.get('rangeSlider').errors.startMin.required }}</strong></eui-feedback-message>
+    }
+    @if (this.form?.get('rangeSlider').invalid && this.form?.get('rangeSlider').touched && this.form?.get('rangeSlider').hasError('startMax')) {
+        <eui-feedback-message euiDanger>The start value need to be smaller than <strong>{{ this.form?.get('rangeSlider').errors.startMax.required }}</strong></eui-feedback-message>
+    }
+    @if (this.form?.get('rangeSlider').invalid && this.form?.get('rangeSlider').touched && this.form?.get('rangeSlider').hasError('endMin')) {
+        <eui-feedback-message euiDanger>The end value need to be bigger than <strong>{{ this.form?.get('rangeSlider').errors.endMin.required }}</strong></eui-feedback-message>
+    }
+    @if (this.form?.get('rangeSlider').invalid && this.form?.get('rangeSlider').touched && this.form?.get('rangeSlider').hasError('endMax')) {
+        <eui-feedback-message euiDanger>The end value need to be bigger than <strong>{{ this.form?.get('rangeSlider').errors.endMax.required }}</strong></eui-feedback-message>
+    }
+</div>
+
+

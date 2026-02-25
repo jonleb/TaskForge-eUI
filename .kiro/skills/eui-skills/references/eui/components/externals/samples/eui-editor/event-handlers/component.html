@@ -1,0 +1,63 @@
+<div class="doc-sample-section-title">Event handlers demo - See the console log for more detail (F12)</div>
+
+<table class="eui-table-default eui-table-default--compact eui-u-mt-m">
+    <thead>
+        <tr>
+            <th scope="col">Event handler</th>
+            <th scope="col">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>editorCreate</td>
+            <td>Triggered when the editor is created. Returns editor instance.</td>
+        </tr>
+        <tr>
+            <td>editorChange</td>
+            <td>Triggered when text or selection is updated - independent of the source.</td>
+        </tr>
+        <tr>
+            <td>contentChange</td>
+            <td>Triggered when the editor's content is updated.</td>
+        </tr>
+        <tr>
+            <td>selectionChange</td>
+            <td>Triggered when the selection is updated.</td>
+        </tr>
+        <tr>
+            <td>focus</td>
+            <td>Triggered when the editor is focused.</td>
+        </tr>
+        <tr>
+            <td>blur</td>
+            <td>Triggered when the editor is blurred.</td>
+        </tr>
+        <tr>
+            <td>charactersCountChange</td>
+            <td>Triggered when the number of characters in the editor changes.</td>
+        </tr>
+        <tr>
+            <td>wordsCountChange</td>
+            <td>Triggered when the number of words in the editor changes.</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="eui-u-flex eui-u-mt-xl">
+    <eui-slide-toggle [isChecked]="isConsoleLogActive" (slideToggleChange)="toggleConsoleLog()" class="eui-u-mr-m"></eui-slide-toggle>
+    <strong>Console log toggle : {{ isConsoleLogActive }}</strong>
+</div>
+
+<form [formGroup]="form" class="eui-u-mt-m">
+    <eui-editor formControlName="htmlContent"
+                [placeholder]="placeholder"
+                (editorCreate)="onEditorCreate($event)"
+                (editorChange)="onEditorChange($event)"
+                (contentChange)="onContentChange($event)"
+                (selectionChange)="onSelectionChange($event)"
+                (focus)="onFocus($event)"
+                (blur)="onBlur($event)"
+                (charactersCountChange)="onCharactersCountChange($event)"
+                (wordsCountChange)="onWordsCountChange($event)">
+    </eui-editor>
+</form>

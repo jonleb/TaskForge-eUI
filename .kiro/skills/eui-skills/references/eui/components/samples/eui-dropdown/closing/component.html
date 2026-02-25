@@ -1,0 +1,12 @@
+<p class="eui-u-text-paragraph">Menu auto-closing when clicking inside can be prevented by using the <code class="eui-u-text-code">hasClosedOnClickInside</code> input option set to <code class="eui-u-text-code">false</code>.</p>
+
+<eui-dropdown width="300px" [hasClosedOnClickInside]="false">
+    <button euiButton euiPrimary [attr.aria-label]="'Menu'">
+        <span euiLabel>Button trigger</span>
+    </button>
+    <eui-dropdown-content>
+        <div class="eui-u-p-s">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ut volutpat enim. Etiam a mattis tortor. Etiam egestas magna at iaculis malesuada. Etiam vulputate quam at consectetur pharetra.
+        </div>
+    </eui-dropdown-content>
+</eui-dropdown>

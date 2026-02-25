@@ -1,0 +1,16 @@
+<div class="doc-sample-section-title">closeAlert</div>
+
+<eui-alert (closeAlert)="onCloseAlertOne()" isCloseable>
+    Sample text
+</eui-alert>
+
+<div class="doc-sample-section-title">With controlled visibility through isVisible</div>
+
+<eui-alert (closeAlert)="onCloseAlertTwo($event)" [isVisible]="isAlertVisible" isCloseable>
+    Sample text
+</eui-alert>
+<br>
+
+@if (!isAlertVisible) {
+    <button (click)="onVisible()" euiButton>show it again</button>
+}

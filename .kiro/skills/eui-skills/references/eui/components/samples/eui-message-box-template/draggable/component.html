@@ -1,0 +1,5 @@
+<button euiButton type="button" (click)="openMessageBox()" aria-haspopup="dialog">Open Message Box</button>
+
+<eui-message-box #messageBox isDraggable [title]="'Message Box title'">
+    <p class="eui-u-text-paragraph">Message Box content</p>
+</eui-message-box>

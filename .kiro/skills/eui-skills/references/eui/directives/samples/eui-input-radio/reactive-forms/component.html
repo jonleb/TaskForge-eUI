@@ -1,0 +1,47 @@
+<div class="row">
+    <div class="col-md-6">
+        <div class="doc-sample-section-title">Reactive forms</div>
+        <form [formGroup]="form">
+            <div euiInputGroup>
+                <label euiLabel euiRequired>Select gender</label>
+                <div class="eui-u-display-flex eui-u-flex-column">
+                        @for (gender of genders; let i = $index; track $index) {
+                            <div class="eui-u-inline-flex eui-u-mb-xs">
+                                <input euiInputRadio
+                                        id="radio-{{gender}}"
+                                        name="radioForm"
+                                        [value]="gender"
+                                        [readonly]="isReadonly"
+                                        formControlName="radioForm" />
+                                <label euiLabel for="radio-{{gender}}">{{gender}}</label>
+                            </div>
+                        }
+                </div>
+                @if (!isReadonly && render('radioForm')) {
+                    <eui-feedback-message euiDanger>This field is required</eui-feedback-message>
+                }
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <div class="doc-sample-section-title">Reactive Form content</div>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="code" style="overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre" tabindex="0">{{form.getRawValue() | json}}</pre>
+                <div class="eui-u-flex">
+                    <div class="eui-u-f-bold mr-3">Form status</div>
+                    <eui-badge euiSizeS [euiSuccess]="form.status === 'VALID'" [euiDanger]="form.status !== 'VALID'">
+                        {{ form.status }}
+                    </eui-badge>
+                </div>
+            </div>
+        </div>
+        <div class="eui-u-flex eui-u-flex-wrap eui-u-mt-m">
+            <button euiButton euiPrimary (click)="onSubmit()" class="eui-u-mr-m eui-u-mb-m">Submit form</button>
+            <button euiButton euiPrimary euiOutline (click)="onToggleReadonly()" class="eui-u-mr-m eui-u-mb-m">Toggle Readonly</button>
+            <button euiButton euiPrimary euiOutline (click)="onToggleDisabled()" class="eui-u-mr-m eui-u-mb-m">Toggle Disabled</button>
+            <button euiButton euiPrimary euiOutline (click)="changeState()" class="eui-u-mr-m eui-u-mb-m">Change value</button>
+            <button euiButton euiPrimary euiOutline (click)="resetForm()" class="eui-u-mr-m eui-u-mb-m">Reset</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,81 @@
+
+<div class="doc-sample-section-title">Action buttons with icon before</div>
+
+<div class="eui-u-flex eui-u-flex-wrap eui-u-mt-m">
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" class="eui-u-mr-s eui-u-mb-s">
+        <eui-icon-svg icon="eui-chevron-left"></eui-icon-svg>
+        Default
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiPrimary class="eui-u-mr-s eui-u-mb-s">
+        <eui-icon-svg icon="eui-chevron-left"></eui-icon-svg>
+        Primary
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiSecondary class="eui-u-mr-s eui-u-mb-s">
+        <eui-icon-svg icon="eui-chevron-left"></eui-icon-svg>
+        Secondary
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiInfo class="eui-u-mr-s eui-u-mb-s">
+        <eui-icon-svg icon="eui-chevron-left"></eui-icon-svg>
+        Info
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiSuccess class="eui-u-mr-s eui-u-mb-s">
+        <eui-icon-svg icon="eui-chevron-left"></eui-icon-svg>
+        Success
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiWarning class="eui-u-mr-s eui-u-mb-s">
+        <eui-icon-svg icon="eui-chevron-left"></eui-icon-svg>
+        Warning
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiDanger class="eui-u-mr-s eui-u-mb-s">
+        <eui-icon-svg icon="eui-chevron-left"></eui-icon-svg>
+        Danger
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiCTAButton class="eui-u-mr-s eui-u-mb-s">
+        <eui-icon-svg icon="eui-chevron-left"></eui-icon-svg>
+        Call to action
+    </button>
+</div>
+
+
+<div class="doc-sample-section-title">Action buttons with icon after</div>
+
+<div class="eui-u-flex eui-u-flex-wrap eui-u-mt-m">
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" class="eui-u-mr-s eui-u-mb-s">
+        Default
+        <eui-icon-svg icon="eui-chevron-right"></eui-icon-svg>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiPrimary class="eui-u-mr-s eui-u-mb-s">
+        Primary
+        <eui-icon-svg icon="eui-chevron-right"></eui-icon-svg>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiSecondary class="eui-u-mr-s eui-u-mb-s">
+        Secondary
+        <eui-icon-svg icon="eui-chevron-right"></eui-icon-svg>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiInfo class="eui-u-mr-s eui-u-mb-s">
+        Info
+        <eui-icon-svg icon="eui-chevron-right"></eui-icon-svg>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiSuccess class="eui-u-mr-s eui-u-mb-s">
+        Success
+        <eui-icon-svg icon="eui-chevron-right"></eui-icon-svg>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiWarning class="eui-u-mr-s eui-u-mb-s">
+        Warning
+        <eui-icon-svg icon="eui-chevron-right"></eui-icon-svg>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiDanger class="eui-u-mr-s eui-u-mb-s">
+        Danger
+        <eui-icon-svg icon="eui-chevron-right"></eui-icon-svg>
+    </button>
+    <button euiButton [euiBasicButton]="isBasicButton" [euiOutline]="isOutlinedButton" euiCTAButton class="eui-u-mr-s eui-u-mb-s">
+        Call to action
+        <eui-icon-svg icon="eui-chevron-right"></eui-icon-svg>
+    </button>
+</div>
+
+
+<br>
+<button euiButton euiPrimary euiOutline class="eui-u-mr-s eui-u-mb-s" euiSizeS (click)="onDefaultButton()">Default buttons</button>
+<button euiButton euiPrimary euiOutline class="eui-u-mr-s eui-u-mb-s" euiSizeS (click)="onBasicButton()">Basic buttons</button>
+<button euiButton euiPrimary euiOutline class="eui-u-mr-s eui-u-mb-s" euiSizeS (click)="onOutlineButton()">Outlined buttons</button>

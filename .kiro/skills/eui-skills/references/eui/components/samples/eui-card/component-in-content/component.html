@@ -1,0 +1,13 @@
+<p class="eui-u-text-paragraph">By default the <code class="eui-u-text-code">OnInit</code> and <code class="eui-u-text-code">OnDestroy</code> hooks of the component in the content will be triggered with the ones of the parent page. To prevent this behaviour, a condition can be added on the component, doing that <code class="eui-u-text-code">OnInit</code> and <code class="eui-u-text-code">OnDestroy</code> will be triggered when the component is displayed and hided.</p>
+<br/>
+<eui-card #card euiCollapsible euiCollapsed>
+    <eui-card-header>
+        <eui-card-header-title>Card title</eui-card-header-title>
+        <eui-card-header-subtitle>Card subtitle</eui-card-header-subtitle>
+    </eui-card-header>
+    <eui-card-content>
+        @if (!card.euiCollapsed) {
+            <sample-component></sample-component>
+        }
+    </eui-card-content>
+</eui-card>

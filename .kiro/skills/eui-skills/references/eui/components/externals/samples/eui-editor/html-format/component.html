@@ -1,0 +1,42 @@
+<form [formGroup]="form">
+    <div class="doc-sample-section-title">Content in <span class="eui-u-f-bold">Safe HTML</span> sanitized format (default)</div>
+    <eui-editor formControlName="htmlContent"
+                [placeholder]="placeholder"
+                format="html"
+                [isReadOnly]="isReadOnly">
+    </eui-editor>
+    <div class="eui-showcase-demo eui-u-mt-m">
+        <div class="eui-u-flex">
+            <div class="eui-u-flex">
+                <div class="doc-sample-section-title">Editor's contents</div>
+            </div>
+            <div class="eui-u-display-flex eui-u-flex-align-items-center">
+                <eui-slide-toggle euiSizeS [isChecked]="isReadOnly" (slideToggleChange)="toggleReadOnly()" class="eui-u-mr-s"></eui-slide-toggle>
+                <strong>isReadOnly</strong>
+            </div>
+        </div>
+        <div class="code" style="overflow-y: auto; height: auto;" tabindex="0">
+            <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form.get('htmlContent').value }}</pre>
+        </div>
+    </div>
+
+
+    <div class="doc-sample-section-title"><span class="eui-u-c-danger">Dangerous</span> content but in <span class="eui-u-f-bold">Safe HTML</span> sanitized format</div>
+    <div class="eui-u-flex eui-u-mt-m eui-u-mb-m">
+        <eui-slide-toggle [isChecked]="isReadOnly2" (slideToggleChange)="toggleReadOnly2()" class="eui-u-mr-m"></eui-slide-toggle>
+        <strong>Interactive toggle &mdash; isReadOnly = {{isReadOnly2}}</strong>
+    </div>
+
+    <eui-editor formControlName="dangerousHtmlContent"
+                [placeholder]="placeholder"
+                format="html"
+                [isReadOnly]="isReadOnly2">
+    </eui-editor>
+
+    <div class="eui-showcase-demo eui-u-mt-m">
+        <div class="doc-sample-section-title">Editor's contents</div>
+        <div class="code" tabindex="0" style="height: auto;">
+            <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form.get('dangerousHtmlContent').value }}</pre>
+        </div>
+    </div>
+</form>

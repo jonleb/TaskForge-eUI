@@ -1,0 +1,37 @@
+<p class="eui-u-text-paragraph">
+    The <code class="eui-u-text-code">isAutocloseOnContainerResize</code> input option combined with the <code class="eui-u-text-code">autocloseContainerWidth</code>
+    allows to automatically collapse (close) the <code class="eui-u-text-code">eui-page-column</code> and the <code class="eui-u-text-code">eui-sidebar-menu</code>
+    when the viewport's width reaches the defined value of autocloseContainerWidth.
+</p>
+
+For example, if you want to have the first column to be automatically collapsed on tablet/laptop (landscape) mode, use :
+<pre class="eui-u-text-pre">&lt;eui-page-column ... isCollapsible isAutocloseOnContainerResize [autocloseContainerWidth]="1200"&gt;</pre>
+
+<eui-page>
+    <eui-page-content>
+        <eui-page-columns>
+
+            <eui-page-column
+                label="Side column"
+                euiSizeXL
+                isCollapsible
+                [isCollapsed]="isColumnCollapsed"
+                (collapse)="onToggleColumnCollapsed($event)"
+                [isCollapsedWithIcons]="isColumnCollapsed"
+                isAutocloseOnContainerResize
+                [autocloseContainerWidth]="1200">
+
+                <eui-page-column-body>
+                    <eui-sidebar-menu [items]="sidebarItems" hasIcons hasTooltip [isCollapsed]="isColumnCollapsed"></eui-sidebar-menu>
+                </eui-page-column-body>
+            </eui-page-column>
+
+            <eui-page-column label="Main column">
+                <eui-page-column-body>
+                    <eui-showcase-doc-lorem-ipsum textSize="small"></eui-showcase-doc-lorem-ipsum>
+                </eui-page-column-body>
+            </eui-page-column>
+
+        </eui-page-columns>
+    </eui-page-content>
+</eui-page>

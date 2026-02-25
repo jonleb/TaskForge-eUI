@@ -1,0 +1,13 @@
+## index.html : setting a app title name
+
+Let's first update the title of the main index.html to our app name :
+
+```html
+ ...
+<head>
+   ...
+   <title>My eUI app</title>
+   ...
+</head>
+...
+```

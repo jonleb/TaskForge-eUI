@@ -1,0 +1,28 @@
+<p class="eui-u-text-paragraph">This sample shows how to get parents of a single selected node in an array</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree #compInstance [nodes]="treeData" isSingleSelect (selectionChange)="onSelectionChange($event)"></eui-tree>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre>{{ addedLabels }}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre>{{ removedLabels }}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre>{{ selectionLabels }}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Parents" isExpandable class="eui-u-mt-m">
+                    <pre>{{ parentLabels }}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>

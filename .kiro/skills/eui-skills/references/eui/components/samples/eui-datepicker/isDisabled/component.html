@@ -1,0 +1,15 @@
+<div class="doc-sample-section-title">Disable the whole datepicker</div>
+<eui-datepicker [isDisabled]="true" [value]="value"></eui-datepicker>
+
+<div class="doc-sample-section-title">Disable only the button</div>
+<eui-datepicker [isButtonDisabled]="true" [value]="value"></eui-datepicker>
+
+<div class="doc-sample-section-title">Disable only the input</div>
+<eui-datepicker [isInputDisabled]="true" [isPickerDisabled]="false" [value]="value"></eui-datepicker>
+
+<div class="doc-sample-section-title">Disable with Reactive Forms</div>
+<form [formGroup]="form">
+    <eui-datepicker formControlName="datepicker"></eui-datepicker>
+    <pre class="eui-u-text-pre"> value : {{ form.value | json }}, disabled : {{ form.disabled | json }}</pre>
+</form>
+

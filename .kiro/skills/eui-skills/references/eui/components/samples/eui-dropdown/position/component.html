@@ -1,0 +1,56 @@
+<eui-alert>
+    The position strategy of the dropdown panel is automatically set wherever there is enough space to display the panel.
+    <br/>
+    For example, if there is not enough space to display the panel below the button, it will be displayed above it.
+</eui-alert>
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-3">
+        <div class="doc-sample-section-title">Top</div>
+
+        <eui-dropdown #dropdown position="top">
+            <button euiButton euiPrimary>Button trigger</button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1">Menu item 1</button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2">Menu item 2</button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3">Menu item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col-md-3">
+        <div class="doc-sample-section-title">Bottom</div>
+        
+        <eui-dropdown #dropdown2 position="bottom">
+            <button euiButton euiPrimary>Button trigger</button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1">Menu item 1</button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2">Menu item 2</button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3">Menu item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col-md-3">
+        <div class="doc-sample-section-title">Left</div>
+        
+        <eui-dropdown #dropdown3 position="left">
+            <button euiButton euiPrimary>Button trigger</button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1">Menu item 1</button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2">Menu item 2</button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3">Menu item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col-md-3">
+        <div class="doc-sample-section-title">Right</div>
+        
+        <eui-dropdown #dropdown4 position="right">
+            <button euiButton euiPrimary>Button trigger</button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1">Menu item 1</button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2">Menu item 2</button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3">Menu item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>

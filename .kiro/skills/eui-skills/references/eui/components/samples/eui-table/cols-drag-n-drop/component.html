@@ -1,0 +1,25 @@
+<eui-alert>
+    This example uses the <a href="https://material.angular.io/cdk/drag-drop/api">CDK Drag and Drop Module</a> to make the columns re-orderable.<br/>
+    To enable this feature, the <code class="eui-u-text-code">isColsOrderable</code> option must be set.<br/>
+    <br/>
+    To style the drag-and-drop preview, add the CSS class <code class="eui-u-text-code">eui-table__orderable-cols-preview</code> to the <code class="eui-u-text-code">cdkDragPreviewClass</code> option.
+</eui-alert><br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isColsOrderable isTableResponsive [data]="data">
+        <ng-template euiTemplate="header">
+            <tr cdkDropList cdkDropListOrientation="horizontal" cdkDropListLockAxis="x" (cdkDropListDropped)="onDrop($event)">
+                @for (col of cols; track col) {
+                    <th cdkDrag cdkDragPreviewClass="eui-table__orderable-cols-preview">{{ col.label }}</th>
+                }
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                @for (col of cols; track col) {
+                    <td>{{ row[col.prop] }}</td>
+                }
+            </tr>
+        </ng-template>
+    </table>
+</div>

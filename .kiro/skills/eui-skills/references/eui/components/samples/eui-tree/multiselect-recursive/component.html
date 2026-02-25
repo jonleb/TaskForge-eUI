@@ -1,0 +1,48 @@
+<p class="eui-u-text-paragraph">
+    Tree <strong>recursive multiselect</strong> feature is available by using both the <code class="eui-u-text-code">isMultiselect</code> and <code class="eui-u-text-code">isRecursiveSelection</code> input directives. 
+    The <code class="eui-u-text-code">(selectionChange)</code> event allows to manipulate the tree items when the selection changes (select / unselect a tree item).
+</p>
+
+<eui-alert>
+    Please note that <strong>by default</strong>, the <code class="eui-u-text-code">isRecursiveSelection</code> option <strong>also selects the parent node</strong> when all the child items are selected. 
+    To override the default behaviour, see sample 2 hereafter.
+</eui-alert>
+
+<div class="doc-sample-section-title">Sample 1 &mdash; isRecursiveSelection (as default isRecursiveParentSelection=true)</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree [nodes]="treeData"
+                  isMultiselect 
+                  isRecursiveSelection 
+                  (selectionChange)="onSelectionChange($event)">
+        </eui-tree>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre class="eui-u-text-pre">{{addedLabels}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{removedLabels}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionLabels}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Sample 2 &mdash; Recursive with isRecursiveParentSelection=false</div>
+<p class="eui-u-text-paragraph">This example adds the <code class="eui-u-text-code">isRecursiveParentSelection-false</code> input directive option which <strong>overrides the default behaviour of the isRecursiveSelection option</strong> and allows to select all child items without auto-selecting their parent node.</p>
+
+<eui-tree [nodes]="treeDataNoRecursiveParentSelection"
+          isMultiselect 
+          isRecursiveSelection
+          [isRecursiveParentSelection]="false">
+</eui-tree>

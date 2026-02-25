@@ -1,0 +1,48 @@
+<eui-card euiCollapsible>
+	<eui-card-header >
+        <eui-card-header-title>
+            <a routerLink="." class="eui-u-text-link">
+                Program - Sed sagittis metus vel metus dignissim accumsan
+            </a>
+        </eui-card-header-title>
+
+        <eui-card-header-subtitle class="eui-u-flex eui-u-flex-wrap">
+            Available languages : 
+            <a routerLink="." class="eui-u-text-link">EN</a> |
+            <a routerLink="." class="eui-u-text-link">FR</a> |
+            <a routerLink="." class="eui-u-text-link">DE</a> |
+            <a routerLink="." class="eui-u-text-link">ES</a>
+        </eui-card-header-subtitle>
+
+        <eui-card-header-left-content euiTooltip="Transmission hour">
+            <eui-icon-svg icon="timer:regular" />
+            <span class="eui-u-f-l eui-u-f-bold eui-u-mh-s">10:30</span>
+        </eui-card-header-left-content>
+
+        <eui-card-header-right-content>
+            <eui-chip euiOutline euiRounded euiSizeS euiSuccess class="eui-u-mr-l">
+                <span euiLabel><strong>Status</strong></span>
+            </eui-chip>
+
+            <button euiButton euiPrimary euiSizeS (click)="onAddButtonClick($event)">
+                <eui-icon-svg icon="eui-add" />
+                <span euiLabel>Create</span>
+            </button>
+
+            <eui-dropdown class="eui-u-ml-s">
+                <button euiButton euiBasicButton euiRounded euiIconButton euiPrimary euiTooltip="More actions" aria-label="More actions">
+                    <eui-icon-svg icon="eui-ellipsis-vertical" />
+                </button>
+                <eui-dropdown-content>
+                    <button euiDropdownItem>Action 1</button>
+                    <button euiDropdownItem>Action 2</button>
+                    <button euiDropdownItem>Action 3</button>
+                </eui-dropdown-content>
+            </eui-dropdown>
+        </eui-card-header-right-content>
+	</eui-card-header>
+
+    <eui-card-content>
+        Card content...
+    </eui-card-content>
+</eui-card>

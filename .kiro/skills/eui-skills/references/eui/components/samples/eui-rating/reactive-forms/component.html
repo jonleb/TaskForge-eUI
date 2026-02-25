@@ -1,0 +1,20 @@
+<form [formGroup]="form">
+    <eui-rating formControlName="rating"/>
+</form>
+
+<pre>{{ form.value | json }}</pre>
+
+<br/>
+
+<button (click)="onResetForm()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Reset</button>
+<button (click)="onDisableField()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Toggle
+    disabled
+</button>
+<button (click)="onReadOnlyField()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Toggle
+    readonly
+</button>
+<button (click)="onPatchValue()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Patch value
+</button>
+<button (click)="onSubmit()" class="eui-u-mr-xs" euiButton euiPrimary type="button">Submit</button>
+<br/>
+

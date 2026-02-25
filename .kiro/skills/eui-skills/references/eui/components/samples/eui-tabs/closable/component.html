@@ -1,0 +1,39 @@
+<eui-tabs #euiTabs (tabActivate)="onTabActivated($event)" (tabClose)="onTabClosed($event)">
+    <eui-tab #tab1 [isClosable]="isClosable">
+        <eui-tab-header>
+            <eui-tab-header-label>Tab 1</eui-tab-header-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            @if (tab1.isActive) {
+                <one-comp></one-comp>
+            }
+        </eui-tab-body>
+    </eui-tab>
+    <eui-tab #tab2 [isClosable]="isClosable">
+        <eui-tab-header>
+            <eui-tab-header-label>Tab 2</eui-tab-header-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            @if (tab2.isActive) {
+                <two-comp></two-comp>
+            }
+        </eui-tab-body>
+    </eui-tab>
+    <eui-tab #tab3 [isClosable]="isClosable">
+        <eui-tab-header>
+            <eui-tab-header-label>Tab 3</eui-tab-header-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            @if (tab3.isActive) {
+                <three-comp></three-comp>
+            }
+        </eui-tab-body>
+    </eui-tab>
+</eui-tabs>
+<button euiButton euiPrimary euiOutline euiSizeS (click)="toggleClosable()">Toggle closable (isClosable: {{ isClosable }})</button><br/>
+<br/>
+@if (isClosable) {
+    <button euiButton euiSizeS (click)="euiTabs.closeTab(0)">Close tab 0</button>&nbsp;
+    <button euiButton euiSizeS (click)="euiTabs.closeTab(1)">Close tab 1</button>&nbsp;
+    <button euiButton euiSizeS (click)="euiTabs.closeTab(2)">Close tab 2</button>&nbsp;
+}

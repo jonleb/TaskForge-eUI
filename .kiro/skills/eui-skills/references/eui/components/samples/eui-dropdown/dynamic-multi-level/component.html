@@ -1,0 +1,17 @@
+<p class="eui-u-text-paragraph">This sample shows how to create a multi-level dropdown based on a dynamic and/or hierarchical structure.</p>
+
+<div class="doc-sample-section-title">Open children on click (default)</div>
+<app-dynamic-dropdown-click [items]="items">
+    <button euiButton euiPrimary [attr.aria-label]="'Menu'">
+        <span euiLabel>Actions</span>
+        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+    </button>
+</app-dynamic-dropdown-click>
+
+<div class="doc-sample-section-title">Open children on hover with <code class="eui-u-text-code">isExpandOnHover</code></div>
+<app-dynamic-dropdown-hover [items]="items">
+    <button euiButton euiPrimary [attr.aria-label]="'Menu'">
+        <span euiLabel>Actions</span>
+        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+    </button>
+</app-dynamic-dropdown-hover>

@@ -1,0 +1,8 @@
+<div eclTabs (tabSelect)="onTabSelect($event)">
+    @for (tab of tabs; track tab.id) {
+    <div eclTab [id]="tab.id" [isActive]="tab.isActive">
+        <ecl-tab-label>{{ tab.label }}</ecl-tab-label>
+        {{ tab.content }}
+    </div>
+    }
+</div>

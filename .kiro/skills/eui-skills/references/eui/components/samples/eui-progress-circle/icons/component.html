@@ -1,0 +1,24 @@
+<p class="eui-u-text-paragraph">
+    The progress circle uses the <code class="eui-u-text-code">icon</code> input option to define an Svg icon, 
+    the <code class="eui-u-text-code">size</code> of the icon and the <code class="eui-u-text-code">fillColor</code> for its color.
+    <br>
+    Please refer to the <code class="eui-u-text-code">eui-icon-svg</code> component for options variants.
+</p>
+
+<div class="eui-u-flex eui-u-mt-2xl">
+    <eui-progress-circle [value]="25" euiSizeS icon="eui-home" />
+    <eui-progress-circle [value]="25" icon="eui-home" />
+    <eui-progress-circle [value]="25" euiSizeL  icon="eui-home" />
+</div>
+
+<div class="eui-u-flex eui-u-mt-2xl">
+    <eui-progress-circle [value]="25" euiSizeS colorType="info" icon="eui-home" />
+    <eui-progress-circle [value]="50" icon="eui-state-warning" fillColor="warning" size="l" />
+    <eui-progress-circle [value]="75" colorType="success"euiSizeL colorType="success" icon="eui-thumb-up:eui" fillColor="success" size="xl" />
+</div>
+
+<div class="eui-u-flex eui-u-mt-2xl">
+    <eui-progress-circle [value]="45" colorType="danger" icon="circle-dashed:regular" fillColor="danger" size="l" />
+    <eui-progress-circle [value]="45" colorType="info" icon="circle-dashed:regular" fillColor="info" size="l" />
+    <eui-progress-circle [value]="10" colorType="success" icon="circle-dashed:regular" fillColor="success" size="l" />
+</div>

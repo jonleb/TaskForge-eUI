@@ -1,0 +1,22 @@
+<button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover($event)">
+    <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+</button>
+<eui-popover #popover [title]="'This is the popover title'">
+    <eui-card>
+        <eui-card-media
+            imageUrl="./assets/images/cards/home-card-law.jpg">
+        </eui-card-media>
+        <eui-card-content style="max-height: 10rem; min-height: 10rem;">
+            <h5 class="eui-u-f-bold eui-u-mb-xs">Law | EUR Lex</h5>
+            The Official Journal of the European Union, EU case law and other resources for EU law
+        </eui-card-content>
+        <eui-card-footer>
+            <eui-card-footer-action-buttons class="eui-u-flex justify-content-end">
+                <button euiButton euiPrimary euiSizeS>
+                    <span euiLabel>Action</span>
+                    <eui-icon-svg icon="eui-chevron-right"></eui-icon-svg>
+                </button>
+            </eui-card-footer-action-buttons>
+        </eui-card-footer>
+    </eui-card>
+</eui-popover>

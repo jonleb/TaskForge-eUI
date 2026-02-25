@@ -1,0 +1,75 @@
+<div class="doc-sample-section-title">With position=%value</div>
+
+<p class="eui-u-text-paragraph">where <code class="eui-u-text-code">%value</code> is one of the following positions' values :</p>
+
+<table class="eui-table-default eui-table-default--responsive eui-table-default--compact">
+    <thead>
+        <tr>
+            <th>Position value</th>
+            <th>Spot</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>above</strong></td>
+            <td>Top</td>
+            <td>Always display above the element (default)</td>
+        </tr>
+        <tr>
+            <td><strong>below</strong></td>
+            <td>Bottom</td>
+            <td>Always display beneath the element</td>
+        </tr>
+        <tr>
+            <td><strong>left</strong></td>
+            <td>Left</td>
+            <td>Always display to the left of the element</td>
+        </tr>
+        <tr>
+            <td><strong>right</strong></td>
+            <td>Right</td>
+            <td>Always display to the right of the element</td>
+        </tr>
+        <tr>
+            <td><strong>before</strong></td>
+            <td>Left / Right</td>
+            <td>Display to the left in left-to-right layout and to the right in right-to-left layout</td>
+        </tr>
+        <tr>
+            <td><strong>after</strong></td>
+            <td>Right / Left</td>
+            <td>Display to the right in left-to-right layout and to the left in right-to-left layout</td>
+        </tr>
+    </tbody>
+</table>
+
+<br><br>
+
+<table style="margin-left: auto; margin-right: auto; width: 70%;">
+    <tr>
+        <td></td>
+        <td class="text-center"><button euiButton euiPrimary euiTooltip="Info about the action" [position]="'above'">Above</button></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td class="text-center">
+            <button euiButton euiPrimary euiTooltip="Info about the action" [position]="'left'">Left</button>
+            <br><br>
+            <button euiButton euiPrimary euiTooltip="Info about the action" [position]="'before'">Before</button>
+        </td>
+        <td></td>
+        <td class="text-center">
+            <button euiButton euiPrimary euiTooltip="Info about the action" [position]="'right'">Right</button>
+            <br><br>
+            <button euiButton euiPrimary euiTooltip="Info about the action" [position]="'after'">After</button>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td class="text-center"><button euiButton euiPrimary euiTooltip="Info about the action" [position]="'below'">Below</button></td>
+        <td></td>
+    </tr>
+</table>
+
+<br><br>

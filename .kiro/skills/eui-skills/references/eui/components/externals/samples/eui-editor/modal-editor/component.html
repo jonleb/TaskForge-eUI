@@ -1,0 +1,12 @@
+<form [formGroup]="form1">
+    <div euiInputGroup>
+        <label euiLabel>Edit this content from a modal dialog</label>
+        <eui-editor formControlName="editorContent"
+            [placeholder]="editorPlaceholder"
+            [format]="editorFormat"
+            [isReadOnly]="true">
+        </eui-editor>
+    </div>
+</form>
+
+<button euiButton euiOutline euiPrimary (click)="openDialog()">Edit in a modal Dialog</button>

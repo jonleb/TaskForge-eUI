@@ -1,0 +1,40 @@
+<!-- <eui-calendar hasMonthlyView> -->
+<eui-calendar>
+
+    <!-- Calendar Header -->
+    <eui-calendar-header (todayClicked)="onTodayClicked($event)"
+        [(currentDate)]="date"
+        [mode]="Mode.Monthly"
+        [startingDay]="startDayOfWeek()"
+        class="header" />
+    
+    <!-- Monthly Calendar with Custom Day Template -->
+    <eui-calendar-monthly [date]="date" [dayTemplate]="dayTemplate" [events]="events()" />
+    
+    <!-- Day Template Definition -->
+    <ng-template #dayTemplate let-day>
+        <div class="eui-u-flex eui-u-flex-column eui-u-flex-justify-content-between">
+            <div class="eui-u-flex eui-u-flex-column eui-u-flex-gap-s eui-u-flex-align-items-end">
+                <b>{{ day?.day }}</b>
+            </div>
+            <div [ngStyle]="{ minHeight: '9em' }"
+            class="eui-u-flex eui-u-flex-column">
+            @for (event of day?.events; track event.id) {
+                <span euiLabel>{{ event.label() }}</span>
+                <span euiLabel euiSublabel>{{ event?.subLabel() }}</span>
+                @if (event?.metadata) {
+                    <eui-chip [euiInfo]="event.type() === EventType.info"
+                        [euiPrimary]="event.type() === EventType.primary"
+                        [euiWarning]="event.type() === EventType.warning" euiSizeS>
+                        {{ event.metadata().location }}
+                    </eui-chip>
+                    <eui-status-badge>
+                        {{ event.metadata().specificContract }}
+                    </eui-status-badge>
+                }
+            }
+            </div>
+        </div>
+    </ng-template>
+
+</eui-calendar>

@@ -1,0 +1,6 @@
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">euiResizable</code> is used with the <code class="eui-u-text-code">euiResizablePosition="left"</code> displaying an handler for the eui-overlay to become resizable.</p>
+
+<button aria-haspopup="dialog" aria-label="Overlay trigger button" euiButton euiOutline euiPrimary (click)="toggleOverlay($event)">Overlay isActive = {{ isOverlayActive }}</button>
+
+<eui-overlay [isActive]="isOverlayActive" (activeState)="updateActiveState($event)" euiResizable euiResizablePosition="left"></eui-overlay>
+

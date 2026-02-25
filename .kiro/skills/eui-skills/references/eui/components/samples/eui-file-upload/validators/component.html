@@ -1,0 +1,95 @@
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">eui-file-upload</code> provides built-in ready to use validators to help user to validate their forms.</p>
+Usage :
+<code class="eui-u-text-code">import &#123; maxFilesValidator, maxSizeValidator, mimeTypeExtensionValidator &#125; from '&#64;eui/components/eui-file-upload';</code>
+
+<br/><br/>
+
+<table class="eui-table-default eui-table-default--compact">
+    <thead>
+        <tr>
+            <th>Validator</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>maxFilesValidator(number)</td>
+            <td>Validator that requires the maximum length of files that can be uploaded.</td>
+        </tr>
+        <tr>
+            <td>maxSizeValidator(number)</td>
+            <td>Validator that requires the maximum size (in bytes) of files that can be uploaded.</td>
+        </tr>
+        <tr>
+            <td>maxFileSizeValidator(number)</td>
+            <td>Validator that requires the maximum size (in bytes) per file that can be uploaded.</td>
+        </tr>
+        <tr>
+            <td>mimeTypeExtensionValidator(mimeType[])</td>
+            <td>Validator that requires an array of mime type that can be uploaded.</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="doc-sample-section-title">Max files</div>
+<form [formGroup]="form1" enctype="multipart/form-data">
+    <eui-file-upload formControlName="image" [progress]="progress1" hasDragArea>
+        <span class="eui-u-mr-xs"><button euiButton euiPrimary (click)="submit1()">Submit</button></span>
+    </eui-file-upload>
+    @if (form1.dirty && form1.get('image').invalid) {
+        <eui-feedback-message euiDanger>Max files (3) exceeded</eui-feedback-message>
+    }
+</form>
+
+<div class="doc-sample-section-title">Max sizes</div>
+<form [formGroup]="form2" enctype="multipart/form-data">
+    <eui-file-upload formControlName="image" [progress]="progress2" hasDragArea>
+        <span class="eui-u-mr-xs"><button euiButton euiPrimary (click)="submit2()">Submit</button></span>
+    </eui-file-upload>
+    @if (form2.dirty && form2.get('image').invalid) {
+        <eui-feedback-message euiDanger>Max size 300kB exceeded</eui-feedback-message>
+    }
+</form>
+
+<div class="doc-sample-section-title">Max file size</div>
+<form [formGroup]="form5" enctype="multipart/form-data">
+    <eui-file-upload formControlName="image" [progress]="progress5" hasDragArea>
+        <span class="eui-u-mr-xs"><button euiButton euiPrimary (click)="submit5()">Submit</button></span>
+    </eui-file-upload>
+    @if (form5.dirty && form5.get('image').invalid) {
+        <eui-feedback-message euiDanger>Max size of {{ form5.get('image').errors.maxFileSize }} exceeded on file index: {{ form5.get('image').errors.indexes.join(', ') }}</eui-feedback-message>
+    }
+</form>
+
+<div class="doc-sample-section-title">File extension</div>
+<form [formGroup]="form3" enctype="multipart/form-data">
+    <eui-file-upload formControlName="image" [progress]="progress3" hasDragArea>
+        <span class="eui-u-mr-xs"><button euiButton euiPrimary (click)="submit3()">Submit</button></span>
+    </eui-file-upload>
+    @if (form3.dirty && form3.get('image').invalid) {
+        <eui-feedback-message euiDanger>Mimetype not valid on file(s):
+            @if (form3.get('image').errors && form3.get('image').errors.invalidFileExtension) {
+                {{ form3.get('image').errors.invalidFileExtension.join(', ') }}
+            }<br/>
+            Please choose a jpg file
+        </eui-feedback-message>
+    }
+</form>
+
+<div class="doc-sample-section-title"> Async mimetype validator that checks the header signature </div>
+<form [formGroup]="form4" enctype="multipart/form-data">
+    <eui-file-upload formControlName="image" [progress]="progress4" hasDragArea>
+        <span class="eui-u-mr-xs"><button euiButton euiPrimary (click)="submit4()">Submit</button></span>
+    </eui-file-upload>
+    @if (isMimeTypeInvalid(form4.get('image'))) {
+        <eui-feedback-message euiDanger>Mimetype not valid on file(s):
+            @for (file of form4.get('image').errors.invalidMimeFileType; track $index) {
+                @for (f of file | keyvalue; track $index) {
+                    <p>
+                       The file with a name '{{ f.key }}' has a mimetype '{{ f.value}}' which is not allowed.
+                    </p>
+                }
+            }
+        </eui-feedback-message>
+    }
+</form>

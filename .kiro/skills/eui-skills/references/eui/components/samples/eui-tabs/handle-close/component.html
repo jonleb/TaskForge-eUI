@@ -1,0 +1,36 @@
+<eui-alert>
+    When the <code class="eui-u-text-code">isHandleCloseOnClose</code> option is enabled on a tab, clicking the close button emits an event instead of immediately closing the tab. It is then up to the user to handle any necessary processing before explicitly calling the function <code class="eui-u-text-code">closeTab</code> to close the tab.
+</eui-alert><br/>
+
+<eui-tabs #euiTabsHandleClose (tabClose)="onTabClose($event)">
+    <eui-tab #tab1 isClosable>
+        <eui-tab-header>
+            <eui-tab-header-label>Tab 1</eui-tab-header-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            @if (tab1.isActive) {
+                <one-comp></one-comp>
+            }
+        </eui-tab-body>
+    </eui-tab>
+    <eui-tab #tab2 isClosable isHandleCloseOnClose>
+        <eui-tab-header>
+            <eui-tab-header-label>Tab 2</eui-tab-header-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            @if (tab2.isActive) {
+                <two-comp></two-comp>
+            }
+        </eui-tab-body>
+    </eui-tab>
+    <eui-tab #tab3 isClosable>
+        <eui-tab-header>
+            <eui-tab-header-label>Tab 3</eui-tab-header-label>
+        </eui-tab-header>
+        <eui-tab-body>
+            @if (tab3.isActive) {
+                <three-comp></three-comp>
+            }
+        </eui-tab-body>
+    </eui-tab>
+</eui-tabs>

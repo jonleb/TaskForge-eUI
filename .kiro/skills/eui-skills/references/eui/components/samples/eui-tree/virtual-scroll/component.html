@@ -1,0 +1,14 @@
+<div class="row">
+    <p>Virtual scroll will be activated when there are more than 800 items in the first level of tree array.</p>
+    <p>It will add to scroll bar to the view, and It will check If It is scrolled to the bottom or top of the container, and will react.</p>
+    <p>You can see the max-height is defined in order to enable scroll bar at specific height.</p>
+    <p>
+        This behavior can be customized through the following options:<br/><br/>
+- <code class="eui-u-text-code">virtualScrollThreshold</code> (default: 800) – the minimum number of nodes required before virtual scrolling is enabled.<br/>
+- <code class="eui-u-text-code">virtualScrollPageSize</code> (default: 400) – the number of nodes rendered per page when virtual scrolling is active.<br/><br/>
+    </p>
+    <div class="col-md-6">
+        <div class="doc-sample-section-title">Single level</div>
+        <eui-tree [style.max-height]="'400px'" [nodes]="treeData" isMultiselect></eui-tree>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+<ecl-app (languageDismiss)="onLanguageDismiss($event)">
+    <ecl-site-header>
+        <div eclSiteHeaderEnvironment>Environment</div>
+
+        <ecl-site-header-action>
+            <ecl-site-header-language (languageClick)="onLanguageClick($event)">
+            </ecl-site-header-language>
+
+            <ecl-site-header-search (search)="onSearch($event)"></ecl-site-header-search>
+        </ecl-site-header-action>
+    </ecl-site-header>
+
+    <ecl-page-header>
+        <ecl-breadcrumb>
+            <ol eclBreadcrumbContainer>
+                <li eclBreadcrumbSegment href="http://ec.europa.eu">Home</li>
+                <li eclBreadcrumbSegment routerLink="about">About the European Commission</li>
+                <li eclBreadcrumbSegment routerLink="structure">Organisational structure</li>
+                <li eclBreadcrumbSegment routerLink="org">How the Commission is organized</li>
+                <li eclBreadcrumbSegment isCurrentPage>News</li>
+            </ol>
+        </ecl-breadcrumb>
+
+        <div eclPageHeaderInfo>
+            <ul eclPageHeaderMeta>
+                <li eclPageHeaderMetaItem>META INFO</li>
+                <li eclPageHeaderMetaItem>DD Month YYYY</li>
+            </ul>
+            <h1 eclPageHeaderTitle>Page title</h1>
+        </div>
+        <div eclPageHeaderDescriptionContainer>
+            <p eclPageHeaderDescription>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec ullamcorper mi. Morbi interdum
+                fermentum tempus. Nam nec rhoncus risus,<a eclLink routerLink="/">
+                eget dictum elit</a>. Vestibulum gravida tincidunt venenatis.
+            </p>
+        </div>
+    </ecl-page-header>
+
+    <div class="ecl-u-pv-xl">
+        <div class="ecl-container">
+            Content..
+        </div>
+    </div>
+    <ecl-site-footer isCore>
+        <div eclSiteFooterDescription>This site is managed by the Directorate-General for Communication</div>
+    </ecl-site-footer>
+</ecl-app>

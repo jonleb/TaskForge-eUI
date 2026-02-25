@@ -1,0 +1,142 @@
+<eui-alert>
+    In order to have long labels <strong>automatically truncated</strong> by ellipsis, the label should be surrounded by the <code class="eui-u-text-code">euiLabel</code> directive or by the <code class="eui-u-text-code">eui-label</code> tag.
+</eui-alert>
+
+<div class="doc-sample-section-title">Open children on click (default)</div>
+<eui-dropdown width="20rem">
+    <button euiButton euiPrimary [attr.aria-label]="'Menu'">
+        <span euiLabel>Actions</span>
+        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+    </button>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Menu item 1')" aria-label="item 1">
+            <span euiLabel>Menu item 1 with very very long label that will be automatically truncated by ellipsis</span>
+        </button>
+        <button euiDropdownItem [subDropdown]="country1" (click)="country1.openDropdown($any($event).target)" aria-label="country">Country</button>
+        <button euiDropdownItem [subDropdown]="car1" (click)="car1.openDropdown($any($event).target)" aria-label="car">Car</button>
+    </eui-dropdown-content>
+</eui-dropdown>
+<eui-dropdown #country1>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Austria')" aria-label="Austria">Austria</button>
+        <button euiDropdownItem [subDropdown]="belgium1" (click)="belgium1.openDropdown($any($event).target)" aria-label="Belgium">Belgium</button>
+        <button euiDropdownItem (click)="onClickItem('Bulgaria')" aria-label="Bulgaria">Bulgaria</button>
+        <button euiDropdownItem (click)="onClickItem('Croatia')" aria-label="Croatia">Croatia</button>
+        <button euiDropdownItem [subDropdown]="france1" (click)="france1.openDropdown($any($event).target)" aria-label="France">France</button>
+    </eui-dropdown-content>
+</eui-dropdown>
+<eui-dropdown #belgium1>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Antwerp')" aria-label="Antwerp">Antwerp</button>
+        <button euiDropdownItem [subDropdown]="brussels1" (click)="brussels1.openDropdown($any($event).target)" aria-label="Brussels">Brussels</button>
+        <button euiDropdownItem (click)="onClickItem('Namur')" aria-label="Namur">Namur</button>
+        <button euiDropdownItem (click)="onClickItem('Ostende')" aria-label="Ostende">Ostende</button>
+        <button euiDropdownItem (click)="onClickItem('Liège')" aria-label="Liège">Liège</button>
+    </eui-dropdown-content>
+</eui-dropdown>
+<eui-dropdown #brussels1>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Pl. du Lux.')" aria-label="Plux">Pl. du Lux.</button>
+        <button euiDropdownItem (click)="onClickItem('Pl. Flagey')" aria-label="Pl. Flagey">Pl. Flagey</button>
+        <button euiDropdownItem (click)="onClickItem('Rue Neuve')" aria-label="Rue Neuve">Rue Neuve</button>
+        <button euiDropdownItem (click)="onClickItem('Grand Place')" aria-label="Grand Place">Grand Place</button>
+        <button euiDropdownItem (click)="onClickItem('Sablon')" aria-label="Sablon">Sablon</button>
+        <button euiDropdownItem (click)="onClickItem('Bourse')" aria-label="Bourse">Bourse</button>
+        <button euiDropdownItem (click)="onClickItem('Gare du Midi')" aria-label="Gare du Midi">Gare du Midi</button>
+        <button euiDropdownItem (click)="onClickItem('Gare Centrale')" aria-label="Gare Centrale">Gare Centrale</button>
+        <button euiDropdownItem (click)="onClickItem('Parvis de St. Gilles')" aria-label="Parvis de St. Gilles">Parvis de St. Gilles</button>
+    </eui-dropdown-content>
+</eui-dropdown>
+<eui-dropdown #france1>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Lyon')" aria-label="Lyon">Lyon</button>
+        <button euiDropdownItem [subDropdown]="paris1" (click)="paris1.openDropdown($any($event).target)" aria-label="Paris">Paris</button>
+    </eui-dropdown-content>
+</eui-dropdown>
+<eui-dropdown #paris1>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Tour Eiffel')" aria-label="Tour Eiffel">Tour Eiffel</button>
+        <button euiDropdownItem (click)="onClickItem('Arc de Triomphe')" aria-label="Arc de Triomphe">Arc de Triomphe</button>
+    </eui-dropdown-content>
+</eui-dropdown>
+
+<eui-dropdown #car1>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Renault')" aria-label="Renault">Renault</button>
+        <button euiDropdownItem (click)="onClickItem('Peugeot')" aria-label="Peugeot">Peugeot</button>
+        <button euiDropdownItem (click)="onClickItem('BMW')" aria-label="BMW">BMW</button>
+        <button euiDropdownItem (click)="onClickItem('Fiat')" aria-label="Fiat">Fiat</button>
+        <button euiDropdownItem (click)="onClickItem('Seat')" aria-label="Seat">Seat</button>
+        <button euiDropdownItem (click)="onClickItem('Skoda')" aria-label="Skoda">Skoda</button>
+    </eui-dropdown-content>
+</eui-dropdown>
+
+
+<div class="doc-sample-section-title">Open children on hover with <code class="eui-u-text-code">isExpandOnHover</code></div>
+<eui-dropdown isExpandOnHover width="20rem">
+    <button euiButton euiPrimary [attr.aria-label]="'Menu'">
+        <span euiLabel>Actions</span>
+        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+    </button>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Menu item 1')" aria-label="item 1">
+            <eui-label>Menu item 1 with very very long label that will be automatically truncated by ellipsis</eui-label>
+        </button>
+        <button euiDropdownItem [subDropdown]="country2" (mouseenter)="country2.openDropdown($any($event).target)" aria-label="Country"><span euiLabel>Country</span></button>
+        <button euiDropdownItem [subDropdown]="car2" (mouseenter)="car2.openDropdown($any($event).target)" aria-label="Car"><span euiLabel>Car</span></button>
+    </eui-dropdown-content>
+</eui-dropdown>
+<eui-dropdown isExpandOnHover #country2>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Austria')" aria-label="Austria">Austria</button>
+        <button euiDropdownItem [subDropdown]="belgium2" (mouseenter)="belgium2.openDropdown($any($event).target)" aria-label="Belgium">Belgium</button>
+        <button euiDropdownItem (click)="onClickItem('Bulgaria')" aria-label="Bulgaria">Bulgaria</button>
+        <button euiDropdownItem (click)="onClickItem('Croatia')" aria-label="Croatia">Croatia</button>
+        <button euiDropdownItem [subDropdown]="france2" (mouseenter)="france2.openDropdown($any($event).target)" aria-label="France">France</button>
+    </eui-dropdown-content>
+</eui-dropdown>
+<eui-dropdown isExpandOnHover #belgium2>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Antwerp')" aria-label="Antwerp">Antwerp</button>
+        <button euiDropdownItem [subDropdown]="brussels1" (mouseenter)="brussels2.openDropdown($any($event).target)" aria-label="Brussels">Brussels</button>
+        <button euiDropdownItem (click)="onClickItem('Namur')" aria-label="Namur">Namur</button>
+        <button euiDropdownItem (click)="onClickItem('Ostende')" aria-label="Ostende">Ostende</button>
+        <button euiDropdownItem (click)="onClickItem('Liège')" aria-label="Liège">Liège</button>
+    </eui-dropdown-content>
+</eui-dropdown>
+<eui-dropdown isExpandOnHover #brussels2>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Pl. du Lux.')" aria-label="Plux">Pl. du Lux.</button>
+        <button euiDropdownItem (click)="onClickItem('Pl. Flagey')" aria-label="Pl. Flagey">Pl. Flagey</button>
+        <button euiDropdownItem (click)="onClickItem('Rue Neuve')" aria-label="Rue Neuve">Rue Neuve</button>
+        <button euiDropdownItem (click)="onClickItem('Grand Place')" aria-label="Grand Place">Grand Place</button>
+        <button euiDropdownItem (click)="onClickItem('Sablon')" aria-label="Sablon">Sablon</button>
+        <button euiDropdownItem (click)="onClickItem('Bourse')" aria-label="Bourse">Bourse</button>
+        <button euiDropdownItem (click)="onClickItem('Gare du Midi')" aria-label="Gare du Midi">Gare du Midi</button>
+        <button euiDropdownItem (click)="onClickItem('Gare Centrale')" aria-label="Gare Centrale">Gare Centrale</button>
+        <button euiDropdownItem (click)="onClickItem('Parvis de St. Gilles')" aria-label="Parvis de St. Gilles">Parvis de St. Gilles</button>
+    </eui-dropdown-content>
+</eui-dropdown>
+<eui-dropdown isExpandOnHover #france2>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Lyon')" aria-label="Lyon">Lyon</button>
+        <button euiDropdownItem [subDropdown]="paris2" (mouseenter)="paris2.openDropdown($any($event).target)" aria-label="Paris">Paris</button>
+    </eui-dropdown-content>
+</eui-dropdown>
+<eui-dropdown isExpandOnHover #paris2>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Tour Eiffel')" aria-label="Tour Eiffel">Tour Eiffel</button>
+        <button euiDropdownItem (click)="onClickItem('Arc de Triomphe')" aria-label="Arc de Triomphe">Arc de Triomphe</button>
+    </eui-dropdown-content>
+</eui-dropdown>
+
+<eui-dropdown isExpandOnHover #car2>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClickItem('Renault')" aria-label="Renault">Renault</button>
+        <button euiDropdownItem (click)="onClickItem('Peugeot')" aria-label="Peugeot">Peugeot</button>
+        <button euiDropdownItem (click)="onClickItem('BMW')" aria-label="BMW">BMW</button>
+        <button euiDropdownItem (click)="onClickItem('Fiat')" aria-label="Fiat">Fiat</button>
+        <button euiDropdownItem (click)="onClickItem('Seat')" aria-label="Seat">Seat</button>
+        <button euiDropdownItem (click)="onClickItem('Skoda')" aria-label="Skoda">Skoda</button>
+    </eui-dropdown-content>
+</eui-dropdown>

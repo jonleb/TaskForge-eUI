@@ -1,0 +1,13 @@
+<p class="eui-u-text-paragraph">Regarding replaceUrl, when true, navigates while replacing the current state in history. Navigate to /view.</p>
+<p class="eui-u-text-paragraph">Regarding queryParams, sets query parameters to the URL. Navigate to /view?page=1</p>
+<p class="eui-u-text-paragraph">Find out more on <a href="https://angular.io/api/router/NavigationExtras" class="eui-u-text-link">Angular Docs</a>.</p>
+<eui-breadcrumb>
+    <eui-breadcrumb-item link="/" iconSvgName="eui-home" ariaLabel="Home"></eui-breadcrumb-item>
+    <eui-breadcrumb-item label="Breadcrumb Item"
+                         link="/style-guide/layout-components/eui-breadcrumb"
+                         [navigationExtras]="{ replaceUrl: true, queryParams: { page: 1 }}">
+    </eui-breadcrumb-item>
+    <eui-breadcrumb-item label="Last Item"
+                         link="style-guide/layout-components/eui-breadcrumb#BreadcrumbItem">
+    </eui-breadcrumb-item>
+</eui-breadcrumb>

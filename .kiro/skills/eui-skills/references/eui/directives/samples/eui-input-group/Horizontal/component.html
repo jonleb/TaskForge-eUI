@@ -1,0 +1,297 @@
+<p class="eui-u-text-paragraph">The horizontal layout uses classic Bootstrap's <strong>Grid System</strong> for a responsive layout. It is <u>not applicable</u> when in <strong>mobile</strong> mode where the default vertical layout is applied.</p>
+
+<p class="eui-u-text-paragraph">It is achieved by using <code class="eui-u-text-code">euiInputGroup class="row"</code>.
+Then use the grid <code class="eui-u-text-code">col-%</code> classes to display and distribute the left column containing the label and the right column containing the form control.</p>
+
+<p class="eui-u-text-paragraph">Usage sample:</p>
+<pre class="eui-u-text-pre">
+    &lt;div euiInputGroup class="row"&gt;
+        &lt;div class="col-md-3"&gt;
+            Label
+        &lt;/div&gt;
+        &lt;div class="col-md-9"&gt;
+            Form control
+        &lt;/div&gt;
+    &lt;/div&gt;
+</pre>
+
+
+<form [formGroup]="form">
+
+    <div class="doc-sample-section-title">With required input field</div>
+    <div euiInputGroup class="row">
+        <div class="col-md-3">
+            <label for="horizontal" euiLabel euiRequired>Sample Label</label>
+        </div>
+        <div class="col-md-9">
+            <input euiInputText formControlName="inputHorizontal" id="horizontal" />
+            @if (form.get('inputHorizontal').hasError('required')) {
+                <eui-feedback-message euiDanger>
+                    This field is <strong>required</strong>
+                </eui-feedback-message>
+            }
+        </div>
+    </div>
+
+    <div class="doc-sample-section-title">With required input field and <strong>recommended</strong> label info icon + Tooltip text</div>
+    <div euiInputGroup class="row">
+        <div class="col-md-3">
+            <label for="horizontal-required" euiLabel euiRequired>
+                Sample Label
+                <eui-icon-svg icon="eui-state-info" class="eui-u-ml-2xs" fillColor="info" euiTooltip="This is the label info tooltip text"></eui-icon-svg>
+            </label>
+        </div>
+        <div class="col-md-9">
+            <input euiInputText formControlName="inputHorizontal" id="horizontal-required" />
+            @if (form.get('inputHorizontal').hasError('required')) {
+                <eui-feedback-message euiDanger>
+                    This field is <strong>required</strong>
+                </eui-feedback-message>
+            }
+        </div>
+    </div>
+
+    <div class="doc-sample-section-title">With required input field and <strong>custom</strong> label info icon + Tooltip text</div>
+    <div euiInputGroup class="row">
+        <div class="col-md-3">
+            <label for="horizontal-custom" euiLabel euiRequired>
+                Sample Label
+                <eui-icon-svg icon="eui-question-circle" class="eui-u-ml-2xs" fillColor="info" euiTooltip="This is the label info tooltip text" euiTooltipInfo></eui-icon-svg>
+            </label>
+        </div>
+        <div class="col-md-9">
+            <input euiInputText formControlName="inputHorizontal" id="horizontal-custom" />
+            @if (form.get('inputHorizontal').hasError('required')) {
+                <eui-feedback-message euiDanger>
+                    This field is <strong>required</strong>
+                </eui-feedback-message>
+            }
+        </div>
+    </div>
+
+    <div class="doc-sample-section-title">With a textarea field</div>
+    <div euiInputGroup class="row">
+        <div class="col-md-3">
+            <label id="textarea-label" euiLabel euiRequired>Tell us your story (euiMaxlength=4000)</label>
+        </div>
+        <div class="col-md-9">
+            <textarea euiTextArea aria-labelledby="textarea-label" name="story" rows="5" [euiMaxlength]="4000">It was a dark and stormy night...</textarea>
+        </div>
+    </div>
+
+    <div class="doc-sample-section-title">Label position top</div>
+    <p class="eui-u-text-paragraph">Add the <strong>eui-u-flex-align-items-start</strong> class name to <code class="eui-u-text-code">euiInputGroup</code></p>
+    <br>
+    <div euiInputGroup class="row eui-u-flex-align-items-start">
+        <div class="col-md-3">
+            <label id="label-top-position" euiLabel euiRequired>Tell us your story</label>
+        </div>
+        <div class="col-md-9">
+            <textarea euiTextArea aria-labelledby="label-top-position" name="story" rows="3">It was a dark and stormy night...</textarea>
+        </div>
+    </div>
+
+    <div class="doc-sample-section-title">Label position center (default)</div>
+    <div euiInputGroup class="row">
+        <div class="col-md-3">
+            <label euiLabel id="label-position-center" euiRequired>Tell us your story</label>
+        </div>
+        <div class="col-md-9">
+            <textarea euiTextArea aria-labelledby="label-position-center" name="story" rows="3">It was a dark and stormy night...</textarea>
+        </div>
+    </div>
+
+    <div class="doc-sample-section-title">Label position bottom</div>
+    <p class="eui-u-text-paragraph">Add the <strong>eui-u-flex-align-items-end</strong> class name to <code class="eui-u-text-code">euiInputGroup</code></p>
+    <br>
+    <div euiInputGroup class="row eui-u-flex-align-items-end">
+        <div class="col-md-3">
+            <label euiLabel euiRequired id="label-position-bottom">Tell us your story</label>
+        </div>
+        <div class="col-md-9">
+            <textarea euiTextArea name="story" rows="3" aria-labelledby="label-position-bottom">It was a dark and stormy night...</textarea>
+        </div>
+    </div>
+
+</form>
+
+
+<div class="doc-sample-section-title">Responsive Flexbox layout checkboxes</div>
+<div euiInputGroup class="row">
+    <div class="col-md-3 eui-u-mb-s">
+        <label euiLabel>Select preferred language(s)</label>
+    </div>
+    <div class="col-md-9">
+        <div class="eui-u-flex eui-u-flex-wrap">
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputCheckBox id="checkbox-h-lang-en" name="checkbox-h-lang-en" />
+                <label euiLabel for="checkbox-h-lang-en">English</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputCheckBox id="checkbox-h-lang-de" name="checkbox-h-lang-de" />
+                <label euiLabel for="checkbox-h-lang-de">deutsch</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputCheckBox id="checkbox-h-lang-fr" name="checkbox-h-lang-fr" checked="checked" />
+                <label euiLabel for="checkbox-h-lang-fr">french</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputCheckBox id="checkbox-h-lang-es" name="checkbox-h-lang-es" />
+                <label euiLabel for="checkbox-h-lang-es">spanish</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputCheckBox id="checkbox-h-lang-it" name="checkbox-h-lang-it" />
+                <label euiLabel for="checkbox-h-lang-it">italian</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputCheckBox id="checkbox-h-lang-el" name="checkbox-h-lang-el" />
+                <label euiLabel for="checkbox-h-lang-el">greek</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Responsive Flexbox layout radios</div>
+<div euiInputGroup class="row">
+    <div class="col-md-3 eui-u-mb-s">
+        <label euiLabel>How do you like your chocolate?</label>
+    </div>
+    <div class="col-md-9">
+        <div class="eui-u-flex eui-u-flex-wrap">
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputRadio id="choco-white" name="chocolate" value="choco-white">
+                <label euiLabel for="choco-white">white</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputRadio id="choco-milk" name="chocolate" value="choco-milk">
+                <label euiLabel for="choco-milk">milk</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputRadio id="choco-dark" name="chocolate" value="choco-dark">
+                <label euiLabel for="choco-dark">dark</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputRadio id="choco-nutty" name="chocolate" value="choco-nutty">
+                <label euiLabel for="choco-nutty">nutty</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputRadio id="choco-fudge" name="chocolate" value="choco-fudge">
+                <label euiLabel for="choco-fudge">fudge</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputRadio id="choco-caramel" name="chocolate" value="choco-caramel">
+                <label euiLabel for="choco-caramel">caramelicious</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputRadio id="choco-fruity" name="chocolate" value="choco-fruity">
+                <label euiLabel for="choco-fruity">fruity</label>
+            </div>
+            <div class="eui-u-inline-flex eui-u-mb-s">
+                <input euiInputRadio id="choco-liquor" name="chocolate" value="choco-liquor">
+                <label euiLabel for="choco-liquor">liquor</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Advanced horizontal reactive sample form</div>
+
+<eui-card class="eui-t-card-compact" euiSelected [euiHighlighted]="isEditActive">
+	<eui-card-header>
+		<eui-card-header-title>Traceability</eui-card-header-title>
+        <eui-card-header-right-content>
+            @if (!isEditActive) {
+                <div class="eui-u-flex">
+                    <button euiButton euiBasicButton euiPrimary euiOutline euiTooltip="Edit card content" aria-label="Edit card" class="eui-u-mr-m" (click)="onToggleEdit($event)">
+                        <eui-icon-svg icon="eui-edit" size="s" aria-label="Edit Icon"></eui-icon-svg>
+                        <span euiLabel>Edit</span>
+                    </button>
+                </div>
+            }
+            @if (isEditActive) {
+                <div class="eui-u-flex">
+                    <button euiButton euiSecondary class="eui-u-ml-s" (click)="onToggleEdit($event)">Cancel</button>
+                    <button euiButton euiPrimary class="eui-u-ml-s" (click)="onToggleEdit($event)">Save</button>
+                </div>
+            }
+        </eui-card-header-right-content>
+	</eui-card-header>
+	<eui-card-content>
+
+        <form [formGroup]="formValidation">
+
+            <div class="row">
+
+                <!-- ORIGIN -->
+                <div class="col-md-6">
+                    <div euiInputGroup class="row">
+                        <div class="col-md-6">
+                            <label euiLabel [euiRequired]="isEditActive">
+                                <span class="eui-u-c-info">Country of origin</span>
+                                <eui-icon-svg icon="eui-state-info" class="eui-u-ml-2xs" fillColor="info" euiTooltip="This is the tooltip text" euiTooltipInfo></eui-icon-svg>
+                            </label>
+
+                        </div>
+                        <div class="col-md-6">
+                            <select euiSelect formControlName="originCountry" [readonly]="!isEditActive">
+                                @for (country of countryOptions; track $index) {
+                                    <option [value]="country.value">{{country.label}}</option>
+                                }
+                            </select>
+                            @if (render('originCountry')) {
+                                <eui-feedback-message euiDanger>This field is <strong>required</strong></eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DESTINATION -->
+                <div class="col-md-6">
+                    <div euiInputGroup class="row">
+                        <div class="col-md-6">
+                            <label euiLabel [euiRequired]="isEditActive">
+                                <span class="eui-u-c-info">Country(-ies) of destination</span>
+                                <eui-icon-svg icon="eui-state-info" class="eui-u-ml-2xs" fillColor="info" euiTooltip="This is the tooltip text" euiTooltipInfo></eui-icon-svg>
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            @if (isEditActive) {
+                                <select euiSelect id="country-multi" name="country-multi" formControlName="destinationCountries" [readonly]="!isEditActive" multiple>
+                                    @for (country of countryOptions; track $index) {
+                                        <option [value]="country.value">
+                                            {{country.label}}
+                                        </option>
+                                    }
+                                </select>
+                            }
+                            <!-- READONLY: we display multiple selected values string -->
+                            @if (!isEditActive) {
+                                <span>
+                                    <strong>{{selectedDestinationCountries}}</strong>
+                                </span>
+                            }
+                            @if (render('destinationCountries')) {
+                                <eui-feedback-message euiDanger>This field is <strong>required</strong></eui-feedback-message>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <br>
+
+        <eui-fieldset label="Contact details of the manufacturer(s)">
+
+            <!-- DETAILS -->
+            @for (detail of manufacturersData; let i = $index, odd = $odd, even = $even; track $index) {
+                <div [ngClass]="{ odd: odd, even: even }">
+                    <sample-form-detail [formData]="detail" [isEditActive]="isEditActive"></sample-form-detail>
+                </div>
+            }
+
+        </eui-fieldset>
+    </eui-card-content>
+</eui-card>

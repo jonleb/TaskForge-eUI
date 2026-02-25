@@ -1,0 +1,34 @@
+<eui-alert>Open the browser console to observe events.</eui-alert><br />
+
+<table class="eui-table-default eui-table-default--compact">
+    <thead>
+        <tr>
+            <th>Event handler</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>popoverOpen</td>
+        <td>Triggered when the popover panel is opened.</td>
+    </tr>
+    <tr>
+        <td>popoverClose</td>
+        <td>Triggered when the popover panel is closed.</td>
+    </tr>
+    <tr>
+        <td>outsideClick</td>
+        <td>Triggered when a click is done outisde the popover panel.</td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+<button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover($event)">
+    <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+</button>
+
+<eui-popover #popover [title]="'This is popover title'" hasBackDrop (open)="onOpen()" (close)="onClose()" (outsideClick)="onOutsideClick()">
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+</eui-popover>

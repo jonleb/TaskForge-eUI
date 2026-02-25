@@ -1,0 +1,57 @@
+<p class="eui-u-text-paragraph">
+    The <code class="eui-u-text-code">isDropDownRightAligned</code> directive aligns the menu panel on the right of the opening element.
+    This is very handy when the dropdown is displayed at the right edge of the page/column/container.
+</p>
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-4">
+
+        <eui-dropdown isDropDownRightAligned>
+            <button euiButton euiPrimary aria-label="Menu">
+                <span euiLabel>Actions</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1">Menu item 1</button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2">Menu item 2</button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3">Menu item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col-md-4">
+
+        <eui-dropdown isDropDownRightAligned>
+            <button euiButton euiSecondary aria-label="Menu">
+                <span euiLabel>Actions</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1">Menu item 1</button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2">Menu item 2</button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3">Menu item 3</button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col-md-4">
+        <eui-dropdown isDropDownRightAligned>
+            <button euiButton euiPrimary euiOutline aria-label="Menu">
+                <span euiLabel>Actions</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem>
+                    <eui-icon-svg icon="eui-home" class="eui-u-mr-s"></eui-icon-svg>
+                    Menu item 1
+                </button>
+                <button euiDropdownItem>
+                    <eui-icon-svg icon="flag:regular" class="eui-u-mr-s"></eui-icon-svg>
+                    Menu item 1
+                </button>
+                <button euiDropdownItem>
+                    <eui-icon-svg icon="eui-add" class="eui-u-mr-s"></eui-icon-svg>
+                    Menu item 1
+                </button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>

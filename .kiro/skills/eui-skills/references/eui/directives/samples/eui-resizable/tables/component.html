@@ -1,0 +1,59 @@
+<div class="doc-sample-section-title">Using a simple table</div>
+
+<table class="eui-table-default eui-table-default--responsive eui-table-default--bordered">
+    <thead>
+        <tr>
+            <th euiResizable>Country</th>
+            <th euiResizable>Year</th>
+            <th euiResizable>ISO</th>
+            <th euiResizable>Population</th>
+            <th euiResizable>Spoken language(s)</th>
+            <th>Capital city</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (data of countries.slice(0, 10); track $index) {
+            <tr>
+                <td nowrap><span class="eui-flag-icon eui-flag-icon-{{ data.iso.toLowerCase() }} eui-u-mr-s"></span>{{ data.country }}</td>
+                <td>{{ data.year }}</td>
+                <td>{{ data.iso }}</td>
+                <td>{{ data.population }}</td>
+                <td>{{ data.languages }}</td>
+                <td>{{ data.capital }}</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<div class="doc-sample-section-title">Using the eui-table</div>
+
+<!-- The optional scrollable wrapper around the table allows dynamic scroll when the table is too big -->
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive euiTableBordered [data]="countries" [paginator]="paginator" (sortChange)="onSortChange($event)">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th euiResizable sortable sortOn="country">Country</th>
+                <th euiResizable sortable sortOn="year" defaultOrder sortOrder="desc">Year</th>
+                <th euiResizable sortable sortOn="iso">ISO</th>
+                <th euiResizable sortable sortOn="population">Population</th>
+                <th euiResizable sortable sortOn="capital">Capital city</th>
+                <th euiResizable>Official language(s)</th>
+                <th>Flag colors</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="Year">{{ row.year }}</td>
+                <td data-col-label="ISO">{{ row.iso }}</td>
+                <td data-col-label="Population">{{ row.population | number }}</td>
+                <td data-col-label="Capital city">{{ row.capital }}</td>
+                <td data-col-label="Offical language(s)">{{ row.languages }}</td>
+                <td data-col-label="Flag colors">{{ row.metadata.flagColors.join(' - ') }}</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator #paginator [pageSizeOptions]="[5, 10, 25, 50]" [pageSize]="5" (pageChange)="onPageChange($event)"></eui-paginator>

@@ -1,0 +1,60 @@
+<table class="eui-table-default eui-table-default--compact eui-u-mb-m">
+    <thead class="ng-star-inserted">
+    <tr class="ng-star-inserted">
+        <th>Event handler</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>refreshClick</td>
+            <td>Triggered when the 'refresh' link is clicked.</td>
+        </tr>
+        <tr>
+            <td>notificationsClick</td>
+            <td>Triggered when the bell icon is clicked and open the overlay.</td>
+        </tr>
+        <tr>
+            <td>viewAllClick</td>
+            <td>Triggered when the 'view all' link is clicked.</td>
+        </tr>
+        <tr>
+            <td>settingsClick</td>
+            <td>Triggered when the 'settings' icon is clicked.</td>
+        </tr>
+        <tr>
+            <td>markAllAsReadClick</td>
+            <td>Triggered when the 'mark all as read' link is clicked.</td>
+        </tr>
+        <tr>
+            <td>noNotificationFoundClick</td>
+            <td>Triggered when the 'no notification' link is clicked. (in combination with noNotificationFoundLink = true)</td>
+        </tr>
+        <tr>
+            <td>itemClick</td>
+            <td>Triggered when a notification is clicked.</td>
+        </tr>
+        <tr>
+            <td>itemMarkAsReadClick</td>
+            <td>Triggered when the 'mark as read' link of a notification is clicked.</td>
+        </tr>
+    </tbody>
+</table>
+
+<eui-toolbar>
+    <eui-toolbar-items>
+        <eui-toolbar-item>
+            <eui-notifications
+                [items]="items"
+                (refreshClick)="onRefreshClick()"
+                (notificationsClick)="onNotificationsClick()"
+                (viewAllClick)="onViewAllClick()"
+                (settingsClick)="onSettingsClick()"
+                (markAllAsReadClick)="onMarkAllAsReadClick()"
+                (noNotificationFoundClick)="onNoNotificationFoundClick()"
+                (itemClick)="onItemClick($event)"
+                (itemMarkAsReadClick)="onItemMarkAsReadClick($event)"/>
+        </eui-toolbar-item>
+    </eui-toolbar-items>
+</eui-toolbar>
+

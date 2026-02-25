@@ -1,0 +1,24 @@
+<div class="doc-sample-section-title">Multi-lines header</div>
+<p class="eui-u-text-paragraph">By <strong>default</strong>, the card header's title and subtitle are displayed on a single row and <strong>automatically truncated</strong> (using the text-overflow ellipsis property) when content exceeds the size of the container.
+   Title & subtitle's content can be displayed in multiple lines by using the following option:  <code class="eui-u-text-code">eui-card-header isHeaderMultilines</code>.
+</p>
+
+<div class="eui-u-mt-m eui-u-mb-m">
+    <eui-slide-toggle [isChecked]="isMulti" (slideToggleChange)="onChangeMulti($event)"></eui-slide-toggle> Multi-lines <strong>{{ isMulti }}</strong>
+</div>
+
+<eui-card euiCollapsible euiCollapsed>
+	<eui-card-header [isHeaderMultilines]="isMulti">
+        <eui-card-header-title>
+            {{ cardTitle }}
+        </eui-card-header-title>
+        <eui-card-header-subtitle>
+            {{ cardSubtitle }}
+        </eui-card-header-subtitle>
+    </eui-card-header>
+	<eui-card-content>
+        <div style="overflow-y: auto;" tabindex="0">
+            I am the content of the card container...
+        </div>
+    </eui-card-content>
+</eui-card>

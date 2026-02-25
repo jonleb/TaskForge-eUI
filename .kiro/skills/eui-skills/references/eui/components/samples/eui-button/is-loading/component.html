@@ -1,0 +1,48 @@
+<p class="eui-u-text-paragraph">Action buttons with a loading state visual is used in some cases to improve better user experience when an action takes too long time to complete.
+
+<div class="eui-u-flex eui-u-flex-wrap">
+    <button euiButton euiSecondary class="eui-u-mb-s eui-u-mr-s">
+        @if (isLoading) {
+            <eui-icon-svg isLoading></eui-icon-svg>
+        }
+        Loading secondary...
+    </button>
+
+    <button euiButton euiPrimary class="eui-u-mb-s eui-u-mr-s">
+        @if (isLoading) {
+            <eui-icon-svg isLoading></eui-icon-svg>
+        }
+        Loading...
+    </button>
+
+    <button euiButton euiInfo class="eui-u-mb-s eui-u-mr-s">
+        @if (isLoading) {
+            <eui-icon-svg isLoading></eui-icon-svg>
+        }
+        Loading info...
+    </button>
+
+    <button euiButton euiSuccess class="eui-u-mb-s eui-u-mr-s">
+        @if (isLoading) {
+            <eui-icon-svg isLoading></eui-icon-svg>
+        }
+        Loading success...
+    </button>
+
+    <button euiButton euiWarning class="eui-u-mb-s eui-u-mr-s">
+        @if (isLoading) {
+            <eui-icon-svg isLoading></eui-icon-svg>
+        }
+        Loading warning...
+    </button>
+
+    <button euiButton euiCTAButton class="eui-u-mb-s eui-u-mr-s">
+        @if (isLoading) {
+            <eui-icon-svg isLoading></eui-icon-svg>
+        }
+        Loading call to action...
+    </button>
+</div>
+
+<br>
+<button euiButton euiPrimary euiOutline (click)="toggleLoading()">Toggle loading state</button>

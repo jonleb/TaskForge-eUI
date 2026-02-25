@@ -1,0 +1,64 @@
+<div class="row">
+    <div class="col-md-7">
+        <div class="doc-sample-section-title">Reactive forms</div>
+        <form [formGroup]="form">
+            <div euiInputGroup formGroupName="myCheckboxGroup">
+                <label euiLabel euiRequired>Choose preferred language(s)</label>
+                @for (checkbox of checkboxOptions; let i = $index; track $index) {
+                    <div class="eui-u-inline-flex eui-u-mb-s">
+                        <input euiInputCheckBox name="checkbox" id="reactive-checkid-{{i}}" formControlName="{{checkbox.controlName}}" [readonly]="isReadonly"/>
+                        <label for="reactive-checkid-{{i}}">{{checkbox.label}}</label>
+                    </div>
+                }
+                @if (!isReadonly && myCheckboxGroup?.errors?.requireCheckboxesToBeChecked && myCheckboxGroup.touched) {
+                    <eui-feedback-message euiDanger>At least one checkbox is required to be checked</eui-feedback-message>
+                }
+            </div>
+
+            <div euiInputGroup>
+                <label euiLabel euiRequired>Single mandatory checkbox</label>
+
+                <div class="eui-u-inline-flex">
+                    <input euiInputCheckBox id="reactive-checkbox-agree" formControlName="mySingleCheckbox" [readonly]="isReadonly"/>
+                    <label for="reactive-checkbox-agree">I agree</label>
+                </div>
+                @if (!isReadonly && render('mySingleCheckbox')) {
+                    <eui-feedback-message euiDanger>This checkbox is mandatory and must be checked</eui-feedback-message>
+                }
+            </div>
+
+            <div euiInputGroup formGroupName="myBooleanCheckboxGroup">
+                <label euiLabel>Custom checkboxes acting like radios</label>
+                <div class="eui-u-flex eui-u-flex-wrap">
+                    <input euiInputCheckBox id="reactive-checkbox-boolean-y" formControlName="myBooleanCheckboxY" [readonly]="isReadonly"/>
+                    <label for="reactive-checkbox-boolean-y">Yes</label>
+
+                    <input euiInputCheckBox id="reactive-checkbox-boolean-n" formControlName="myBooleanCheckboxN" [readonly]="isReadonly"/>
+                    <label for="reactive-checkbox-boolean-n">No</label>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-5">
+        <div class="doc-sample-section-title">Reactive Form content</div>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="code" style="overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre" tabindex="0">{{ form.getRawValue() | json}}</pre>
+                <div class="eui-u-flex">
+                    <div class="eui-u-f-bold eui-u-mr-m">Form status</div>
+                    <eui-badge euiSizeS [euiSuccess]="form.status === 'VALID'" [euiDanger]="form.status !== 'VALID'">
+                        {{ form.status }}
+                    </eui-badge>
+                </div>
+            </div>
+        </div>
+
+        <div class="eui-u-flex eui-u-flex-wrap eui-u-mt-m">
+            <button euiButton euiPrimary (click)="submit()" class="eui-u-mr-m eui-u-mb-m">Submit form</button>
+            <button euiButton euiPrimary euiOutline (click)="onToggleReadonly()" class="eui-u-mr-m eui-u-mb-m">Toggle Readonly</button>
+            <button euiButton euiPrimary euiOutline (click)="onToggleDisabled()" class="eui-u-mr-m eui-u-mb-m">Toggle Disabled</button>
+            <button euiButton euiPrimary euiOutline (click)="changeReactiveValues()" class="eui-u-mr-m eui-u-mb-m">Change value</button>
+        </div>
+    </div>
+</div>

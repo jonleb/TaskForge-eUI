@@ -1,0 +1,50 @@
+<eui-alert>When this option is set, any table cell element with a click event must use the <code class="eui-u-text-code">event.stopPropagation()</code>. <br> See the source code for examples. </eui-alert><br/>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive [data]="data" [paginator]="paginator" (rowsSelect)="onRowsSelect($event)">
+        <ng-template euiTemplate="header">
+            <tr isHeaderSelectable>
+                <th>Country</th>
+                <th>eui-slide-toggle</th>
+                <th>eui-dropdown</th>
+                <th>HTML Link</th>
+                <th>Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr [isDataSelectable]="row" isKeyboardSelectable>
+                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                <td data-col-label="euis-lide-toggle"><eui-slide-toggle (click)="onSlideToggleClick($event)" (slideToggleChange)="onChange($event)"></eui-slide-toggle></td>
+                <td data-col-label="eui-dropdown">
+                    <eui-dropdown>
+                        <eui-icon-button icon="dots-three-vertical:regular" ariaLabel="Menu" euiTooltip="Menu"/>
+                        <eui-dropdown-content>
+                            <div euiList>
+                                <button euiListItem>Menu item 1</button>
+                                <button euiListItem>Menu item 2</button>
+                                <button euiListItem>Menu item 3</button>
+                            </div>
+                        </eui-dropdown-content>
+                    </eui-dropdown>
+                </td>
+                <td data-col-label="Links">
+                    <a href="https://ec.europa.eu" target="_blank" (click)="onLinkClick($event)" class="eui-u-text-link-external">Link</a>
+                </td>
+                <td data-col-label="Actions">
+                    <div class="eui-u-flex">
+                        <eui-icon-button icon="eui-arrow-right" size="s" euiInfo euiTooltip="View detail" euiTooltipInfo (click)="onRowDetail(row, $event)" aria-label="View detail"/>
+                        <eui-icon-button icon="eui-edit" size="s" euiPrimary euiTooltip="Edit" euiTooltipPrimary (click)="onRowEdit(row, $event)" aria-label="Edit"/>
+                        <eui-icon-button icon="eui-trash" size="s" euiDanger euiTooltip="Delete" euiTooltipDanger (click)="onRowDelete(row, $event)" aria-label="Delete"/>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="6">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator #paginator></eui-paginator>

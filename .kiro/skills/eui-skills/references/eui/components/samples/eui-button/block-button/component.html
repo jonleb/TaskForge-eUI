@@ -1,0 +1,111 @@
+<p>
+    Block buttons are displayed using the full width of their parent container using the <code class="eui-u-text-code">euiBlockButton</code> input option.
+</p>
+
+<div class="doc-sample-section-title">Within the page body container</div>
+<button euiButton euiBlockButton class="eui-u-mr-s eui-u-mb-s" euiPrimary>Primary</button>
+<button euiButton euiBlockButton class="eui-u-mr-s eui-u-mb-s" euiSecondary>Secondary</button>
+
+
+<div class="doc-sample-section-title">Within a 50% width responsive container</div>
+<div class="row">
+    <div class="col-md-6">
+        <button euiButton euiBlockButton euiPrimary>Primary</button>
+        <br><br>
+        <button euiButton euiBlockButton euiSecondary>Secondary</button>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Within a multi-columns responsive container using cards</div>
+<div class="row">
+    <div class="col-xl-3 col-md-6 eui-u-mb-m">
+        <eui-card euiPrimary>
+            <eui-card-header>
+                <eui-card-header-title>Primary</eui-card-header-title>
+            </eui-card-header>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons>
+                    <button euiButton euiBlockButton euiPrimary>Primary</button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+    <div class="col-xl-3 col-md-6 eui-u-mb-m">
+        <eui-card euiSecondary>
+            <eui-card-header>
+                <eui-card-header-title>Secondary</eui-card-header-title>
+            </eui-card-header>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons>
+                    <button euiButton euiBlockButton euiSecondary>Secondary</button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+    <div class="col-xl-3 col-md-6 eui-u-mb-m">
+        <eui-card euiInfo>
+            <eui-card-header>
+                <eui-card-header-title>Info</eui-card-header-title>
+            </eui-card-header>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons>
+                    <button euiButton euiBlockButton euiInfo>Info</button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+    <div class="col-xl-3 col-md-6 eui-u-mb-m">
+        <eui-card euiSuccess>
+            <eui-card-header>
+                <eui-card-header-title>Success</eui-card-header-title>
+            </eui-card-header>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons>
+                    <button euiButton euiBlockButton euiSuccess>Success</button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+    <div class="col-xl-3 col-md-6 eui-u-mb-m">
+        <eui-card euiWarning>
+            <eui-card-header>
+                <eui-card-header-title>Warning</eui-card-header-title>
+            </eui-card-header>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons>
+                    <button euiButton euiBlockButton euiWarning>Warning</button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+    <div class="col-xl-3 col-md-6 eui-u-mb-m">
+        <eui-card euiDanger>
+            <eui-card-header>
+                <eui-card-header-title>Danger</eui-card-header-title>
+            </eui-card-header>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons>
+                    <button euiButton euiBlockButton euiDanger>Danger</button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+    <div class="col-xl-3 col-md-6 eui-u-mb-m">
+        <eui-card>
+            <eui-card-header>
+                <eui-card-header-title>Call to action</eui-card-header-title>
+            </eui-card-header>
+            <eui-card-footer>
+                <eui-card-footer-action-buttons>
+                    <button euiButton euiBlockButton euiCTAButton>Call to action</button>
+                </eui-card-footer-action-buttons>
+            </eui-card-footer>
+        </eui-card>
+    </div>
+</div>
+
+<div class="doc-sample-section-title">Content positioning</div>
+<button euiButton euiBlockButton euiPrimary euiStart>euiStart</button>
+<br><br>
+<button euiButton euiBlockButton euiSecondary euiEnd>euiEnd</button>

@@ -1,0 +1,21 @@
+<eui-header>
+    <eui-header-logo></eui-header-logo>
+    <eui-language-selector></eui-language-selector>
+    <eui-header-search (searchClick)="onSearchClicked($event)"></eui-header-search>
+</eui-header>
+
+<div class="doc-sample-section-title">With user profile</div>
+
+<eui-header>
+    <eui-header-logo></eui-header-logo>
+    <eui-header-user-profile></eui-header-user-profile>
+    <eui-language-selector></eui-language-selector>
+    <eui-header-search (searchClick)="onSearchClicked($event)"></eui-header-search>
+</eui-header>
+
+<eui-header>
+    <eui-header-logo></eui-header-logo>
+    <eui-header-user-profile isShowAvatarInitials [isShowUserInfos]="false"></eui-header-user-profile>
+    <eui-language-selector></eui-language-selector>
+    <eui-header-search (searchClick)="onSearchClicked($event)"></eui-header-search>
+</eui-header>

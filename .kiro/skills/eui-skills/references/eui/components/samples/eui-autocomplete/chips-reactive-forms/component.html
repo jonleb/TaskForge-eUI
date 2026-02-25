@@ -1,0 +1,99 @@
+<eui-alert>
+    <code class="eui-u-text-code">label</code> tag surrounding the label of the field can be linked, through
+    <code class="eui-u-text-code">for</code> attribute, to <code
+    class="eui-u-text-code">eui-autocomplete</code> with <code class="eui-u-text-code">inputId</code>
+    option.
+</eui-alert>
+
+<p>The source code of the used service can be found <a
+    class="eui-u-text-link-external"
+    href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-autocomplete/samples/reactive-forms/services"
+    target="_blank">here</a>.<p>
+
+<div class="doc-sample-section-title">Reactive Form Support</div>
+<form [formGroup]="formChips">
+
+    <div euiInputGroup>
+        <label [euiRequired]="true" euiLabel for="autocomplete-3">Select fruits</label>
+        <eui-autocomplete
+            [autocompleteData]="autocompleteDataFormAutocompleteChips"
+            [hasChips]="true"
+            [isChipsRemovable]="formChips.controls['autoCompleteChips'].status !== 'DISABLED'"
+            [isReadonly]="isReadOnly"
+            formControlName="autoCompleteChips"
+            inputId="autocomplete-3"
+            isChipsSorted
+            placeholder="Select a fruit">
+        </eui-autocomplete>
+        @if (renderFormChips('autoCompleteChips')) {
+            <eui-feedback-message euiDanger>
+                Please choose at least 2 fruits and maximum 4
+            </eui-feedback-message>
+        }
+    </div>
+    <br />
+
+    <button (click)="onResetFormChips()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Reset
+    </button>
+    <button (click)="onDisableFieldChips()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Toggle
+        disabled
+    </button>
+    <button (click)="onReadOnlyFieldChips()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Toggle
+        readonly
+    </button>
+    <button (click)="onPatchValueChips()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Patch
+        value
+    </button>
+    <button (click)="onSubmitChips()" class="eui-u-mr-xs" euiButton euiPrimary type="button">Submit</button>
+
+    <br /><br />
+
+    <pre class="eui-u-text-pre">{{ formChips.value | json }}</pre>
+</form>
+
+<div class="doc-sample-section-title">Reactive Form Support with async data</div>
+<eui-alert>
+    To work properly with async datas, <code class="eui-u-text-code">eui-autocomplete</code> needs to have <code
+    class="eui-u-text-code">isAsync</code> option activated.
+</eui-alert><br />
+<form [formGroup]="formAsyncChips">
+    <div euiInputGroup>
+        <label [euiRequired]="true" euiLabel for="autocomplete-4">Select countries</label>
+        <eui-autocomplete
+            (inputChange)="onInputChanged($event)"
+            [autocompleteData]="itemsServiceDataChips"
+            [hasChips]="true"
+            [isChipsRemovable]="formAsyncChips.controls['autoCompleteChips'].status !== 'DISABLED'"
+            [isFreeValueAllowed]="true"
+            [isLoading]="itemsDataLoadingChips"
+            [isReadonly]="isReadOnlyFormAsync"
+            formControlName="autoCompleteChips"
+            inputId="autocomplete-4"
+            isAsync
+            placeholder="EU country name">
+        </eui-autocomplete>
+        @if (renderFormAsyncChips('autoCompleteChips')) {
+            <eui-feedback-message euiDanger>
+                Please choose at least 2 countries and maximum 4
+            </eui-feedback-message>
+        }
+    </div>
+    <br />
+
+    <button (click)="onResetFormAsyncChips()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Reset
+    </button>
+    <button (click)="onDisableFieldFormAsyncChips()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">
+        Toggle disabled
+    </button>
+    <button (click)="onReadOnlyFieldFormAsync()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">
+        Toggle readonly
+    </button>
+    <button (click)="onPatchValueFormAsync()" class="eui-u-mr-xs" euiButton euiOutline euiPrimary type="button">Patch
+        value
+    </button>
+    <button (click)="onSubmitFormAsyncChips()" class="eui-u-mr-xs" euiButton euiPrimary type="button">Submit</button>
+
+    <br /><br />
+
+    <pre>{{ formAsyncChips.value | json }}</pre>
+</form>

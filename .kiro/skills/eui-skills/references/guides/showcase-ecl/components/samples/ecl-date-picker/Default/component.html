@@ -1,0 +1,15 @@
+<div eclFormGroup>
+    <div eclFormLabel for="datepicker-1" id="datepicker-label-1" isRequired>Label</div>
+    <div eclHelpBlock id="datepicker-helper-1">This is the input's helper text.</div>
+    <input
+        id="datepicker-1"
+        eclTextInput
+        eclDatePicker
+        aria-describedby="datepicker-helper-1"
+        aria-label="Date picker"
+        [yearRange]="10"
+        format="DD-MM-YYYY"
+        eclSize="s"
+        placeholder="DD-MM-YYYY"
+        (datePicked)="onDatePicked($event)"/>
+</div>

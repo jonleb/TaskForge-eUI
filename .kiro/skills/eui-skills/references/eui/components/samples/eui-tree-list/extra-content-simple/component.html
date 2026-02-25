@@ -1,0 +1,85 @@
+<div class="doc-sample-section-title">with custom content</div>
+
+<eui-tree-list [isExpanded]="true">
+    <eui-tree-list-item ariaLabel="custom content">
+        <eui-tree-list-item-content>
+            custom content
+        </eui-tree-list-item-content>
+
+        <eui-tree-list [isExpanded]="true">
+            <eui-tree-list-item ariaLabel="custom content">
+                <eui-tree-list-item-content>
+                    custom content
+                </eui-tree-list-item-content>
+            </eui-tree-list-item>
+        </eui-tree-list>
+    </eui-tree-list-item>
+</eui-tree-list>
+
+
+
+<div class="doc-sample-section-title">with custom content - custom label</div>
+
+<eui-tree-list [isExpanded]="true">
+    <eui-tree-list-item ariaLabel="Sample label">
+        <eui-tree-list-item-label>
+            <eui-label>
+                Sample label
+                <eui-label euiSublabel>
+                    <div class="eui-u-flex">
+                        <eui-icon-svg icon="user:regular" size="s"></eui-icon-svg>
+                        <span class="eui-u-ml-xs">This is a custom sub-label content</span>
+                    </div>
+                </eui-label>
+            </eui-label>
+        </eui-tree-list-item-label>
+
+        <eui-tree-list [isExpanded]="true">
+            <eui-tree-list-item ariaLabel="Sample label">
+                <eui-tree-list-item-label>
+                    <eui-label>
+                        Sample label
+                        <eui-label euiSublabel>
+                            <div class="eui-u-flex">
+                                <eui-icon-svg icon="user:regular" size="s"></eui-icon-svg>
+                                <span class="eui-u-ml-xs">This is a custom sub-label content</span>
+                            </div>
+                        </eui-label>
+                    </eui-label>
+                </eui-tree-list-item-label>
+            </eui-tree-list-item>
+        </eui-tree-list>
+    </eui-tree-list-item>
+</eui-tree-list>
+
+
+
+<div class="doc-sample-section-title">with custom content - advanced example</div>
+
+<eui-tree-list [isExpanded]="true">
+    <eui-tree-list-item ariaLabel="Custom label">
+        <eui-tree-list-item-content>
+            <div class="eui-u-flex">
+                <eui-icon-svg icon="user:regular"></eui-icon-svg>
+                <span euiLabel class="eui-u-ml-m"><strong>This is a custom label</strong></span>
+                <div class="eui-u-ml-auto">
+                    <button euiButton euiSecondary>action button</button>
+                </div>
+            </div>
+        </eui-tree-list-item-content>
+
+        <eui-tree-list [isExpanded]="true">
+            <eui-tree-list-item ariaLabel="Custom label">
+                <eui-tree-list-item-content>
+                    <div class="eui-u-flex">
+                        <eui-icon-svg icon="user:regular"></eui-icon-svg>
+                        <span euiLabel class="eui-u-ml-m"><strong>This is a custom label</strong></span>
+                        <div class="eui-u-ml-auto">
+                            <button euiButton euiBasicButton euiSecondary euiSizeS>action button</button>
+                        </div>
+                    </div>
+                </eui-tree-list-item-content>
+            </eui-tree-list-item>
+        </eui-tree-list>
+    </eui-tree-list-item>
+</eui-tree-list>

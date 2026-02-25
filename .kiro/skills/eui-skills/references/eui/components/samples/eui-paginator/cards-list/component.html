@@ -1,0 +1,42 @@
+@for (item of paginatedItems; track $index) {
+    <div>
+        <eui-card euiCollapsible euiCollapsed class="eui-u-mb-m">
+            <eui-card-header>
+                <eui-card-header-title>{{ item.country }}</eui-card-header-title>
+                <eui-card-header-subtitle>Reference data: {{ item.year }}</eui-card-header-subtitle>
+                <eui-card-header-right-content>
+                    <eui-chip euiSecondary euiOutline euiRounded euiSizeS class="eui-u-mr-s">
+                        <span euiLabel>Population:&nbsp;{{ item.population | number }}</span>
+                    </eui-chip>
+                </eui-card-header-right-content>
+            </eui-card-header>
+            <eui-card-content>
+                <div class="eui-u-flex" tabindex="0" style="overflow-y: auto;">
+                    <h4 class="eui-u-text-h4"><strong>{{ item.country }}</strong>
+                        <span euiBadge class="eui-u-ml-m">{{ item.iso }}</span>
+                    </h4>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <span class="eui-flag-icon eui-flag-icon-{{ item.iso.toLowerCase() }}" style="border: 1px groove silver; height: 5rem; width: 8rem;"></span>
+                    </div>
+                    <div class="col-md-8">
+                        <span>Capital city : <strong>{{ item.capital }}</strong></span><br>
+                        <span>Population : <strong>{{ item.population | number }}</strong></span><br>
+                        <span>Year : <strong>{{ item.year }}</strong></span><br>
+                        <span>Languages : <strong>{{ item.languages }}</strong></span><br>
+                    </div>
+                </div>
+            </eui-card-content>
+        </eui-card>
+    </div>
+}
+
+<eui-paginator
+    [pageSize]="pageSize"
+    [page]="0"
+    [length]="dataSource.length"
+    [hasPageNumberNavigation]="true"
+    [nbPageNumberNavigation]="5"
+    (pageChange)="onPageChange($event)">
+</eui-paginator>

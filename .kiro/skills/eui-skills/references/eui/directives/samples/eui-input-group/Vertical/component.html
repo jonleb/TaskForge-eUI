@@ -1,0 +1,45 @@
+<p class="eui-u-text-paragraph">The <strong>vertical layout</strong> is the default and recommended layout using the <code class="eui-u-text-code">euiInputGroup</code> wrapper directive.
+    It is also the default layout applied when in mobile mode.</p>
+
+<form [formGroup]="form">
+
+    <div class="doc-sample-section-title">With required input field</div>
+    <div euiInputGroup>
+        <label for="vertical-input" euiLabel euiRequired>Sample label</label>
+        <input euiInputText formControlName="inputVertical" id="vertical-input" />
+        @if (form.get('inputVertical').hasError('required')) {
+            <eui-feedback-message euiDanger>
+                This field is <strong>required</strong>
+            </eui-feedback-message>
+        }
+    </div>
+
+    <div class="doc-sample-section-title">With required input field and <strong>recommended</strong> label info icon + Tooltip text</div>
+    <div euiInputGroup>
+        <label for="required-input" euiLabel euiRequired>
+            Sample label
+            <eui-icon-svg icon="eui-state-info" class="eui-u-ml-2xs" fillColor="info" euiTooltip="This is the label info tooltip text"></eui-icon-svg>
+        </label>
+        <input euiInputText formControlName="inputVertical" id="required-input" />
+        @if (form.get('inputVertical').hasError('required')) {
+            <eui-feedback-message euiDanger>
+                This field is <strong>required</strong>
+            </eui-feedback-message>
+        }
+    </div>
+
+    <div class="doc-sample-section-title">With required input field and <strong>custom</strong> label info icon + Tooltip text</div>
+    <div euiInputGroup>
+        <label for="custom" euiLabel euiRequired>
+            Sample label
+            <eui-icon-svg icon="eui-question-circle" class="eui-u-ml-2xs" fillColor="info" euiTooltip="This is the label info tooltip text" euiTooltipInfo></eui-icon-svg>
+        </label>
+        <input euiInputText formControlName="inputVertical" id="custom" />
+        @if (form.get('inputVertical').hasError('required')) {
+            <eui-feedback-message euiDanger>
+                This field is <strong>required</strong>
+            </eui-feedback-message>
+        }
+    </div>
+
+</form>

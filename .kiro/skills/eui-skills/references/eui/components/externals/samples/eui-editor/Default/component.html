@@ -1,0 +1,10 @@
+<form [formGroup]="form">
+    <eui-editor formControlName="emptyContent" [placeholder]="placeholder"></eui-editor>
+
+    <div class="eui-showcase-demo eui-u-mt-m">
+        <div class="doc-sample-section-title">Editor's contents</div>
+        <div class="code" tabindex="0">
+            <pre class="eui-u-text-pre">{{ form.get('emptyContent').value }}</pre>
+        </div>
+    </div>
+</form>

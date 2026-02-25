@@ -1,0 +1,27 @@
+<div euiInputGroup>
+    <label euiLabel for="label_input_icon">Clickable Icon (Password hide/view scenario)</label>
+    <div class="eui-u-flex" style="position: relative;">
+        <input euiInputText
+               [type]="type"
+               id="label_input_icon"
+               value="Input text sample"
+               [euiIcon]="metadata()"
+               (iconClick)="iconClick()"
+               [readonly]="readonly"/>
+    </div>
+</div>
+
+<div class="eui-u-flex eui-u-flex-wrap">
+    <div class="eui-u-flex eui-u-mr-s">
+        <span class="eui-u-mr-s">Hidden</span>
+        <eui-slide-toggle (slideToggleChange)="change()"/><br/>
+    </div>
+    <div class="eui-u-flex eui-u-mr-s">
+        <span class="eui-u-mr-s">Clickable</span>
+        <eui-slide-toggle (slideToggleChange)="changeClickable()" [isChecked]="metadata()?.clickable" /><br/>
+    </div>
+    <div class="eui-u-flex eui-u-mr-s">
+        <span class="eui-u-mr-s">Read only</span>
+        <eui-slide-toggle (slideToggleChange)="readonly = !readonly" [isChecked]="readonly" /><br/>
+    </div>
+</div>

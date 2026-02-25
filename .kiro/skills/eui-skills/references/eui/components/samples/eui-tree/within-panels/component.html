@@ -1,0 +1,71 @@
+<div class="doc-sample-section-title"> Within small panel (testing long label)</div>
+<div class="row">
+    <div class="col-6">
+        <eui-card>
+            <eui-card-header>
+                <eui-card-header-title>
+                    Long text
+                </eui-card-header-title>
+            </eui-card-header>
+            <eui-card-content>
+                <eui-tree [nodes]="treeDataLongText"></eui-tree>
+            </eui-card-content>
+        </eui-card>
+    </div>
+    <div class="col-6">
+        <eui-card>
+            <eui-card-header>
+                <eui-card-header-title>
+                    Long text with badges
+                </eui-card-header-title>
+            </eui-card-header>
+            <eui-card-content>
+                <eui-tree [nodes]="treeNodesLongTextWithBadges"></eui-tree>
+            </eui-card-content>
+        </eui-card>
+    </div>
+</div>
+
+<div class="doc-sample-section-title">Long node labels with types (left badges)</div>
+<div class="row">
+    <div class="col-6">
+        <eui-card>
+            <eui-card-header>
+                <eui-card-header-title>
+                    With badges (left content)
+                </eui-card-header-title>
+            </eui-card-header>
+            <eui-card-content>
+                <eui-tree [nodes]="treeNodesLongTextWithTypes"></eui-tree>
+            </eui-card-content>
+        </eui-card>
+    </div>
+    <div class="col-6">
+        <eui-card>
+            <eui-card-header>
+                <eui-card-header-title>
+                    With chips (right content)
+                </eui-card-header-title>
+            </eui-card-header>
+            <eui-card-content>
+                <eui-tree [nodes]="treeNodesLongTextWithChips"></eui-tree>
+            </eui-card-content>
+        </eui-card>
+    </div>
+</div>
+
+<div class="doc-sample-section-title">Within panel - filterLabel, expandAllLabel and collapseAllLabel set</div>
+<div class="row">
+    <div class="col-6">
+        <eui-card>
+            <eui-card-header>
+                <eui-card-header-title>
+                    Panel label
+                </eui-card-header-title>
+            </eui-card-header>
+            <eui-card-content>
+                <eui-tree [nodes]="treeNodesWithBadges"></eui-tree>
+            </eui-card-content>
+        </eui-card>
+    </div>
+</div>

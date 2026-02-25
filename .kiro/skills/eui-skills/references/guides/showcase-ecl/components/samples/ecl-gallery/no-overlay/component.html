@@ -1,0 +1,70 @@
+<ecl-gallery (share)="onShare($event)" class="display-block" isNoOverlay>
+    <ecl-gallery-item src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image.jpg"
+        meta="Copyright, Author, Licence for image 1" title="EU in brief"
+        description="The EU in brief, institutions and bodies, countries, symbols, history, facts and figures">
+        <picture eclGalleryThumbnail>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image.jpg"
+                alt="Image 1" />
+        </picture>
+        <picture eclGalleryPicture>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image.jpg"
+                alt="Image 1" loading="lazy" />
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://www.youtube.com/embed/fgi-GSCB6ho"
+        meta="Copyright, Author, Licence for embedded media" title="New digital strategy" description="Digital technologies have greatly changed our daily life. Therefore, Europe wants to
+                      make sure, that the digital transformation works for all its citizens." icon="video"
+        mediaType="externalVideo">
+        <picture eclGalleryThumbnail>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-external-video.jpg"
+                alt="New digital strategy - Video" />
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image2.jpg"
+        meta="Copyright, Author, Licence for image 2" title="Agriculture and culture"
+        description="Information on agriculture, business, culture, health, etc. ">
+        <picture eclGalleryThumbnail>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image2.jpg"
+                alt="Image 2" />
+        </picture>
+        <picture eclGalleryPicture>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image2.jpg"
+                alt="Image 2" loading="lazy" />
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image3.jpg"
+        meta="Copyright, Author, Licence for image 3" title="In the EU"
+        description="Living, working, travelling in the EU">
+        <picture eclGalleryThumbnail>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image3.jpg"
+                alt="Image 3" />
+        </picture>
+        <picture eclGalleryPicture>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image3.jpg"
+                alt="Image 3" loading="lazy"/>
+        </picture>
+    </ecl-gallery-item>
+    <ecl-gallery-item src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image4.jpg"
+        meta="Copyright, Author, Licence for image 4" title="Taxes and business"
+        description="Information on taxes, customs, importing and exporting goods, financial support for businesses">
+        <picture eclGalleryThumbnail>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image4.jpg"
+                alt="Image 4" />
+        </picture>
+        <picture eclGalleryPicture>
+            <img eclGalleryImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image4.jpg"
+                alt="Image 4" loading="lazy" />
+        </picture>
+    </ecl-gallery-item>
+
+    <ecl-gallery-footer>
+        <a eclLink routerLink="/" variant="standalone">
+            <span eclLinkLabel>Further media items</span>
+            <ecl-icon icon="external" size="2xs" role="img" ariaHidden="false">
+                <title>
+                    Link to an external domain
+                </title>
+            </ecl-icon>
+        </a>
+    </ecl-gallery-footer>
+</ecl-gallery>

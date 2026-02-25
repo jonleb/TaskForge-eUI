@@ -1,0 +1,19 @@
+<div class="doc-sample-section-title">Using eui-action-buttons directive to add as a footer confirmation action buttons</div>
+<eui-datepicker #dpRef>
+    <eui-action-buttons>
+        <button (click)="onCancel()" euiButton euiSecondary class="eui-datepicker__actions-cancel-button">Cancel</button>
+        <button euiButton euiPrimary (click)="onApply()">Apply</button>
+    </eui-action-buttons>
+</eui-datepicker>
+
+<div class="doc-sample-section-title">Using eui-action-buttons directive to add a Today icon button</div>
+<eui-datepicker #dpRef2>
+    <eui-action-buttons>
+        <button euiButton euiBasicButton euiOutline aria-label="Today" (click)="onToday()">
+            <eui-icon-svg icon="eui-today-outline" aria-label="Today Icon"></eui-icon-svg>
+            <span euiLabel>Today</span>
+        </button>
+        <button (click)="onCancel2()" euiButton euiSecondary class="eui-datepicker__actions-cancel-button">Cancel</button>
+        <button euiButton euiPrimary (click)="onApply2()">Apply</button>
+    </eui-action-buttons>
+</eui-datepicker>

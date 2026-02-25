@@ -1,0 +1,25 @@
+<div class="eui-u-flex">
+    <eui-progress-circle [value]="10" euiSizeS valueLabel="Label" />
+    <eui-progress-circle [value]="25" valueLabel="Label" />
+    <eui-progress-circle [value]="75" euiSizeL valueLabel="Label" />
+</div>
+
+<div class="eui-u-flex eui-u-mt-2xl">
+    <eui-progress-circle [value]="10" euiSizeS valueLabel="Longlabel" />
+    <eui-progress-circle [value]="50" valueLabel="LongLabel" />
+    <eui-progress-circle [value]="75" euiSizeL valueLabel="Longlabel" />
+</div>
+
+<div class="eui-u-flex eui-u-mt-2xl">
+    <div class="eui-u-inline-flex eui-u-flex-column eui-u-flex-align-items-start">
+        Avoid this!
+        <eui-progress-circle [value]="50" valueLabel="That's a very very long label or a file name" />
+    </div>
+</div>
+
+<div class="eui-u-flex eui-u-mt-2xl">
+    <div class="eui-u-inline-flex eui-u-flex-column eui-u-flex-align-items-start">
+        <p class="eui-u-text-paragraph">Use the <code class="eui-u-text-code">hasBottomLabel</code> option instead when having very long labels</p>
+        <eui-progress-circle [value]="50" valueLabel="That's a very very long label or a file name" hasBottomLabel />
+    </div>
+</div>

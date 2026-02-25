@@ -1,0 +1,11 @@
+<button euiButton type="button" (click)="openDialog()" aria-haspopup="dialog">Open Dialog</button>
+
+<eui-dialog #dialog
+    [title]="'Dialog title'"
+    (clickOutside)="onClickOutside()"
+    (close)="onClose()"
+    (open)="onOpen()"
+    (accept)="onAccept()"
+    (dismiss)="onDismiss()">
+    Dialog content
+</eui-dialog>

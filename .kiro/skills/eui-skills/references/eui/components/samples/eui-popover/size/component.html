@@ -1,0 +1,59 @@
+<p class="eui-u-text-paragraph">Popover size width can be set by the <code class="eui-u-text-code">euiSizeVariant</code> input option which accepts the following values:
+<span class="eui-u-text-monospace"><code class="eui-u-text-code">s | m (default) | l | xl | 2xl | auto</code></span></p>
+
+<div class="row">
+    <div class="col-2">
+        <div class="doc-sample-section-title">S</div>
+        <button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover2($event)">
+            <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+        </button>
+        <eui-popover #popover2 [title]="'This is the popover title'" [euiSizeVariant]="'s'">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+        </eui-popover>
+    </div>
+    <div class="col-2">
+        <div class="doc-sample-section-title">M (default)</div>
+        <button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover3($event)">
+            <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+        </button>
+        <eui-popover #popover3 [title]="'This is the popover title'" [euiSizeVariant]="'m'">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+        </eui-popover>
+    </div>
+    <div class="col-2">
+        <div class="doc-sample-section-title">L</div>
+        <button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover4($event)">
+            <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+        </button>
+        <eui-popover #popover4 [title]="'This is the popover title'" [euiSizeVariant]="'l'">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+        </eui-popover>
+    </div>
+    <div class="col-2">
+        <div class="doc-sample-section-title">XL</div>
+        <button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover5($event)">
+            <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+        </button>
+        <eui-popover #popover5 [title]="'This is the popover title'" [euiSizeVariant]="'xl'">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+        </eui-popover>
+    </div>
+    <div class="col-2">
+        <div class="doc-sample-section-title">2XL</div>
+        <button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover6($event)">
+            <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+        </button>
+        <eui-popover #popover6 [title]="'This is the popover title'" euiSize2XL>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+        </eui-popover>
+    </div>
+    <div class="col-2">
+        <div class="doc-sample-section-title">Auto</div>
+        <button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover7($event)">
+            <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+        </button>
+        <eui-popover #popover7 [title]="'This is the popover title'" euiSizeAuto>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+        </eui-popover>
+    </div>
+</div>

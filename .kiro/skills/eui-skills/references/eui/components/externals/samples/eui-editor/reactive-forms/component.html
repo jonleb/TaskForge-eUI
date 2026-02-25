@@ -1,0 +1,320 @@
+<div class="eui-u-flex eui-u-mt-xl">
+    <eui-slide-toggle [isChecked]="isReadOnly" (slideToggleChange)="toggleReadOnly()" class="eui-u-mr-m"></eui-slide-toggle>
+    <strong>Interactive toggle &mdash; isReadOnly = {{isReadOnly}}</strong>
+</div>
+
+<div class="doc-sample-section-title">Simple Form</div>
+<div class="row">
+    <div class="col-6">
+        <div class="doc-sample-section-subtitle">HTML format (default)</div>
+        <form [formGroup]="form1">
+            <eui-editor formControlName="htmlContent" [placeholder]="placeholder" format="html" [isReadOnly]="isReadOnly"></eui-editor>
+        </form>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="doc-sample-section-title">Editor's contents</div>
+            <div class="code" tabindex="0">
+                <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form1.get('htmlContent').value }}</pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6">
+        <div class="doc-sample-section-subtitle">JSON format</div>
+        <form [formGroup]="form2">
+            <eui-editor formControlName="jsonContent" [placeholder]="placeholder" format="json" [isReadOnly]="isReadOnly"></eui-editor>
+        </form>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="doc-sample-section-title">Editor's contents</div>
+            <div class="code" tabindex="0">
+                <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form2.get('jsonContent').value }}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Simple Form with euiInputGroup</div>
+<div class="row">
+    <div class="col-6">
+        <div class="doc-sample-section-subtitle">HTML format (default)</div>
+        <form [formGroup]="form3">
+            <div euiInputGroup>
+                <label euiLabel>Content</label>
+                <eui-editor formControlName="htmlContent" [placeholder]="placeholder" format="html" [isReadOnly]="isReadOnly"></eui-editor>
+            </div>
+        </form>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="doc-sample-section-title">Editor's contents</div>
+            <div class="code" tabindex="0">
+                <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form3.get('htmlContent').value }}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="doc-sample-section-subtitle">JSON format</div>
+        <form [formGroup]="form4">
+            <div euiInputGroup>
+                <label euiLabel>Content</label>
+                <eui-editor formControlName="jsonContent" [placeholder]="placeholder" format="json" [isReadOnly]="isReadOnly"></eui-editor>
+            </div>
+        </form>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="doc-sample-section-title">Editor's contents</div>
+            <div class="code" tabindex="0">
+                <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form4.get('jsonContent').value }}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Simple Form with euiInputGroup / euiRequired / eui-feedback-message</div>
+<div class="row">
+    <div class="col-6">
+        <div class="doc-sample-section-subtitle">HTML format (default)</div>
+        <form [formGroup]="form5">
+            <div euiInputGroup>
+                <label euiLabel euiRequired>Content</label>
+                <eui-editor formControlName="htmlContent" [placeholder]="placeholder" format="html" [isReadOnly]="isReadOnly"></eui-editor>
+                @if (form5.get('htmlContent').hasError('required') && form5.get('htmlContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+            </div>
+        </form>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="doc-sample-section-title">Editor's contents</div>
+            <div class="code" tabindex="0">
+                <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form5.get('htmlContent').value }}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="doc-sample-section-subtitle">JSON format</div>
+        <form [formGroup]="form6">
+            <div euiInputGroup>
+                <label euiLabel euiRequired>Content</label>
+                <eui-editor formControlName="jsonContent" [placeholder]="placeholder" format="json" [isReadOnly]="isReadOnly"></eui-editor>
+                @if (form6.get('jsonContent').hasError('required') && form6.get('jsonContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+            </div>
+        </form>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="doc-sample-section-title">Editor's contents</div>
+            <div class="code" tabindex="0">
+                <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form6.get('jsonContent').value }}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Simple Form with euiInputGroup / euiRequired / eui-feedback-message / maxLengthTagsStripped & minLengthTagsStripped validators</div>
+<div class="row">
+    <div class="col-6">
+        <div class="doc-sample-section-subtitle">HTML format (default)</div>
+        <form [formGroup]="form7">
+            <div euiInputGroup>
+                <label euiLabel euiRequired>Content</label>
+                <eui-editor formControlName="htmlContent" [placeholder]="placeholder" format="html" [isReadOnly]="isReadOnly"></eui-editor>
+                @if (form7.get('htmlContent').hasError('required') && form7.get('htmlContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+                @if (form7.get('htmlContent').hasError('minLength') && form7.get('htmlContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        Minimum length for this field is <strong>{{ form7.get('htmlContent').errors.minLength.minLength }}</strong>
+                        and is currently <strong>{{ form7.get('htmlContent').errors.minLength.actual }}</strong>
+                    </eui-feedback-message>
+                }
+                @if (form7.get('htmlContent').hasError('maxLength') && form7.get('htmlContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        Maximum length for this field is <strong>{{ form7.get('htmlContent').errors.maxLength.maxLength }}</strong>
+                        and is currently <strong>{{ form7.get('htmlContent').errors.maxLength.actual }}</strong>
+                    </eui-feedback-message>
+                }
+            </div>
+        </form>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="doc-sample-section-title">Editor's contents</div>
+            <div class="code" tabindex="0">
+                <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form7.get('htmlContent').value }}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="doc-sample-section-subtitle">JSON format</div>
+        <form [formGroup]="form8">
+            <div euiInputGroup>
+                <label euiLabel euiRequired>Content</label>
+                <eui-editor formControlName="jsonContent" [placeholder]="placeholder" format="json" [isReadOnly]="isReadOnly"></eui-editor>
+                @if (form8.get('jsonContent').hasError('required') && form8.get('jsonContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+                @if (form8.get('jsonContent').hasError('minLength') && form8.get('jsonContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        Minimum length for this field is <strong>{{ form8.get('jsonContent').errors.minLength.minLength }}</strong>
+                        and is currently <strong>{{ form8.get('jsonContent').errors.minLength.actual }}</strong>
+                    </eui-feedback-message>
+                }
+                @if (form8.get('jsonContent').hasError('maxLength') && form8.get('jsonContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        Maximum length for this field is <strong>{{ form8.get('jsonContent').errors.maxLength.maxLength }}</strong>
+                        and is currently <strong>{{ form8.get('jsonContent').errors.maxLength.actual }}</strong>
+                    </eui-feedback-message>
+                }
+            </div>
+        </form>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="doc-sample-section-title">Editor's contents</div>
+            <div class="code" tabindex="0">
+                <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form8.get('jsonContent').value }}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Simple Form with euiInputGroup / euiRequired / eui-feedback-message / length validators / euiEditorMaxlength directive</div>
+<div class="row">
+    <div class="col-6">
+        <div class="doc-sample-section-subtitle">HTML format (default)</div>
+        <form [formGroup]="form9">
+            <div euiInputGroup>
+                <label euiLabel euiRequired>Content</label>
+                <eui-editor formControlName="htmlContent" [placeholder]="placeholder" format="html" [isReadOnly]="isReadOnly" euiEditorMaxlength="1000"></eui-editor>
+                @if (form9.get('htmlContent').hasError('required') && form9.get('htmlContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+                @if (form9.get('htmlContent').hasError('minLength') && form9.get('htmlContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        Minimum length for this field is <strong>{{ form9.get('htmlContent').errors.minLength.minLength }}</strong>
+                        and is currently <strong>{{ form9.get('htmlContent').errors.minLength.actual }}</strong>
+                    </eui-feedback-message>
+                }
+                @if (form9.get('htmlContent').hasError('maxLength') && form9.get('htmlContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        Maximum length for this field is <strong>{{ form9.get('htmlContent').errors.maxLength.maxLength }}</strong>
+                        and is currently <strong>{{ form9.get('htmlContent').errors.maxLength.actual }}</strong>
+                    </eui-feedback-message>
+                }
+            </div>
+        </form>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="doc-sample-section-title">Editor's contents</div>
+            <div class="code" tabindex="0">
+                <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form9.get('htmlContent').value }}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="doc-sample-section-subtitle">JSON format</div>
+        <form [formGroup]="form10">
+            <div euiInputGroup>
+                <label euiLabel euiRequired>Content</label>
+                <eui-editor formControlName="jsonContent" [placeholder]="placeholder" format="json" [isReadOnly]="isReadOnly" euiEditorMaxlength="1000"></eui-editor>
+                @if (form10.get('jsonContent').hasError('required') && form10.get('jsonContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+                @if (form10.get('jsonContent').hasError('minLength') && form10.get('jsonContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        Minimum length for this field is <strong>{{ form10.get('jsonContent').errors.minLength.minLength }}</strong>
+                        and is currently <strong>{{ form10.get('jsonContent').errors.minLength.actual }}</strong>
+                    </eui-feedback-message>
+                }
+                @if (form10.get('jsonContent').hasError('maxLength') && form10.get('jsonContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        Maximum length for this field is <strong>{{ form10.get('jsonContent').errors.maxLength.maxLength }}</strong>
+                        and is currently <strong>{{ form10.get('jsonContent').errors.maxLength.actual }}</strong>
+                    </eui-feedback-message>
+                }
+            </div>
+        </form>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="doc-sample-section-title">Editor's contents</div>
+            <div class="code" tabindex="0">
+                <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form10.get('jsonContent').value }}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Simple Form with euiInputGroup / euiRequired / eui-feedback-message / maxLengthTagsStripped & minLengthTagsStripped validators</div>
+<div class="row">
+    <div class="col-6">
+        <div class="doc-sample-section-subtitle">HTML format (default)</div>
+        <form [formGroup]="form11">
+            <div euiInputGroup>
+                <label euiLabel euiRequired>Content</label>
+                <eui-editor formControlName="htmlContent" [placeholder]="placeholder" format="html" [isReadOnly]="isReadOnly"></eui-editor>
+                @if (form11.get('htmlContent').hasError('required') && form11.get('htmlContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+                @if (form11.get('htmlContent').hasError('minLength') && form11.get('htmlContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        Minimum length for this field is <strong>{{ form11.get('htmlContent').errors.minLength.minLength }}</strong>
+                        and is currently <strong>{{ form11.get('htmlContent').errors.minLength.actual }}</strong>
+                    </eui-feedback-message>
+                }
+                @if (form11.get('htmlContent').hasError('maxLength') && form11.get('htmlContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        Maximum length for this field is <strong>{{ form11.get('htmlContent').errors.maxLength.maxLength }}</strong>
+                        and is currently <strong>{{ form11.get('htmlContent').errors.maxLength.actual }}</strong>
+                    </eui-feedback-message>
+                }
+            </div>
+        </form>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="doc-sample-section-title">Editor's contents</div>
+            <div class="code" tabindex="0">
+                <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form11.get('htmlContent').value }}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="doc-sample-section-subtitle">JSON format</div>
+        <form [formGroup]="form12">
+            <div euiInputGroup>
+                <label euiLabel euiRequired>Content</label>
+                <eui-editor formControlName="jsonContent" [placeholder]="placeholder" format="json" [isReadOnly]="isReadOnly"></eui-editor>
+                @if (form12.get('jsonContent').hasError('required') && form12.get('jsonContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        This field is required
+                    </eui-feedback-message>
+                }
+                @if (form12.get('jsonContent').hasError('minLength') && form12.get('jsonContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        Minimum length for this field is <strong>{{ form12.get('jsonContent').errors.minLength.minLength }}</strong>
+                        and is currently <strong>{{ form12.get('jsonContent').errors.minLength.actual }}</strong>
+                    </eui-feedback-message>
+                }
+                @if (form12.get('jsonContent').hasError('maxLength') && form12.get('jsonContent').touched) {
+                    <eui-feedback-message euiDanger>
+                        Maximum length for this field is <strong>{{ form12.get('jsonContent').errors.maxLength.maxLength }}</strong>
+                        and is currently <strong>{{ form12.get('jsonContent').errors.maxLength.actual }}</strong>
+                    </eui-feedback-message>
+                }
+            </div>
+        </form>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="doc-sample-section-title">Editor's contents</div>
+            <div class="code" tabindex="0">
+                <pre class="eui-u-text-pre" style="white-space: pre-wrap;">{{ form12.get('jsonContent').value }}</pre>
+            </div>
+        </div>
+    </div>
+</div>

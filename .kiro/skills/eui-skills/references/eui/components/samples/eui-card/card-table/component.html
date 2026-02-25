@@ -1,0 +1,101 @@
+<eui-alert euiWarning>
+    This feature requires the import of <code class="eui-u-text-code">EuiTemplateDirective</code><br/>
+    <code class="eui-u-text-code">import &#123; EuiTemplateDirective &#125; from '&#64;eui/components/directives';</code>
+</eui-alert><br/>
+
+<p class="eui-u-text-paragraph">Uses the <code class="eui-u-text-code">eui-card</code> as the main container including :</p>
+<ul>
+    <li>the card header section : displays a custom title and actions (search filter, edit mode)</li>
+    <li>the card content section : displays the eui-table</li>
+</ul>
+
+<p class="eui-u-text-paragraph">Using <code class="eui-u-text-code">eui-table</code> component as part or the <code class="eui-u-text-code">eui-card-content</code> template directive.
+<br>
+It also uses the <code class="eui-u-text-code">euiNoContentPadding</code> option to fill the main card content container.</p>
+
+<br>
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <eui-card euiNoContentPadding euiCollapsible [euiHighlighted]="isEditable">
+            <eui-card-header>
+                <eui-card-header-title>
+                    <div class="eui-u-flex eui-u-flex-gap-s eui-u-text-truncate">
+                        European Union
+                        <eui-badge euiInfo>{{filteredData?.length}}</eui-badge>
+                        <span>countries found</span>
+                    </div>
+                </eui-card-header-title>
+                <eui-card-header-subtitle>Population per capital city</eui-card-header-subtitle>
+                <eui-card-header-right-content>
+                    @if (isEditable) {
+                        <div class="eui-u-ml-m">
+                            <button euiButton euiPrimary (click)="onToggleEdit($event)" class="eui-u-mr-s">Exit edit mode</button>
+                        </div>
+                    }
+                    @if (!isEditable) {
+                        <button euiButton euiBasicButton euiPrimary euiOutline euiTooltip="Edit table content" aria-label="Edit" class="eui-u-mr-s" (click)="onToggleEdit($event)">
+                            Edit
+                        </button>
+                    }
+                </eui-card-header-right-content>
+            </eui-card-header>
+
+            <eui-card-content>
+
+                <!-- The optional scrollable wrapper around the table allows dynamic scroll when the table is too big -->
+                <div class="eui-table__scrollable-wrapper" style="overflow:auto;" tabindex="0">
+                    <table euiTable isTableResponsive [data]="filteredData" [paginator]="paginator">
+                        <ng-template euiTemplate="header">
+                            <tr>
+                                <th>Id</th>
+                                <th>Country</th>
+                                <th>Year</th>
+                                <th>ISO</th>
+                                <th>Population</th>
+                                <th>Capital city</th>
+                                @if (isEditable) {
+                                    <th class="eui-u-width-10 eui-u-text-center">Actions</th>
+                                }
+                            </tr>
+                        </ng-template>
+                        <ng-template let-row euiTemplate="body">
+                            <tr>
+                                <td>{{ row.id }}</td>
+                                <td data-col-label="Country" nowrap><span class="eui-flag-icon eui-flag-icon-{{ row.iso.toLowerCase() }} eui-u-mr-s"></span>{{ row.country }}</td>
+                                <td data-col-label="Year">{{ row.year }}</td>
+                                <td data-col-label="ISO">{{ row.iso }}</td>
+                                <td data-col-label="Population">{{ row.population | number }}</td>
+                                <td data-col-label="Capital city">{{ row.capital }}</td>
+                                @if (isEditable) {
+                                    <td data-col-label="Actions" class="eui-u-text-center">
+                                        <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS euiPrimary euiTooltip="Edit this item" aria-label="Edit" class="eui-u-mr-xs">
+                                            <eui-icon-svg icon="eui-edit" fillColor="primary" />
+                                        </button>
+                                        <button euiButton euiBasicButton euiRounded euiIconButton euiSizeS euiDanger euiTooltip="Delete this item" aria-label="Delete">
+                                            <eui-icon-svg icon="eui-trash" fillColor="danger" />
+                                        </button>
+                                    </td>
+                                }
+                            </tr>
+                        </ng-template>
+                        <ng-template euiTemplate="footer">
+                            <tr>
+                                <td colspan="4" class="text-right">TOTAL all countries</td>
+                                <td>{{ totalPopulation | number:'1.0-3'}}</td>
+                                @if (isEditable) {
+                                    <td>&nbsp;</td>
+                                }
+                                <td>&nbsp;</td>
+                            </tr>
+                        </ng-template>
+                    </table>
+                </div>
+
+                <eui-paginator #paginator [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" />
+
+            </eui-card-content>
+
+        </eui-card>
+    </div>
+</div>

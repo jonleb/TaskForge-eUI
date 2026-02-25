@@ -1,0 +1,11 @@
+<eui-alert>
+<p class="eui-u-text-paragraph">
+Because <code class="eui-u-text-code">EuiDialogService</code> is declared with <code class="eui-u-text-code">&#123; providedIn: 'root' &#125;</code>, it is created inside the root injector. This means it only has visibility over the providers available at the same injector level (global providers). It does not have access to the local providers defined inside the components that call the dialog.<br/>
+<br/>
+When a component is instantiated through a <code class="eui-u-text-code">ComponentPortal</code>, Angular does not automatically inherit the caller's providers. To make the injected component see the local providers of the calling component, you must explicitly pass the caller's injector to the dialog service through <code class="eui-u-text-code">openDialog(config, injector)</code> method.<br/>
+<br/>
+The sample below illustrates how to forward local component providers to dynamically created components:
+</p>
+</eui-alert>
+<br/>
+<button euiButton type="button" (click)="openWithService()" aria-haspopup="dialog">Open Dialog</button>

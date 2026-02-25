@@ -1,0 +1,15 @@
+<p class="eui-u-text-paragraph">Use the <code class="eui-u-text-code">nodeClick</code> event handler to get the clicked node object or use the <code class="eui-u-text-code">onNodeToggle</code> to know which node has been expanded/collapsed.</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree [nodes]="treeData" (nodeClick)="onNodeClick($event)" (nodeToggle)="onNodeToggle($event)">
+        </eui-tree>
+    </div>
+
+    <div class="col-md-6">
+        <div class="doc-sample-section-title">Triggered event</div>
+        <div>(nodeClick) : <strong>{{nodeClickedLabel}}</strong></div>
+        <br>
+        <div>(nodeToggle) : <strong>{{nodeToggledLabel}}</strong></div>
+    </div>
+</div>

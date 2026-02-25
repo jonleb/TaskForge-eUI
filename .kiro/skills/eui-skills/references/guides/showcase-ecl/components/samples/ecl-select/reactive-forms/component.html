@@ -1,0 +1,60 @@
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label for="select-reactive-1" id="select-reactive-label-1" eclFormLabel isOptional>Select a country</label>
+    <div eclHelpBlock id="select-helper-reactive-1">This is the help text</div>
+    <select id="select-reactive-1" eclSelect formControlName="default" name="country" aria-labelledby="select-helper-reactive-1">
+      @for(country of countries; track country.id) {
+      <option [value]="country.id">{{ country.label }}</option>
+      }
+    </select>
+  </div>
+</form>
+
+<h6 class="section-title">Disabled</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label for="select-reactive-2" id="select-reactive-label-2" eclFormLabel isDisabled>Label</label>
+    <div eclHelpBlock id="select-helper-reactive-2">This is the help text</div>
+    <select id="select-reactive-2" eclSelect formControlName="disabled" name="country" aria-labelledby="select-helper-reactive-2">
+      @for(country of countries; track country.id) {
+      <option [value]="country.id">{{ country.label }}</option>
+      }
+    </select>
+  </div>
+</form>
+
+<h6 class="section-title">Required</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label for="select-reactive-3" id="select-reactive-label-3" eclFormLabel isRequired>Select a country</label>
+    <div eclHelpBlock id="select-helper-reactive-3">This is the help text</div>
+    <select id="select-reactive-3" eclSelect formControlName="required" name="country" aria-describedby="select-helper-reactive-3">
+      @for(country of countries; track country.id) {
+      <option [value]="country.id">{{ country.label }}</option>
+      }
+    </select>
+    @if(validateRequired()) {
+    <div eclFeedbackMessage>
+      <ecl-icon icon="error" size="s" ariaHidden="false" role="img">
+          <title>Error</title>
+      </ecl-icon>
+      This field is required
+    </div>
+     }
+  </div>
+</form>
+
+
+<h6 class="section-title">Two-way Data Binding</h6>
+<div eclFormGroup>
+  <label for="select-reactive-4" eclFormLabel isOptional>Select a country</label>
+  <div eclHelpBlock id="select-helper-reactive-4">This is the help text</div>
+  <select id="select-reactive-4" eclSelect [(ngModel)]="model" name="country" aria-labelledby="select-helper-reactive-4">
+    @for(country of countries; track country.id) {
+    <option [value]="country.id">{{ country.label }}</option>
+    }
+  </select>
+  <div class="ecl-u-mt-m">
+    <button eclButton variant="primary" (click)="onChangeValue()">Change value</button>
+  </div>
+</div>

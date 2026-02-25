@@ -1,0 +1,5 @@
+<button euiButton type="button" (click)="openDialog()" aria-haspopup="dialog">Open Dialog</button>
+
+<eui-dialog #dialog [title]="dialogTitle" hasNoBodyPadding>
+    {{ dialogContent }}
+</eui-dialog>

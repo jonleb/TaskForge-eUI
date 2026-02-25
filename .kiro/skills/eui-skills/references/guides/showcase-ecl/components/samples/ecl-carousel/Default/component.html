@@ -1,0 +1,28 @@
+<ecl-carousel playInterval=2000 (slide)="onSlide($event)">
+    @for (slide of slides; track slide.id) {
+    <ecl-carousel-item [id]="slide.id" [isCurrent]="slide.isCurrent">
+        <ecl-banner [boxBackground]="slide.boxBackground" [fontColor]="slide.fontColor" [copyright]="slide.footer" fontSize="s">
+            @if (slide.image) {
+            <picture eclBannerPicture>
+                <img eclBannerImage src="{{slide.image}}" alt="alternative text" />
+            </picture>
+            }
+            @if (slide.video) {
+            <video eclBannerVideo playsinline autoplay muted loop poster="{{slide.videoPoster}}">
+                <source src="{{slide.video}}" type="video/mp4">
+            </video>
+            }
+            <div eclBannerTitle id="default-example-title">
+                <span eclBannerTitleText>{{slide.title}}</span>
+            </div>
+            <p eclBannerDescription>
+                <span eclBannerDescriptionText>{{slide.description}}</span>
+            </p>
+            <a eclLink routerLink="/" variant="primary" isHighlight aria-describedby="default-example-title">
+                <span eclLinkLabel>Subscribe</span>
+                <ecl-icon icon="corner-arrow" transform="rotate-90"></ecl-icon>
+            </a>
+        </ecl-banner>
+    </ecl-carousel-item>
+    }
+</ecl-carousel>

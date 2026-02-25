@@ -1,0 +1,58 @@
+<div class="doc-sample-section-title">euiDropdownTree directive is used on eui-dropdown which renders the eui-tree in the content of the dropdown</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <ng-template #buttonTemplate let-label>
+            <button euiButton euiPrimary euiResponsive>
+                <div class="eui-u-flex">
+                    <div class="eui-u-flex eui-u-flex-justify-content-start eui-u-text-truncate">
+                        <label euilabel class="eui-u-text-truncate">{{label}}</label>
+                    </div>
+                    <div class="eui-u-inline-flex eui-u-flex-justify-content-end eui-u-ml-s">
+                        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+                    </div>
+                </div>
+            </button>
+        </ng-template>
+        <eui-dropdown hasTabNavigation [hasClosedOnClickInside]="false" euiDropdownTree [buttonTemplateRef]="buttonTemplate" isBlock>
+            <eui-dropdown-content class="eui-u-p-m">
+
+                <!-- Search filter -->
+                <div class="eui-u-flex">
+                    <div euiInputGroup>
+                        <div euiInputGroupAddOn>
+                            <div euiInputGroupAddOnItem>
+                                <eui-icon-svg icon="eui-search" fillColor="secondary" />
+                            </div>
+                            <input euiInputText [(ngModel)]="filterInput" placeholder="Search from tree list items..." (ngModelChange)="onValueChange($event)"/>
+                        </div>
+                    </div>
+                </div>
+                <eui-tree #compInstance
+                            [nodes]="treeData"
+                            isMultiselect
+                            isRecursiveSelection
+                            (selectionChange)="onSelectionChange($event)" />
+            </eui-dropdown-content>
+        </eui-dropdown>
+
+    </div>
+
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre class="eui-u-text-pre">{{selectionChange?.added | json}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionChange?.removed | json}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionChange?.selection | json}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>

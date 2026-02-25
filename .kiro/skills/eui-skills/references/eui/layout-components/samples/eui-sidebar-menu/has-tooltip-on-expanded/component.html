@@ -1,0 +1,7 @@
+<p class="eui-u-text-paragraph">
+    The <code class="eui-u-text-code">hasTooltipOnExpanded</code> input option reveals the tooltip when in expanded state only.
+</p>
+<button euiButton euiSizeS (click)="onToggleCollapsed()">Toggle collapsed</button>
+<br><br>
+
+<eui-sidebar-menu [items]="sidebarItems" hasIcons hasTooltipOnExpanded [isCollapsed]="isCollapsed"></eui-sidebar-menu>

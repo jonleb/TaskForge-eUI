@@ -1,0 +1,12 @@
+<p class="eui-u-text-paragraph">For sizing icons, use the optional <code class="eui-u-text-code">size="%size-token%"</code> input option (default: m) where %size-token% is one of the following :</p>
+
+<div class="icons-demo">
+    @for (size of sizes; track $index) {
+        <div class="icon-item-container">
+            <div class="icon-item-inner-container eui-u-c-bg-secondary-bg-light">
+                <eui-icon-svg icon="eui-state-warning" [size]="size" fillColor="secondary"></eui-icon-svg>
+            </div>
+            <span class="eui-u-f-l">{{size}}</span>
+        </div>
+    }
+</div>

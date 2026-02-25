@@ -1,0 +1,52 @@
+<table class="eui-table-default eui-table-default--bordered eui-table-default--align-middle">
+    <thead>
+        <tr>
+            <th>Country</th>
+            <th>Year</th>
+            <th>Total population</th>
+            <th>Male</th>
+            <th>Female</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Belgium</td>
+            <td>2021</td>
+            <td>11 521 238</td>
+            <td>
+                <eui-progress-bar [progress]="5677211/11521238 *100"></eui-progress-bar>
+                {{ (5677211/11521238 *100).toFixed(2) }} %
+            </td>
+            <td>
+                <eui-progress-bar [progress]="5844027/11521238 *100"></eui-progress-bar>
+                {{ (5844027/11521238 *100).toFixed(2) }} %
+            </td>
+        </tr>
+        <tr>
+            <td>Italy</td>
+            <td>2023</td>
+            <td>58 850 717</td>
+            <td>
+                <eui-progress-bar [progress]="28749359/58850717 *100"></eui-progress-bar>
+                {{ (28749359/58850717 *100).toFixed(2) }} %
+            </td>
+            <td>
+                <eui-progress-bar [progress]="30101358/58850717 *100"></eui-progress-bar>
+                {{ (30101358/58850717 *100).toFixed(2) }} %
+            </td>
+        </tr>
+        <tr>
+            <td>Spain</td>
+            <td>2022</td>
+            <td>47 432 805</td>
+            <td>
+                <eui-progress-bar [progress]="23236999/47432805 *100"></eui-progress-bar>
+                {{ (23236999/47432805 *100).toFixed(2) }} %
+            </td>
+            <td>
+                <eui-progress-bar [progress]="24195806/47432805 *100"></eui-progress-bar>
+                {{ (24195806/47432805 *100).toFixed(2) }} %
+            </td>
+        </tr>
+    </tbody>
+</table>

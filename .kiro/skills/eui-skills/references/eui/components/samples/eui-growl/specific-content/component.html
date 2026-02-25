@@ -1,0 +1,67 @@
+<div class="eui-u-flex eui-u-mt-s">
+    <button euiButton euiInfo euiSizeS (click)="showGrowlHTML('info')">Info growl with HTML content</button>
+    <button euiButton euiSuccess euiSizeS (click)="showGrowlLongText('success')" class="eui-u-ml-s">Very long text with scrollbars on content</button>
+    <button euiButton euiDanger euiSizeS (click)="showGrowlNoContent('danger')" class="eui-u-ml-s">Without content</button>
+</div>
+
+<br>
+
+<strong>Specific content with filled growl</strong>
+<div class="eui-u-flex eui-u-mt-s">
+    <button euiButton euiInfo euiSizeS (click)="showGrowlFilledHTML('info')">Info growl with HTML content</button>
+    <button euiButton euiSuccess euiSizeS (click)="showGrowlFilledLongText('success')" class="eui-u-ml-s">Very long text with scrollbars on content</button>
+    <button euiButton euiDanger euiSizeS (click)="showGrowlFilledNoContent('danger')" class="eui-u-ml-s">Without content</button>
+</div>
+<br><br><br>
+
+
+<button euiButton euiSecondary euiSizeS euiOutline (click)="clearGrowl()">
+    Clear growls
+</button>
+
+
+
+<div class="row eui-u-mt-l">
+    <div class="col-md-6">
+        <input id="checkbox1" name="checkbox" euiInputCheckBox [(ngModel)]="isGrowlSticky">
+        <label for="checkbox1">Sticky growl</label>
+    </div>
+    <div class="col-md-6">
+        <input id="isGrowlMultiple" name="isGrowlMultiple" euiInputCheckBox [(ngModel)]="isGrowlMultiple">
+        <label for="isGrowlMultiple">Allow multiple growls</label>
+    </div>
+</div>
+
+<div class="row eui-u-mt-l">
+    <div class="col-md-6">
+        <input id="closeAllSticky" name="closeAllSticky" euiInputCheckBox (ngModelChange)="closeAllStickyChanged($event)" [(ngModel)]="closeAllSticky">
+        <label for="closeAllSticky">Close all button when >2 sticky</label>
+    </div>
+    <div class="col-md-6">
+        <div class="form-inline">
+            <label for="growl-id">Growl life (default=3000ms)</label>
+            <input id="growl-id" type="number" euiInputText [(ngModel)]="growlLife" [value]="growlLife">
+        </div>
+    </div>
+</div>
+
+<h5 class="eui-u-text-h5">Position</h5>
+<div class="form-check">
+    <input id="radio5" name="position" type="radio" euiInputRadio [(ngModel)]="position" value="top-left">
+    <label for="radio5">top-left</label>
+
+    <input id="radio6" name="position" type="radio" euiInputRadio [(ngModel)]="position" value="top-center">
+    <label for="radio6">top-center</label>
+
+    <input id="radio4" name="position" type="radio" euiInputRadio [(ngModel)]="position" value="top-right">
+    <label for="radio4">top-right</label>
+
+    <input id="radio2" name="position" type="radio" euiInputRadio [(ngModel)]="position" value="bottom-left">
+    <label for="radio2">bottom-left</label>
+
+    <input id="radio3" name="position" type="radio" euiInputRadio [(ngModel)]="position" value="bottom-center">
+    <label for="radio3">bottom-center</label>
+
+    <input id="radio1" name="position" type="radio" euiInputRadio [(ngModel)]="position" value="bottom-right">
+    <label for="radio1">bottom-right</label>
+</div>

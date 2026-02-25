@@ -1,0 +1,7 @@
+<div class="doc-sample-section-title">Using [isMultiple]="false"</div>
+
+<form [formGroup]="form" enctype="multipart/form-data">
+    <eui-file-upload formControlName="image" [progress]="progress" [isMultiple]="false" hasDragArea>
+        <span class="eui-u-mr-xs"><button euiButton euiPrimary (click)="submit()">Submit</button></span>
+    </eui-file-upload>
+</form>

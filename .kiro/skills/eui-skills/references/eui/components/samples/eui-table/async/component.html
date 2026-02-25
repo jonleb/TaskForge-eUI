@@ -1,0 +1,50 @@
+<eui-alert>
+    The source code of the used service can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-table/services" class="eui-u-text-link-external" target="_blank">here</a>.
+</eui-alert><br/>
+<eui-alert euiWarning>
+    When data are async, paginator and filter <b><u>must not</u></b> be bound to the eui-table component like in other sample..
+</eui-alert><br/>
+
+<div class="eui-u-mb-xs eui-u-flex eui-u-flex-justify-content-between">
+    <div>European Union <eui-badge euiPrimary>{{ data.length }}</eui-badge> countries found</div>
+    <div class="eui-u-width-20">
+        <eui-table-filter placeholder="Search filter..." (filterChange)="onFilterChange($event)"></eui-table-filter>
+    </div>
+</div>
+
+<div class="eui-table__scrollable-wrapper">
+    <table euiTable isTableResponsive isAsync [data]="data" [isLoading]="isLoading" (sortChange)="onSortChange($event)">
+        <ng-template euiTemplate="header">
+            <tr>
+                <th isSortable isMultiSortable sortOn="id">Id</th>
+                <th isSortable isMultiSortable sortOn="country">Country</th>
+                <th isSortable isMultiSortable sortOn="year">Year</th>
+                <th isSortable isMultiSortable sortOn="iso">ISO</th>
+                <th isSortable isMultiSortable sortOn="population">Population</th>
+            </tr>
+        </ng-template>
+        <ng-template let-row euiTemplate="body">
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.country }}</td>
+                <td>{{ row.year }}</td>
+                <td>{{ row.iso }}</td>
+                <td>{{ row.population | number }}</td>
+            </tr>
+        </ng-template>
+        <ng-template euiTemplate="footer">
+            <tr>
+                <td class="eui-u-text-center" colspan="5">Footer</td>
+            </tr>
+        </ng-template>
+    </table>
+</div>
+
+<eui-paginator
+    hasPageNumberNavigation
+    [length]="dataLength"
+    [pageSizeOptions]="pageSizeOptions"
+    [page]="page"
+    [pageSize]="pageSize"
+    (pageChange)="onPageChange($event)">
+</eui-paginator>

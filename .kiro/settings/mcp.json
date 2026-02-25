@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "eui": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@eui/mcp",
+        "--doc-path",
+        "https://euidev.ecdevops.eu/eui-docs-eui-21.x/json/documentation.json"
+      ],
+      "disabled": false,
+      "autoApprove": [
+        "list-components"
+      ]
+    }
+  }
+}

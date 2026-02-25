@@ -1,0 +1,40 @@
+<eui-card [euiCollapsible]="isCollapsible" [euiCollapsed]="isCollapsed">
+    <eui-card-header (collapse)="onCollapse($event)">
+        <eui-card-header-title>
+            <div class="eui-u-flex">
+                @if (isCollapsed) {
+                    <eui-icon-svg icon="circle-dashed:regular" class="eui-u-mr-m"></eui-icon-svg>
+                }
+                @if (!isCollapsed) {
+                    <eui-icon-svg icon="circle-dashed:regular" fillColor="primary" class="eui-u-mr-m"></eui-icon-svg>
+                }
+                <a routerLink="{{ data.detailLink }}" (click)="onCardTitleLinkClicked($event)" class="eui-u-text-link">{{ data.localizedTitle }}</a>
+            </div>
+        </eui-card-header-title>
+        <eui-card-header-right-content>
+            <eui-chip euiOutline euiRounded euiSizeS euiSuccess euiTooltip="Status" class="eui-u-mr-l">
+                {{ data.taskState }}
+            </eui-chip>
+        </eui-card-header-right-content>
+    </eui-card-header>
+    <eui-card-content>
+        <span>{{ data.localizedDescription }}</span>
+        <div class="eui-u-flex flex-wrap" style="overflow: auto;" tabindex="0">
+            <div class="col-md-6">
+                <small>Created on</small><br>
+                <span class="eui-u-f-s">{{ data.createDate | date : 'dd/LL/yyyy HH:mm:ss' }}</span>
+            </div>
+            <div class="col-md-6">
+                <small>Assignee</small><br>
+                <span class="eui-u-f-s eui-u-text-truncate">
+                    @if (data.assigneeObject) {
+                        <span>{{ data.assigneeObject?.firstName }} {{ data.assigneeObject?.lastName }}</span>
+                    }
+                    @if (!data.assigneeObject) {
+                        <span>&mdash;</span>
+                    }
+                </span>
+            </div>
+        </div>
+    </eui-card-content>
+</eui-card>

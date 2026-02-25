@@ -1,0 +1,76 @@
+<div class="doc-sample-section-title">Reactive forms with default arrows view</div>
+<form [formGroup]="form">
+    <div class="row">
+        <div class="col">
+            <eui-timepicker formControlName="timepickerControl"></eui-timepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form.value | json }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">Reactive forms with seconds</div>
+<form [formGroup]="form2">
+    <div class="row">
+        <div class="col">
+            <eui-timepicker hasSeconds formControlName="timepickerControlWithSeconds"></eui-timepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form2.value | json }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">Reactive forms using one input field with mask</div>
+<form [formGroup]="form3">
+    <div class="row">
+        <div class="col-md-4">
+            <div euiInputGroup>
+                <label euiLabel for="timepicker">Sample label</label>
+                <eui-timepicker inputId="timepicker" isOneInputField formControlName="oneInputControl"></eui-timepicker>
+            </div>
+        </div>
+        <div class="col-md-4 offset-md-2">
+            <pre class="eui-u-text-pre">{{ form3.value | json }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">Reactive forms using one input field with mask, seconds and custom placeholder</div>
+<form [formGroup]="form4">
+    <div class="row">
+        <div class="col-md-4">
+            <eui-timepicker hasSeconds isOneInputField formControlName="oneInputControl" placeholder="Hours:Mins:Secs"></eui-timepicker>
+        </div>
+        <div class="col-md-4 offset-md-2">
+            <pre>{{ form4.value | json }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">Reactive forms with disabled state via FormControl</div>
+<form [formGroup]="form5">
+    <div class="row">
+        <div class="col">
+            <eui-timepicker hasSeconds formControlName="disabledTimepicker"></eui-timepicker>
+        </div>
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form5.value | json }}, disabled: {{ form5.get('disabledTimepicker')?.disabled | json }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">Reactive forms on one input field with disabled state via FormControl</div>
+<form [formGroup]="form6">
+    <div class="row">
+        <div class="col">
+            <eui-timepicker hasSeconds isOneInputField formControlName="disabledOneInputTimepicker"></eui-timepicker>
+        </div>
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form6.value | json }}, disabled: {{ form6.get('disabledOneInputTimepicker')?.disabled | json }}</pre>
+        </div>
+    </div>
+</form>

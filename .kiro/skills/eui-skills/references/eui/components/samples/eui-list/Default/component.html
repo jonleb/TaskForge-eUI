@@ -1,0 +1,52 @@
+<p class="eui-u-text-paragraph">Default list using unordered list & list items with <code class="eui-u-text-code">ul &gt; li</code> tags.</p>
+<br>
+
+<ul euiList>
+    <li euiListItem (click)="onListItemClicked('1')">
+        <span euiLabel>Label 1</span>
+    </li>
+    <li euiListItem (click)="onListItemClicked('2')">
+        <span euiLabel>Label 2</span>
+    </li>
+    <li euiListItem (click)="onListItemClicked('3')">
+        <span euiLabel>Label 3</span>
+    </li>
+</ul>
+
+
+<div class="doc-sample-section-title">With Sub-label</div>
+<ul euiList>
+    <li euiListItem (click)="onListItemClicked('1')">
+        <span euiLabel>Label</span>
+        <span euiLabel euiSizeS>Sub-label</span>
+    </li>
+    <li euiListItem (click)="onListItemClicked('2')">
+        <span euiLabel>Label</span>
+        <span euiLabel euiSizeS>Sub-label</span>
+    </li>
+    <li euiListItem (click)="onListItemClicked('3')">
+        <span euiLabel>Label</span>
+        <span euiLabel euiSizeS>Sub-label 1</span>
+        <span euiLabel euiSizeS>Sub-label 2</span>
+    </li>
+</ul>
+
+<div class="doc-sample-section-title">With Sub-label & icon</div>
+<ul euiList>
+    <li euiListItem (click)="onListItemClicked('1')">
+        <span euiIconSvg icon="circle-dashed:regular"></span>
+        <span euiLabel>Label</span>
+        <span euiLabel euiSizeS>Sub-label</span>
+    </li>
+    <li euiListItem (click)="onListItemClicked('2')">
+        <span euiIconSvg icon="circle-dashed:regular"></span>
+        <span euiLabel>Label</span>
+        <span euiLabel euiSizeS>Sub-label</span>
+    </li>
+    <li euiListItem (click)="onListItemClicked('3')">
+        <span euiIconSvg icon="circle-dashed:regular"></span>
+        <span euiLabel>Label</span>
+        <span euiLabel euiSizeS>Sub-label 1</span>
+        <span euiLabel euiSizeS>Sub-label 2</span>
+    </li>
+</ul>

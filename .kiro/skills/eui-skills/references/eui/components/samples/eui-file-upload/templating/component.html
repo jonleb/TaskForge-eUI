@@ -1,0 +1,85 @@
+<eui-alert euiWarning>
+    This feature requires the import of <code class="eui-u-text-code">EuiTemplateDirective</code><br/>
+    <code class="eui-u-text-code">import &#123; EuiTemplateDirective &#125; from '&#64;eui/components/directives';</code>
+</eui-alert><br/>
+
+<eui-alert>
+Few parts of <code class="eui-u-text-code">eui-file-upload</code> can be customized.<br/>
+<ul>
+    <li><code class="eui-u-text-code">uploadedFile</code>: Allows to customize the rendering of each file added or defined as existing values. A variable is sent to the template with file informations.</li>
+    <li><code class="eui-u-text-code">browseButton</code>: Allows to customize the rendering of the browse button. (<code class="eui-u-text-code">openBrowseWindow</code> method needs to be called)</li>
+    <li><code class="eui-u-text-code">resetButton</code>: Allows to customize the rendering of the reset button. (<code class="eui-u-text-code">resetList</code> method needs to be called)</li>
+    <li><code class="eui-u-text-code">progressBar</code>: Allows to customize the rendering of the progress bar. A variable is sent to the template with progress level.</li>
+</ul>
+<br/>
+This sample shows how to format the size of the file with the pipe <code class="eui-u-text-code">filesize</code> provided by the component.<br/>
+<br/>
+The removal of a file from the list has to be handled in two ways as a file can be a JS <code class="eui-u-text-code">File</code> object (when choosen by a user) or instance of <code class="eui-u-text-code">EuiUploadedFileInterface</code> (when provided as existing value). JS <code class="eui-u-text-code">File</code> object needs to be removed with the public method <code class="eui-u-text-code">removeFromList</code>, instances of <code class="eui-u-text-code">EuiUploadedFileInterface</code> needs to be removed with the public method <code class="eui-u-text-code">removeFromUploadedList</code>. The type of file can be known thanks to the boolean prop <code class="eui-u-text-code">isFileObject</code> in the return object of the template.
+<br/>
+
+  </eui-alert><br/>
+
+<form [formGroup]="form" enctype="multipart/form-data">
+    <eui-file-upload #euiFileUpload formControlName="image" [progress]="progress">
+
+        <ng-template euiTemplate="uploadedFile" let-file>
+            <eui-card class="eui-u-mv-m">
+                <eui-card-header>
+                    <eui-card-header-title>
+                        <a class="eui-u-text-link">{{ file.file.name }}</a>
+                    </eui-card-header-title>
+                    <eui-card-header-subtitle>Optional subtitle</eui-card-header-subtitle>
+             
+                    <eui-card-header-left-content>
+                        @if (file.file.type === 'image/jpeg' || file.file.type === 'image/gif' || file.file.type === 'image/png') {
+                            <img class="eui-u-width-20" src="{{ file.file.url }}" alt="{{ file.file.name }}" />
+                        } @else {
+                            <file-icon [filename]="file.file.name"></file-icon>
+                        }
+                    </eui-card-header-left-content>
+             
+                    <eui-card-header-right-content class="eui-u-flex-gap-m">
+                       
+                        <div class="eui-u-flex eui-u-flex-column eui-u-flex-gap-2xs">
+                            <small>File size</small>
+                            <span euiLabel>{{ file.file.size | filesize }}</span>
+                        </div>
+             
+                        <div class="eui-u-flex eui-u-flex-column eui-u-flex-gap-2xs">
+                            <small>File type</small>
+                            <span euiLabel>{{ file.file.type }}</span>
+                        </div>
+                       
+                        @if (file.isFileObject) {
+                            <button euiButton euiBasicButton euiDanger euiOutline euiSizeS euiTooltip="Remove from the list" (click)="deleteFile(file.index)">
+                                <eui-icon-svg icon="eui-trash" fillColor="danger" /> Delete
+                            </button>
+                        } @else {
+                            <button euiButton euiBasicButton euiDanger euiOutline euiSizeS euiTooltip="Remove from the list" (click)="deleteUploadedFile(file.index)">
+                                <eui-icon-svg icon="eui-trash" fillColor="danger" /> Delete
+                            </button>
+                        }
+             
+                    </eui-card-header-right-content>
+                </eui-card-header>
+            </eui-card>
+        </ng-template>
+        <ng-template euiTemplate="browseButton">
+            <button euiButton type="button" (click)="browse()" aria-label="Choose files to upload">
+                <eui-icon-svg icon="eui-upload" />
+            </button>
+        </ng-template>
+        <ng-template euiTemplate="resetButton">
+            <button euiButton type="button" (click)="reset()" aria-label="Reset the list of files">
+                <eui-icon-svg icon="eui-close" />
+            </button>
+        </ng-template>
+        <ng-template euiTemplate="progressBar" let-progress>
+            @if (progress.progress > 0) {
+                {{ progress.progress }}%
+            }
+        </ng-template>
+
+        <span class="eui-u-mr-xs"><button euiButton euiPrimary (click)="submit()">Submit</button></span>
+    </eui-file-upload>
+</form>

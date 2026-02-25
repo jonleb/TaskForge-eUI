@@ -1,0 +1,30 @@
+<p class="eui-u-text-paragraph">You can define your customNodeSelectFn by using the interface and the helper.
+    in this example custom-on-node-select-fn is checking the parents of the selected/unselected tree-item, and select them If one of their children is selected recursively.
+</p>
+<code>
+    (path: string, isChecked:boolean, treeItem: TreeItemModel, helper: CustomNodeSelectFnHelper) => void
+</code>
+
+<div class="doc-sample-section-title">Multi Level Example</div>
+<div class="row">
+    <div class="col-md-6">
+        <eui-tree [nodes]="treeData" isMultiselect [customNodeSelectFn]="customFn" (selectionChange)="onSelectionChange($event)"></eui-tree>
+    </div>
+    <div class="col-md-6">
+        <div class="eui-showcase-demo">
+            <div class="code" style="max-height: 25rem; overflow-y: auto;">
+                <eui-fieldset label="Added" isExpandable>
+                    <pre class="eui-u-text-pre">{{addedLabels}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Removed" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{removedLabels}}</pre>
+                </eui-fieldset>
+
+                <eui-fieldset label="Selection" isExpandable class="eui-u-mt-m">
+                    <pre class="eui-u-text-pre">{{selectionLabels}}</pre>
+                </eui-fieldset>
+            </div>
+        </div>
+    </div>
+</div>

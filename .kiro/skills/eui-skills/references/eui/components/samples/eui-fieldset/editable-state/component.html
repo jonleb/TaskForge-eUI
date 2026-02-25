@@ -1,0 +1,36 @@
+<p class="eui-u-text-paragraph">
+    When using action button in the <code class="eui-u-text-code">euiFieldsetLabelRightContent</code> be sure the button size is small 
+    using <code class="eui-u-text-code">euiSizeS</code>. See the code source for example.
+</p>
+
+<eui-fieldset label="Editable fieldset" [euiHighlighted]="isEditActive" isExpanded>
+    <euiFieldsetLabelRightContent class="eui-u-mr-s">
+    @if (!isEditActive) {
+        <button euiButton euiBasicButton euiSizeS euiPrimary euiOutline euiTooltip="Edit" aria-label="Edit" (click)="onEdit($event)">Edit</button>
+    } @else {
+        <button euiButton euiSecondary euiSizeS class="eui-u-ml-s" (click)="onCancel($event)">Cancel</button>
+        <button euiButton euiPrimary euiSizeS class="eui-u-ml-s" (click)="onSave($event)">Save</button>
+    }
+    </euiFieldsetLabelRightContent>
+
+    <div class="eui-u-flex eui-u-flex-column">
+
+        <div euiInputGroup class="row">
+            <div class="col-md-3">
+                <label for="firstInput" euiLabel>first label</label>
+            </div>
+            <div class="col-md-9">
+                <input id="firstInput" euiInputText [(ngModel)]="value1" [ngModelOptions]="{standalone: true}" placeholder="Type some text" [readonly]="!isEditActive" />
+            </div>
+        </div>
+
+        <div euiInputGroup class="row">
+            <div class="col-md-3">
+                <label for="secondInput" euiLabel>second label</label>
+            </div>
+            <div class="col-md-9">
+                <input id="secondInput" euiInputText [(ngModel)]="value2" [ngModelOptions]="{standalone: true}" placeholder="Type some text" [readonly]="!isEditActive" />
+            </div>
+        </div>
+    </div>
+</eui-fieldset>

@@ -1,0 +1,5 @@
+<form [formGroup]="form" enctype="multipart/form-data">
+    <eui-file-upload isItemsClickable formControlName="image" [progress]="progress" (itemClick)="onItemClick($event)">
+        <span class="eui-u-mr-xs"><button euiButton euiPrimary (click)="submit()">Submit</button></span>
+    </eui-file-upload>
+</form>

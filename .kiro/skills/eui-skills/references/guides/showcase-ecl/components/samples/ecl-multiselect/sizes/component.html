@@ -1,0 +1,32 @@
+<h6 class="section-title">Small</h6>
+<div eclFormGroup>
+    <label id="label-multi-sizes" eclFormLabel>Select countries</label>
+    <div id="helper-multi-sizes" eclHelpBlock>This is the help text</div>
+    <select ariaLabeledby="label-multi-sizes" ariaDescribedby="helper-multi-sizes" eclMultiselect eclPlaceholder="Custom placeholder" eclSize="s">
+        @for (country of countries; track country.id) {
+        <option eclMultiselectOption [value]="country.id" [label]="country.name"></option>
+        }
+    </select>
+</div>
+
+<h6 class="section-title">Medium</h6>
+<div eclFormGroup>
+    <label id="label-multi-sizem" eclFormLabel>Select countries</label>
+    <div id="helper-multi-sizem" eclHelpBlock>This is the help text</div>
+    <select ariaLabeledby="label-multi-sizem" ariaDescribedby="helper-multi-sizem" eclMultiselect eclPlaceholder="Custom placeholder">
+        @for (country of countries; track country.id) {
+        <option eclMultiselectOption [value]="country.id" [label]="country.name"></option>
+        }
+    </select>
+</div>
+
+<h6 class="section-title">Large</h6>
+<div eclFormGroup>
+    <label id="label-multi-sizel" eclFormLabel>Select countries</label>
+    <div id="helper-multi-sizel" eclHelpBlock>This is the help text</div>
+    <select ariaLabeledby="label-multi-sizel" ariaDescribedby="helper-multi-sizel" eclMultiselect eclPlaceholder="Custom placeholder" eclSize="l">
+        @for (country of countries; track country.id) {
+        <option eclMultiselectOption [value]="country.id" [label]="country.name"></option>
+        }
+    </select>
+</div>

@@ -1,0 +1,10 @@
+<button euiButton type="button" (click)="openMessageBoxNoDismissButton()" aria-haspopup="dialog">Open MessageBox - No dismiss button</button>&nbsp;
+<button euiButton type="button" (click)="openMessageBoxNoAcceptButton()" aria-haspopup="dialog">Open MessageBox - No accept button</button>
+
+<eui-message-box #messageBoxNoDismissButton [title]="'Message Box title'" [hasDismissButton]="false">
+    <p class="eui-u-text-paragraph">Message Box content</p>
+</eui-message-box>
+
+<eui-message-box #messageBoxNoAcceptButton [title]="'Message Box title'" [hasAcceptButton]="false">
+    <p class="eui-u-text-paragraph">Message Box content</p>
+</eui-message-box>

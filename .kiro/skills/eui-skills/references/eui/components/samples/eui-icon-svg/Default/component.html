@@ -1,0 +1,28 @@
+<div class="doc-sample-section-title">No set defined : the eUI set is used by default</div>
+
+<eui-icon-svg icon="eui-home" />
+
+
+<div class="doc-sample-section-title">Set is defined with the "set" property</div>
+<div class="eui-u-text-paragraph">or you can use the icon property for both <strong>icon_name:set_name</strong> separated by a semicolon.</div>
+
+<eui-icon-svg icon="alarm" set="regular" />
+<eui-icon-svg icon="question:regular" />
+<br>
+<eui-icon-svg icon="alarm" set="fill" />
+<eui-icon-svg icon="question:fill" />
+
+
+<div class="doc-sample-section-title">Icon can be dynamically changed</div>
+
+<eui-icon-svg [icon]="dynamicIcon" />
+<br>
+<button euiButton euiSizeS (click)="onIconChange()">Update icon</button>
+
+
+<div class="eui-u-flex eui-u-flex-gap-s eui-u-mt-m">
+    <span class="eui-u-f-xl eui-u-f-bold">Powered by</span>
+    <eui-icon-svg icon="eui-logo" size="2xl" aria-label="eUI" title="eUI" />
+    <span class="eui-u-f-xl eui-u-f-bold">with</span>
+    <eui-icon-svg icon="heart-straight:fill" size="xl" aria-label="Love heart" title="Love" fillColor="danger" />
+</div>

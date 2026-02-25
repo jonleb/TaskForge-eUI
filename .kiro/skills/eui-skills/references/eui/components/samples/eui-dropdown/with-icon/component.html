@@ -1,0 +1,28 @@
+<p class="eui-u-text-paragraph">
+    The eui-dropdown list items can be prepended with an icon in order to reinforce the UX visuals.
+</p>
+
+<eui-alert>
+    Recommended usage and icon position is <strong>before the list item label</strong> by using the <code class="eui-u-text-code">eui-icon-svg</code> component.
+</eui-alert><br/>
+
+<eui-dropdown>
+    <button euiButton euiPrimary [attr.aria-label]="'Menu'">
+        <span euiLabel>Button trigger</span>
+        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+    </button>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1">
+            <eui-icon-svg icon="eui-add" size="s" fillColor="secondary" class="eui-u-mr-s"></eui-icon-svg>
+            <span euiLabel>Menu item 1 with very long label</span>
+        </button>
+        <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2">
+            <eui-icon-svg icon="star:fill" size="s" fillColor="secondary" class="eui-u-mr-s"></eui-icon-svg>
+            <span euiLabel>Menu item 2</span>
+        </button>
+        <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3">
+            <eui-icon-svg icon="flag:regular" size="s" fillColor="secondary" class="eui-u-mr-s"></eui-icon-svg>
+            <span euiLabel>Menu item 3</span>
+        </button>
+    </eui-dropdown-content>
+</eui-dropdown>

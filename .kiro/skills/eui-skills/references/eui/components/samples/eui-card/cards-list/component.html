@@ -1,0 +1,72 @@
+<p class="eui-u-text-paragraph">
+    The source code of the used service can be found <a href="https://sdlc.webcloud.ec.europa.eu/csdr/eui/app-eui-showcase-ux-components/-/tree/develop/src/app/features/01b-style-guide/03-components/eui-card/samples/cards-list/service" class="eui-u-text-link-external" target="_blank">here</a>.
+</p>
+
+    <eui-alert euiWarning>
+        Accessibility note: Please make sure to add a <code class="eui-u-text-code">tabindex="0"</code> in the card content if the content is scrollable as in the following example
+    </eui-alert><br/>
+
+<div class="doc-sample-section-title">Display cards from a Service</div>
+<p class="eui-u-text-paragraph">
+    The following cards list features 2 responsive layout display variants as well as sorting of the card items based on various sort criteria.
+</p>
+<!-- <div class="eui-u-flex eui-u-flex-gap-m">
+    Use bottom expander 
+    <eui-slide-toggle [isChecked]="hasBottomExpander" (slideToggleChange)="onChangeExpander($event)" />
+</div> -->
+
+<div class="eui-u-flex">
+    <div class="eui-u-flex eui-u-flex-gap-m">
+        Use bottom expander 
+        <eui-slide-toggle [isChecked]="hasBottomExpander" (slideToggleChange)="onChangeExpander($event)" />
+    </div>
+    
+    <div class="eui-u-flex eui-u-flex-justify-content-end eui-u-flex-gap-m">
+        <div class="eui-u-inline-flex">
+            <span class="eui-u-text-small">Layout display</span>
+        </div>
+        <div class="eui-u-inline-flex">
+            <eui-button-group isRadioButtons euiSecondary (buttonClick)="onToggleDisplayMode()">
+                <button euiButton euiIconButton id="list" [euiPrimary]="!displayGrid" aria-label="List display">
+                    <eui-icon-svg icon="list-bullets:regular"></eui-icon-svg>
+                </button>
+                <button euiButton euiIconButton id="grid" [euiPrimary]="displayGrid" aria-label="Grid display">
+                    <eui-icon-svg icon="grid-four:regular"></eui-icon-svg>
+                </button>
+            </eui-button-group>
+        </div>
+
+        <div class="eui-u-inline-flex eui-u-width-12">
+            <div euiInputGroup class="eui-u-mb-none">
+                <div euiInputGroupAddOn>
+                    <select euiSelect
+                        id="sortInput"
+                        name="sortInput"
+                        placeholder="Sort by..."
+                        euiTooltip="Sort by criteria"
+                        (change)="onChangeSortOrder($event)">
+                        @for (option of sortingOptions; track $index) {
+                            <option [value]="option.id">
+                                {{ option.value }}
+                            </option>
+                        }
+                    </select>
+                    <button euiButton euiIconButton euiPrimary euiOutline (click)="changeSortingDirection()" [euiTooltip]="orderTooltipText" aria-label="Sorting">
+                        <eui-icon-svg [icon]="isDescending ? 'eui-arrow-down': 'eui-arrow-up'" size="s"></eui-icon-svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<br>
+
+<div class="row">
+    @for (data of payload; track $index) {
+        <div class="eui-u-mb-m" [class.col-md-6]="displayGrid" [class.col-12]="!displayGrid">
+            <card-list-item [data]="data" isCollapsible isCollapsed [isSelected]="false" [hasBottomExpander]="hasBottomExpander"></card-list-item>
+        </div>
+    }
+</div>

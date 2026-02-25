@@ -1,0 +1,83 @@
+<eui-alert>
+    <eui-alert-title>Usage recommendation</eui-alert-title>
+    Always wrap the <code class="eui-u-text-code">input + label</code> within a <strong>Flexbox div container</strong> by applying the any eUI Flex utility class :
+    <ul>
+        <li><code class="eui-u-text-code">eui-u-flex</code> and <code class="eui-u-text-code">eui-u-inline-flex</code>: checkboxes are centered aligned</li>
+        <li><code class="eui-u-text-code">eui-u-display-flex</code>: checkboxes are top aligned</li>
+    </ul>
+    See the code source for examples.
+</eui-alert>
+
+<br><br>
+
+<div class="eui-u-display-flex eui-u-mb-s">
+    <input euiInputCheckBox id="label-checkbox1" name="checkbox" checked />
+    <label for="label-checkbox1">{{state}}</label>
+</div>
+
+<div class="eui-u-display-flex eui-u-mb-s">
+    <input euiInputCheckBox id="label-checkbox11" name="checkbox" />
+    <label for="label-checkbox11">{{state2}}</label>
+    <label euiLabel>(Extra label)</label>
+</div>
+
+<div class="eui-u-display-flex eui-u-mb-s">
+    <input euiInputCheckBox id="label-checkbox111" name="checkbox" />
+    <label for="label-checkbox111">{{longText}}</label>
+</div>
+
+
+<div class="doc-sample-section-title">Center aligned checkboxes with long labels</div>
+<div class="eui-u-flex">
+    <input euiInputCheckBox id="label-checkbox2" name="checkbox" checked="checked" />
+    <label for="label-checkbox2">{{longText}}</label>
+
+    <input euiInputCheckBox id="label-checkbox22" name="checkbox" checked="checked" />
+    <label for="label-checkbox22">{{longText}}</label>
+</div>
+
+
+<div class="doc-sample-section-title">Top aligned checkboxes with long labels</div>
+<div class="eui-u-display-flex eui-u-mb-s">
+    <input euiInputCheckBox id="label-checkbox222" name="checkbox" checked="checked" />
+    <label for="label-checkbox222">{{longText}}</label>
+</div>
+
+<div class="eui-u-display-flex eui-u-mb-s">
+    <input euiInputCheckBox id="label-checkbox2222" name="checkbox" checked="checked" />
+    <label for="label-checkbox2222">{{longText2}}</label>
+</div>
+
+
+<div class="doc-sample-section-title">Label size</div>
+<eui-alert>
+    <eui-alert-title>Remark about sizes</eui-alert-title>
+    Please note that when using the <code class="eui-u-text-code">euiLabel</code> with the label tag only the default M(edium) and S(mall) sizes are available.
+    <br>
+    For other custom sizes, please use the <code class="eui-u-text-code">eui-u-f-%x</code>&nbsp;<a class="eui-u-text-link-external" href="https://eui.ecdevops.eu/eui-showcase-ux-components-19.x/showcase-design-system/design-tokens/typography" target="_blank">utility classes</a>.
+</eui-alert>
+
+<br>
+
+<div class="eui-u-flex eui-u-flex-wrap">
+    <div class="eui-u-inline-flex eui-u-mb-s">
+        <input id="label-size-s" name="sizes" euiInputCheckBox />
+        <label for="label-size-s" euiSizeS>Small (S)</label>
+    </div>
+    <div class="eui-u-inline-flex eui-u-mb-s">
+        <input id="label-size-m" name="sizes" euiInputCheckBox checked="true"/>
+        <label for="label-size-m" euiSizeM>Default (M)</label>
+    </div>
+    <div class="eui-u-inline-flex eui-u-mb-s">
+        <input id="label-size-l" name="sizes" euiInputCheckBox />
+        <label for="label-size-l" class="eui-u-f-l">Large (L)</label>
+    </div>
+    <div class="eui-u-inline-flex eui-u-mb-s">
+        <input id="label-size-xl" name="sizes" euiInputCheckBox />
+        <label for="label-size-xl" class="eui-u-f-xl">Extra large (XL)</label>
+    </div>
+    <div class="eui-u-inline-flex eui-u-mb-s">
+        <input id="label-size-2xl" name="sizes" euiInputCheckBox />
+        <label for="label-size-2xl" class="eui-u-f-2xl">Largest (2XL)</label>
+    </div>
+</div>

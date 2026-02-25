@@ -1,0 +1,8 @@
+<p class="eui-u-text-paragraph">When using both <code class="eui-u-text-code">euiClearable</code> and <code class="eui-u-text-code">euiLoading</code> options, be sure to <strong>toggle</strong> the isLoading state from the euiClearable in order to switch from clearable to loading states.
+See the code source for an example.</p>
+<br>
+<div euiInputGroup>
+    <input euiInputText [euiClearable]="!isLoadingToggle" [euiLoading]="isLoadingToggle" [value]="inputValue" placeholder="Type some text to enable the clear icon" aria-label="Input text sample with clearable and loading visual status" />
+</div>
+<br>
+<button euiButton euiPrimary euiOutline (click)="toggleState()">Toggle loading state</button>

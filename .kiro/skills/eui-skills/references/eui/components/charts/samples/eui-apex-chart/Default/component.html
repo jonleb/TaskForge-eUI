@@ -1,0 +1,57 @@
+<div class="doc-sample-section-title">Minimal options</div>
+
+<eui-apex-chart
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart">
+</eui-apex-chart>
+
+
+<div class="doc-sample-section-title">All options set</div>
+
+<eui-apex-chart
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart"
+    [colors]="chartOptions.colors"
+    [stroke]="chartOptions.stroke"
+    [dataLabels]="chartOptions.dataLabels"
+    [tooltip]="chartOptions.tooltip"
+    [responsive]="chartOptions.responsive"
+    [legend]="chartOptions.legend"
+    [xaxis]="chartOptions.xaxis"
+    [yaxis]="chartOptions.yaxis"
+    [stroke]="chartOptions.stroke"
+    [markers]="chartOptions.markers">
+</eui-apex-chart>
+
+
+<div class="doc-sample-section-title">Within eui-card</div>
+
+<eui-card euiNoContentPadding>
+    <eui-card-header>
+        <eui-card-header-title>Chart title</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        <eui-apex-chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart">
+        </eui-apex-chart>
+    </eui-card-content>
+</eui-card>
+
+
+<div class="doc-sample-section-title">Within an eui-dialog</div>
+
+<button euiButton
+        (click)="openDialog()">Open Dialog</button>
+<eui-dialog #dialog
+            [title]="'Dialog title'" 
+            (dialogOpen)="onDialogOpen()">
+    
+        @if (isdialogOpen) {
+            <p class="eui-u-text-paragraph">
+                <eui-apex-chart #dialogChart [series]="chartOptions.series"
+                                [chart]="chartOptions.chart">
+                </eui-apex-chart>
+            </p>
+        }
+</eui-dialog>

@@ -1,0 +1,56 @@
+<div class="doc-sample-section-title">The eui-dropdown renders the eui-tree in the content</div>
+
+<eui-dropdown [hasClosedOnClickInside]="false">
+    <button euiButton euiPrimary euiOutline>
+        <label euilabel class="eui-u-text-truncate">{{selectionLabels}}</label>
+        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+    </button>
+    <eui-dropdown-content>
+        <div class="eui-u-p-m">
+            <eui-tree isMultiselect [nodes]="treeData" (selectionChange)="onSelectionChangeDropdown($event)"></eui-tree>
+        </div>
+    </eui-dropdown-content>
+</eui-dropdown>
+
+
+<div class="doc-sample-section-title">Harmonized responsive styling</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="doc-sample-section-subtitle">Dropdown tree form input sample</div>
+
+        <div euiInputGroup>
+            <label euiLabel>Select node</label>
+            <eui-dropdown hasTabNavigation [hasClosedOnClickInside]="false" isBlock>
+                <button euiButton euiSecondary euiOutline>
+                    <div class="eui-u-flex eui-u-flex-justify-content-between">
+                        <div class="eui-u-flex eui-u-flex-justify-content-start">
+                            <label euilabel class="eui-u-text-truncate">{{selectionLabels}}</label>
+                        </div>
+                        <div class="eui-u-flex eui-u-flex-justify-content-end">
+                            <eui-icon-svg icon="eui-chevron-down" size="xs" />
+                        </div>
+                    </div>
+                </button>
+                <eui-dropdown-content>
+                    <div class="eui-u-p-m">
+                        <eui-tree isMultiselect [nodes]="treeData" (selectionChange)="onSelectionChangeDropdown($event)"></eui-tree>
+                    </div>
+                </eui-dropdown-content>
+            </eui-dropdown>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="doc-sample-section-subtitle">Select form input sample</div>
+
+        <div euiInputGroup>
+            <label euiLabel for="framework">Select framework</label>
+            <select euiSelect name="framework" id="framework" placeholder="Choose a framework">
+                <option value="angular">Angular</option>
+                <option value="react">React</option>
+                <option value="vue">Vue</option>
+            </select>
+        </div>
+    </div>
+</div>

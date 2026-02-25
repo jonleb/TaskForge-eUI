@@ -1,0 +1,13 @@
+<p class="eui-u-text-paragraph">Find more information about this on the overview</p>
+<eui-breadcrumb>
+    <eui-breadcrumb-item link="/" iconSvgName="eui-home" ariaLabel="Home"></eui-breadcrumb-item>
+    <eui-breadcrumb-item *ngFor="let item of service.breadcrumbs$ | async"
+                         [id]="item.id"
+                         [link]="item.link"
+                         [label]="item.label"
+                         [navigationExtras]="item.navigationExtras">
+    </eui-breadcrumb-item>
+</eui-breadcrumb>
+
+<button euiButton (click)="addLast($event)">Add item (end)</button>&nbsp;
+<button euiButton (click)="removeLast($event)">Remove item(last)</button>

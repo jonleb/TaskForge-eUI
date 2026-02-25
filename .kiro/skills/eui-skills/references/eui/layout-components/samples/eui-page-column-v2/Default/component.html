@@ -1,0 +1,31 @@
+<p class="eui-u-text-paragraph">
+    Columns are gathered within the <code class="eui-u-text-code">eui-page-columns</code> wrapper which is mandatory and allows single
+    or multiple columns layout within the <code class="eui-u-text-code">eui-page-content</code>.
+</p>
+
+<eui-page>
+    <eui-page-content>
+        <eui-page-columns>
+            <eui-page-column label="Side column title" subLabel="Side column subtitle (optional)" euiSizeVariant="2xl" isCollapsible=true>
+                <eui-page-column-header-body>
+                    <em>sticky column header body</em>
+                </eui-page-column-header-body>
+
+                <eui-page-column-body>
+                    <em>column body content</em>
+                </eui-page-column-body>
+            </eui-page-column>
+
+            <eui-page-column label="Main column title" subLabel="Main column subtitle (optional)">
+                <eui-page-column-header-body>
+                    <em>This is the optional column header body which remains sticky when scrolling into the column's content</em>
+                </eui-page-column-header-body>
+
+                <eui-page-column-body>
+                    <eui-showcase-doc-lorem-ipsum textSize="small"></eui-showcase-doc-lorem-ipsum>
+                </eui-page-column-body>
+            </eui-page-column>
+
+        </eui-page-columns>
+    </eui-page-content>
+</eui-page>

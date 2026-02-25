@@ -1,0 +1,72 @@
+<form [formGroup]="formValidation" class="row">
+    <div class="col-md-1">
+        <eui-badge class="eui-u-m-xs">{{formData?.id}}</eui-badge>
+    </div>
+    <div formGroupName="manufacturers" class="col-md-11">
+
+        <div euiInputGroup class="row">
+            <div class="col-md-4">
+                <label euiLabel euiRequired>Company name</label>
+            </div>
+            <div class="col-md-8">
+                <input euiInputText formControlName="companyName" [readonly]="!isEditActive" aria-label="Company name" />
+                @if (render('manufacturers.companyName')) {
+                    <eui-feedback-message euiDanger>This field is <strong>required</strong></eui-feedback-message>
+                }
+            </div>
+        </div>
+
+        <div euiInputGroup class="row">
+            <div class="col-md-4">
+                <label euiLabel euiRequired>Address</label>
+            </div>
+            <div class="col-md-8">
+                <input euiInputText formControlName="companyAddress" [readonly]="!isEditActive" aria-label="Company address" />
+                @if (render('manufacturers.companyAddress')) {
+                    <eui-feedback-message euiDanger>This field is <strong>required</strong></eui-feedback-message>
+                }
+            </div>
+        </div>
+
+        <div euiInputGroup class="row">
+            <div class="col-md-4">
+                <label euiLabel euiRequired>Country</label>
+            </div>
+            <div class="col-md-8">
+                <select euiSelect formControlName="companyCountry" [readonly]="!isEditActive">
+                    @for (country of countryOptions; track $index) {
+                        <option [value]="country.value">{{country.label}}</option>
+                    }
+                </select>
+                @if (render('manufacturers.companyCountry')) {
+                    <eui-feedback-message euiDanger>This field is <strong>required</strong></eui-feedback-message>
+                }
+            </div>
+        </div>
+
+        <div euiInputGroup class="row">
+            <div class="col-md-4">
+                <label euiLabel euiRequired>Zip code</label>
+            </div>
+            <div class="col-md-8">
+                <input euiInputNumber formControlName="companyZipCode" [readonly]="!isEditActive" aria-label="Company zip code" />
+                @if (render('manufacturers.companyZipCode')) {
+                    <eui-feedback-message euiDanger>This field is <strong>required</strong></eui-feedback-message>
+                }
+            </div>
+        </div>
+
+        <div euiInputGroup class="row eui-u-mb-m">
+            <div class="col-md-4">
+                <label euiLabel euiRequired>City</label>
+            </div>
+            <div class="col-md-8">
+                <input euiInputText formControlName="companyCity" [readonly]="!isEditActive" aria-label="Company city" />
+                @if (render('manufacturers.companyCity')) {
+                    <eui-feedback-message euiDanger>This field is <strong>required</strong></eui-feedback-message>
+                }
+            </div>
+        </div>
+
+    </div>
+</form>

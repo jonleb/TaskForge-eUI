@@ -1,0 +1,36 @@
+<!-- <p class="eui-u-text-paragraph">The breadcrumb service is just a helper that acts like a breadcrumbs item state holder. In this example we demonstrate a structure such as</p>
+<ul>
+    <li>Parent
+        <ul>
+            <li> - Child 1
+                <ul>
+                    <li> - - Child 2</li>
+                    <li> - - Child 3</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<p class="eui-u-text-paragraph">You will notice that in the sample below on each route Component, on the constructor we are setting the whole breadcrumb array list.</p>
+<p class="eui-u-text-paragraph">For example when user click on Child 2 we know as a convention that we want to display <b>Home->Child 1->Child 2</b> so on the constructor we set the breadcrumb
+like
+</p>
+<pre class="eui-u-text-pre"><code class="language-javascript" euiCode>{{sampleCode}}</code></pre>
+<p class="eui-u-text-paragraph">Of course there are other ways to remove or add breadcrumb items based on a specific logic you might follow. For example you might want to use</p>
+<pre class="eui-u-text-pre"><code class="language-javascript" euiCode>service.addCrumb(...)</code></pre>
+<p class="eui-u-text-paragraph">on Init and remove the item while navigating back to another route which has its own breadcrumb item</p>
+<pre class="eui-u-text-pre"><code class="language-javascript" euiCode>service.removeCrumb('child-2')</code></pre>
+
+<eui-breadcrumb>
+    <eui-breadcrumb-item link="/" iconSvgName="eui-home" ariaLabel="Home"></eui-breadcrumb-item>
+    <eui-breadcrumb-item *ngFor="let item of service.breadcrumbs$ | async"
+                         [id]="item.id"
+                         [link]="item.link"
+                         [label]="item.label"
+                         [navigationExtras]="item.navigationExtras">
+    </eui-breadcrumb-item>
+</eui-breadcrumb>
+<div style=" border: 1px solid black; margin: 5px;">
+    <router-outlet></router-outlet>
+</div> -->

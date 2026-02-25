@@ -1,0 +1,11 @@
+<dialog #modalTS eclModal size="m" (modalClose)="onClose($event)" (modalOpen)="onOpen($event)">
+    <header eclModalHeader>
+        This is an example
+    </header>
+    <div eclModalBody>
+        Modal dialog, that opens as the page is loaded.
+    </div>
+    <footer eclModalFooter>
+        <button eclButton eclModalRole="confirm" eclModalClose variant="primary">OK</button>
+    </footer>
+</dialog>

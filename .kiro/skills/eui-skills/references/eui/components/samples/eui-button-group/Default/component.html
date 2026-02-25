@@ -1,0 +1,29 @@
+<eui-button-group>
+    <button euiButton id="1">button 1</button>
+    <button euiButton id="2">button 2</button>
+    <button euiButton id="3">button 3</button>
+</eui-button-group>
+
+<div class="doc-sample-section-title">Pre-selected isChecked</div>
+
+<eui-button-group>
+    <button euiButton [isChecked]="true" id="4">button 1</button>
+    <button euiButton id="5">button 2</button>
+    <button euiButton id="6">button 3</button>
+</eui-button-group>
+
+<div class="doc-sample-section-title">With buttons states</div>
+
+<eui-button-group>
+    <button euiButton euiSuccess id="9">euiSuccess</button>
+    <button euiButton euiInfo id="10">euiInfo</button>
+    <button euiButton euiWarning id="11">euiWarning</button>
+    <button euiButton euiDanger id="12">euiDanger</button>
+</eui-button-group>
+
+<div class="doc-sample-section-title">data-driven with pre-selection</div>
+<eui-button-group>
+    @for (buttonItem of buttonItems; track $index) {
+        <button euiButton id={{buttonItem.id}} [isChecked]="buttonItem.active">{{ buttonItem.label }}</button>
+    }
+</eui-button-group>

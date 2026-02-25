@@ -1,0 +1,35 @@
+<eui-alert>
+    Check console.log for output event triggered values
+</eui-alert>
+
+<div class="doc-sample-section-title">Default</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-center>
+        <eui-toolbar-selector label="Selector label" iconSvgName="eui-stack"></eui-toolbar-selector>
+    </eui-toolbar-center>
+</eui-toolbar>
+
+
+<div class="doc-sample-section-title">euiDisabled</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-center>
+        <eui-toolbar-selector label="Selector label" iconSvgName="eui-stack" euiDisabled></eui-toolbar-selector>
+    </eui-toolbar-center>
+</eui-toolbar>
+
+
+<div class="doc-sample-section-title">selectorClick event</div>
+
+<eui-toolbar>
+    <eui-toolbar-logo></eui-toolbar-logo>
+    <eui-toolbar-app appName="appName"></eui-toolbar-app>
+    <eui-toolbar-center>
+        <eui-toolbar-selector label="Selector label" iconSvgName="eui-stack" (selectorClick)="onClick()"></eui-toolbar-selector>
+    </eui-toolbar-center>
+</eui-toolbar>

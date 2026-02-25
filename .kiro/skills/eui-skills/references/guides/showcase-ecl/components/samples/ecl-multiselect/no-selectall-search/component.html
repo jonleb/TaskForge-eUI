@@ -1,0 +1,11 @@
+<div eclFormGroup>
+    <label id="label-multi-default" eclFormLabel isOptional>Select countries</label>
+    <div id="helper-multi-default" eclHelpBlock>This is help block</div>
+    <select eclMultiselect eclPlaceholder="Custom placeholder" id="my_id"
+        ariaLabeledby="label-multi-default" ariaDescribedby="helper-multi-default" hasSearchBox="false"
+        hasSelectAll="false">
+        @for (country of countries; track country.id) {
+        <option eclMultiselectOption [value]="country.id" [label]="country.name"></option>
+        }
+    </select>
+</div>

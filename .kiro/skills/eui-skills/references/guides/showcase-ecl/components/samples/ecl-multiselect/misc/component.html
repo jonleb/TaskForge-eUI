@@ -1,0 +1,27 @@
+<h6 class="section-title">Custom class for option and select event</h6>
+<form [formGroup]="fg">
+  <div eclFormGroup>
+    <label id="label-multi-misc1" eclFormLabel>Select countries</label>
+    <div id="helper-multi-misc1" eclHelpBlock>Selected values : {{selectedValues2}}</div>
+    <select ariaLabeledby="label-multi-misc1" ariaDescribedby="helper-multi-misc1" eclMultiselect eclPlaceholder="Custom placeholder" formControlName="default" (eclChange)="onSelect($event)">
+      @for (country of countries; track country.id) {
+      <option eclMultiselectOption [class]="getClass(country)" [value]="country.id" [label]="country.name"></option>
+      }
+  </select>
+  </div>
+</form>
+
+<h6 class="section-title">Submit and disabled option</h6>
+<form [formGroup]="fg" (ngSubmit)="onSubmit()">
+  <div eclFormGroup>
+    <label id="label-multi-misc2" eclFormLabel>Select countries</label>
+    <div id="helper-multi-misc2" eclHelpBlock>This is the help text</div>
+    <select ariaLabeledby="label-multi-misc2" ariaDescribedby="helper-multi-misc2" eclMultiselect eclPlaceholder="Custom placeholder" formControlName="submit">
+        @for (country of countries; track country.id) {
+        <option eclMultiselectOption [disabled]="isOptionDisabled(country)" [value]="country.id" [label]="country.name"></option>
+        }
+  </select>
+  </div>
+  <p><button eclButton type="submit" variant="primary" class="ecl-u-mt-m">Submit</button>
+    <span> Submitted values : {{selectedValues}}</span></p>
+</form>

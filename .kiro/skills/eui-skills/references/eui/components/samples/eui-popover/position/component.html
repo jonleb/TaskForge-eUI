@@ -1,0 +1,46 @@
+<p class="eui-u-text-paragraph">Popover initial position can be defined by the <code class="eui-u-text-code">position</code> input option which accepts the following values:
+<span class="eui-u-text-monospace"><code class="eui-u-text-code">top | right | bottom (default) | left</code></span></p>
+
+<br>
+
+ <eui-alert>
+    <eui-alert-title>Important remark about automatic repositioning</eui-alert-title>
+    <p class="eui-u-mb-none">When the parent container's element is too small to display the popover contents at the choosen potition, a fallback is automatically provided to best re-position the popover overlay on the screen.</p>
+</eui-alert>
+
+<div class="eui-u-flex eui-u-flex-column eui-u-flex-justify-content-center">
+    <div class="doc-sample-section-title">Bottom (default)</div>
+    <button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover2($event)">
+        <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+    </button>
+    <eui-popover #popover2 [title]="'This is the popover title'" [position]="'bottom'">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+    </eui-popover>
+
+
+    <div class="doc-sample-section-title">Top</div>
+    <button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover1($event)">
+        <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+    </button>
+    <eui-popover #popover1 [title]="'This is the popover title'" [position]="'top'">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+    </eui-popover>
+
+
+    <div class="doc-sample-section-title">Left</div>
+    <button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover3($event)">
+        <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+    </button>
+    <eui-popover #popover3 [title]="'This is the popover title'" [position]="'left'">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+    </eui-popover>
+
+
+    <div class="doc-sample-section-title">Right</div>
+    <button euiButton euiRounded euiBasicButton euiIconButton euiSizeS aria-label="Popover Icon Button" (click)="openPopover4($event)">
+        <eui-icon-svg icon="eui-circle-fill" size="m" fillColor="secondary"></eui-icon-svg>
+    </button>
+    <eui-popover #popover4 [title]="'This is the popover title'" [position]="'right'">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus corporis commodi.
+    </eui-popover>
+</div>

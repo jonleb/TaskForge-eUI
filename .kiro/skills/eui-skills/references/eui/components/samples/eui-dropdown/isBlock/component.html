@@ -1,0 +1,78 @@
+<p class="eui-u-text-paragraph">
+    Block dropdown buttons are displayed using the full width of their parent container using the <code class="eui-u-text-code">isBlock</code> input option.
+</p>
+
+<div class="doc-sample-section-title eui-u-mt-m">Default</div>
+<eui-dropdown isBlock>
+    <button euiButton euiPrimary aria-label="Menu">
+        <span euiLabel>Actions</span>
+        <eui-icon-svg icon="eui-chevron-down" size="xs" />
+    </button>
+    <eui-dropdown-content>
+        <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1"><eui-label>Menu item 1</eui-label></button>
+        <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2"><eui-label>Menu item 2</eui-label></button>
+        <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3"><eui-label>Menu item 3</eui-label></button>
+    </eui-dropdown-content>
+</eui-dropdown>
+
+
+<div class="doc-sample-section-title">Within responsive (Flexbox) containers</div>
+<eui-alert>
+    In order to have automatic truncated content of the display items, you should use the <code class="eui-u-text-code">eui-label</code> component or the <code class="eui-u-text-code">euiLabel</code> directive surrounding the text label.
+</eui-alert>
+
+<div class="row eui-u-mt-m">
+    <div class="col-md-4">
+        <div euiLabel euiSizeS>COL-4</div>
+        <eui-dropdown isBlock isLabelUpdatedFromSelectedItem>
+            <button euiButton euiPrimary euiResponsive aria-label="Menu">
+                <span euiLabel>Actions</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1"><span euiLabel>Menu item 1 with very very very very very very very very long label</span></button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2"><span euiLabel>Menu item 2 with very very very very very very very very long label</span></button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3"><span euiLabel>Menu item 3 with very very very very very very very very long label</span></button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+    <div class="col-md-6">
+        <div euiLabel euiSizeS>COL-6</div>
+        <eui-dropdown isBlock>
+            <button euiButton euiSecondary aria-label="Menu">
+                <span euiLabel>Actions</span>
+                <eui-icon-svg icon="eui-chevron-down" size="xs" />
+            </button>
+            <eui-dropdown-content>
+                <button euiDropdownItem (click)="onClick('Menu item 1')" aria-label="item 1"><eui-label>Menu item 1 with very very very very very very very very long label</eui-label></button>
+                <button euiDropdownItem (click)="onClick('Menu item 2')" aria-label="item 2"><eui-label>Menu item 2 with very very very very very very very very long label</eui-label></button>
+                <button euiDropdownItem (click)="onClick('Menu item 3')" aria-label="item 3"><eui-label>Menu item 3 with very very very very very very very very long label</eui-label></button>
+            </eui-dropdown-content>
+        </eui-dropdown>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Responsive (truncated) long labels with isLabelUpdatedFromSelectedItem option</div>
+<eui-alert>
+    <strong>Dropdown button trigger:</strong> when having a long label on the <code class="eui-u-text-code">eui-dropdown</code> button trigger, it is recommended to use the <code class="eui-u-text-code">euiResponsive</code> input option.
+    <br>
+    <strong>Dropdown list items:</strong> for automatic truncated content of the display items, you should use the <code class="eui-u-text-code">eui-label</code> component or the <code class="eui-u-text-code">euiLabel</code> directive surrounding the text label.
+    <br>
+    <em>See the code source for more information.</em>
+</eui-alert>
+
+<div class="eui-u-width-25 eui-u-mt-xl">
+    <eui-dropdown isBlock isLabelUpdatedFromSelectedItem="true">
+        <button euiButton euiPrimary euiResponsive>
+            <span euiLabel>Button trigger with very very very long label</span>
+            <eui-icon-svg icon="eui-chevron-down" size="xs" />
+        </button>
+        <eui-dropdown-content>
+            <div class="eui-u-text-smaller eui-u-text-center eui-u-p-xs">Use the <kbd class="eui-u-text-kbd">&uarr;</kbd> and <kbd class="eui-u-text-kbd">&darr;</kbd> arrow keys to navigate</div>
+            <button euiDropdownItem aria-label="Item 1"><span euiLabel>I'm focusable and keyboard navigable</span></button>
+            <button euiDropdownItem aria-label="item 2"><span euiLabel>I'm also focusable and keyboard navigable with a long label</span></button>
+            <button euiDropdownItem aria-label="item 3"><span euiLabel>I'm the last focusable dropdown item</span></button>
+        </eui-dropdown-content>
+    </eui-dropdown>
+</div>

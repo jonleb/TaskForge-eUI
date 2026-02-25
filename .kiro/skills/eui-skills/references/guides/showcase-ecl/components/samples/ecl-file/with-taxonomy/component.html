@@ -1,0 +1,50 @@
+<div>
+  <ecl-file id="ecl-file-tax" langId="ecl-file-tax-lang"
+    description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer quis lorem tellus. Nullam sollicitudin suscipit diam, ac blandit ipsum tempor consectetur. Duis vitae pulvinar turpis. Donec maximus pharetra ex a ultricies."
+    language="English" labelInfo="highlighted" [detailMeta]="['META INFO', 'DD Month YYYY']" meta="(16.2 MB - PDF)">
+    <div eclFileTitle id="ecl-file-tax-title">State of the Union 2018 brochure</div>
+    <picture eclFilePicture><img eclFileImage src="https://inno-ecl.s3.amazonaws.com/media/examples/example-image.jpg"
+        alt="thumbnail" /></picture>
+    <a eclLink variant="standalone" href="./assets/images/landing-page/portfolio/thumbnails/1.jpg" eclFileDownload
+      (click)="onItemDownload($event)" download="1.jpg"
+      aria-labelledby="ecl-file-tax-link-label ecl-file-tax-title ecl-file-tax-lang">
+      <span eclLinkLabel id="ecl-file-tax-link-label">Download</span>
+      <ecl-icon icon="download" size="fluid"></ecl-icon>
+    </a>
+    <ecl-file-taxonomy>
+      <dl eclDescriptionList>
+        <dt eclDescriptionListTerm>Taxonomy list</dt>
+        <dd eclDescriptionListDefinition variant="taxonomy">
+          <ul eclDescriptionListDefinitionList>
+            <li eclDescriptionListDefinitionItem>Taxonomy item 1</li>
+            <li eclDescriptionListDefinitionItem>Taxonomy item 2</li>
+            <li eclDescriptionListDefinitionItem>Taxonomy item 3</li>
+          </ul>
+        </dd>
+      </dl>
+    </ecl-file-taxonomy>
+    <ecl-file-items (toggle)="onToggle($event)">
+      <ecl-file-item eclTitle="български" lang="bg" titleId="ecl-file-tax-0-lang" meta="(15.8 MB - PDF)">
+        <a eclLink variant="standalone" href="./assets/images/landing-page/portfolio/thumbnails/2.jpg" eclFileTranslationDownload
+          (click)="onItemDownload($event)" download="2.jpg"
+          aria-labelledby="ecl-file-tax-0-link-label ecl-file-tax-title ecl-file-tax-0-lang">
+          <span eclLinkLabel id="ecl-file-tax-0-link-label">Download</span>
+          <ecl-icon icon="download" size="fluid"></ecl-icon>
+        </a></ecl-file-item>
+      <ecl-file-item eclTitle="español" lang="es" titleId="ecl-file-tax-1-lang" meta="(15.8 MB - PDF)">
+        <a eclLink variant="standalone" href="./assets/images/landing-page/portfolio/thumbnails/3.jpg" eclFileTranslationDownload
+          (click)="onItemDownload($event)" download="3.jpg"
+          aria-labelledby="ecl-file-tax-1-link-label ecl-file-tax-title ecl-file-tax-1-lang">
+          <span eclLinkLabel id="ecl-file-tax-1-link-label">Download</span>
+          <ecl-icon icon="download" size="fluid"></ecl-icon>
+        </a></ecl-file-item>
+      <ecl-file-item eclTitle="français" lang="fr" titleId="ecl-file-tax-2-lang" meta="(15.8 MB - PDF)">
+        <a eclLink variant="standalone" href="./assets/images/landing-page/portfolio/thumbnails/4.jpg" eclFileTranslationDownload
+          (click)="onItemDownload($event)" download="4.jpg"
+          aria-labelledby="ecl-file-tax-2-link-label ecl-file-tax-title ecl-file-tax-2-lang">
+          <span eclLinkLabel id="ecl-file-tax-2-link-label">Download</span>
+          <ecl-icon icon="download" size="fluid"></ecl-icon>
+        </a></ecl-file-item>
+    </ecl-file-items>
+  </ecl-file>
+</div>

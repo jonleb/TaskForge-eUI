@@ -1,0 +1,132 @@
+---
+description: Demonstrates template-driven forms with ngModel two-way data binding in euiInputGroup, including form submission, validation, and asynchronous data flow between view and model.
+id: template-driven-form
+---
+
+```html
+<p class="eui-u-text-paragraph"><strong>Template-Driven forms</strong> allows a "two-way data binding" of ngModel mechanism (like in AngularJs) to transparently keep in sync a form with a view model.
+Template-driven forms let direct access modify data in your template, but are less explicit than reactive forms because they rely on directives embedded in the template, along with mutable data to track changes asynchronously.</p>
+
+<p class="eui-u-text-paragraph">Template-driven forms focus on simple scenarios and are not as reusable and scalable as Reactive forms.
+They abstract away the underlying form API, and use <strong>asynchronous data flow</strong> between the view and the data model.
+The abstraction of template-driven forms also affects testing. Tests are deeply reliant on manual change detection execution to run properly, and require more setup.</p>
+
+
+<p class="eui-u-text-paragraph">Structure of a template driven form :</p>
+<pre class="eui-u-text-pre" tabindex="0">
+    &lt;form #myForm="ngForm" id="my-form" (ngSubmit)="onSubmitTemplate(myForm)"&gt;
+        ...
+        ...
+    &lt;/form&gt;
+    &lt;button euiButton form="my-form" type="submit" [disabled]="!myForm.valid"&gt;Submit&lt;/button&gt;
+</pre>
+
+<p class="eui-u-text-paragraph">For more information see <a class="eui-u-text-link-external" href="https://angular.io/guide/forms" target="_blank">Building a template-driven form</a></p>
+
+
+<div class="row mt-5">
+    <div class="col-md-8">
+        <div class="doc-sample-section-title">Two-way data binding (ngModel)</div>
+        <form #myForm="ngForm" id="my-form" (ngSubmit)="onSubmitModelTemplate(myForm)">
+            <div euiInputGroup>
+                <label for="firstname" euiLabel euiRequired>First name</label>
+                <input #firstNameModel="ngModel" euiInputText name="firstname" id="firstname" [(ngModel)]="user['firstName']" required />
+                @if (firstNameModel.getError('required')) {
+                    <eui-feedback-message euiDanger>
+                        This field is <strong>required</strong>
+                    </eui-feedback-message>
+                }
+            </div>
+
+            <div euiInputGroup>
+                <label for="lastname" euiLabel euiRequired>Last name</label>
+                <input #lastNameModel="ngModel" euiInputText name="lastname" id="lastname" [(ngModel)]="user['lastName']" required />
+                @if (lastNameModel.getError('required')) {
+                    <eui-feedback-message euiDanger>
+                        This field is <strong>required</strong>
+                    </eui-feedback-message>
+                }
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <div class="doc-sample-section-title">NgModel content</div>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="code" style="overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre" tabindex="0">{{ myForm.value | json }}</pre>
+                <div class="eui-u-flex">
+                    <div class="eui-u-f-bold eui-u-mr-m">Form status</div>
+                    <eui-badge euiSizeS [euiSuccess]="myForm.status === 'VALID'" [euiDanger]="myForm.status !== 'VALID'">
+                        {{ myForm.status }}
+                    </eui-badge>
+                </div>
+            </div>
+        </div>
+
+        <button euiButton euiPrimary form="my-form" type="submit" class="eui-u-mt-m eui-u-mr-m">Submit form</button>
+    </div>
+</div>
+```
+
+```typescript
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+    FormsModule as AngularFormsModule,
+    NgForm,
+    ReactiveFormsModule,
+} from '@angular/forms';
+import { JsonPipe } from '@angular/common';
+
+import { EUI_INPUT_GROUP } from '@eui/components/eui-input-group';
+import { EUI_ALERT } from '@eui/components/eui-alert';
+import { EUI_FEEDBACK_MESSAGE } from '@eui/components/eui-feedback-message';
+import { EUI_LABEL } from '@eui/components/eui-label';
+import { EUI_BUTTON } from '@eui/components/eui-button';
+import { EUI_BADGE } from '@eui/components/eui-badge';
+import { EUI_INPUT_TEXT } from '@eui/components/eui-input-text';
+
+
+@Component({
+    // tslint:disable-next-line
+    selector: 'template-driven-forms',
+    templateUrl: 'component.html',
+    styles: [`ul li {
+        list-style:outside;
+        margin-left: 1rem;
+    }`],
+    imports: [
+        AngularFormsModule,
+        ReactiveFormsModule,
+        ...EUI_ALERT,
+        ...EUI_LABEL,
+        ...EUI_BUTTON,
+        ...EUI_BADGE,
+        ...EUI_FEEDBACK_MESSAGE,
+        ...EUI_INPUT_GROUP,
+        ...EUI_INPUT_TEXT,
+        JsonPipe
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class TemplateDrivenFormsComponent implements OnInit {
+
+    // public form: FormGroup;
+    public user: Object = {
+        firstName: '',
+        lastName: '',
+    };
+    // private fb: FormBuilder = inject(FormBuilder);
+
+    ngOnInit(): void {
+        this.user = {
+            firstName: 'Jane',
+            lastName: 'Doe',
+        };
+    }
+
+    public onSubmitModelTemplate(form: NgForm) {
+        console.log(form);
+    }
+}
+```
+

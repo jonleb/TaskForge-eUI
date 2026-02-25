@@ -1,0 +1,361 @@
+<div class="doc-sample-section-title">Default card-header</div>
+<eui-card>
+	<eui-card-header>
+        <eui-card-header-title>
+            Card header title
+        </eui-card-header-title>
+    </eui-card-header>
+	<eui-card-content>
+        Card content...
+    </eui-card-content>
+</eui-card>
+
+<div class="doc-sample-section-title">Collapsible header with custom title(s) & subtitle(s)</div>
+<p class="eui-u-text-paragraph">Default: euiCollapsible="false" euiCollapsed="false"</p>
+<br>
+<eui-card euiCollapsible euiCollapsed>
+	<eui-card-header>
+        <eui-card-header-title>
+            Card title line 1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris feugiat, risus sit amet ultricies finibus, diam dolor congue leo, vel vehicula nisl metus eget eros
+            <br>
+            Card title line 2 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris feugiat, risus sit amet ultricies finibus, diam dolor congue leo, vel vehicula nisl metus eget eros
+        </eui-card-header-title>
+        <eui-card-header-subtitle>
+            Card subtitle line 1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris feugiat, risus sit amet ultricies finibus, diam dolor congue leo, vel vehicula nisl metus eget eros
+            <br>
+            Card subtitle line 2 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris feugiat, risus sit amet ultricies finibus, diam dolor congue leo, vel vehicula nisl metus eget eros
+        </eui-card-header-subtitle>
+    </eui-card-header>
+	<eui-card-content>
+        <div style="overflow-y: auto;" tabindex="0">
+            I am the content of the card container...
+        </div>
+    </eui-card-content>
+</eui-card>
+
+
+<div class="doc-sample-section-title">Collapsible header with bottom expander option</div>
+<p class="eui-u-text-paragraph">The bottom expander option <code class="eui-u-text-code">hasBottomExpander</code> is recommended to be used when having complex custom header right content and/or displaying a list of cards.</p>
+<p class="eui-u-text-paragraph">Usage: eui-card-header hasBottomExpander</p>
+<br>
+<eui-card euiCollapsible euiCollapsed>
+	<eui-card-header hasBottomExpander>
+        <eui-card-header-title>
+            Card title line 1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris feugiat, risus sit amet ultricies finibus, diam dolor congue leo, vel vehicula nisl metus eget eros
+            <br>
+            Card title line 2 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris feugiat, risus sit amet ultricies finibus, diam dolor congue leo, vel vehicula nisl metus eget eros
+        </eui-card-header-title>
+        <eui-card-header-subtitle>
+            Card subtitle line 1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris feugiat, risus sit amet ultricies finibus, diam dolor congue leo, vel vehicula nisl metus eget eros
+            <br>
+            Card subtitle line 2 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris feugiat, risus sit amet ultricies finibus, diam dolor congue leo, vel vehicula nisl metus eget eros
+        </eui-card-header-subtitle>
+    </eui-card-header>
+	<eui-card-content>
+        <div style="overflow-y: auto;" tabindex="0">
+            I am the content of the card container...
+        </div>
+    </eui-card-content>
+</eui-card>
+
+
+<div class="doc-sample-section-title">Collapsible header with full title and bottom expander options</div>
+<p class="eui-u-text-paragraph">The <code class="eui-u-text-code">hasFullTitle</code> option allows to display the title within the full card container's width. It is recommended to use with the <code class="eui-u-text-code">hasBottomExpander</code> option on card's list layout pattern screens.</p>
+<p class="eui-u-text-paragraph">Usage: eui-card-header hasFullTitle hasBottomExpander</p>
+<br>
+<eui-card euiCollapsible euiCollapsed>
+	<eui-card-header hasFullTitle hasBottomExpander>
+        <eui-card-header-title>
+            <div>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris feugiat, risus sit amet ultricies finibus, diam dolor congue leo, vel vehicula nisl metus eget eros. Praesent mattis mollis velit ut euismod
+                Quisque eu mi nisi. Maecenas ac quam purus. Donec erat enim, ultricies eget consectetur ut, maximus vitae leo. Etiam nec ante lacus.
+            </div>
+        </eui-card-header-title>
+        <eui-card-header-subtitle>
+            <div class="eui-u-text-truncate">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent rutrum turpis erat, eu lobortis sapien hendrerit vel.</div>
+            <div class="eui-u-text-truncate">Nulla finibus viverra felis sit amet vestibulum. Quisque eu posuere lectus. Donec a nulla vitae enim scelerisque molestie.</div>
+        </eui-card-header-subtitle>
+        <eui-card-header-right-content>
+            <button euiButton euiPrimary euiOutline euiSizeS (click)="onAddButtonClick($event)">
+                <eui-icon-svg icon="eui-add"></eui-icon-svg>
+                Add
+            </button>
+            <eui-dropdown class="eui-u-ml-s" (click)="dropdownClick($event)">
+                <button euiButton euiBasicButton euiRounded euiIconButton euiSizeM euiTooltip="More actions" aria-label="More Actions">
+                    <eui-icon-svg icon="eui-ellipsis-vertical"></eui-icon-svg>
+                </button>
+                <eui-dropdown-content>
+                    <button euiDropdownItem>Action 1</button>
+                    <button euiDropdownItem>Action 2</button>
+                    <button euiDropdownItem>Action 3</button>
+                </eui-dropdown-content>
+            </eui-dropdown>
+        </eui-card-header-right-content>
+    </eui-card-header>
+	<eui-card-content>
+        <div style="overflow-y: auto;" tabindex="0">
+            I am the content of the card container...
+        </div>
+    </eui-card-content>
+</eui-card>
+
+<p class="eui-u-text-paragraph">See Misc compositions, Design layout 3 for more advanced sample.</p>
+
+<div class="doc-sample-section-title">Header with avatar / icon variants</div>
+<div class="row">
+    <div class="col-md-4 eui-u-mt-m">
+        <eui-card euiCollapsible>
+            <eui-card-header>
+                <eui-card-header-left-content>
+                    <eui-avatar>
+                        <eui-avatar-icon>
+                            <eui-icon-svg icon="eui-home"></eui-icon-svg>
+                        </eui-avatar-icon>
+                    </eui-avatar>
+                </eui-card-header-left-content>
+                <eui-card-header-title>Title</eui-card-header-title>
+                <eui-card-header-subtitle>Subtitle</eui-card-header-subtitle>
+            </eui-card-header>
+            <eui-card-content>
+                Card content...
+            </eui-card-content>
+        </eui-card>
+    </div>
+    <div class="col-md-4 eui-u-mt-m">
+        <eui-card euiCollapsible>
+            <eui-card-header>
+                <eui-card-header-left-content>
+                    <eui-icon-svg icon="eui-home"></eui-icon-svg>
+                </eui-card-header-left-content>
+                <eui-card-header-title>Title</eui-card-header-title>
+            </eui-card-header>
+            <eui-card-content>
+                Card content...
+            </eui-card-content>
+        </eui-card>
+    </div>
+</div>
+
+
+<div class="doc-sample-section-title">Header with left and right custom contents</div>
+<eui-card euiCollapsible>
+	<eui-card-header >
+        <eui-card-header-title>
+            <a routerLink="." (click)="onCardTitleLinkClicked($event)" class="eui-u-text-link">
+                Program - Sed sagittis metus vel metus dignissim accumsan. Ut egestas lorem turpis, id mollis velit malesuada nec
+            </a>
+        </eui-card-header-title>
+
+        <eui-card-header-subtitle class="eui-u-flex eui-u-flex-wrap">
+            Available languages :
+            <a routerLink="." class="eui-u-text-link">EN</a> |
+            <a routerLink="." class="eui-u-text-link">FR</a> |
+            <a routerLink="." class="eui-u-text-link">DE</a> |
+            <a routerLink="." class="eui-u-text-link">ES</a>
+        </eui-card-header-subtitle>
+
+        <eui-card-header-left-content>
+            <eui-icon-svg icon="eui-clock" />
+            <span class="eui-u-f-l eui-u-f-bold eui-u-mh-s" euiTooltip="Transmission hour" euiTooltipArrows euiTooltipRounded>10:30:00</span>
+        </eui-card-header-left-content>
+
+        <eui-card-header-right-content>
+            <eui-chip euiOutline euiRounded euiSizeS euiSuccess class="eui-u-mr-l">
+                Status
+            </eui-chip>
+
+            <button euiButton euiPrimary euiOutline euiSizeS (click)="onAddButtonClick($event)">
+                <eui-icon-svg icon="eui-add"></eui-icon-svg>
+                Add
+            </button>
+
+            <eui-dropdown class="eui-u-ml-s" (click)="dropdownClick($event)">
+                <button euiButton euiBasicButton euiRounded euiIconButton euiPrimary euiTooltip="More actions" aria-label="More actions">
+                    <eui-icon-svg icon="eui-ellipsis-vertical" />
+                </button>
+                <eui-dropdown-content>
+                    <button euiDropdownItem>Action 1</button>
+                    <button euiDropdownItem>Action 2</button>
+                    <button euiDropdownItem>Action 3</button>
+                </eui-dropdown-content>
+            </eui-dropdown>
+        </eui-card-header-right-content>
+	</eui-card-header>
+
+    <eui-card-content>
+        Card content...
+    </eui-card-content>
+</eui-card>
+
+
+<div class="doc-sample-section-title">Custom contents with multi-selection</div>
+<p class="eui-u-text-paragraph">
+    The default alignement for custom contents is centered.
+</p>
+<eui-card [euiCollapsible]="isCollapsible"
+          [euiCollapsed]="isCollapsed"
+          [euiSelected]="isSelected"
+          [euiUrgent]="isUrgent">
+	<eui-card-header>
+        <eui-card-header-title euiTooltip="Task - Sed sagittis metus vel metus dignissim accumsan. Ut egestas lorem turpis, id mollis velit malesuada nec">
+            <a routerLink="." (click)="onCardTitleLinkClicked($event)" class="eui-u-text-link-standalone">
+                Task - Sed sagittis metus vel metus dignissim accumsan. Ut egestas lorem turpis, id mollis velit malesuada nec
+            </a>
+        </eui-card-header-title>
+
+        <eui-card-header-subtitle>
+            Project id: Project reference 1
+            <br>
+            Created on: 24/08/2021 12:00:00
+        </eui-card-header-subtitle>
+
+        <eui-card-header-left-content class="eui-u-flex-wrap">
+            <input euiInputCheckBox id="checkbox-sample" name="checkbox-sample" [attr.aria-label]=" isSelected? 'Deselect': 'Select' " [(ngModel)]="isSelected">
+        </eui-card-header-left-content>
+
+        <eui-card-header-right-content>
+            <eui-chip euiOutline euiRounded euiSizeS euiSuccess class="eui-u-mr-l">
+                Assignee:&nbsp;Me
+            </eui-chip>
+
+            <eui-dropdown class="eui-u-ml-m eui-u-mr-m" (click)="dropdownClick($event)">
+                <button euiButton euiOutline euiPrimary euiSizeS euiTooltip="More actions">
+                    Actions
+                    <eui-icon-svg icon="eui-chevron-down"/>
+                </button>
+                <eui-dropdown-content>
+                    <button euiDropdownItem>
+                        Claim
+                    </button>
+                    <button euiDropdownItem>
+                        Unclaim
+                    </button>
+                </eui-dropdown-content>
+            </eui-dropdown>
+        </eui-card-header-right-content>
+	</eui-card-header>
+
+    <eui-card-content>
+        <div style="overflow-y: auto;" tabindex="0">
+            Card content 1...
+        </div>
+    </eui-card-content>
+</eui-card>
+
+@if (isSelected) {
+    <eui-page-footer>
+        <div class="eui-u-flex">
+            <div class="eui-u-f-xl">You have {{selectedItems.length}} selected item(s)</div>
+            <div class="eui-u-ml-auto">
+                <button euiButton euiSecondary (click)="onCancel()" class="eui-u-mr-m">Cancel</button>
+                <button euiButton euiPrimary (click)="onSave()">Save</button>
+            </div>
+        </div>
+    </eui-page-footer>
+}
+
+<p class="eui-u-text-paragraph">
+    The alignement for left custom content car be set to top by using the <code class="eui-u-text-code">&lt;eui-card-header-left-content isTopAligned&gt;</code> input option.
+</p>
+<eui-card [euiCollapsible]="isCollapsible"
+          [euiCollapsed]="isCollapsed"
+          [euiSelected]="isSelected"
+          [euiUrgent]="isUrgent">
+	<eui-card-header>
+        <eui-card-header-title euiTooltip="Task - Sed sagittis metus vel metus dignissim accumsan. Ut egestas lorem turpis, id mollis velit malesuada nec">
+            <a routerLink="." (click)="onCardTitleLinkClicked($event)" class="eui-u-text-link-standalone">
+                Task - Sed sagittis metus vel metus dignissim accumsan. Ut egestas lorem turpis, id mollis velit malesuada nec
+            </a>
+        </eui-card-header-title>
+
+        <eui-card-header-subtitle>
+            Project id: Project reference 1
+            <br>
+            Created on: 24/08/2021 12:00:00
+        </eui-card-header-subtitle>
+
+        <eui-card-header-left-content isTopAligned>
+            <input euiInputCheckBox id="checkbox-sample-top" name="checkbox-sample-top">
+        </eui-card-header-left-content>
+
+        <eui-card-header-right-content>
+            <eui-chip euiOutline euiRounded euiSizeS euiSuccess class="eui-u-mr-l">
+                Assignee:&nbsp;Me
+            </eui-chip>
+
+            <eui-dropdown class="eui-u-ml-m eui-u-mr-m" (click)="dropdownClick($event)">
+                <button euiButton euiOutline euiPrimary euiSizeS euiTooltip="More actions">
+                    Actions
+                    <eui-icon-svg icon="eui-chevron-down"/>
+                </button>
+                <eui-dropdown-content>
+                    <button euiDropdownItem>
+                        Claim
+                    </button>
+                    <button euiDropdownItem>
+                        Unclaim
+                    </button>
+                </eui-dropdown-content>
+            </eui-dropdown>
+        </eui-card-header-right-content>
+	</eui-card-header>
+
+    <eui-card-content>
+        <div style="overflow-y: auto;" tabindex="0">
+            Card content 1...
+        </div>
+    </eui-card-content>
+</eui-card>
+
+
+<div class="doc-sample-section-title">Multi-lines header</div>
+<p class="eui-u-text-paragraph">By default, the card header's title and subtitle are displayed on a single row and automatically truncated (using the text-overflow ellipsis property) when content exceeds the size of the container.
+   Title & subtitle's content can be displayed in multiple lines by using the following option:  <code class="eui-u-text-code">eui-card-header isHeaderMultilines</code>.
+</p>
+
+<div class="eui-u-mt-m eui-u-mb-m">
+    <eui-slide-toggle [isChecked]="isMulti" (slideToggleChange)="onChangeMulti($event)"></eui-slide-toggle> Multi-lines {{ isMulti }}
+</div>
+
+<eui-card euiCollapsible euiCollapsed>
+	<eui-card-header [isHeaderMultilines]="isMulti">
+        <eui-card-header-title>
+            {{ cardTitle }}
+        </eui-card-header-title>
+        <eui-card-header-subtitle>
+            {{ cardSubtitle }}
+        </eui-card-header-subtitle>
+    </eui-card-header>
+	<eui-card-content>
+        <div style="overflow-y: auto;" tabindex="0">
+            I am the content of the card container...
+        </div>
+    </eui-card-content>
+</eui-card>
+
+<p class="eui-u-mt-xl">In conjunction with the <code class="eui-u-text-code">isHeaderMultilines</code> option, you can also control the number of characters to be displayed by using the <code class="eui-u-text-code">euiTruncate</code> pipe.
+The following example uses the following truncation values :</p>
+<div class="eui-u-ml-m">
+    <ul>
+        <li>card title: truncate after 100 characters</li>
+        <li>card sub-title: truncate after 255 characters</li>
+    </ul>
+</div>
+
+<br>
+
+<eui-card euiCollapsible euiCollapsed>
+	<eui-card-header [isHeaderMultilines]="isMulti">
+        <eui-card-header-title>
+            {{ cardTitle | euiTruncate: 100 }}
+        </eui-card-header-title>
+        <eui-card-header-subtitle>
+            {{ cardSubtitle | euiTruncate: 255 }}
+        </eui-card-header-subtitle>
+    </eui-card-header>
+	<eui-card-content>
+        <div style="overflow-y: auto;" tabindex="0">
+            I am the content of the card container...
+        </div>
+    </eui-card-content>
+</eui-card>

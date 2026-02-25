@@ -1,0 +1,30 @@
+<form [formGroup]="form">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="doc-sample-section-title">Default</div>
+            <select euiSelect name="dino-multi" formControlName="dinoMulti" multiple aria-label="Select multiple dinosaurs">
+                <option value="Deinonychus">Deinonychus</option>
+                <option value="Tyrannosaurus" selected>Tyrannosaurus</option>
+                <option value="Velociraptor">Velociraptor</option>
+            </select>
+
+            <div class="doc-sample-section-title">With groups</div>
+            <label euiLabel for="dino-select">Choose a dinosaur</label>
+            <select euiSelect id="dino-select" formControlName="dinoGroup" multiple aria-label="Select dinosaurs in groups">
+                <optgroup label="Sauropods">
+                    <option value="Apatosaurus">Apatosaurus</option>
+                    <option value="Diplodocus">Diplodocus</option>
+                    <option value="Saltasaurus">Saltasaurus</option>
+                </optgroup>
+                <optgroup label="Theropods">
+                    <option value="Deinonychus">Deinonychus</option>
+                    <option value="Tyrannosaurus">Tyrannosaurus</option>
+                    <option value="Velociraptor">Velociraptor</option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <pre class="eui-u-text-pre"><strong>Selected values:</strong> {{form.value | json}} </pre>
+        </div>
+    </div>
+</form>

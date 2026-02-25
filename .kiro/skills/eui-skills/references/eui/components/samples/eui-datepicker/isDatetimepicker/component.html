@@ -1,0 +1,96 @@
+<div class="doc-sample-section-title">With Timepicker</div>
+<div class="row">
+    <div class="col">
+        <eui-slide-toggle (slideToggleChange)="onClearToggle()" [isChecked]="isClearable"></eui-slide-toggle> Toggle isClearable
+    </div>
+    <div class="col">
+        <div class="doc-sample-section-title">Form value in json(0-based UTC) format</div>
+    </div>
+</div>
+
+
+<form [formGroup]="form">
+    <div class="row">
+        <div class="col">
+            <eui-datepicker isDatetimepicker [isReadOnly]="isReadonly" [isClearable]="isClearable" formControlName="timepicker"></eui-datepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form.value | json }}</pre>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <button euiButton euiPrimary (click)="onResetForm($event)" class="eui-u-mr-xs">Reset</button>
+            <button euiButton euiPrimary (click)="onDisableField($event)" class="eui-u-mr-xs">Toggle disabled</button>
+            <button euiButton euiPrimary (click)="isReadonly = !isReadonly" class="eui-u-mr-xs">Toggle readonly</button>
+            <button euiButton euiPrimary (click)="onChangeValue()">Change value</button>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">With timepicker and dateOutputFormat defined</div>
+<form [formGroup]="form1">
+    <div class="row">
+        <div class="col">
+            <eui-datepicker isDatetimepicker dateOutputFormat="DD-MM-YYYY HH:mm" formControlName="dateTimepickerOutputFormat"></eui-datepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form1.value | json }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">Using hasSeconds to show a third column with seconds</div>
+<form [formGroup]="form2">
+    <div class="row">
+        <div class="col">
+            <eui-datepicker isDatetimepicker hasSeconds secondsFormat formControlName="withSeconds" isClearable></eui-datepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form2.value | json }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">Using isOneInputField to enable a one input timepicker </div>
+<form [formGroup]="form3">
+    <div class="row">
+        <div class="col">
+            <eui-datepicker isDatetimepicker isOneInputField formControlName="withOneInputField" isClearable></eui-datepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form3.value | json }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">With min-max date ranges </div>
+<form [formGroup]="form4">
+    <div class="row">
+        <div class="col">
+            <eui-datepicker isDatetimepicker [minDate]="minDate" [maxDate]="maxDate" formControlName="withDateRanges" isClearable></eui-datepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form4.value | json }}</pre>
+        </div>
+    </div>
+</form>
+
+<div class="doc-sample-section-title">Using steps of 10 for hours and 20 for minutes/seconds</div>
+<form [formGroup]="form5">
+    <div class="row">
+        <div class="col">
+            <eui-datepicker isDatetimepicker hasSeconds secondsFormat [stepHours]="10" [stepMinutes]="20" [stepSeconds]="20" formControlName="withSteps"></eui-datepicker>
+        </div>
+
+        <div class="col">
+            <pre class="eui-u-text-pre">{{ form5.value | json }}</pre>
+        </div>
+    </div>
+</form>

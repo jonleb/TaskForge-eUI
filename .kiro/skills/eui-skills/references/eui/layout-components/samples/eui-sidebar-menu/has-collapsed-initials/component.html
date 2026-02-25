@@ -1,0 +1,19 @@
+<p class="eui-u-text-paragraph">
+    The <code class="eui-u-text-code">hasCollapsedInitials</code> input option reveals the initials of the menu item label when in collapsed state only.
+    <br>
+    It is recommended to also use the <code class="eui-u-text-code">hasTooltip</code> option with it.
+</p>
+
+<button euiButton euiSizeS (click)="onToggleCollapsed()">Toggle collapsed</button>
+<br><br>
+
+<eui-sidebar-menu [items]="sidebarItems" hasCollapsedInitials hasTooltip [isCollapsed]="isCollapsed"></eui-sidebar-menu>
+
+
+
+<div class="doc-sample-section-title">with iconSvg usage and iconTypeClass</div>
+
+<button euiButton euiSizeS (click)="onToggleCollapsed2()">Toggle collapsed</button>
+<br><br>
+
+<eui-sidebar-menu [items]="sidebarItemsIconSvgTypeClass" hasIcons hasTooltip hasCollapsedInitials [isCollapsed]="isCollapsed2"></eui-sidebar-menu>

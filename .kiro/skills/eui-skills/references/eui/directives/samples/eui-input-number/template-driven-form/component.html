@@ -1,0 +1,55 @@
+<div class="row">
+    <div class="col-md-7">
+        <div class="doc-sample-section-title">Two-way data binding (ngModel)</div>
+        <form #myForm="ngForm" id="my-form" novalidate (ngSubmit)="onSubmitModel(myForm)">
+            <div euiInputGroup>
+                <label euiLabel for="text-model-driven">Enter amount</label>
+                <input euiInputNumber
+                        id="text-model-driven"
+                        name="text-model-driven"
+                        aria-label="with two-way data binding"
+                        fractionDigits="2"
+                        [(ngModel)]="myVal"
+                        [readonly]="readonly"
+                        [disabled]="disableAmount1"/>
+            </div>
+            <div euiInputGroup>
+                <label euiLabel for="text-model-driven-addon">Enter amount</label>
+                <div euiInputGroupAddOn>
+                    @if (!readonly) {
+                        <div euiInputGroupAddOnItem>
+                            <eui-icon-svg icon="eui-euro" size="s" fillColor="secondary"></eui-icon-svg>
+                        </div>
+                    }
+                    <input euiInputNumber
+                            id="text-model-driven-addon"
+                            name="text-model-driven-addon"
+                            [(ngModel)]="myVal2"
+                            aria-label="with two-way data binding and addon"
+                            fractionDigits="2"
+                            [readonly]="readonly"
+                            [disabled]="disableAmount2" />
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-5">
+        <div class="doc-sample-section-title">NgModel content</div>
+        <div class="eui-showcase-demo eui-u-mt-m">
+            <div class="code" style="overflow-y: auto;" tabindex="0">
+                <pre class="eui-u-text-pre" tabindex="0">{{ myForm.value | json }}</pre>
+                <div class="eui-u-flex">
+                    <div class="eui-u-f-bold mr-3">Form status</div>
+                    <eui-badge euiSizeS [euiSuccess]="myForm.status === 'VALID'" [euiDanger]="myForm.status !== 'VALID'">
+                        {{ myForm.status }}
+                    </eui-badge>
+                </div>
+            </div>
+        </div>
+
+        <div class="eui-u-flex eui-u-flex-wrap eui-u-mt-m">
+            <button form="my-form" type="submit" euiButton euiPrimary class="eui-u-mr-m eui-u-mb-m">Submit form</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+import { Component } from "@angular/core";
+
+import { EUI_CHIP_LIST } from "@eui/components/eui-chip-list";
+import { EUI_CHIP } from "@eui/components/eui-chip";
+import { EUI_LABEL } from "@eui/components/eui-label";
+import { EUI_BUTTON } from "@eui/components/eui-button";
+import { EUI_ICON } from "@eui/components/eui-icon";
+
+@Component({
+    // eslint-disable-next-line
+    selector: 'max-visible-chips',
+    templateUrl: 'component.html',
+    imports: [...EUI_CHIP_LIST, ...EUI_CHIP, ...EUI_LABEL, ...EUI_BUTTON, ...EUI_ICON],
+})
+export class MaxVisibleChipsComponent {
+    public chips = [
+        { id: 1, label: 'Chip label', variant: 'primary' },
+        { id: 2, label: 'Chip label', variant: 'secondary' },
+        { id: 3, label: 'Chip label', variant: 'info' },
+        { id: 4, label: 'Chip label', variant: 'success' },
+        { id: 5, label: 'Chip label', variant: 'warning' },
+        { id: 6, label: 'Chip label', variant: 'danger' },
+        { id: 7, label: 'Chip label', variant: 'accent' },
+    ];
+
+    public maxVisibleChipsCount = 2;
+    public isMaxVisibleChipsOpened = false;
+
+    public toggleTags(): void {
+        this.isMaxVisibleChipsOpened = !this.isMaxVisibleChipsOpened;
+    }
+}
