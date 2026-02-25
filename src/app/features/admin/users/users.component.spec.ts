@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
-import { CONFIG_TOKEN, I18nService, I18nState } from '@eui/core';
+import { CONFIG_TOKEN, EuiGrowlService, I18nService, I18nState } from '@eui/core';
 import { Observable, of } from 'rxjs';
 import { UsersComponent } from './users.component';
 import { AdminUserListResponse } from './admin-user.models';
@@ -47,6 +47,10 @@ describe('UsersComponent', () => {
         },
     };
 
+    const growlServiceMock = {
+        growl: vi.fn(),
+    };
+
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [UsersComponent, TranslateModule.forRoot()],
@@ -55,6 +59,7 @@ describe('UsersComponent', () => {
                 provideHttpClientTesting(),
                 { provide: I18nService, useValue: i18nServiceMock },
                 { provide: CONFIG_TOKEN, useValue: { global: {}, modules: {} } },
+                { provide: EuiGrowlService, useValue: growlServiceMock },
             ],
         }).compileComponents();
 
@@ -65,6 +70,7 @@ describe('UsersComponent', () => {
 
     afterEach(() => {
         httpMock.verify();
+        vi.restoreAllMocks();
     });
 
     /** Flush the initial getUsers() call that fires on ngOnInit */
@@ -227,7 +233,6 @@ describe('UsersComponent', () => {
         initWithData();
         const table = fixture.nativeElement.querySelector('table');
         expect(table).toBeTruthy();
-        // eUI table strips <caption>, so we use aria-label instead
         expect(table.getAttribute('aria-label')).toBe('List of platform users');
     });
 
@@ -256,11 +261,203 @@ describe('UsersComponent', () => {
 
     it('should have aria-label on action buttons', () => {
         initWithData();
-        // Select only action buttons inside table body rows (not header sort buttons)
         const actionButtons = fixture.nativeElement.querySelectorAll('tbody eui-icon-button button');
         expect(actionButtons.length).toBeGreaterThan(0);
         actionButtons.forEach((btn: HTMLElement) => {
             expect(btn.getAttribute('aria-label')).toBeTruthy();
         });
+    });
+
+    // ─── Create User button ──────────────────────────────────────────────
+
+    it('should render a "Create User" button with aria-haspopup="dialog"', () => {
+        initWithData();
+        const buttons = fixture.nativeElement.querySelectorAll('button[euibutton]');
+        const createBtn = Array.from(buttons).find(
+            (b: any) => b.textContent.trim().includes('Create User')
+        ) as HTMLElement;
+        expect(createBtn).toBeTruthy();
+        expect(createBtn.getAttribute('aria-haspopup')).toBe('dialog');
+    });
+
+    // ─── Create form ─────────────────────────────────────────────────────
+
+    it('should have a create form with all required fields', () => {
+        initWithData();
+        expect(component.createForm).toBeTruthy();
+        expect(component.createForm.get('username')).toBeTruthy();
+        expect(component.createForm.get('firstName')).toBeTruthy();
+        expect(component.createForm.get('lastName')).toBeTruthy();
+        expect(component.createForm.get('email')).toBeTruthy();
+        expect(component.createForm.get('role')).toBeTruthy();
+    });
+
+    it('should mark form as invalid when empty', () => {
+        initWithData();
+        expect(component.createForm.valid).toBe(false);
+    });
+
+    it('should mark form as valid when all fields are filled', () => {
+        initWithData();
+        component.createForm.setValue({
+            username: 'newuser',
+            firstName: 'New',
+            lastName: 'User',
+            email: 'new@taskforge.local',
+            role: 'DEVELOPER',
+        });
+        expect(component.createForm.valid).toBe(true);
+    });
+
+    it('should reject invalid email format', () => {
+        initWithData();
+        component.createForm.patchValue({ email: 'not-an-email' });
+        expect(component.createForm.get('email')?.errors?.['email']).toBeTruthy();
+    });
+
+    it('should not call API when form is invalid on submit', () => {
+        initWithData();
+        component.onCreateUser();
+        // No additional HTTP request should be made (only the init one was flushed)
+        httpMock.expectNone(r => r.url === '/api/admin/users' && r.method === 'POST');
+    });
+
+    it('should mark all fields as touched when submitting invalid form', () => {
+        initWithData();
+        component.onCreateUser();
+        expect(component.createForm.get('username')?.touched).toBe(true);
+        expect(component.createForm.get('email')?.touched).toBe(true);
+        expect(component.createForm.get('role')?.touched).toBe(true);
+    });
+
+    it('should call createUser API on valid form submit', () => {
+        initWithData();
+        component.createForm.setValue({
+            username: 'newuser',
+            firstName: 'New',
+            lastName: 'User',
+            email: 'new@taskforge.local',
+            role: 'DEVELOPER',
+        });
+
+        // Mock the dialog ViewChild refs
+        component.createDialog = { closeDialog: vi.fn() } as any;
+        component.tempPasswordDialog = { openDialog: vi.fn() } as any;
+
+        component.onCreateUser();
+
+        const req = httpMock.expectOne(r =>
+            r.url === '/api/admin/users' && r.method === 'POST'
+        );
+        expect(req.request.body).toEqual({
+            username: 'newuser',
+            firstName: 'New',
+            lastName: 'User',
+            email: 'new@taskforge.local',
+            role: 'DEVELOPER',
+        });
+
+        req.flush({
+            user: { id: '26', username: 'newuser', email: 'new@taskforge.local', role: 'DEVELOPER', global_role: 'DEVELOPER', firstName: 'New', lastName: 'User', is_active: true, created_at: '2026-02-25T00:00:00Z', updated_at: '2026-02-25T00:00:00Z' },
+            temporaryPassword: 'AbCdEf123456',
+        });
+
+        // Flush the loadUsers() call triggered by success
+        const listReq = httpMock.expectOne(r => r.url === '/api/admin/users' && r.method === 'GET');
+        listReq.flush(mockListResponse);
+
+        expect(component.temporaryPassword).toBe('AbCdEf123456');
+        expect(component.createDialog.closeDialog).toHaveBeenCalled();
+        expect(component.tempPasswordDialog.openDialog).toHaveBeenCalled();
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(
+            expect.objectContaining({ severity: 'success' })
+        );
+    });
+
+    it('should display inline error on 409 duplicate response', () => {
+        initWithData();
+        component.createForm.setValue({
+            username: 'superadmin',
+            firstName: 'Super',
+            lastName: 'Admin',
+            email: 'superadmin@taskforge.local',
+            role: 'SUPER_ADMIN',
+        });
+
+        component.createDialog = { closeDialog: vi.fn() } as any;
+        component.tempPasswordDialog = { openDialog: vi.fn() } as any;
+
+        component.onCreateUser();
+
+        const req = httpMock.expectOne(r =>
+            r.url === '/api/admin/users' && r.method === 'POST'
+        );
+        req.flush(
+            { message: 'A user with this username already exists' },
+            { status: 409, statusText: 'Conflict' }
+        );
+
+        expect(component.createError).toBe('A user with this username already exists');
+        expect(component.createDialog.closeDialog).not.toHaveBeenCalled();
+    });
+
+    it('should reset form and error when dialog is dismissed', () => {
+        initWithData();
+        component.createForm.patchValue({ username: 'test' });
+        component.createError = 'Some error';
+
+        component.resetCreateForm();
+
+        expect(component.createForm.get('username')?.value).toBeFalsy();
+        expect(component.createError).toBe('');
+    });
+
+    // ─── Create form a11y ────────────────────────────────────────────────
+
+    it('should have all required validators on create form controls', () => {
+        initWithData();
+        const controls = ['username', 'firstName', 'lastName', 'email', 'role'];
+        for (const name of controls) {
+            const control = component.createForm.get(name);
+            expect(control).toBeTruthy();
+            control?.setValue('');
+            expect(control?.hasError('required')).toBe(true);
+        }
+    });
+
+    it('should have email validator on email control', () => {
+        initWithData();
+        const email = component.createForm.get('email');
+        email?.setValue('bad');
+        expect(email?.hasError('email')).toBe(true);
+        email?.setValue('good@example.com');
+        expect(email?.valid).toBe(true);
+    });
+
+    // ─── Available roles ─────────────────────────────────────────────────
+
+    it('should have all 6 roles available', () => {
+        initWithData();
+        expect(component.availableRoles).toEqual([
+            'SUPER_ADMIN', 'PROJECT_ADMIN', 'PRODUCT_OWNER',
+            'DEVELOPER', 'REPORTER', 'VIEWER',
+        ]);
+    });
+
+    // ─── Copy password ───────────────────────────────────────────────────
+
+    it('should copy password to clipboard', async () => {
+        initWithData();
+        component.temporaryPassword = 'TestPass123';
+
+        const writeTextMock = vi.fn().mockResolvedValue(undefined);
+        Object.assign(navigator, { clipboard: { writeText: writeTextMock } });
+
+        await component.copyPassword();
+
+        expect(writeTextMock).toHaveBeenCalledWith('TestPass123');
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(
+            expect.objectContaining({ severity: 'success', summary: 'Copied' })
+        );
     });
 });

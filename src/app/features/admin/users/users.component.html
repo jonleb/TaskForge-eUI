@@ -1,5 +1,14 @@
 <eui-page>
-    <eui-page-header label="User Administration" />
+    <eui-page-header label="User Administration">
+        <eui-page-header-action-items>
+            <button euiButton euiPrimary
+                    type="button"
+                    aria-haspopup="dialog"
+                    (click)="createDialog.openDialog()">
+                Create User
+            </button>
+        </eui-page-header-action-items>
+    </eui-page-header>
     <eui-page-content>
 
         <!-- Search filter (not bound to table — async mode) -->
@@ -82,3 +91,108 @@
 
     </eui-page-content>
 </eui-page>
+
+<!-- ─── Create User Dialog ────────────────────────────────────────── -->
+<eui-dialog #createDialog
+    [title]="'Create User'"
+    [acceptLabel]="'Create'"
+    [width]="'500px'"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onCreateUser()"
+    (dismiss)="resetCreateForm()">
+
+    <form [formGroup]="createForm">
+        @if (createError) {
+            <eui-feedback-message euiDanger class="eui-u-mb-m">
+                {{ createError }}
+            </eui-feedback-message>
+        }
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="cu-username">Username</label>
+            <input euiInputText id="cu-username" formControlName="username"
+                   aria-required="true"
+                   [attr.aria-describedby]="createForm.get('username')?.invalid && createForm.get('username')?.touched ? 'cu-username-err' : null" />
+            @if (createForm.get('username')?.invalid && createForm.get('username')?.touched) {
+                <span euiLabel euiDanger id="cu-username-err">Username is required</span>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="cu-firstName">First Name</label>
+            <input euiInputText id="cu-firstName" formControlName="firstName"
+                   aria-required="true"
+                   [attr.aria-describedby]="createForm.get('firstName')?.invalid && createForm.get('firstName')?.touched ? 'cu-firstName-err' : null" />
+            @if (createForm.get('firstName')?.invalid && createForm.get('firstName')?.touched) {
+                <span euiLabel euiDanger id="cu-firstName-err">First name is required</span>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="cu-lastName">Last Name</label>
+            <input euiInputText id="cu-lastName" formControlName="lastName"
+                   aria-required="true"
+                   [attr.aria-describedby]="createForm.get('lastName')?.invalid && createForm.get('lastName')?.touched ? 'cu-lastName-err' : null" />
+            @if (createForm.get('lastName')?.invalid && createForm.get('lastName')?.touched) {
+                <span euiLabel euiDanger id="cu-lastName-err">Last name is required</span>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="cu-email">Email</label>
+            <input euiInputText id="cu-email" formControlName="email" type="email"
+                   aria-required="true"
+                   [attr.aria-describedby]="createForm.get('email')?.invalid && createForm.get('email')?.touched ? 'cu-email-err' : null" />
+            @if (createForm.get('email')?.invalid && createForm.get('email')?.touched) {
+                <span euiLabel euiDanger id="cu-email-err">
+                    @if (createForm.get('email')?.errors?.['required']) {
+                        Email is required
+                    } @else {
+                        Enter a valid email address
+                    }
+                </span>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="cu-role">Role</label>
+            <select euiSelect id="cu-role" formControlName="role"
+                    aria-required="true"
+                    placeholder="Select a role">
+                @for (role of availableRoles; track role) {
+                    <option [value]="role">{{ role }}</option>
+                }
+            </select>
+            @if (createForm.get('role')?.invalid && createForm.get('role')?.touched) {
+                <span euiLabel euiDanger id="cu-role-err">Role is required</span>
+            }
+        </div>
+    </form>
+</eui-dialog>
+
+<!-- ─── Temporary Password Dialog ─────────────────────────────────── -->
+<eui-dialog #tempPasswordDialog
+    [title]="'User Created Successfully'"
+    [hasDismissButton]="false"
+    [acceptLabel]="'Close'"
+    [width]="'450px'"
+    [isMessageBox]="true">
+
+    <eui-feedback-message euiWarning class="eui-u-mb-m">
+        This password will not be shown again. Please copy it now.
+    </eui-feedback-message>
+
+    <div euiInputGroup>
+        <label euiLabel for="temp-password">Temporary Password</label>
+        <input euiInputText id="temp-password"
+               [value]="temporaryPassword"
+               readonly
+               aria-label="Temporary password" />
+    </div>
+
+    <button euiButton euiSecondary type="button"
+            class="eui-u-mt-s"
+            (click)="copyPassword()">
+        Copy to Clipboard
+    </button>
+</eui-dialog>

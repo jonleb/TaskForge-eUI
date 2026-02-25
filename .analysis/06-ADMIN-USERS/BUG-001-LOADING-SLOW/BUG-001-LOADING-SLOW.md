@@ -1,5 +1,8 @@
 # BUG-001: User List — Slow Loading & NG0100 Error
 
+## Related to 
+STORY-003-user-list-table.md 
+
 ## Summary
 
 The User Administration page (`/screen/admin/users`) exhibited slow data loading and threw `ExpressionChangedAfterItHasBeenCheckedError` (NG0100) errors in the browser console on every navigation and interaction.
