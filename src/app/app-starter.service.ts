@@ -1,68 +1,56 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import {
-    CONFIG_TOKEN,
     UserService,
     I18nService,
-    EuiAppConfig,
     UserDetails,
     UserPreferences,
     EuiServiceStatus,
 } from '@eui/core';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { AuthService } from './core/auth';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AppStarterService {
     defaultUserPreferences: UserPreferences | undefined;
-    private userService: UserService = inject(UserService);
-    private i18nService: I18nService = inject(I18nService);
-    private config: EuiAppConfig = inject(CONFIG_TOKEN);
-    private http: HttpClient = inject(HttpClient);
+    private readonly userService = inject(UserService);
+    private readonly i18nService = inject(I18nService);
+    private readonly authService = inject(AuthService);
 
     start(): Observable<EuiServiceStatus> {
         return this.initUserService().pipe(
-            switchMap((userStatus) => {
-                console.log(userStatus);
-                return this.i18nService.init();
-            }),
+            switchMap(() => this.i18nService.init()),
         );
     }
 
-    /**
-     * Fetches user details,
-     * create user: UserState object
-     * then initialise to the UserService on run time
-     */
     initUserService(): Observable<EuiServiceStatus> {
         return this.fetchUserDetails().pipe(
             switchMap((userDetails) => this.userService.init(userDetails))
         );
     }
 
-    /**
-     * Fetches user details
-     */
     private fetchUserDetails(): Observable<UserDetails> {
-        // const url = this.config.modules.your_custom_module.your_custom_endpoint
-        const moduleCoreApi= this.config.modules?.['core'];
-        const url = `${moduleCoreApi?.['base']}${moduleCoreApi?.['userDetails']}`;
-        const user = {
+        const anonymousUser: UserDetails = {
             userId: 'anonymous',
-            firstName: 'FirstName',
-            lastName: 'LastName',
-            fullName: 'FullName',
+            firstName: 'Guest',
+            lastName: '',
+            fullName: 'Guest',
         };
 
-        if (!url) {
-            return of(user);
+        if (!this.authService.isAuthenticated()) {
+            return of(anonymousUser);
         }
-        return this.http.get<UserDetails>(url)
-            .pipe(
-                // in case of Http failure return dummy user
-                catchError(() => of(user)),
-            );
+
+        return this.authService.getCurrentUser().pipe(
+            map(profile => ({
+                userId: profile.userId,
+                firstName: profile.firstName,
+                lastName: profile.lastName,
+                fullName: `${profile.firstName} ${profile.lastName}`,
+            })),
+            catchError(() => of(anonymousUser)),
+        );
     }
 }
