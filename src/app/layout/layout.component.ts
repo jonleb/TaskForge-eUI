@@ -6,7 +6,7 @@ import { EUI_USER_PROFILE } from '@eui/components/eui-user-profile';
 import { EUI_ICON } from '@eui/components/eui-icon';
 import { EuiMenuItem } from '@eui/components/eui-menu';
 import { EUI_LAYOUT } from '@eui/components/layout';
-import { AuthService } from '../core/auth';
+import { AuthService, PermissionService } from '../core/auth';
 
 @Component({
     selector: 'app-layout',
@@ -21,6 +21,7 @@ import { AuthService } from '../core/auth';
 })
 export class LayoutComponent implements OnInit {
     private readonly authService = inject(AuthService);
+    private readonly permissionService = inject(PermissionService);
     private readonly router = inject(Router);
 
     userRole = '';
@@ -42,12 +43,16 @@ export class LayoutComponent implements OnInit {
 
     ngOnInit(): void {
         this.authService.getCurrentUser().subscribe({
-            next: profile => this.userRole = profile.role,
+            next: profile => {
+                this.userRole = profile.role;
+                this.permissionService.setUser(profile);
+            },
             error: () => this.userRole = '',
         });
     }
 
     logout(): void {
+        this.permissionService.clear();
         this.authService.logout().subscribe(() => {
             this.router.navigate(['/login']);
         });

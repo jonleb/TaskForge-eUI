@@ -9,6 +9,7 @@ import {
 import { catchError, map, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { AuthService } from './core/auth';
+import { PermissionService } from './core/auth';
 
 @Injectable({
     providedIn: 'root',
@@ -18,6 +19,7 @@ export class AppStarterService {
     private readonly userService = inject(UserService);
     private readonly i18nService = inject(I18nService);
     private readonly authService = inject(AuthService);
+    private readonly permissionService = inject(PermissionService);
 
     start(): Observable<EuiServiceStatus> {
         return this.initUserService().pipe(
@@ -44,12 +46,15 @@ export class AppStarterService {
         }
 
         return this.authService.getCurrentUser().pipe(
-            map(profile => ({
-                userId: profile.userId,
-                firstName: profile.firstName,
-                lastName: profile.lastName,
-                fullName: `${profile.firstName} ${profile.lastName}`,
-            })),
+            map(profile => {
+                this.permissionService.setUser(profile);
+                return {
+                    userId: profile.userId,
+                    firstName: profile.firstName,
+                    lastName: profile.lastName,
+                    fullName: `${profile.firstName} ${profile.lastName}`,
+                };
+            }),
             catchError(() => of(anonymousUser)),
         );
     }

@@ -7,6 +7,7 @@ import { of, throwError } from 'rxjs';
 import { AppStarterService } from './app-starter.service';
 import { EuiServiceStatus } from '@eui/base';
 import { AuthService } from './core/auth';
+import { PermissionService } from './core/auth';
 import { UserProfile } from './core/auth/auth.models';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 
@@ -20,6 +21,10 @@ describe('AppStarterService', () => {
     let authServiceMock: {
         isAuthenticated: ReturnType<typeof vi.fn>;
         getCurrentUser: ReturnType<typeof vi.fn>;
+    };
+    let permissionServiceMock: {
+        setUser: ReturnType<typeof vi.fn>;
+        clear: ReturnType<typeof vi.fn>;
     };
     let configMock: EuiAppConfig;
 
@@ -38,6 +43,10 @@ describe('AppStarterService', () => {
             isAuthenticated: vi.fn().mockReturnValue(false),
             getCurrentUser: vi.fn(),
         };
+        permissionServiceMock = {
+            setUser: vi.fn(),
+            clear: vi.fn(),
+        };
         configMock = { global: {}, modules: { core: { base: 'localhost:3000', userDetails: 'dummy' } } };
 
         TestBed.configureTestingModule({
@@ -49,6 +58,7 @@ describe('AppStarterService', () => {
                 { provide: I18nService, useValue: i18nServiceMock },
                 { provide: CONFIG_TOKEN, useValue: configMock },
                 { provide: AuthService, useValue: authServiceMock },
+                { provide: PermissionService, useValue: permissionServiceMock },
             ],
         });
 
@@ -108,6 +118,25 @@ describe('AppStarterService', () => {
             expect(userServiceMock.init).toHaveBeenCalledWith(
                 expect.objectContaining({ userId: 'anonymous', firstName: 'Guest' })
             );
+        });
+    });
+
+    it('should call permissionService.setUser() when authenticated', () => {
+        authServiceMock.isAuthenticated.mockReturnValue(true);
+        authServiceMock.getCurrentUser.mockReturnValue(of(mockProfile));
+        vi.mocked(userServiceMock.init).mockReturnValue(of({} as EuiServiceStatus));
+
+        service.initUserService().subscribe(() => {
+            expect(permissionServiceMock.setUser).toHaveBeenCalledWith(mockProfile);
+        });
+    });
+
+    it('should not call permissionService.setUser() when not authenticated', () => {
+        authServiceMock.isAuthenticated.mockReturnValue(false);
+        vi.mocked(userServiceMock.init).mockReturnValue(of({} as EuiServiceStatus));
+
+        service.initUserService().subscribe(() => {
+            expect(permissionServiceMock.setUser).not.toHaveBeenCalled();
         });
     });
 });

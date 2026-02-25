@@ -7,7 +7,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { CONFIG_TOKEN, I18nService, I18nState, UserService, EuiAppConfig } from '@eui/core';
 import { LayoutComponent } from './layout.component';
-import { AuthService } from '../core/auth';
+import { AuthService, PermissionService } from '../core/auth';
 
 // eslint-disable-next-line
 type SpyObj<T> = { [K in keyof T]: T[K] extends (...args: any[]) => any ? ReturnType<typeof vi.fn> : T[K] };
@@ -16,6 +16,7 @@ describe('LayoutComponent', () => {
     let component: LayoutComponent;
     let fixture: ComponentFixture<LayoutComponent>;
     let authServiceMock: { logout: ReturnType<typeof vi.fn>; getCurrentUser: ReturnType<typeof vi.fn> };
+    let permissionServiceMock: { setUser: ReturnType<typeof vi.fn>; clear: ReturnType<typeof vi.fn> };
     let router: Router;
     let userServiceMock: SpyObj<UserService>;
     let i18nServiceMock: SpyObj<I18nService>;
@@ -35,6 +36,10 @@ describe('LayoutComponent', () => {
         authServiceMock = {
             logout: vi.fn(),
             getCurrentUser: vi.fn().mockReturnValue(of(mockUserProfile)),
+        };
+        permissionServiceMock = {
+            setUser: vi.fn(),
+            clear: vi.fn(),
         };
         userServiceMock = { init: vi.fn() } as SpyObj<UserService>;
         i18nServiceMock = {
@@ -58,6 +63,7 @@ describe('LayoutComponent', () => {
                 provideHttpClientTesting(),
                 provideRouter([]),
                 { provide: AuthService, useValue: authServiceMock },
+                { provide: PermissionService, useValue: permissionServiceMock },
                 { provide: UserService, useValue: userServiceMock },
                 { provide: I18nService, useValue: i18nServiceMock },
                 { provide: CONFIG_TOKEN, useValue: configMock },
@@ -103,5 +109,19 @@ describe('LayoutComponent', () => {
         component.ngOnInit();
 
         expect(component.userRole).toBe('');
+    });
+
+    it('should call permissionService.setUser() on init', () => {
+        component.ngOnInit();
+
+        expect(permissionServiceMock.setUser).toHaveBeenCalledWith(mockUserProfile);
+    });
+
+    it('should call permissionService.clear() on logout', () => {
+        authServiceMock.logout.mockReturnValue(of(undefined));
+
+        component.logout();
+
+        expect(permissionServiceMock.clear).toHaveBeenCalled();
     });
 });

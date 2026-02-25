@@ -21,3 +21,12 @@ export interface TokenPayload {
     role: string;
     exp: number;
 }
+
+export type GlobalRole = 'SUPER_ADMIN' | 'USER';
+export type ProjectRole = 'PROJECT_ADMIN' | 'PRODUCT_OWNER' | 'DEVELOPER' | 'REPORTER' | 'VIEWER';
+
+export interface ProjectMembership {
+    projectId: string;
+    projectKey: string;
+    role: ProjectRole;
+}
