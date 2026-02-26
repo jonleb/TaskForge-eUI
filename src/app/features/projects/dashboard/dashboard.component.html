@@ -13,22 +13,68 @@
                         <dd>{{ project.description || '—' }}</dd>
                     </div>
                     <div class="detail-item">
-                        <dt>Created</dt>
-                        <dd>{{ project.created_at | date:'mediumDate' }}</dd>
-                    </div>
-                    <div class="detail-item" aria-live="polite">
-                        <dt>Team members</dt>
+                        <dt>Status</dt>
                         <dd>
-                            @if (memberCount !== null) {
-                                {{ memberCount }} {{ memberCount === 1 ? 'member' : 'members' }}
-                            } @else if (memberError) {
-                                Unable to load team info
+                            @if (project.is_active) {
+                                <eui-chip euiSuccess euiSizeS [ariaLabel]="'Active'">Active</eui-chip>
                             } @else {
-                                Loading…
+                                <eui-chip euiDanger euiSizeS [ariaLabel]="'Inactive'">Inactive</eui-chip>
                             }
                         </dd>
                     </div>
+                    <div class="detail-item">
+                        <dt>Created by</dt>
+                        <dd>{{ creatorName ?? 'Loading…' }}</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>Created</dt>
+                        <dd>{{ project.created_at | date:'mediumDate' }}</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>Last updated</dt>
+                        <dd>{{ project.updated_at | date:'mediumDate' }}</dd>
+                    </div>
                 </dl>
+            </section>
+
+            <section class="members-section" aria-label="Team members">
+                <h2 aria-live="polite">Team Members ({{ members.length }})</h2>
+
+                <table euiTable
+                       [data]="members"
+                       isAsync
+                       [isLoading]="membersLoading"
+                       isTableResponsive
+                       aria-label="Project team members">
+
+                    <ng-template euiTemplate="header">
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Role</th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template let-row euiTemplate="body">
+                        <tr>
+                            <td data-col-label="Name">{{ row.firstName }} {{ row.lastName }}</td>
+                            <td data-col-label="Email">{{ row.email }}</td>
+                            <td data-col-label="Role">{{ row.role }}</td>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template euiTemplate="noData">
+                        <tr>
+                            <td class="eui-u-text-center" colspan="3">
+                                @if (memberError) {
+                                    Unable to load team members.
+                                } @else {
+                                    No members found.
+                                }
+                            </td>
+                        </tr>
+                    </ng-template>
+                </table>
             </section>
 
             <section class="widgets" aria-label="Dashboard widgets">

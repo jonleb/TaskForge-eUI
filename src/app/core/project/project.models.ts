@@ -30,6 +30,13 @@ export interface UpdateProjectPayload {
     description?: string;
 }
 
+export interface UserInfo {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+}
+
 export interface ProjectListParams {
     _page?: number;
     _limit?: number;

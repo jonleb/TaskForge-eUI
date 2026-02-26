@@ -3,15 +3,18 @@ import { DatePipe } from '@angular/common';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { EUI_PAGE } from '@eui/components/eui-page';
+import { EUI_TABLE } from '@eui/components/eui-table';
+import { EUI_CHIP } from '@eui/components/eui-chip';
+import { EuiTemplateDirective } from '@eui/components/directives';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
-import { ProjectContextService, ProjectService, Project } from '../../../core/project';
+import { ProjectContextService, ProjectService, Project, ProjectMember } from '../../../core/project';
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [...EUI_PAGE, DatePipe],
+    imports: [...EUI_PAGE, ...EUI_TABLE, ...EUI_CHIP, EuiTemplateDirective, DatePipe],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
     private readonly projectContext = inject(ProjectContextService);
@@ -21,8 +24,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private readonly destroy$ = new Subject<void>();
 
     project: Project | null = null;
-    memberCount: number | null = null;
+    members: ProjectMember[] = [];
+    membersLoading = false;
     memberError = false;
+    creatorName: string | null = null;
 
     ngOnInit(): void {
         this.projectContext.currentProject$.pipe(
@@ -30,14 +35,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
             takeUntil(this.destroy$),
         ).subscribe(project => {
             this.project = project;
-            this.memberCount = null;
+            this.members = [];
+            this.membersLoading = true;
             this.memberError = false;
+            this.creatorName = null;
             this.breadcrumbService.setBreadcrumb([
                 { id: 'projects', label: 'Projects', link: '/screen/projects' },
                 { id: 'project', label: project.name, link: null },
             ]);
             this.cdr.markForCheck();
             this.loadMembers(project.id);
+            this.loadCreator(project.created_by);
         });
     }
 
@@ -51,11 +59,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
             takeUntil(this.destroy$),
         ).subscribe({
             next: members => {
-                this.memberCount = members.length;
+                this.members = members;
+                this.membersLoading = false;
                 this.cdr.markForCheck();
             },
             error: () => {
                 this.memberError = true;
+                this.membersLoading = false;
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    private loadCreator(userId: string): void {
+        this.projectService.getUser(userId).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe({
+            next: user => {
+                this.creatorName = `${user.firstName} ${user.lastName}`;
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.creatorName = 'Unknown';
                 this.cdr.markForCheck();
             },
         });

@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { ProjectService } from './project.service';
-import { Project, ProjectMember, ProjectListResponse } from './project.models';
+import { Project, ProjectMember, ProjectListResponse, UserInfo } from './project.models';
 
 const mockProject: Project = {
     id: '1',
@@ -218,6 +218,21 @@ describe('ProjectService', () => {
             expect(req.request.method).toBe('PATCH');
             expect(req.request.body).toEqual(payload);
             req.flush({ ...mockProject, name: 'Updated Name', description: 'New desc' });
+        });
+    });
+
+    describe('getUser()', () => {
+        it('should GET /api/users/:userId and return UserInfo', () => {
+            const mockUser: UserInfo = { id: '1', firstName: 'Super', lastName: 'Admin', email: 'superadmin@taskforge.local' };
+
+            service.getUser('1').subscribe(user => {
+                expect(user).toEqual(mockUser);
+                expect(user.firstName).toBe('Super');
+            });
+
+            const req = httpMock.expectOne('/api/users/1');
+            expect(req.request.method).toBe('GET');
+            req.flush(mockUser);
         });
     });
 });
