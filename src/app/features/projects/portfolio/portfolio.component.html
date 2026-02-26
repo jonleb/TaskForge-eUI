@@ -1,0 +1,59 @@
+<eui-page>
+    <eui-page-header label="Projects"></eui-page-header>
+    <eui-page-content>
+
+        <p aria-live="polite" class="eui-u-mt-s eui-u-mb-s">
+            {{ projects.length }} project{{ projects.length !== 1 ? 's' : '' }} available
+        </p>
+
+        <table euiTable
+               [data]="projects"
+               [isLoading]="loading"
+               isTableResponsive
+               aria-label="List of accessible projects">
+
+            <ng-template euiTemplate="header">
+                <tr>
+                    <th scope="col">Key</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </ng-template>
+
+            <ng-template let-row euiTemplate="body">
+                <tr>
+                    <td data-col-label="Key">{{ row.key }}</td>
+                    <td data-col-label="Name">{{ row.name }}</td>
+                    <td data-col-label="Description">{{ row.description }}</td>
+                    <td data-col-label="Actions">
+                        <button euiButton euiSecondary
+                                type="button"
+                                [attr.aria-label]="'Open ' + row.name"
+                                (click)="onOpenProject(row)">
+                            Open
+                        </button>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template euiTemplate="noData">
+                <tr>
+                    <td class="eui-u-text-center" colspan="4">
+                        @if (hasError) {
+                            Could not load projects. Please try again.
+                            <button euiButton euiSecondary type="button"
+                                    class="eui-u-ml-m"
+                                    (click)="loadProjects()">
+                                Retry
+                            </button>
+                        } @else {
+                            No projects available.
+                        }
+                    </td>
+                </tr>
+            </ng-template>
+        </table>
+
+    </eui-page-content>
+</eui-page>

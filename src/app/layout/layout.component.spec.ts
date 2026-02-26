@@ -163,7 +163,7 @@ describe('LayoutComponent', () => {
         component.ngOnInit();
 
         // All default items have no roles, so all should be visible
-        expect(component.sidebarItems.length).toBe(3);
+        expect(component.sidebarItems.length).toBe(2);
     });
 
     it('should filter sidebar on error (show only unrestricted items)', () => {

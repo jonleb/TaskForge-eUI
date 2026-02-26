@@ -33,11 +33,7 @@ export class LayoutComponent implements OnInit {
 
     private readonly allSidebarItems: EuiMenuItem<SidebarItemMetadata>[] = [
         { label: 'Home', url: 'screen/home' },
-        { label: 'Module 1', url: 'screen/module1', children: [
-            { label: 'page 1', url: 'screen/module1/page1' },
-            { label: 'page 2', url: 'screen/module1/page2' },
-        ] },
-        { label: 'Module 2', url: 'screen/module2' },
+        { label: 'Projects', url: 'screen/projects' },
         { label: 'Users', url: 'screen/admin/users', metadata: { roles: ['SUPER_ADMIN'] } },
     ];
     sidebarItems: EuiMenuItem<SidebarItemMetadata>[] = [];
