@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
-import { provideEuiCoreMocks } from '../../../testing/test-providers';
+import { EuiGrowlService } from '@eui/core';
+import { provideEuiCoreMocks, createGrowlServiceMock } from '../../../testing/test-providers';
 import { MembersComponent } from './members.component';
-import { ProjectContextService, ProjectService, Project, ProjectMember } from '../../../core/project';
+import { ProjectContextService, ProjectService, Project, ProjectMember, MemberCandidate } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
 const mockProject: Project = {
@@ -25,6 +27,7 @@ describe('MembersComponent', () => {
     let currentProject$: BehaviorSubject<Project | null>;
     let projectServiceMock: Record<string, ReturnType<typeof vi.fn>>;
     let permissionMock: Record<string, ReturnType<typeof vi.fn>>;
+    let growlServiceMock: ReturnType<typeof createGrowlServiceMock>;
 
     beforeEach(async () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
@@ -35,6 +38,9 @@ describe('MembersComponent', () => {
             getUser: vi.fn(),
             createProject: vi.fn(),
             updateProject: vi.fn(),
+            upsertMember: vi.fn(),
+            removeMember: vi.fn(),
+            searchCandidates: vi.fn(),
         };
         permissionMock = {
             isSuperAdmin: vi.fn().mockReturnValue(false),
@@ -47,6 +53,7 @@ describe('MembersComponent', () => {
             showAccessDenied: vi.fn(),
             hasProjectRole: vi.fn(),
         };
+        growlServiceMock = createGrowlServiceMock();
 
         await TestBed.configureTestingModule({
             imports: [MembersComponent, TranslateModule.forRoot()],
@@ -55,6 +62,7 @@ describe('MembersComponent', () => {
                 { provide: ProjectContextService, useValue: { currentProject$ } },
                 { provide: ProjectService, useValue: projectServiceMock },
                 { provide: PermissionService, useValue: permissionMock },
+                { provide: EuiGrowlService, useValue: growlServiceMock },
             ],
         }).compileComponents();
 
@@ -187,5 +195,179 @@ describe('MembersComponent', () => {
         expect(nameCells.length).toBe(3);
         expect(emailCells.length).toBe(3);
         expect(roleCells.length).toBe(3);
+    });
+
+    // --- Change Role Dialog tests ---
+
+    it('should store member and pre-fill role when openChangeRoleDialog is called', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.openChangeRoleDialog(mockMembers[1]);
+        expect(component.selectedMember).toEqual(mockMembers[1]);
+        expect(component.newRole).toBe('DEVELOPER');
+        expect(component.changeRoleError).toBe('');
+    });
+
+    it('should call upsertMember and reload on successful role change', () => {
+        const updatedMember = { ...mockMembers[1], role: 'VIEWER' };
+        projectServiceMock['upsertMember'] = vi.fn().mockReturnValue(of(updatedMember));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        component.openChangeRoleDialog(mockMembers[1]);
+        component.newRole = 'VIEWER';
+        component.onChangeRole();
+
+        expect(projectServiceMock['upsertMember']).toHaveBeenCalledWith('1', { userId: '2', role: 'VIEWER' });
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+        expect(component.selectedMember).toBeNull();
+    });
+
+    it('should set changeRoleError on 403 response', () => {
+        const error403 = new HttpErrorResponse({
+            status: 403,
+            error: { message: 'Cannot modify membership of a super administrator' },
+        });
+        projectServiceMock['upsertMember'] = vi.fn().mockReturnValue(throwError(() => error403));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        component.openChangeRoleDialog(mockMembers[0]);
+        component.newRole = 'DEVELOPER';
+        component.onChangeRole();
+
+        expect(component.changeRoleError).toBe('Cannot modify membership of a super administrator');
+    });
+
+    it('should show growl error on non-403 failure', () => {
+        const error500 = new HttpErrorResponse({ status: 500, error: { message: 'Server error' } });
+        projectServiceMock['upsertMember'] = vi.fn().mockReturnValue(throwError(() => error500));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        component.openChangeRoleDialog(mockMembers[1]);
+        component.newRole = 'REPORTER';
+        component.onChangeRole();
+
+        expect(component.changeRoleError).toBe('');
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
+    });
+
+    it('should clear state when resetChangeRoleForm is called', () => {
+        component.selectedMember = mockMembers[0];
+        component.newRole = 'DEVELOPER';
+        component.changeRoleError = 'some error';
+
+        component.resetChangeRoleForm();
+
+        expect(component.selectedMember).toBeNull();
+        expect(component.newRole).toBe('');
+        expect(component.changeRoleError).toBe('');
+    });
+
+    it('should expose projectRoles constant', () => {
+        expect(component.projectRoles).toEqual(['PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER', 'REPORTER', 'VIEWER']);
+    });
+
+    // --- Add Member Dialog tests ---
+
+    const mockCandidates: MemberCandidate[] = [
+        { id: '10', firstName: 'Alice', lastName: 'Wonder', email: 'alice@example.com', role: 'USER' },
+        { id: '11', firstName: 'Charlie', lastName: 'Root', email: 'charlie@example.com', role: 'USER' },
+    ];
+
+    it('should reset add form when openAddDialog is called', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        component.candidateSearch = 'old';
+        component.selectedCandidate = mockCandidates[0];
+        component.addError = 'old error';
+        component.openAddDialog();
+
+        expect(component.candidateSearch).toBe('');
+        expect(component.selectedCandidate).toBeNull();
+        expect(component.selectedAddRole).toBe('DEVELOPER');
+        expect(component.addError).toBe('');
+        expect(component.candidates).toEqual([]);
+    });
+
+    it('should call searchCandidates when candidateSearch has >= 2 chars', () => {
+        projectServiceMock['searchCandidates'] = vi.fn().mockReturnValue(of(mockCandidates));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        component.candidateSearch = 'al';
+        component.onCandidateSearch();
+
+        expect(projectServiceMock['searchCandidates']).toHaveBeenCalledWith('1', 'al');
+        expect(component.candidates).toEqual(mockCandidates);
+    });
+
+    it('should clear candidates when candidateSearch has < 2 chars', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        component.candidates = mockCandidates;
+        component.candidateSearch = 'a';
+        component.onCandidateSearch();
+
+        expect(component.candidates).toEqual([]);
+    });
+
+    it('should set selectedCandidate when selectCandidate is called', () => {
+        component.selectCandidate(mockCandidates[0]);
+        expect(component.selectedCandidate).toEqual(mockCandidates[0]);
+        expect(component.candidateSearch).toBe('');
+        expect(component.candidates).toEqual([]);
+    });
+
+    it('should call upsertMember and reload on successful add', () => {
+        const newMember: ProjectMember = {
+            id: '99', userId: '10', role: 'DEVELOPER', joined_at: '2025-06-01',
+            firstName: 'Alice', lastName: 'Wonder', email: 'alice@example.com',
+        };
+        projectServiceMock['upsertMember'] = vi.fn().mockReturnValue(of(newMember));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        component.selectedCandidate = mockCandidates[0];
+        component.selectedAddRole = 'DEVELOPER';
+        component.onAddMember();
+
+        expect(projectServiceMock['upsertMember']).toHaveBeenCalledWith('1', { userId: '10', role: 'DEVELOPER' });
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+        expect(component.selectedCandidate).toBeNull();
+    });
+
+    it('should set addError on add member failure', () => {
+        const error = new HttpErrorResponse({ status: 400, error: { message: 'User already a member' } });
+        projectServiceMock['upsertMember'] = vi.fn().mockReturnValue(throwError(() => error));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        component.selectedCandidate = mockCandidates[0];
+        component.selectedAddRole = 'VIEWER';
+        component.onAddMember();
+
+        expect(component.addError).toBe('User already a member');
+    });
+
+    it('should clear all add dialog state when resetAddForm is called', () => {
+        component.candidates = mockCandidates;
+        component.candidateSearch = 'test';
+        component.selectedCandidate = mockCandidates[0];
+        component.selectedAddRole = 'VIEWER';
+        component.addError = 'some error';
+        component.candidateLoading = true;
+
+        component.resetAddForm();
+
+        expect(component.candidates).toEqual([]);
+        expect(component.candidateSearch).toBe('');
+        expect(component.selectedCandidate).toBeNull();
+        expect(component.selectedAddRole).toBe('DEVELOPER');
+        expect(component.addError).toBe('');
+        expect(component.candidateLoading).toBe(false);
     });
 });

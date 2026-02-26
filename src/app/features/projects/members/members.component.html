@@ -61,3 +61,68 @@
         </table>
     </eui-page-content>
 </eui-page>
+
+<eui-dialog #addDialog
+    title="Add Member"
+    acceptLabel="Add"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onAddMember()"
+    (dismiss)="resetAddForm()">
+    @if (!selectedCandidate) {
+        <label euiLabel for="candidateSearchInput">Search user</label>
+        <input euiInputText
+            id="candidateSearchInput"
+            [(ngModel)]="candidateSearch"
+            (input)="onCandidateSearch()"
+            placeholder="Type at least 2 characters…"
+            aria-required="true" />
+        @if (candidates.length > 0) {
+            <ul role="listbox" aria-label="Candidate results" class="candidate-list">
+                @for (c of candidates; track c.id) {
+                    <li role="option"
+                        tabindex="0"
+                        (click)="selectCandidate(c)"
+                        (keydown.enter)="selectCandidate(c)">
+                        {{ c.firstName }} {{ c.lastName }} — {{ c.email }}
+                    </li>
+                }
+            </ul>
+        }
+    } @else {
+        <p>Selected: {{ selectedCandidate.firstName }} {{ selectedCandidate.lastName }} ({{ selectedCandidate.email }})</p>
+        <button euiButton (click)="selectedCandidate = null">Change</button>
+    }
+    <label euiLabel for="addRoleSelect">Role</label>
+    <select euiSelect id="addRoleSelect" [(ngModel)]="selectedAddRole" aria-required="true">
+        @for (r of projectRoles; track r) {
+            <option [value]="r">{{ r }}</option>
+        }
+    </select>
+    @if (addError) {
+        <eui-feedback-message euiDanger aria-live="assertive">
+            {{ addError }}
+        </eui-feedback-message>
+    }
+</eui-dialog>
+
+<eui-dialog #changeRoleDialog
+    title="Change Role"
+    acceptLabel="Save"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onChangeRole()"
+    (dismiss)="resetChangeRoleForm()">
+    @if (selectedMember) {
+        <p>Change role for {{ selectedMember.firstName }} {{ selectedMember.lastName }}:</p>
+        <label euiLabel for="newRoleSelect">New role</label>
+        <select euiSelect id="newRoleSelect" [(ngModel)]="newRole" aria-required="true">
+            @for (r of projectRoles; track r) {
+                <option [value]="r">{{ r }}</option>
+            }
+        </select>
+        @if (changeRoleError) {
+            <eui-feedback-message euiDanger aria-live="assertive">
+                {{ changeRoleError }}
+            </eui-feedback-message>
+        }
+    }
+</eui-dialog>

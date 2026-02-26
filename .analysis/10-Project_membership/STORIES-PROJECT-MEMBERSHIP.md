@@ -1,501 +1,264 @@
-# FEATURE-010 Project Membership — Découpage en Stories
+# FEATURE-010 Project Membership — Story Breakdown
 
-## Contexte
+## Context
 
-Cette feature permet aux gestionnaires autorisés (SUPER_ADMIN et PROJECT_ADMIN) de gérer les membres d'un projet : ajouter, modifier le rôle, et retirer des membres. Les utilisateurs non-gestionnaires peuvent voir les membres (déjà implémenté dans le Dashboard) mais ne peuvent pas les modifier.
+This feature allows authorized managers (SUPER_ADMIN and PROJECT_ADMIN) to manage project members: add, change role, and remove members. Non-manager users can view members (already implemented in the Dashboard) but cannot modify them.
 
-L'application dispose actuellement de :
-- Backend : `GET /api/projects/:projectId/members` (retourne les membres enrichis avec détails utilisateur), `requireProjectRole` middleware (SUPER_ADMIN bypass), `requireGlobalRole` middleware. Pas d'endpoints de mutation (add/update/remove).
-- Backend : `GET /api/users` (retourne tous les utilisateurs, basique, sans pagination/recherche).
-- Frontend : `DashboardComponent` affiche un tableau membres en lecture seule (Name, Email, Role). `ProjectService` a `getProjectMembers()`, `getUser()`. Interface `ProjectMember` existante.
-- Routes projet : `projects.routes.ts` a `/:projectId` shell avec Dashboard enfant. Sidebar affiche Dashboard, Backlog, Board, Settings en contexte projet.
-- Rôles projet gérés : `PROJECT_ADMIN`, `PRODUCT_OWNER`, `DEVELOPER`, `REPORTER`, `VIEWER`.
-- Seed data : 14 projets, 46 enregistrements project-members.
-- `PermissionService` avec `isSuperAdmin()`, `hasGlobalRole()`, `getGlobalRole()`.
+The application currently has:
+- Backend: `GET /api/projects/:projectId/members` (returns members enriched with user details), `requireProjectRole` middleware (SUPER_ADMIN bypass), `requireGlobalRole` middleware. No mutation endpoints (add/update/remove).
+- Backend: `GET /api/users` (returns all users, basic, no pagination/search).
+- Frontend: `DashboardComponent` displays a read-only members table (Name, Email, Role). `ProjectService` has `getProjectMembers()`, `getUser()`. Existing `ProjectMember` interface.
+- Project routes: `projects.routes.ts` has `/:projectId` shell with Dashboard child. Sidebar shows Dashboard, Backlog, Board, Settings in project context.
+- Managed project roles: `PROJECT_ADMIN`, `PRODUCT_OWNER`, `DEVELOPER`, `REPORTER`, `VIEWER`.
+- Seed data: 14 projects, 46 project-member records.
+- `PermissionService` with `isSuperAdmin()`, `hasGlobalRole()`, `getGlobalRole()`.
 
-## Composants eUI utilisés
+## eUI Components Used
 
-| Composant | Import | Usage |
+| Component | Import | Usage |
 |-----------|--------|-------|
-| `eui-table` | `EUI_TABLE` de `@eui/components/eui-table` | Tableau des membres |
-| `eui-dialog` | `EuiDialogComponent` de `@eui/components/eui-dialog` | Dialogues ajout/modification/suppression |
-| `eui-chip` | `EUI_CHIP` de `@eui/components/eui-chip` | Badge de rôle |
-| `eui-icon-button` | de `@eui/components/eui-icon-button` | Boutons d'action par ligne |
-| `eui-page` | `EUI_PAGE` de `@eui/components/eui-page` | Structure de page Members |
-| `input[euiInputText]` | `EuiInputTextComponent` de `@eui/components/eui-input-text` | Champ recherche candidats |
-| `select[euiSelect]` | de `@eui/components/eui-select` | Sélection de rôle |
-| `label[euiLabel]` | de `@eui/components/eui-label` | Labels formulaire |
-| `eui-feedback-message` | de `@eui/components/eui-feedback-message` | Erreurs inline |
-| `EuiGrowlService` | de `@eui/core` | Notifications succès/erreur |
+| `eui-table` | `EUI_TABLE` from `@eui/components/eui-table` | Members table |
+| `eui-dialog` | `EuiDialogComponent` from `@eui/components/eui-dialog` | Add/change/remove dialogs |
+| `eui-chip` | `EUI_CHIP` from `@eui/components/eui-chip` | Role badge |
+| `eui-icon-button` | from `@eui/components/eui-icon-button` | Per-row action buttons |
+| `eui-page` | `EUI_PAGE` from `@eui/components/eui-page` | Members page structure |
+| `input[euiInputText]` | `EuiInputTextComponent` from `@eui/components/eui-input-text` | Candidate search field |
+| `select[euiSelect]` | from `@eui/components/eui-select` | Role selection |
+| `label[euiLabel]` | from `@eui/components/eui-label` | Form labels |
+| `eui-feedback-message` | from `@eui/components/eui-feedback-message` | Inline errors |
+| `EuiGrowlService` | from `@eui/core` | Success/error notifications |
 
 ---
 
-## Ordre d'exécution
+## Execution Order
 
-Les stories doivent être implémentées dans cet ordre exact. Chaque story dépend de la précédente sauf indication contraire.
+Stories must be implemented in this exact order. Each story depends on the previous one unless stated otherwise.
 
 ---
 
-## STORY-001 : Backend — Endpoints de mutation membership
+## STORY-001: Backend — Membership Mutation Endpoints
 
-### Objectif
-Créer les endpoints pour ajouter/modifier un membre (upsert), retirer un membre, et rechercher des candidats. Accès réservé aux gestionnaires (SUPER_ADMIN + PROJECT_ADMIN).
+### Objective
+Create endpoints to add/change a member (upsert), remove a member, and search for candidates. Access restricted to managers (SUPER_ADMIN + PROJECT_ADMIN).
 
 ### Backend
 
-1. Modifier `mock/app/routes/project_routes.js` — ajouter 3 endpoints :
+1. Modify `mock/app/routes/project_routes.js` — add 3 endpoints:
 
    **PUT /api/projects/:projectId/members** (upsert)
-   - Auth : `authMiddleware` + `requireProjectRole(db, 'PROJECT_ADMIN')` (SUPER_ADMIN bypass via middleware).
-   - Body : `{ userId: string, role: string }`.
-   - Validation :
-     - `userId` requis, doit correspondre à un utilisateur actif existant.
-     - `role` requis, doit être dans `['PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER', 'REPORTER', 'VIEWER']`.
-     - Interdiction de muter un membership dont l'utilisateur cible a le rôle global `SUPER_ADMIN` (sauf si le requêteur est lui-même SUPER_ADMIN).
-   - Comportement upsert :
-     - Si le membre existe déjà : mettre à jour le `role`, retourner 200.
-     - Si le membre n'existe pas : créer l'enregistrement avec `joined_at = now()`, retourner 201.
-   - Réponse : le membre enrichi (même format que GET members).
+   - Auth: `authMiddleware` + `requireProjectRole(db, 'PROJECT_ADMIN')` (SUPER_ADMIN bypass via middleware).
+   - Body: `{ userId: string, role: string }`.
+   - Validation: userId required (active user), role required (valid enum), cannot mutate SUPER_ADMIN membership unless requester is SUPER_ADMIN.
+   - Upsert behavior: existing member → update role (200), new member → create with `joined_at = now()` (201).
+   - Response: enriched member (same format as GET members).
 
    **DELETE /api/projects/:projectId/members/:userId**
-   - Auth : `authMiddleware` + `requireProjectRole(db, 'PROJECT_ADMIN')`.
-   - Validation :
-     - Le membership doit exister (sinon 404).
-     - Interdiction de retirer un utilisateur dont le rôle global est `SUPER_ADMIN` (sauf si requêteur est SUPER_ADMIN).
-   - Supprime l'enregistrement project-member.
-   - Retourne 204 (no content).
+   - Auth: `authMiddleware` + `requireProjectRole(db, 'PROJECT_ADMIN')`.
+   - Validation: membership must exist (404 otherwise), cannot remove SUPER_ADMIN (unless requester is SUPER_ADMIN).
+   - Returns 204 (no content).
 
    **GET /api/projects/:projectId/members/candidates?q=search**
-   - Auth : `authMiddleware` + `requireProjectRole(db, 'PROJECT_ADMIN')`.
-   - Retourne les utilisateurs actifs (`is_active: true`) dont le `firstName`, `lastName` ou `email` correspond au terme de recherche `q` (case-insensitive, min 2 caractères).
-   - Exclut les utilisateurs déjà membres du projet.
-   - Réponse : `{ id, firstName, lastName, email, role }[]` (max 10 résultats).
-   - Si `q` absent ou < 2 caractères : retourne `[]`.
+   - Auth: `authMiddleware` + `requireProjectRole(db, 'PROJECT_ADMIN')`.
+   - Returns active users matching search term (case-insensitive, min 2 chars), excluding existing members.
+   - Response: `{ id, firstName, lastName, email, role }[]` (max 10 results).
 
-2. Ajouter des tests d'intégration dans `mock/app/routes/project_routes.test.js` :
-   - PUT upsert : ajout nouveau membre (201), mise à jour rôle existant (200), userId invalide (400), rôle invalide (400), protection SUPER_ADMIN (403), utilisateur inactif (400).
-   - DELETE : suppression réussie (204), membre inexistant (404), protection SUPER_ADMIN (403).
-   - GET candidates : recherche par nom/email, exclusion des membres existants, terme trop court retourne `[]`, max 10 résultats.
-   - Accès non autorisé : DEVELOPER/REPORTER/VIEWER reçoivent 403 sur les 3 endpoints.
+2. Integration tests in `project_routes.test.js` (~27 tests).
 
-### Critères d'acceptation
-- [ ] PUT upsert crée un nouveau membre (201) ou met à jour le rôle (200)
-- [ ] PUT valide userId (utilisateur actif existant) et role (enum valide)
-- [ ] PUT interdit la mutation de membership SUPER_ADMIN par un PROJECT_ADMIN
-- [ ] DELETE supprime le membership (204)
-- [ ] DELETE retourne 404 si membership inexistant
-- [ ] DELETE interdit la suppression de membership SUPER_ADMIN par un PROJECT_ADMIN
-- [ ] GET candidates retourne les utilisateurs actifs non-membres correspondant à la recherche
-- [ ] GET candidates exclut les membres existants du projet
-- [ ] GET candidates retourne max 10 résultats
-- [ ] Seuls SUPER_ADMIN et PROJECT_ADMIN ont accès aux 3 endpoints
-- [ ] Tests d'intégration couvrent tous les cas
+### Acceptance Criteria
+- [ ] PUT upsert creates new member (201) or updates role (200)
+- [ ] PUT validates userId (active existing user) and role (valid enum)
+- [ ] PUT prevents PROJECT_ADMIN from mutating SUPER_ADMIN membership
+- [ ] DELETE removes membership (204), returns 404 if not found
+- [ ] DELETE prevents PROJECT_ADMIN from removing SUPER_ADMIN membership
+- [ ] GET candidates returns active non-member users matching search
+- [ ] GET candidates excludes existing project members
+- [ ] GET candidates returns max 10 results
+- [ ] Only SUPER_ADMIN and PROJECT_ADMIN have access to all 3 endpoints
+- [ ] Integration tests cover all cases
 
 ---
 
-## STORY-002 : Frontend — MembershipService et modèles
+## STORY-002: Frontend — MembershipService and Models
 
-### Objectif
-Créer le service frontend pour communiquer avec les nouveaux endpoints de membership.
+### Objective
+Create the frontend service to communicate with the new membership mutation endpoints.
 
 ### Frontend
 
-1. Mettre à jour `src/app/core/project/project.models.ts` :
-   - Ajouter `UpsertMemberPayload` : `{ userId: string, role: string }`.
-   - Ajouter `MemberCandidate` : `{ id: string, firstName: string, lastName: string, email: string, role: string }`.
-   - Ajouter constante `PROJECT_ROLES` : `['PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER', 'REPORTER', 'VIEWER']`.
+1. Update `src/app/core/project/project.models.ts`:
+   - Add `UpsertMemberPayload`: `{ userId: string, role: string }`.
+   - Add `MemberCandidate`: `{ id: string, firstName: string, lastName: string, email: string, role: string }`.
+   - Add `PROJECT_ROLES` constant and `ProjectRole` type.
 
-2. Mettre à jour `src/app/core/project/project.service.ts` — ajouter 3 méthodes :
-   - `upsertMember(projectId: string, payload: UpsertMemberPayload): Observable<ProjectMember>`.
-   - `removeMember(projectId: string, userId: string): Observable<void>`.
-   - `searchCandidates(projectId: string, query: string): Observable<MemberCandidate[]>`.
+2. Update `src/app/core/project/project.service.ts` — add 3 methods:
+   - `upsertMember(projectId, payload): Observable<ProjectMember>`.
+   - `removeMember(projectId, userId): Observable<void>`.
+   - `searchCandidates(projectId, query): Observable<MemberCandidate[]>`.
 
-3. Mettre à jour `src/app/core/project/index.ts` — exporter les nouveaux types.
+3. Update barrel export (`index.ts`).
+4. Unit tests (~9 tests).
 
-4. Tests unitaires pour `ProjectService` :
-   - `upsertMember` envoie PUT avec le bon payload.
-   - `removeMember` envoie DELETE avec le bon URL.
-   - `searchCandidates` envoie GET avec le paramètre `q`.
-
-### Critères d'acceptation
-- [ ] `UpsertMemberPayload` et `MemberCandidate` interfaces créées
-- [ ] `PROJECT_ROLES` constante exportée
-- [ ] `upsertMember()` appelle `PUT /api/projects/:projectId/members`
-- [ ] `removeMember()` appelle `DELETE /api/projects/:projectId/members/:userId`
-- [ ] `searchCandidates()` appelle `GET /api/projects/:projectId/members/candidates?q=...`
-- [ ] Tests unitaires passent
-- [ ] Build passe
+### Acceptance Criteria
+- [ ] `UpsertMemberPayload` and `MemberCandidate` interfaces created
+- [ ] `PROJECT_ROLES` constant exported
+- [ ] `upsertMember()` calls `PUT /api/projects/:projectId/members`
+- [ ] `removeMember()` calls `DELETE /api/projects/:projectId/members/:userId`
+- [ ] `searchCandidates()` calls `GET /api/projects/:projectId/members/candidates?q=...`
+- [ ] Unit tests pass
+- [ ] Build passes
 
 ---
 
-## STORY-003 : Frontend — Page Members (tableau + route)
+## STORY-003: Frontend — Members Page (table + route)
 
-### Objectif
-Créer une page Members dédiée sous le shell projet, avec un tableau listant les membres et leurs rôles. Les gestionnaires (SUPER_ADMIN, PROJECT_ADMIN) voient les boutons d'action. Cette page remplace la section membres du Dashboard.
+### Objective
+Create a dedicated Members page under the project shell, with a table listing members and their roles. Managers (SUPER_ADMIN, PROJECT_ADMIN) see action buttons. This page replaces the members section from the Dashboard.
 
 ### Frontend
 
-1. Créer `src/app/features/projects/members/members.component.ts` :
-   - Composant standalone, `OnPush`.
-   - Injecte `ProjectContextService`, `ProjectService`, `PermissionService`, `ChangeDetectorRef`.
-   - Propriétés : `members: ProjectMember[]`, `membersLoading`, `memberError`, `project: Project | null`.
-   - Propriété calculée `isManager` : `true` si SUPER_ADMIN global OU si l'utilisateur courant a le rôle PROJECT_ADMIN dans le projet (vérifier via `req.projectRole` ou via la liste des membres).
-   - Charge les membres via `projectService.getProjectMembers()` à l'init et quand le projet change.
-   - Imports : `EUI_PAGE`, `EUI_TABLE`, `EUI_CHIP`, `EuiTemplateDirective`, `EuiIconButtonComponent`, `DatePipe`.
+1. Create `MembersComponent` (standalone, OnPush) with eui-table displaying Name, Email, Role (chip).
+2. Add edit/remove icon buttons visible only to managers.
+3. Add "Add Member" button in page header action items for managers.
+4. Register `/members` child route under project shell.
+5. Add "Members" entry in project-scoped sidebar between Dashboard and Backlog.
+6. Strip members section from DashboardComponent.
+7. Unit tests (~15 tests).
 
-2. Créer `src/app/features/projects/members/members.component.html` :
-   ```html
-   <eui-page>
-       <eui-page-header label="Members">
-           @if (isManager) {
-               <eui-page-header-action-items>
-                   <button euiButton euiPrimary (click)="openAddDialog()">Add Member</button>
-               </eui-page-header-action-items>
-           }
-       </eui-page-header>
-       <eui-page-content>
-           <table euiTable [data]="members" isAsync [isLoading]="membersLoading"
-                  isTableResponsive aria-label="Project members">
-               <ng-template euiTemplate="header">
-                   <tr>
-                       <th scope="col">Name</th>
-                       <th scope="col">Email</th>
-                       <th scope="col">Role</th>
-                       @if (isManager) {
-                           <th scope="col">Actions</th>
-                       }
-                   </tr>
-               </ng-template>
-               <ng-template let-row euiTemplate="body">
-                   <tr>
-                       <td data-col-label="Name">{{ row.firstName }} {{ row.lastName }}</td>
-                       <td data-col-label="Email">{{ row.email }}</td>
-                       <td data-col-label="Role">
-                           <eui-chip euiSizeS [ariaLabel]="row.role">{{ row.role }}</eui-chip>
-                       </td>
-                       @if (isManager) {
-                           <td data-col-label="Actions">
-                               <eui-icon-button icon="eui-edit"
-                                   [attr.aria-label]="'Change role of ' + row.firstName + ' ' + row.lastName"
-                                   (click)="openChangeRoleDialog(row)">
-                               </eui-icon-button>
-                               <eui-icon-button icon="eui-trash"
-                                   [attr.aria-label]="'Remove ' + row.firstName + ' ' + row.lastName"
-                                   (click)="openRemoveDialog(row)">
-                               </eui-icon-button>
-                           </td>
-                       }
-                   </tr>
-               </ng-template>
-               <ng-template euiTemplate="noData">
-                   <tr>
-                       <td class="eui-u-text-center" [attr.colspan]="isManager ? 4 : 3">
-                           @if (memberError) { Unable to load members. }
-                           @else { No members found. }
-                       </td>
-                   </tr>
-               </ng-template>
-           </table>
-       </eui-page-content>
-   </eui-page>
-   ```
-
-3. Mettre à jour `src/app/features/projects/projects.routes.ts` :
-   - Ajouter route enfant `{ path: 'members', component: MembersComponent }` sous `:projectId`.
-
-4. Mettre à jour la sidebar dans `src/app/layout/layout.component.ts` — `buildSidebar()` :
-   - Ajouter `{ label: 'Members', url: \`${base}/members\` }` après Dashboard.
-
-5. Retirer la section membres du Dashboard (`dashboard.component.html` et `.ts`) :
-   - Supprimer la section `<section class="members-section">` du template.
-   - Supprimer les propriétés `members`, `membersLoading`, `memberError` et la méthode `loadMembers()` du composant.
-   - Garder le reste du Dashboard intact (détails projet, widgets).
-
-6. Tests unitaires :
-   - Tableau affiche les membres (Name, Email, Role).
-   - Boutons d'action visibles pour les gestionnaires, cachés pour les autres.
-   - Bouton "Add Member" dans le header pour les gestionnaires.
-   - État de chargement et d'erreur.
-   - Route `members` accessible.
-
-### Critères d'acceptation
-- [ ] Page Members accessible via `/screen/projects/:projectId/members`
-- [ ] Sidebar affiche le lien "Members"
-- [ ] Tableau affiche Name, Email, Role pour chaque membre
-- [ ] Colonne Actions visible uniquement pour SUPER_ADMIN et PROJECT_ADMIN
-- [ ] Bouton "Add Member" dans le header pour les gestionnaires
-- [ ] Section membres retirée du Dashboard
-- [ ] États de chargement et d'erreur fonctionnels
-- [ ] Markup accessible (aria-label, scope, data-col-label)
-- [ ] Tests unitaires passent
-- [ ] Build passe
+### Acceptance Criteria
+- [ ] Page accessible via `/screen/projects/:projectId/members`
+- [ ] Sidebar shows "Members" link
+- [ ] Table displays Name, Email, Role for each member
+- [ ] Actions column visible only for SUPER_ADMIN and PROJECT_ADMIN
+- [ ] "Add Member" button in header for managers
+- [ ] Members section removed from Dashboard
+- [ ] Loading and error states functional
+- [ ] Accessible markup (aria-label, scope, data-col-label)
+- [ ] Unit tests pass
+- [ ] Build passes
 
 ---
 
-## STORY-004 : Frontend — Dialogue d'ajout de membre
+## STORY-004: Frontend — Add Member Dialog
 
-### Objectif
-Permettre aux gestionnaires de rechercher un utilisateur candidat et de l'ajouter au projet avec un rôle sélectionné, via un dialogue.
+### Objective
+Allow managers to search for a candidate user and add them to the project with a selected role, via a dialog.
 
 ### Frontend
 
-1. Mettre à jour `src/app/features/projects/members/members.component.ts` :
-   - Ajouter `@ViewChild('addDialog') addDialog: EuiDialogComponent`.
-   - Ajouter propriétés : `candidates: MemberCandidate[]`, `candidateSearch: string`, `selectedCandidate: MemberCandidate | null`, `selectedRole: string`, `addError: string`.
-   - `onCandidateSearch(term: string)` : si `term.length >= 2`, appeler `projectService.searchCandidates()` avec debounce 300ms. Sinon vider la liste.
-   - `selectCandidate(candidate: MemberCandidate)` : sélectionner le candidat.
-   - `openAddDialog()` : réinitialiser le formulaire, ouvrir le dialogue.
-   - `onAddMember()` : appeler `projectService.upsertMember()` avec `selectedCandidate.id` et `selectedRole`. Succès : fermer dialogue, growl succès, recharger membres. Erreur : afficher message inline.
-   - `resetAddForm()` : vider candidats, sélection, rôle, erreur.
+1. Update `MembersComponent`:
+   - Add `@ViewChild('addDialog')`, candidate search properties, `onCandidateSearch()` with debounce 300ms, `selectCandidate()`, `openAddDialog()`, `onAddMember()`, `resetAddForm()`.
+2. Add dialog template with candidate search input, results listbox, selected candidate display, role select, and error feedback.
+3. Add imports: `FormsModule`, `EuiDialogComponent`, `EuiSelectComponent`, `EuiFeedbackMessageComponent`.
+4. Unit tests.
 
-2. Mettre à jour `src/app/features/projects/members/members.component.html` — ajouter le dialogue :
-   ```html
-   <eui-dialog #addDialog
-       dialogTitle="Add Member"
-       acceptLabel="Add"
-       [isHandleCloseOnAccept]="true"
-       (accept)="onAddMember()"
-       (dismiss)="resetAddForm()">
-       <div class="add-member-form">
-           <label euiLabel for="candidateSearch">Search user</label>
-           <input euiInputText id="candidateSearch"
-               [(ngModel)]="candidateSearch"
-               (ngModelChange)="onCandidateSearch($event)"
-               placeholder="Type at least 2 characters..."
-               aria-describedby="candidateSearchHelp" />
-           <span id="candidateSearchHelp" class="eui-u-sr-only">
-               Search by name or email to find users to add
-           </span>
-
-           @if (candidates.length > 0 && !selectedCandidate) {
-               <ul class="candidate-list" role="listbox" aria-label="Search results">
-                   @for (c of candidates; track c.id) {
-                       <li role="option" tabindex="0"
-                           (click)="selectCandidate(c)"
-                           (keydown.enter)="selectCandidate(c)"
-                           [attr.aria-selected]="false">
-                           {{ c.firstName }} {{ c.lastName }} — {{ c.email }}
-                       </li>
-                   }
-               </ul>
-           }
-
-           @if (selectedCandidate) {
-               <div class="selected-candidate" aria-live="polite">
-                   Selected: {{ selectedCandidate.firstName }} {{ selectedCandidate.lastName }}
-                   ({{ selectedCandidate.email }})
-               </div>
-           }
-
-           <label euiLabel for="roleSelect">Role</label>
-           <select euiSelect id="roleSelect" [(ngModel)]="selectedRole"
-                   aria-required="true">
-               @for (r of projectRoles; track r) {
-                   <option [value]="r">{{ r }}</option>
-               }
-           </select>
-
-           @if (addError) {
-               <eui-feedback-message type="error" aria-live="assertive">
-                   {{ addError }}
-               </eui-feedback-message>
-           }
-       </div>
-   </eui-dialog>
-   ```
-
-3. Ajouter imports nécessaires : `FormsModule`, `EuiDialogComponent`, `EuiSelectComponent`, `EuiFeedbackMessageComponent`.
-
-4. Tests unitaires :
-   - Recherche candidats avec terme >= 2 caractères.
-   - Sélection d'un candidat affiche son nom.
-   - Ajout réussi ferme le dialogue, affiche growl, recharge les membres.
-   - Erreur affiche message inline.
-   - Formulaire réinitialisé à la fermeture.
-
-### Critères d'acceptation
-- [ ] Recherche de candidats fonctionne (min 2 caractères, debounce 300ms)
-- [ ] Candidats déjà membres exclus des résultats
-- [ ] Sélection d'un candidat affiche son nom
-- [ ] Sélection de rôle parmi les 5 rôles projet
-- [ ] Ajout réussi : ferme dialogue, growl succès, recharge membres
-- [ ] Erreur : message inline dans le dialogue
-- [ ] Formulaire réinitialisé à la fermeture/dismiss
-- [ ] Accessibilité : labels, aria-required, listbox, keyboard navigation
-- [ ] Tests unitaires passent
-- [ ] Build passe
+### Acceptance Criteria
+- [ ] Candidate search works (min 2 characters, debounce 300ms)
+- [ ] Existing members excluded from results
+- [ ] Selecting a candidate displays their name
+- [ ] Role selection among 5 project roles
+- [ ] Successful add: closes dialog, growl success, reloads members
+- [ ] Error: inline message in dialog
+- [ ] Form reset on close/dismiss
+- [ ] Accessibility: labels, aria-required, listbox, keyboard navigation
+- [ ] Unit tests pass
+- [ ] Build passes
 
 ---
 
-## STORY-005 : Frontend — Dialogue de changement de rôle
+## STORY-005: Frontend — Change Role Dialog
 
-### Objectif
-Permettre aux gestionnaires de modifier le rôle d'un membre existant via un dialogue de confirmation.
+### Objective
+Allow managers to change an existing member's role via a confirmation dialog.
 
 ### Frontend
 
-1. Mettre à jour `src/app/features/projects/members/members.component.ts` :
-   - Ajouter `@ViewChild('changeRoleDialog') changeRoleDialog: EuiDialogComponent`.
-   - Ajouter propriétés : `selectedMember: ProjectMember | null`, `newRole: string`, `changeRoleError: string`.
-   - `openChangeRoleDialog(member: ProjectMember)` : stocker le membre, pré-remplir `newRole` avec le rôle actuel, ouvrir le dialogue.
-   - `onChangeRole()` : appeler `projectService.upsertMember()` avec `selectedMember.userId` et `newRole`. Succès : fermer dialogue, growl succès, recharger membres. Erreur 403 (protection SUPER_ADMIN) : message inline. Autre erreur : growl erreur.
-   - `resetChangeRoleForm()` : vider sélection et erreur.
-   - Protection UI : si le membre cible a un rôle global SUPER_ADMIN et que l'utilisateur courant n'est pas SUPER_ADMIN, désactiver le bouton edit (`[euiDisabled]`).
+1. Update `MembersComponent`:
+   - Add `@ViewChild('changeRoleDialog')`, `selectedMember`, `newRole`, `changeRoleError` properties.
+   - `openChangeRoleDialog(member)`: store member, pre-fill `newRole` with current role, open dialog.
+   - `onChangeRole()`: call `projectService.upsertMember()`. Success: close dialog, growl, reload. Error 403: inline message. Other error: growl error.
+   - `resetChangeRoleForm()`: clear selection and error.
+2. Add dialog template with member name, role select, error feedback.
+3. Unit tests.
 
-2. Mettre à jour `src/app/features/projects/members/members.component.html` — ajouter le dialogue :
-   ```html
-   <eui-dialog #changeRoleDialog
-       dialogTitle="Change Role"
-       acceptLabel="Save"
-       [isHandleCloseOnAccept]="true"
-       (accept)="onChangeRole()"
-       (dismiss)="resetChangeRoleForm()">
-       @if (selectedMember) {
-           <p>Change role for {{ selectedMember.firstName }} {{ selectedMember.lastName }}:</p>
-           <label euiLabel for="newRoleSelect">New role</label>
-           <select euiSelect id="newRoleSelect" [(ngModel)]="newRole"
-                   aria-required="true">
-               @for (r of projectRoles; track r) {
-                   <option [value]="r">{{ r }}</option>
-               }
-           </select>
-           @if (changeRoleError) {
-               <eui-feedback-message type="error" aria-live="assertive">
-                   {{ changeRoleError }}
-               </eui-feedback-message>
-           }
-       }
-   </eui-dialog>
-   ```
-
-3. Tests unitaires :
-   - Dialogue s'ouvre avec le rôle actuel pré-sélectionné.
-   - Changement de rôle réussi : ferme dialogue, growl, recharge.
-   - Erreur 403 : message inline.
-   - Formulaire réinitialisé à la fermeture.
-
-### Critères d'acceptation
-- [ ] Dialogue affiche le nom du membre et son rôle actuel pré-sélectionné
-- [ ] Sélection parmi les 5 rôles projet
-- [ ] Changement réussi : ferme dialogue, growl succès, recharge membres
-- [ ] Erreur 403 (protection SUPER_ADMIN) : message inline
-- [ ] Formulaire réinitialisé à la fermeture/dismiss
-- [ ] Accessibilité : labels, aria-required
-- [ ] Tests unitaires passent
-- [ ] Build passe
+### Acceptance Criteria
+- [ ] Dialog shows member name and current role pre-selected
+- [ ] Selection among 5 project roles
+- [ ] Successful change: closes dialog, growl success, reloads members
+- [ ] Error 403 (SUPER_ADMIN protection): inline message
+- [ ] Form reset on close/dismiss
+- [ ] Accessibility: labels, aria-required
+- [ ] Unit tests pass
+- [ ] Build passes
 
 ---
 
-## STORY-006 : Frontend — Suppression de membre avec confirmation
+## STORY-006: Frontend — Remove Member with Confirmation
 
-### Objectif
-Permettre aux gestionnaires de retirer un membre du projet avec un dialogue de confirmation explicite.
+### Objective
+Allow managers to remove a member from the project with an explicit confirmation dialog.
 
 ### Frontend
 
-1. Mettre à jour `src/app/features/projects/members/members.component.ts` :
-   - Ajouter `@ViewChild('removeDialog') removeDialog: EuiDialogComponent`.
-   - Ajouter propriétés : `memberToRemove: ProjectMember | null`, `removeError: string`.
-   - `openRemoveDialog(member: ProjectMember)` : stocker le membre, ouvrir le dialogue.
-   - `onRemoveMember()` : appeler `projectService.removeMember()` avec `projectId` et `memberToRemove.userId`. Succès : fermer dialogue, growl succès, recharger membres. Erreur 403 : message inline. Autre erreur : growl erreur.
-   - `resetRemoveForm()` : vider sélection et erreur.
-   - Protection UI : même logique que STORY-005 pour le bouton trash.
+1. Update `MembersComponent`:
+   - Add `@ViewChild('removeDialog')`, `memberToRemove`, `removeError` properties.
+   - `openRemoveDialog(member)`: store member, open dialog.
+   - `onRemoveMember()`: call `projectService.removeMember()`. Success: close dialog, growl, reload. Error 403: inline message. Other error: growl error.
+   - `resetRemoveForm()`: clear selection and error.
+2. Add dialog template with confirmation message and error feedback.
+3. Unit tests.
 
-2. Mettre à jour `src/app/features/projects/members/members.component.html` — ajouter le dialogue :
-   ```html
-   <eui-dialog #removeDialog
-       dialogTitle="Remove Member"
-       acceptLabel="Remove"
-       [isHandleCloseOnAccept]="true"
-       (accept)="onRemoveMember()"
-       (dismiss)="resetRemoveForm()">
-       @if (memberToRemove) {
-           <p>Are you sure you want to remove
-              <strong>{{ memberToRemove.firstName }} {{ memberToRemove.lastName }}</strong>
-              from this project?</p>
-           <p>This action will revoke their access immediately.</p>
-           @if (removeError) {
-               <eui-feedback-message type="error" aria-live="assertive">
-                   {{ removeError }}
-               </eui-feedback-message>
-           }
-       }
-   </eui-dialog>
-   ```
-
-3. Tests unitaires :
-   - Dialogue affiche le nom du membre à retirer.
-   - Suppression réussie : ferme dialogue, growl, recharge.
-   - Erreur 403 : message inline.
-   - Dismiss ferme sans action.
-
-### Critères d'acceptation
-- [ ] Dialogue de confirmation affiche le nom du membre
-- [ ] Message explicite sur la révocation d'accès
-- [ ] Suppression réussie : ferme dialogue, growl succès, recharge membres
-- [ ] Erreur 403 (protection SUPER_ADMIN) : message inline
-- [ ] Dismiss ferme le dialogue sans action
-- [ ] Accessibilité : aria-live pour les erreurs
-- [ ] Tests unitaires passent
-- [ ] Build passe
+### Acceptance Criteria
+- [ ] Confirmation dialog shows member name
+- [ ] Explicit message about access revocation
+- [ ] Successful removal: closes dialog, growl success, reloads members
+- [ ] Error 403 (SUPER_ADMIN protection): inline message
+- [ ] Dismiss closes dialog without action
+- [ ] Accessibility: aria-live for errors
+- [ ] Unit tests pass
+- [ ] Build passes
 
 ---
 
-## STORY-007 : Frontend — Détermination du rôle projet courant
+## STORY-007: Frontend — Current Project Role Determination
 
-### Objectif
-Permettre au frontend de savoir si l'utilisateur courant est gestionnaire du projet (PROJECT_ADMIN ou SUPER_ADMIN) pour conditionner l'affichage des actions de mutation.
-
-### Frontend
-
-1. Mettre à jour `src/app/core/project/project-context.service.ts` (ou créer si nécessaire) :
-   - Ajouter une propriété `currentUserProjectRole$: Observable<string | null>` qui émet le rôle projet de l'utilisateur courant.
-   - Quand le projet change, chercher dans la liste des membres si l'utilisateur courant est membre et extraire son rôle.
-   - Exposer `isProjectManager$: Observable<boolean>` = `true` si SUPER_ADMIN global OU PROJECT_ADMIN dans le projet.
-
-2. Alternative plus simple : dans `MembersComponent`, après chargement des membres, vérifier si l'utilisateur courant (via `AuthService.currentUser`) est dans la liste avec rôle PROJECT_ADMIN, ou si `permissionService.isSuperAdmin()`.
-
-3. Tests unitaires :
-   - `isManager` = true pour SUPER_ADMIN.
-   - `isManager` = true pour PROJECT_ADMIN du projet.
-   - `isManager` = false pour DEVELOPER, REPORTER, VIEWER.
-   - `isManager` = false pour un non-membre.
+### Objective
+Allow the frontend to determine whether the current user is a project manager (PROJECT_ADMIN or SUPER_ADMIN) to conditionally display mutation actions.
 
 ### Note
-Cette story peut être intégrée directement dans STORY-003 si la logique reste simple (vérification locale dans le composant). Elle est séparée ici pour clarté, mais l'implémentation peut être fusionnée.
+This story was integrated directly into STORY-003 since the logic is simple (local check in the component using `PermissionService.isSuperAdmin()` and member list lookup).
 
-### Critères d'acceptation
-- [ ] `isManager` correctement déterminé selon le rôle global et le rôle projet
-- [ ] SUPER_ADMIN toujours gestionnaire
-- [ ] PROJECT_ADMIN du projet est gestionnaire
-- [ ] Autres rôles ne sont pas gestionnaires
-- [ ] Tests unitaires passent
+### Acceptance Criteria
+- [ ] `isManager` correctly determined based on global role and project role
+- [ ] SUPER_ADMIN is always a manager
+- [ ] PROJECT_ADMIN of the project is a manager
+- [ ] Other roles are not managers
+- [ ] Unit tests pass
 
 ---
 
-## Graphe de dépendances
+## Dependency Graph
 
 ```
-STORY-001 (Backend — Endpoints mutation)
-    └── STORY-002 (Frontend — Service + modèles)
-            └── STORY-003 (Frontend — Page Members + route + sidebar)
-                    ├── STORY-004 (Frontend — Dialogue ajout membre)
-                    ├── STORY-005 (Frontend — Dialogue changement rôle)
-                    └── STORY-006 (Frontend — Dialogue suppression membre)
+STORY-001 (Backend — Mutation endpoints)
+    └── STORY-002 (Frontend — Service + models)
+            └── STORY-003 (Frontend — Members page + route + sidebar)
+                    ├── STORY-004 (Frontend — Add member dialog)
+                    ├── STORY-005 (Frontend — Change role dialog)
+                    └── STORY-006 (Frontend — Remove member dialog)
 
-STORY-007 (Détermination rôle projet) — intégrable dans STORY-003
+STORY-007 (Project role determination) — integrated into STORY-003
 ```
 
-## Notes techniques
+## Technical Notes
 
-- Le pattern upsert (PUT) simplifie la logique : un seul endpoint pour ajouter et modifier. Le frontend distingue visuellement les deux cas (dialogue "Add" vs dialogue "Change Role") mais le backend traite les deux de la même façon.
-- La recherche de candidats (`GET .../candidates?q=`) exclut les membres existants côté serveur pour éviter les doublons dans l'UI.
-- La protection SUPER_ADMIN est double : côté backend (403 si PROJECT_ADMIN tente de muter un SUPER_ADMIN) et côté UI (boutons désactivés via `[euiDisabled]`).
-- `eui-dialog` capture `[acceptLabel]` à la création de l'overlay. Pour les dialogues avec label dynamique, setter la propriété avant `openDialog()` et forcer `cdr.detectChanges()`.
-- `eui-icon-button` utilise `[euiDisabled]` et non `[disabled]`.
-- Les icônes utilisent le format eUI : `icon="eui-edit"`, `icon="eui-trash"`.
-- Le bouton "Add Member" est placé dans `<eui-page-header-action-items>` (pas dans `<eui-page-content>`).
-- `eui-table` supprime `<caption>` — utiliser `aria-label` sur l'élément table.
-- La section membres du Dashboard est retirée dans STORY-003 et remplacée par un lien "Members" dans la sidebar.
-- `FormsModule` est nécessaire pour `ngModel` dans les dialogues (recherche candidats, sélection rôle).
-- Le composant Members utilise `OnPush` + `cdr.markForCheck()` dans les callbacks async.
+- The upsert pattern (PUT) simplifies logic: one endpoint for both add and update. The frontend visually distinguishes the two cases (Add dialog vs Change Role dialog) but the backend handles both the same way.
+- Candidate search (`GET .../candidates?q=`) excludes existing members server-side to avoid duplicates in the UI.
+- SUPER_ADMIN protection is dual: backend (403 if PROJECT_ADMIN tries to mutate a SUPER_ADMIN) and UI (buttons disabled via `[euiDisabled]`).
+- `eui-dialog` captures `[acceptLabel]` at overlay creation time. For dialogs with dynamic labels, set the property before `openDialog()` and force `cdr.detectChanges()`.
+- `eui-icon-button` uses `[euiDisabled]` not `[disabled]`.
+- Icons use eUI format: `icon="eui-edit"`, `icon="eui-trash"`.
+- "Add Member" button is placed in `<eui-page-header-action-items>` (not in `<eui-page-content>`).
+- `eui-table` strips `<caption>` — use `aria-label` on the table element instead.
+- Members section is removed from Dashboard in STORY-003 and replaced by a "Members" link in the sidebar.
+- `FormsModule` is needed for `ngModel` in dialogs (candidate search, role selection).
+- The Members component uses `OnPush` + `cdr.markForCheck()` in async callbacks.
