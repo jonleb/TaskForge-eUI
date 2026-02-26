@@ -3,11 +3,12 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideRouter, Router } from '@angular/router';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
-import { Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { CONFIG_TOKEN, I18nService, I18nState, UserService, EuiAppConfig } from '@eui/core';
 import { LayoutComponent } from './layout.component';
 import { AuthService, PermissionService } from '../core/auth';
+import { ProjectContextService, Project } from '../core/project';
 
 // eslint-disable-next-line
 type SpyObj<T> = { [K in keyof T]: T[K] extends (...args: any[]) => any ? ReturnType<typeof vi.fn> : T[K] };
@@ -17,6 +18,7 @@ describe('LayoutComponent', () => {
     let fixture: ComponentFixture<LayoutComponent>;
     let authServiceMock: { logout: ReturnType<typeof vi.fn>; getCurrentUser: ReturnType<typeof vi.fn> };
     let permissionServiceMock: { setUser: ReturnType<typeof vi.fn>; clear: ReturnType<typeof vi.fn>; hasGlobalRole: ReturnType<typeof vi.fn> };
+    let projectContextMock: { currentProject$: BehaviorSubject<Project | null> };
     let router: Router;
     let userServiceMock: SpyObj<UserService>;
     let i18nServiceMock: SpyObj<I18nService>;
@@ -42,6 +44,9 @@ describe('LayoutComponent', () => {
             clear: vi.fn(),
             hasGlobalRole: vi.fn().mockReturnValue(false),
         };
+        projectContextMock = {
+            currentProject$: new BehaviorSubject<Project | null>(null),
+        };
         userServiceMock = { init: vi.fn() } as SpyObj<UserService>;
         i18nServiceMock = {
             init: vi.fn(),
@@ -65,6 +70,7 @@ describe('LayoutComponent', () => {
                 provideRouter([]),
                 { provide: AuthService, useValue: authServiceMock },
                 { provide: PermissionService, useValue: permissionServiceMock },
+                { provide: ProjectContextService, useValue: projectContextMock },
                 { provide: UserService, useValue: userServiceMock },
                 { provide: I18nService, useValue: i18nServiceMock },
                 { provide: CONFIG_TOKEN, useValue: configMock },
@@ -175,5 +181,56 @@ describe('LayoutComponent', () => {
         const labels = component.sidebarItems.map(i => i.label);
         expect(labels).not.toContain('Admin');
         expect(labels).toContain('Home');
+    });
+
+    it('should switch to project-scoped sidebar when a project is set', () => {
+        component.ngOnInit();
+
+        projectContextMock.currentProject$.next({
+            id: '1', key: 'TF', name: 'TaskForge Core',
+            description: '', created_by: '1',
+            created_at: '', updated_at: '', is_active: true,
+        });
+
+        const labels = component.sidebarItems.map(i => i.label);
+        expect(labels).toContain('Dashboard');
+        expect(labels).toContain('Backlog');
+        expect(labels).toContain('Board');
+        expect(labels).toContain('Settings');
+        expect(labels).toContain('← All Projects');
+    });
+
+    it('should revert to global sidebar when project is cleared', () => {
+        permissionServiceMock.hasGlobalRole.mockReturnValue(false);
+        component.ngOnInit();
+
+        projectContextMock.currentProject$.next({
+            id: '1', key: 'TF', name: 'TaskForge Core',
+            description: '', created_by: '1',
+            created_at: '', updated_at: '', is_active: true,
+        });
+        expect(component.sidebarItems.map(i => i.label)).toContain('Dashboard');
+
+        projectContextMock.currentProject$.next(null);
+        const labels = component.sidebarItems.map(i => i.label);
+        expect(labels).toContain('Home');
+        expect(labels).toContain('Projects');
+        expect(labels).not.toContain('Dashboard');
+    });
+
+    it('should build correct project-scoped URLs', () => {
+        component.ngOnInit();
+
+        projectContextMock.currentProject$.next({
+            id: '42', key: 'DEMO', name: 'Demo',
+            description: '', created_by: '1',
+            created_at: '', updated_at: '', is_active: true,
+        });
+
+        const urls = component.sidebarItems.map(i => i.url);
+        expect(urls).toContain('screen/projects/42');
+        expect(urls).toContain('screen/projects/42/backlog');
+        expect(urls).toContain('screen/projects/42/board');
+        expect(urls).toContain('screen/projects/42/settings');
     });
 });
