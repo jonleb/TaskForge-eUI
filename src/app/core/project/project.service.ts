@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse } from './project.models';
+import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate } from './project.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
@@ -37,5 +37,18 @@ export class ProjectService {
 
     getUser(userId: string): Observable<UserInfo> {
         return this.http.get<UserInfo>(`/api/users/${userId}`);
+    }
+
+    upsertMember(projectId: string, payload: UpsertMemberPayload): Observable<ProjectMember> {
+        return this.http.put<ProjectMember>(`/api/projects/${projectId}/members`, payload);
+    }
+
+    removeMember(projectId: string, userId: string): Observable<void> {
+        return this.http.delete<void>(`/api/projects/${projectId}/members/${userId}`);
+    }
+
+    searchCandidates(projectId: string, query: string): Observable<MemberCandidate[]> {
+        const params = new HttpParams().set('q', query);
+        return this.http.get<MemberCandidate[]>(`/api/projects/${projectId}/members/candidates`, { params });
     }
 }

@@ -52,3 +52,26 @@ export interface ProjectListResponse {
     page: number;
     limit: number;
 }
+
+export interface UpsertMemberPayload {
+    userId: string;
+    role: string;
+}
+
+export interface MemberCandidate {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: string;
+}
+
+export const PROJECT_ROLES = [
+    'PROJECT_ADMIN',
+    'PRODUCT_OWNER',
+    'DEVELOPER',
+    'REPORTER',
+    'VIEWER',
+] as const;
+
+export type ProjectRole = typeof PROJECT_ROLES[number];

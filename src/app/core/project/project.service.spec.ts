@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { ProjectService } from './project.service';
-import { Project, ProjectMember, ProjectListResponse, UserInfo } from './project.models';
+import { Project, ProjectMember, ProjectListResponse, UserInfo, MemberCandidate } from './project.models';
 
 const mockProject: Project = {
     id: '1',
@@ -233,6 +233,119 @@ describe('ProjectService', () => {
             const req = httpMock.expectOne('/api/users/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockUser);
+        });
+    });
+
+    describe('upsertMember()', () => {
+        it('should PUT /api/projects/:projectId/members with payload', () => {
+            const payload = { userId: '23', role: 'REPORTER' };
+
+            service.upsertMember('1', payload).subscribe(member => {
+                expect(member.userId).toBe('23');
+                expect(member.role).toBe('REPORTER');
+                expect(member.firstName).toBe('Rachel');
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/members');
+            expect(req.request.method).toBe('PUT');
+            expect(req.request.body).toEqual(payload);
+            req.flush({ ...mockMember, userId: '23', role: 'REPORTER', firstName: 'Rachel', lastName: 'Moore', email: 'rachel.moore@taskforge.local' });
+        });
+
+        it('should propagate 400 errors', () => {
+            service.upsertMember('1', { userId: '', role: 'DEVELOPER' }).subscribe({
+                error: err => {
+                    expect(err.status).toBe(400);
+                },
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/members');
+            req.flush({ message: 'userId is required' }, { status: 400, statusText: 'Bad Request' });
+        });
+
+        it('should propagate 403 errors', () => {
+            service.upsertMember('1', { userId: '8', role: 'DEVELOPER' }).subscribe({
+                error: err => {
+                    expect(err.status).toBe(403);
+                },
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/members');
+            req.flush({ message: 'Cannot modify membership of a super administrator' }, { status: 403, statusText: 'Forbidden' });
+        });
+    });
+
+    describe('removeMember()', () => {
+        it('should DELETE /api/projects/:projectId/members/:userId', () => {
+            service.removeMember('1', '4').subscribe();
+
+            const req = httpMock.expectOne('/api/projects/1/members/4');
+            expect(req.request.method).toBe('DELETE');
+            req.flush(null, { status: 204, statusText: 'No Content' });
+        });
+
+        it('should propagate 404 errors', () => {
+            service.removeMember('1', '999').subscribe({
+                error: err => {
+                    expect(err.status).toBe(404);
+                },
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/members/999');
+            req.flush({ message: 'Member not found' }, { status: 404, statusText: 'Not Found' });
+        });
+
+        it('should propagate 403 errors', () => {
+            service.removeMember('1', '8').subscribe({
+                error: err => {
+                    expect(err.status).toBe(403);
+                },
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/members/8');
+            req.flush({ message: 'Cannot modify membership of a super administrator' }, { status: 403, statusText: 'Forbidden' });
+        });
+    });
+
+    describe('searchCandidates()', () => {
+        const mockCandidate: MemberCandidate = {
+            id: '23',
+            firstName: 'Rachel',
+            lastName: 'Moore',
+            email: 'rachel.moore@taskforge.local',
+            role: 'VIEWER',
+        };
+
+        it('should GET /api/projects/:projectId/members/candidates with q param', () => {
+            service.searchCandidates('1', 'leo').subscribe(candidates => {
+                expect(candidates).toEqual([mockCandidate]);
+            });
+
+            const req = httpMock.expectOne(r => r.url === '/api/projects/1/members/candidates');
+            expect(req.request.method).toBe('GET');
+            expect(req.request.params.get('q')).toBe('leo');
+            req.flush([mockCandidate]);
+        });
+
+        it('should return typed MemberCandidate array', () => {
+            service.searchCandidates('1', 'rachel').subscribe(candidates => {
+                expect(candidates.length).toBe(1);
+                expect(candidates[0].firstName).toBe('Rachel');
+                expect(candidates[0].email).toBe('rachel.moore@taskforge.local');
+                expect(candidates[0].role).toBe('VIEWER');
+            });
+
+            const req = httpMock.expectOne(r => r.url === '/api/projects/1/members/candidates');
+            req.flush([mockCandidate]);
+        });
+
+        it('should return empty array', () => {
+            service.searchCandidates('1', 'zz').subscribe(candidates => {
+                expect(candidates).toEqual([]);
+            });
+
+            const req = httpMock.expectOne(r => r.url === '/api/projects/1/members/candidates');
+            req.flush([]);
         });
     });
 });
