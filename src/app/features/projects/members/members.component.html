@@ -105,6 +105,23 @@
     }
 </eui-dialog>
 
+<eui-dialog #removeDialog
+    title="Remove Member"
+    acceptLabel="Remove"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onRemoveMember()"
+    (dismiss)="resetRemoveForm()">
+    @if (memberToRemove) {
+        <p>Are you sure you want to remove {{ memberToRemove.firstName }} {{ memberToRemove.lastName }} from this project?</p>
+        <p>This will revoke their access immediately.</p>
+        @if (removeError) {
+            <eui-feedback-message euiDanger aria-live="assertive">
+                {{ removeError }}
+            </eui-feedback-message>
+        }
+    }
+</eui-dialog>
+
 <eui-dialog #changeRoleDialog
     title="Change Role"
     acceptLabel="Save"

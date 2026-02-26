@@ -353,6 +353,67 @@ describe('MembersComponent', () => {
         expect(component.addError).toBe('User already a member');
     });
 
+    // --- Remove Member Dialog tests ---
+
+    it('should store member and clear error when openRemoveDialog is called', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.openRemoveDialog(mockMembers[1]);
+        expect(component.memberToRemove).toEqual(mockMembers[1]);
+        expect(component.removeError).toBe('');
+    });
+
+    it('should call removeMember and reload on successful removal', () => {
+        projectServiceMock['removeMember'] = vi.fn().mockReturnValue(of(undefined));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        component.openRemoveDialog(mockMembers[1]);
+        component.onRemoveMember();
+
+        expect(projectServiceMock['removeMember']).toHaveBeenCalledWith('1', '2');
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+        expect(component.memberToRemove).toBeNull();
+    });
+
+    it('should set removeError on 403 response', () => {
+        const error403 = new HttpErrorResponse({
+            status: 403,
+            error: { message: 'Cannot remove a super administrator' },
+        });
+        projectServiceMock['removeMember'] = vi.fn().mockReturnValue(throwError(() => error403));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        component.openRemoveDialog(mockMembers[0]);
+        component.onRemoveMember();
+
+        expect(component.removeError).toBe('Cannot remove a super administrator');
+    });
+
+    it('should show growl error on non-403 remove failure', () => {
+        const error500 = new HttpErrorResponse({ status: 500, error: { message: 'Server error' } });
+        projectServiceMock['removeMember'] = vi.fn().mockReturnValue(throwError(() => error500));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        component.openRemoveDialog(mockMembers[1]);
+        component.onRemoveMember();
+
+        expect(component.removeError).toBe('');
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
+    });
+
+    it('should clear state when resetRemoveForm is called', () => {
+        component.memberToRemove = mockMembers[0];
+        component.removeError = 'some error';
+
+        component.resetRemoveForm();
+
+        expect(component.memberToRemove).toBeNull();
+        expect(component.removeError).toBe('');
+    });
+
     it('should clear all add dialog state when resetAddForm is called', () => {
         component.candidates = mockCandidates;
         component.candidateSearch = 'test';

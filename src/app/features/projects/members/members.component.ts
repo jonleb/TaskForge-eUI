@@ -39,6 +39,7 @@ export class MembersComponent implements OnInit, OnDestroy {
 
     @ViewChild('changeRoleDialog') changeRoleDialog!: EuiDialogComponent;
     @ViewChild('addDialog') addDialog!: EuiDialogComponent;
+    @ViewChild('removeDialog') removeDialog!: EuiDialogComponent;
 
     project: Project | null = null;
     members: ProjectMember[] = [];
@@ -59,6 +60,10 @@ export class MembersComponent implements OnInit, OnDestroy {
     newRole = '';
     changeRoleError = '';
     readonly projectRoles = PROJECT_ROLES;
+
+    // Remove member dialog state
+    memberToRemove: ProjectMember | null = null;
+    removeError = '';
 
     ngOnInit(): void {
         this.projectContext.currentProject$.pipe(
@@ -224,8 +229,50 @@ export class MembersComponent implements OnInit, OnDestroy {
         this.changeRoleError = '';
     }
 
-    openRemoveDialog(_member: ProjectMember): void {
-        // Placeholder — implemented in STORY-006
+    openRemoveDialog(member: ProjectMember): void {
+        this.memberToRemove = member;
+        this.removeError = '';
+        this.cdr.detectChanges();
+        this.removeDialog.openDialog();
+    }
+
+    onRemoveMember(): void {
+        if (!this.memberToRemove || !this.project) return;
+
+        const memberName = `${this.memberToRemove.firstName} ${this.memberToRemove.lastName}`;
+        const projectId = this.project.id;
+
+        this.projectService.removeMember(projectId, this.memberToRemove.userId).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe({
+            next: () => {
+                this.removeDialog.closeDialog();
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: 'Member removed',
+                    detail: `${memberName} has been removed from the project.`,
+                });
+                this.resetRemoveForm();
+                this.loadMembers(projectId);
+            },
+            error: (err) => {
+                if (err.status === 403) {
+                    this.removeError = err.error?.message || 'Cannot remove a super administrator.';
+                } else {
+                    this.growlService.growl({
+                        severity: 'error',
+                        summary: 'Removal failed',
+                        detail: err.error?.message || 'Could not remove member. Please try again.',
+                    });
+                }
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    resetRemoveForm(): void {
+        this.memberToRemove = null;
+        this.removeError = '';
     }
 
     private determineManagerStatus(members: ProjectMember[]): void {
