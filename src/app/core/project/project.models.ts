@@ -18,3 +18,9 @@ export interface ProjectMember {
     lastName: string;
     email: string;
 }
+
+export interface CreateProjectPayload {
+    name: string;
+    description?: string;
+    key?: string;
+}

@@ -135,4 +135,32 @@ describe('ProjectService', () => {
             req.flush([]);
         });
     });
+
+    describe('createProject()', () => {
+        it('should POST /api/projects with correct payload', () => {
+            const payload = { name: 'New Project', description: 'Desc', key: 'NP' };
+
+            service.createProject(payload).subscribe(project => {
+                expect(project.key).toBe('NP');
+                expect(project.name).toBe('New Project');
+            });
+
+            const req = httpMock.expectOne('/api/projects');
+            expect(req.request.method).toBe('POST');
+            expect(req.request.body).toEqual(payload);
+            req.flush({ ...mockProject, id: '4', key: 'NP', name: 'New Project' });
+        });
+
+        it('should send payload without key when key is omitted', () => {
+            const payload = { name: 'Auto Key Project' };
+
+            service.createProject(payload).subscribe(project => {
+                expect(project.name).toBe('Auto Key Project');
+            });
+
+            const req = httpMock.expectOne('/api/projects');
+            expect(req.request.body).toEqual({ name: 'Auto Key Project' });
+            req.flush({ ...mockProject, id: '5', key: 'AKP', name: 'Auto Key Project' });
+        });
+    });
 });
