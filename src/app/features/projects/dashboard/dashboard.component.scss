@@ -1,0 +1,46 @@
+.project-details {
+    margin-bottom: 2rem;
+
+    dl {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1rem;
+        margin: 0;
+    }
+
+    .detail-item {
+        dt {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--eui-color-grey-60, #6b7280);
+            margin-bottom: 0.25rem;
+        }
+
+        dd {
+            margin: 0;
+            font-size: 1rem;
+        }
+    }
+}
+
+.widgets {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.widget-placeholder {
+    border: 1px solid var(--eui-color-grey-25, #d1d5db);
+    border-radius: 4px;
+    padding: 1.5rem;
+
+    h2 {
+        margin: 0 0 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    p {
+        margin: 0;
+        color: var(--eui-color-grey-50, #9ca3af);
+    }
+}

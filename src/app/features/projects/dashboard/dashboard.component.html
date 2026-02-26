@@ -1,0 +1,50 @@
+<eui-page>
+    <eui-page-header [label]="project?.name ?? 'Project'"></eui-page-header>
+    <eui-page-content>
+        @if (project) {
+            <section class="project-details" aria-label="Project details">
+                <dl>
+                    <div class="detail-item">
+                        <dt>Key</dt>
+                        <dd>{{ project.key }}</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>Description</dt>
+                        <dd>{{ project.description || '—' }}</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>Created</dt>
+                        <dd>{{ project.created_at | date:'mediumDate' }}</dd>
+                    </div>
+                    <div class="detail-item" aria-live="polite">
+                        <dt>Team members</dt>
+                        <dd>
+                            @if (memberCount !== null) {
+                                {{ memberCount }} {{ memberCount === 1 ? 'member' : 'members' }}
+                            } @else if (memberError) {
+                                Unable to load team info
+                            } @else {
+                                Loading…
+                            }
+                        </dd>
+                    </div>
+                </dl>
+            </section>
+
+            <section class="widgets" aria-label="Dashboard widgets">
+                <div class="widget-placeholder">
+                    <h2>Recent Activity</h2>
+                    <p>Coming soon.</p>
+                </div>
+                <div class="widget-placeholder">
+                    <h2>Open Tickets</h2>
+                    <p>Coming soon.</p>
+                </div>
+                <div class="widget-placeholder">
+                    <h2>Sprint Progress</h2>
+                    <p>Coming soon.</p>
+                </div>
+            </section>
+        }
+    </eui-page-content>
+</eui-page>
