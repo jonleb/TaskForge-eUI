@@ -4,6 +4,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
 import { CONFIG_TOKEN, EuiGrowlService, I18nService, I18nState } from '@eui/core';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { Observable, of } from 'rxjs';
 import { UsersComponent } from './users.component';
 import { AdminUserListResponse } from './admin-user.models';
@@ -60,6 +61,7 @@ describe('UsersComponent', () => {
                 { provide: I18nService, useValue: i18nServiceMock },
                 { provide: CONFIG_TOKEN, useValue: { global: {}, modules: {} } },
                 { provide: EuiGrowlService, useValue: growlServiceMock },
+                { provide: EuiBreadcrumbService, useValue: { setBreadcrumb: vi.fn(), breadcrumbs$: of([]) } },
             ],
         }).compileComponents();
 

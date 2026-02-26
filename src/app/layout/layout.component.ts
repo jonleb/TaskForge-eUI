@@ -1,3 +1,4 @@
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -8,6 +9,7 @@ import { EUI_USER_PROFILE } from '@eui/components/eui-user-profile';
 import { EUI_ICON } from '@eui/components/eui-icon';
 import { EuiMenuItem } from '@eui/components/eui-menu';
 import { EUI_LAYOUT } from '@eui/components/layout';
+import { EUI_BREADCRUMB, EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { AuthService, GlobalRole, PermissionService } from '../core/auth';
 import { ProjectContextService, Project } from '../core/project';
 
@@ -20,11 +22,14 @@ interface SidebarItemMetadata {
     templateUrl: './layout.component.html',
     imports: [
         TranslateModule,
+        AsyncPipe,
         ...EUI_LAYOUT,
         ...EUI_ICON,
         ...EUI_USER_PROFILE,
         ...EUI_LANGUAGE_SELECTOR,
+        ...EUI_BREADCRUMB,
     ],
+    providers: [EuiBreadcrumbService],
 })
 export class LayoutComponent implements OnInit, OnDestroy {
     private readonly authService = inject(AuthService);
@@ -33,6 +38,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private readonly router = inject(Router);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly destroy$ = new Subject<void>();
+    readonly breadcrumbService = inject(EuiBreadcrumbService);
 
     userRole = '';
 

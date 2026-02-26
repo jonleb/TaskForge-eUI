@@ -16,6 +16,7 @@ import { EUI_INPUT_GROUP } from '@eui/components/eui-input-group';
 import { EUI_FEEDBACK_MESSAGE } from '@eui/components/eui-feedback-message';
 import { EUI_TOGGLE_GROUP, EuiToggleGroupItemComponent } from '@eui/components/eui-toggle-group';
 import { EuiGrowlService } from '@eui/core';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { AdminUserService } from './admin-user.service';
 import { AdminUser, AdminUserListParams, UserRole } from './admin-user.models';
 
@@ -46,6 +47,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly fb = inject(FormBuilder);
     private readonly growlService = inject(EuiGrowlService);
+    private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly destroy$ = new Subject<void>();
     private readonly searchSubject = new Subject<string>();
     private paginatorReady = false;
@@ -94,6 +96,10 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     // ─── Lifecycle ───────────────────────────────────────────────────
 
     ngOnInit(): void {
+        this.breadcrumbService.setBreadcrumb([
+            { id: 'users', label: 'Users', link: null },
+        ]);
+
         this.searchSubject.pipe(
             debounceTime(300),
             distinctUntilChanged(),

@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { EUI_PAGE } from '@eui/components/eui-page';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { ProjectContextService, ProjectService, Project } from '../../../core/project';
 
 @Component({
@@ -16,6 +17,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private readonly projectContext = inject(ProjectContextService);
     private readonly projectService = inject(ProjectService);
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly destroy$ = new Subject<void>();
 
     project: Project | null = null;
@@ -30,6 +32,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.project = project;
             this.memberCount = null;
             this.memberError = false;
+            this.breadcrumbService.setBreadcrumb([
+                { id: 'projects', label: 'Projects', link: '/screen/projects' },
+                { id: 'project', label: project.name, link: null },
+            ]);
             this.cdr.markForCheck();
             this.loadMembers(project.id);
         });

@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CONFIG_TOKEN, EuiAppConfig } from '@eui/core';
 import { EUI_PAGE } from '@eui/components/eui-page';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -10,10 +11,11 @@ import { TranslateModule } from '@ngx-translate/core';
         ...EUI_PAGE,
     ],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
     protected config: EuiAppConfig = inject(CONFIG_TOKEN);
+    private readonly breadcrumbService = inject(EuiBreadcrumbService);
 
-    constructor() {
-        console.log(this.config);
+    ngOnInit(): void {
+        this.breadcrumbService.setBreadcrumb([]);
     }
 }

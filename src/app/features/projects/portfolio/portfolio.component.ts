@@ -5,6 +5,7 @@ import { EUI_TABLE } from '@eui/components/eui-table';
 import { EUI_BUTTON } from '@eui/components/eui-button';
 import { EuiTemplateDirective } from '@eui/components/directives';
 import { EuiGrowlService } from '@eui/core';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { ProjectService, Project } from '../../../core/project';
 
 @Component({
@@ -23,12 +24,16 @@ export class PortfolioComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly growlService = inject(EuiGrowlService);
+    private readonly breadcrumbService = inject(EuiBreadcrumbService);
 
     projects: Project[] = [];
     loading = false;
     hasError = false;
 
     ngOnInit(): void {
+        this.breadcrumbService.setBreadcrumb([
+            { id: 'projects', label: 'Projects', link: null },
+        ]);
         this.loadProjects();
     }
 

@@ -6,6 +6,7 @@ import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 import { CONFIG_TOKEN, I18nService, UserService, EuiAppConfig } from '@eui/core';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { DashboardComponent } from './dashboard.component';
 import { ProjectContextService, ProjectService, Project, ProjectMember } from '../../../core/project';
 
@@ -50,6 +51,7 @@ describe('DashboardComponent', () => {
                 { provide: UserService, useValue: { init: vi.fn() } },
                 { provide: I18nService, useValue: { init: vi.fn(), getState: vi.fn().mockReturnValue(of({ activeLang: 'en' })) } },
                 { provide: CONFIG_TOKEN, useValue: { global: {}, modules: { core: { base: 'localhost', userDetails: 'dummy' } } } as EuiAppConfig },
+                { provide: EuiBreadcrumbService, useValue: { setBreadcrumb: vi.fn(), breadcrumbs$: of([]) } },
             ],
         }).compileComponents();
 

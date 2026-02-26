@@ -32,4 +32,16 @@
             <eui-app-sidebar-menu [items]="sidebarItems"/>
         </eui-app-sidebar-body>
     </eui-app-sidebar>
+    <eui-app-breadcrumb>
+        <eui-breadcrumb>
+            <eui-breadcrumb-item link="/screen/home" iconSvgName="eui-home" ariaLabel="Home"></eui-breadcrumb-item>
+            @for (item of breadcrumbService.breadcrumbs$ | async; track item.id) {
+                <eui-breadcrumb-item
+                    [id]="item.id"
+                    [link]="item.link"
+                    [label]="item.label">
+                </eui-breadcrumb-item>
+            }
+        </eui-breadcrumb>
+    </eui-app-breadcrumb>
 </eui-app>
