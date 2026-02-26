@@ -1,6 +1,6 @@
 {
   "name": "eui-angular-app",
-  "version": "21.0.5-snapshot-1771237470720",
+  "version": "0.1.0",
   "license": "EUPL-1.1",
   "scripts": {
     "ng": "ng",
@@ -23,7 +23,7 @@
   },
   "private": true,
   "dependencies": {
-    "@eui/deps-base": "21.0.5-snapshot-1771237470720"
+    "@eui/deps-base": "^21.0.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
