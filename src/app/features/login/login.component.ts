@@ -9,6 +9,7 @@ import { EUI_INPUT_GROUP } from '@eui/components/eui-input-group';
 import { EUI_FEEDBACK_MESSAGE } from '@eui/components/eui-feedback-message';
 
 import { AuthService } from '../../core/auth';
+import { AppStarterService } from '../../app-starter.service';
 
 @Component({
     selector: 'app-login',
@@ -25,6 +26,7 @@ import { AuthService } from '../../core/auth';
 })
 export class LoginComponent implements OnInit {
     private readonly authService = inject(AuthService);
+    private readonly appStarter = inject(AppStarterService);
     private readonly router = inject(Router);
     private readonly cdr = inject(ChangeDetectorRef);
 
@@ -57,7 +59,10 @@ export class LoginComponent implements OnInit {
 
         this.authService.login(username, password).subscribe({
             next: () => {
-                this.router.navigate(['/screen/home']);
+                // Re-run app initialization to load user profile, permissions, and project context
+                this.appStarter.start().subscribe(() => {
+                    this.router.navigate(['/screen/home']);
+                });
             },
             error: (err) => {
                 this.isLoading = false;

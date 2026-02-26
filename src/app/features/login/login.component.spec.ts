@@ -6,6 +6,7 @@ import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../core/auth';
+import { AppStarterService } from '../../app-starter.service';
 import { LoginResponse } from '../../core/auth/auth.models';
 
 describe('LoginComponent', () => {
@@ -15,6 +16,9 @@ describe('LoginComponent', () => {
         login: ReturnType<typeof vi.fn>;
         isAuthenticated: ReturnType<typeof vi.fn>;
         isAuthenticated$: BehaviorSubject<boolean>;
+    };
+    let appStarterMock: {
+        start: ReturnType<typeof vi.fn>;
     };
     let router: Router;
 
@@ -29,6 +33,9 @@ describe('LoginComponent', () => {
             isAuthenticated: vi.fn().mockReturnValue(false),
             isAuthenticated$: new BehaviorSubject<boolean>(false),
         };
+        appStarterMock = {
+            start: vi.fn().mockReturnValue(of({ success: true })),
+        };
 
         await TestBed.configureTestingModule({
             imports: [LoginComponent],
@@ -37,6 +44,7 @@ describe('LoginComponent', () => {
                 provideHttpClientTesting(),
                 provideRouter([]),
                 { provide: AuthService, useValue: authServiceMock },
+                { provide: AppStarterService, useValue: appStarterMock },
             ],
         }).compileComponents();
 
@@ -89,6 +97,15 @@ describe('LoginComponent', () => {
         component.onSubmit();
 
         expect(router.navigate).toHaveBeenCalledWith(['/screen/home']);
+    });
+
+    it('should call appStarter.start() to initialize user session after login', () => {
+        authServiceMock.login.mockReturnValue(of(mockLoginResponse));
+
+        component.loginForm.setValue({ username: 'superadmin', password: 'SecurePassword!123' });
+        component.onSubmit();
+
+        expect(appStarterMock.start).toHaveBeenCalled();
     });
 
     it('should display API error message on failed login', () => {
