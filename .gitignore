@@ -49,3 +49,11 @@ yarn-error.log
 Thumbs.db
 
 /assets/env-json-config.json
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
