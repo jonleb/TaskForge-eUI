@@ -1,7 +1,37 @@
 const authMiddleware = require('../middleware/auth');
-const { requireProjectRole } = require('../middleware/authorize');
+const { requireGlobalRole, requireProjectRole } = require('../middleware/authorize');
 
 const ALL_PROJECT_ROLES = ['PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER', 'REPORTER', 'VIEWER'];
+
+/**
+ * Generates a project key from the project name.
+ * Takes first letter of each word, uppercased, truncated to 5 chars.
+ * If result < 2 chars, takes first 2 chars of name instead.
+ * Appends incrementing digit on collision.
+ */
+function generateProjectKey(name, existingKeys) {
+    const upperKeys = existingKeys.map(k => k.toUpperCase());
+
+    // Build base key from first letters of words
+    let base = name.trim().split(/\s+/).map(w => w[0]).join('').toUpperCase();
+    if (base.length < 2) {
+        base = name.trim().replace(/\s+/g, '').substring(0, 2).toUpperCase();
+    }
+    base = base.substring(0, 5);
+
+    if (!upperKeys.includes(base)) {
+        return base;
+    }
+
+    for (let i = 1; i <= 99; i++) {
+        const candidate = `${base}${i}`;
+        if (!upperKeys.includes(candidate)) {
+            return candidate;
+        }
+    }
+
+    return base + Date.now(); // fallback — should never happen
+}
 
 module.exports = function (app, db) {
     db.then(db => {
@@ -89,6 +119,69 @@ module.exports = function (app, db) {
                 return res.json(enriched);
             }
         );
+
+        /**
+         * POST /api/projects
+         * Create a new project.
+         * Protected: SUPER_ADMIN only.
+         * Body: { name: string, description?: string, key?: string }
+         */
+        app.post('/api/projects', authMiddleware, requireGlobalRole('SUPER_ADMIN'), (req, res) => {
+            const { name, description, key } = req.body;
+
+            // Validate name
+            const trimmedName = (name || '').trim();
+            if (!trimmedName || trimmedName.length < 2) {
+                return res.status(400).json({ message: 'Project name is required (min 2 characters)' });
+            }
+
+            // Check name uniqueness (case-insensitive)
+            const existingName = db.get('projects')
+                .find(p => p.name.toLowerCase() === trimmedName.toLowerCase())
+                .value();
+            if (existingName) {
+                return res.status(409).json({ message: 'A project with this name already exists' });
+            }
+
+            const allProjects = db.get('projects').value();
+            const existingKeys = allProjects.map(p => p.key);
+
+            // Resolve key
+            let projectKey;
+            if (key !== undefined && key !== null && key !== '') {
+                // Manual key — validate format
+                projectKey = String(key).toUpperCase().trim();
+                if (!/^[A-Z0-9]{2,10}$/.test(projectKey)) {
+                    return res.status(400).json({ message: 'Project key must be 2–10 uppercase alphanumeric characters' });
+                }
+                // Check key uniqueness (case-insensitive)
+                if (existingKeys.some(k => k.toUpperCase() === projectKey)) {
+                    return res.status(409).json({ message: 'A project with this key already exists' });
+                }
+            } else {
+                // Auto-generate key
+                projectKey = generateProjectKey(trimmedName, existingKeys);
+            }
+
+            // Generate ID (auto-increment)
+            const maxId = allProjects.reduce((max, p) => Math.max(max, parseInt(p.id, 10) || 0), 0);
+            const now = new Date().toISOString();
+
+            const newProject = {
+                id: String(maxId + 1),
+                key: projectKey,
+                name: trimmedName,
+                description: (description || '').trim(),
+                created_by: String(req.user.userId),
+                created_at: now,
+                updated_at: now,
+                is_active: true,
+            };
+
+            db.get('projects').push(newProject).write();
+
+            return res.status(201).json(newProject);
+        });
 
     });
 };

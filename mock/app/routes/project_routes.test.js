@@ -234,3 +234,145 @@ describe('requireGlobalRole middleware', () => {
         expect(res3.status).toBe(200);
     });
 });
+
+// --- POST /api/projects ---
+
+describe('POST /api/projects', () => {
+
+    it('should return 401 without token', async () => {
+        const res = await request(app)
+            .post('/api/projects')
+            .send({ name: 'No Auth Project' });
+        expect(res.status).toBe(401);
+    });
+
+    it('should return 403 for non-SUPER_ADMIN user', async () => {
+        const token = await getTokenFor('developer');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Forbidden Project' });
+        expect(res.status).toBe(403);
+        expect(res.body.message).toBe('Forbidden');
+    });
+
+    it('should return 400 when name is missing', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ description: 'No name' });
+        expect(res.status).toBe(400);
+        expect(res.body.message).toMatch(/name/i);
+    });
+
+    it('should return 400 when name is too short', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'A' });
+        expect(res.status).toBe(400);
+        expect(res.body.message).toMatch(/min 2/i);
+    });
+
+    it('should return 400 when key is too short', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Short Key Project', key: 'X' });
+        expect(res.status).toBe(400);
+        expect(res.body.message).toMatch(/2–10/);
+    });
+
+    it('should return 400 when key is too long', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Long Key Project', key: 'ABCDEFGHIJK' });
+        expect(res.status).toBe(400);
+        expect(res.body.message).toMatch(/2–10/);
+    });
+
+    it('should return 400 when key has special characters', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Special Key Project', key: 'AB-CD' });
+        expect(res.status).toBe(400);
+        expect(res.body.message).toMatch(/alphanumeric/i);
+    });
+
+    it('should return 409 when name already exists (case-insensitive)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'taskforge core', key: 'UNIQUE1' });
+        expect(res.status).toBe(409);
+        expect(res.body.message).toMatch(/name already exists/i);
+    });
+
+    it('should return 409 when key already exists (case-insensitive)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Unique Name For Key Test', key: 'tf' });
+        expect(res.status).toBe(409);
+        expect(res.body.message).toMatch(/key already exists/i);
+    });
+
+    it('should create project with manual key (201)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Manual Key Project', key: 'MKP', description: 'Test project' });
+
+        expect(res.status).toBe(201);
+        expect(res.body.key).toBe('MKP');
+        expect(res.body.name).toBe('Manual Key Project');
+        expect(res.body.description).toBe('Test project');
+        expect(res.body.is_active).toBe(true);
+        expect(res.body.created_by).toBeDefined();
+        expect(res.body.created_at).toBeDefined();
+        expect(res.body.id).toBeDefined();
+    });
+
+    it('should create project with auto-generated key (201)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Auto Generated Key' });
+
+        expect(res.status).toBe(201);
+        expect(res.body.key).toBe('AGK');
+        expect(res.body.name).toBe('Auto Generated Key');
+        expect(res.body.is_active).toBe(true);
+    });
+
+    it('should append digit when auto-generated key collides', async () => {
+        const token = await getTokenFor('superadmin');
+
+        // First: create a project whose auto-key will be "DP"
+        const res1 = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Duplicate Prefix' });
+        expect(res1.status).toBe(201);
+        expect(res1.body.key).toBe('DP');
+
+        // Second: same initials → should get "DP1"
+        const res2 = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Different Purpose' });
+        expect(res2.status).toBe(201);
+        expect(res2.body.key).toBe('DP1');
+    });
+});
