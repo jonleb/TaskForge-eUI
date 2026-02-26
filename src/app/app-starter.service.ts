@@ -8,8 +8,8 @@ import {
 } from '@eui/core';
 import { catchError, map, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { AuthService } from './core/auth';
-import { PermissionService } from './core/auth';
+import { AuthService, PermissionService } from './core/auth';
+import { ProjectContextService } from './core/project';
 
 @Injectable({
     providedIn: 'root',
@@ -20,10 +20,12 @@ export class AppStarterService {
     private readonly i18nService = inject(I18nService);
     private readonly authService = inject(AuthService);
     private readonly permissionService = inject(PermissionService);
+    private readonly projectContext = inject(ProjectContextService);
 
     start(): Observable<EuiServiceStatus> {
         return this.initUserService().pipe(
             switchMap(() => this.i18nService.init()),
+            switchMap(status => this.projectContext.restoreProject().pipe(map(() => status))),
         );
     }
 

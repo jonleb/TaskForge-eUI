@@ -8,6 +8,7 @@ import { AppStarterService } from './app-starter.service';
 import { EuiServiceStatus } from '@eui/base';
 import { AuthService } from './core/auth';
 import { PermissionService } from './core/auth';
+import { ProjectContextService } from './core/project';
 import { UserProfile } from './core/auth/auth.models';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 
@@ -25,6 +26,9 @@ describe('AppStarterService', () => {
     let permissionServiceMock: {
         setUser: ReturnType<typeof vi.fn>;
         clear: ReturnType<typeof vi.fn>;
+    };
+    let projectContextMock: {
+        restoreProject: ReturnType<typeof vi.fn>;
     };
     let configMock: EuiAppConfig;
 
@@ -47,6 +51,9 @@ describe('AppStarterService', () => {
             setUser: vi.fn(),
             clear: vi.fn(),
         };
+        projectContextMock = {
+            restoreProject: vi.fn().mockReturnValue(of(null)),
+        };
         configMock = { global: {}, modules: { core: { base: 'localhost:3000', userDetails: 'dummy' } } };
 
         TestBed.configureTestingModule({
@@ -59,6 +66,7 @@ describe('AppStarterService', () => {
                 { provide: CONFIG_TOKEN, useValue: configMock },
                 { provide: AuthService, useValue: authServiceMock },
                 { provide: PermissionService, useValue: permissionServiceMock },
+                { provide: ProjectContextService, useValue: projectContextMock },
             ],
         });
 
@@ -138,5 +146,43 @@ describe('AppStarterService', () => {
         service.initUserService().subscribe(() => {
             expect(permissionServiceMock.setUser).not.toHaveBeenCalled();
         });
+    });
+
+    // ─── Project context restore ─────────────────────────────────────
+
+    it('should call restoreProject() during start()', () => {
+        vi.mocked(userServiceMock.init).mockReturnValue(of({} as EuiServiceStatus));
+        vi.mocked(i18nServiceMock.init).mockReturnValue(of({} as EuiServiceStatus));
+
+        service.start().subscribe(() => {
+            expect(projectContextMock.restoreProject).toHaveBeenCalled();
+        });
+    });
+
+    it('should complete start() even when restoreProject() returns null', () => {
+        vi.mocked(userServiceMock.init).mockReturnValue(of({} as EuiServiceStatus));
+        vi.mocked(i18nServiceMock.init).mockReturnValue(of({} as EuiServiceStatus));
+        projectContextMock.restoreProject.mockReturnValue(of(null));
+
+        let completed = false;
+        service.start().subscribe({
+            next: status => {
+                expect(status).toBeTruthy();
+            },
+            complete: () => { completed = true; },
+        });
+
+        expect(completed).toBe(true);
+    });
+
+    it('should preserve i18n status through restoreProject() chain', () => {
+        const mockStatus = { status: 'ok' } as unknown as EuiServiceStatus;
+        vi.mocked(userServiceMock.init).mockReturnValue(of({} as EuiServiceStatus));
+        vi.mocked(i18nServiceMock.init).mockReturnValue(of(mockStatus));
+
+        let result: EuiServiceStatus | undefined;
+        service.start().subscribe(status => { result = status; });
+
+        expect(result).toBe(mockStatus);
     });
 });
