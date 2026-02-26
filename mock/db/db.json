@@ -375,6 +375,126 @@
       "created_at": "2025-02-10T08:00:00.000Z",
       "updated_at": "2025-04-01T09:00:00.000Z",
       "is_active": false
+    },
+    {
+      "id": "4",
+      "key": "MOBILE",
+      "name": "Mobile App",
+      "description": "Cross-platform mobile application",
+      "created_by": "1",
+      "created_at": "2025-04-01T09:00:00.000Z",
+      "updated_at": "2025-07-10T14:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "5",
+      "key": "API",
+      "name": "API Gateway",
+      "description": "Central API gateway and routing",
+      "created_by": "1",
+      "created_at": "2025-04-15T10:00:00.000Z",
+      "updated_at": "2025-08-01T11:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "6",
+      "key": "DOCS",
+      "name": "Documentation Portal",
+      "description": "User and developer documentation",
+      "created_by": "2",
+      "created_at": "2025-05-01T08:00:00.000Z",
+      "updated_at": "2025-09-15T09:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "7",
+      "key": "QA",
+      "name": "Quality Assurance",
+      "description": "Test automation and QA processes",
+      "created_by": "1",
+      "created_at": "2025-05-20T11:00:00.000Z",
+      "updated_at": "2025-10-01T10:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "8",
+      "key": "SEC",
+      "name": "Security Audit",
+      "description": "Security review and compliance",
+      "created_by": "1",
+      "created_at": "2025-06-01T09:00:00.000Z",
+      "updated_at": "2025-11-01T08:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "9",
+      "key": "DESIGN",
+      "name": "Design System",
+      "description": "UI/UX design tokens and guidelines",
+      "created_by": "2",
+      "created_at": "2025-06-15T14:00:00.000Z",
+      "updated_at": "2025-12-01T10:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "10",
+      "key": "DATA",
+      "name": "Data Pipeline",
+      "description": "ETL and data processing workflows",
+      "created_by": "1",
+      "created_at": "2025-07-01T08:00:00.000Z",
+      "updated_at": "2026-01-10T09:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "11",
+      "key": "LEGACY",
+      "name": "Legacy Migration",
+      "description": "Migration from legacy systems",
+      "created_by": "1",
+      "created_at": "2025-07-15T10:00:00.000Z",
+      "updated_at": "2025-12-15T11:00:00.000Z",
+      "is_active": false
+    },
+    {
+      "id": "12",
+      "key": "POC",
+      "name": "Proof of Concept",
+      "description": "Experimental features and spikes",
+      "created_by": "2",
+      "created_at": "2025-08-01T09:00:00.000Z",
+      "updated_at": "2026-01-05T14:00:00.000Z",
+      "is_active": false
+    },
+    {
+      "id": "13",
+      "key": "PERF",
+      "name": "Performance Lab",
+      "description": "Load testing and benchmarks",
+      "created_by": "1",
+      "created_at": "2025-08-15T11:00:00.000Z",
+      "updated_at": "2026-02-01T10:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "14",
+      "key": "I18N",
+      "name": "Internationalization",
+      "description": "Multi-language support",
+      "created_by": "2",
+      "created_at": "2025-09-01T08:00:00.000Z",
+      "updated_at": "2026-02-10T09:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "15",
+      "key": "ARCHIVE",
+      "name": "Archived Project",
+      "description": "Completed project — read-only",
+      "created_by": "1",
+      "created_at": "2025-03-01T10:00:00.000Z",
+      "updated_at": "2025-10-01T08:00:00.000Z",
+      "is_active": false
     }
   ],
   "project-members": [
@@ -489,6 +609,216 @@
       "userId": "22",
       "role": "DEVELOPER",
       "joined_at": "2025-02-12T10:00:00.000Z"
+    },
+    {
+      "id": "17",
+      "projectId": "4",
+      "userId": "18",
+      "role": "PROJECT_ADMIN",
+      "joined_at": "2025-04-01T09:00:00.000Z"
+    },
+    {
+      "id": "18",
+      "projectId": "4",
+      "userId": "4",
+      "role": "DEVELOPER",
+      "joined_at": "2025-04-02T10:00:00.000Z"
+    },
+    {
+      "id": "19",
+      "projectId": "4",
+      "userId": "17",
+      "role": "DEVELOPER",
+      "joined_at": "2025-04-03T08:00:00.000Z"
+    },
+    {
+      "id": "20",
+      "projectId": "4",
+      "userId": "14",
+      "role": "REPORTER",
+      "joined_at": "2025-04-04T11:00:00.000Z"
+    },
+    {
+      "id": "21",
+      "projectId": "5",
+      "userId": "15",
+      "role": "PROJECT_ADMIN",
+      "joined_at": "2025-04-15T10:00:00.000Z"
+    },
+    {
+      "id": "22",
+      "projectId": "5",
+      "userId": "11",
+      "role": "DEVELOPER",
+      "joined_at": "2025-04-16T09:00:00.000Z"
+    },
+    {
+      "id": "23",
+      "projectId": "5",
+      "userId": "22",
+      "role": "DEVELOPER",
+      "joined_at": "2025-04-17T10:00:00.000Z"
+    },
+    {
+      "id": "24",
+      "projectId": "5",
+      "userId": "5",
+      "role": "REPORTER",
+      "joined_at": "2025-04-18T08:00:00.000Z"
+    },
+    {
+      "id": "25",
+      "projectId": "6",
+      "userId": "2",
+      "role": "PROJECT_ADMIN",
+      "joined_at": "2025-05-01T08:00:00.000Z"
+    },
+    {
+      "id": "26",
+      "projectId": "6",
+      "userId": "12",
+      "role": "REPORTER",
+      "joined_at": "2025-05-02T09:00:00.000Z"
+    },
+    {
+      "id": "27",
+      "projectId": "6",
+      "userId": "6",
+      "role": "VIEWER",
+      "joined_at": "2025-05-03T10:00:00.000Z"
+    },
+    {
+      "id": "28",
+      "projectId": "7",
+      "userId": "25",
+      "role": "PROJECT_ADMIN",
+      "joined_at": "2025-05-20T11:00:00.000Z"
+    },
+    {
+      "id": "29",
+      "projectId": "7",
+      "userId": "4",
+      "role": "DEVELOPER",
+      "joined_at": "2025-05-21T09:00:00.000Z"
+    },
+    {
+      "id": "30",
+      "projectId": "7",
+      "userId": "11",
+      "role": "DEVELOPER",
+      "joined_at": "2025-05-22T10:00:00.000Z"
+    },
+    {
+      "id": "31",
+      "projectId": "8",
+      "userId": "18",
+      "role": "PROJECT_ADMIN",
+      "joined_at": "2025-06-01T09:00:00.000Z"
+    },
+    {
+      "id": "32",
+      "projectId": "8",
+      "userId": "17",
+      "role": "DEVELOPER",
+      "joined_at": "2025-06-02T10:00:00.000Z"
+    },
+    {
+      "id": "33",
+      "projectId": "9",
+      "userId": "2",
+      "role": "PROJECT_ADMIN",
+      "joined_at": "2025-06-15T14:00:00.000Z"
+    },
+    {
+      "id": "34",
+      "projectId": "9",
+      "userId": "16",
+      "role": "PRODUCT_OWNER",
+      "joined_at": "2025-06-16T09:00:00.000Z"
+    },
+    {
+      "id": "35",
+      "projectId": "9",
+      "userId": "13",
+      "role": "VIEWER",
+      "joined_at": "2025-06-17T10:00:00.000Z"
+    },
+    {
+      "id": "36",
+      "projectId": "10",
+      "userId": "15",
+      "role": "PROJECT_ADMIN",
+      "joined_at": "2025-07-01T08:00:00.000Z"
+    },
+    {
+      "id": "37",
+      "projectId": "10",
+      "userId": "4",
+      "role": "DEVELOPER",
+      "joined_at": "2025-07-02T09:00:00.000Z"
+    },
+    {
+      "id": "38",
+      "projectId": "10",
+      "userId": "22",
+      "role": "DEVELOPER",
+      "joined_at": "2025-07-03T10:00:00.000Z"
+    },
+    {
+      "id": "39",
+      "projectId": "11",
+      "userId": "18",
+      "role": "PROJECT_ADMIN",
+      "joined_at": "2025-07-15T10:00:00.000Z"
+    },
+    {
+      "id": "40",
+      "projectId": "11",
+      "userId": "11",
+      "role": "DEVELOPER",
+      "joined_at": "2025-07-16T09:00:00.000Z"
+    },
+    {
+      "id": "41",
+      "projectId": "12",
+      "userId": "2",
+      "role": "PROJECT_ADMIN",
+      "joined_at": "2025-08-01T09:00:00.000Z"
+    },
+    {
+      "id": "42",
+      "projectId": "12",
+      "userId": "17",
+      "role": "DEVELOPER",
+      "joined_at": "2025-08-02T10:00:00.000Z"
+    },
+    {
+      "id": "43",
+      "projectId": "13",
+      "userId": "25",
+      "role": "PROJECT_ADMIN",
+      "joined_at": "2025-08-15T11:00:00.000Z"
+    },
+    {
+      "id": "44",
+      "projectId": "13",
+      "userId": "4",
+      "role": "DEVELOPER",
+      "joined_at": "2025-08-16T09:00:00.000Z"
+    },
+    {
+      "id": "45",
+      "projectId": "14",
+      "userId": "2",
+      "role": "PROJECT_ADMIN",
+      "joined_at": "2025-09-01T08:00:00.000Z"
+    },
+    {
+      "id": "46",
+      "projectId": "14",
+      "userId": "11",
+      "role": "DEVELOPER",
+      "joined_at": "2025-09-02T09:00:00.000Z"
     }
   ]
 }

@@ -45,7 +45,7 @@ describe('GET /api/projects', () => {
     it('should return all projects (active + inactive) for SUPER_ADMIN by default', async () => {
         const token = await getTokenFor('superadmin');
         const res = await request(app)
-            .get('/api/projects')
+            .get('/api/projects?_limit=100')
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
@@ -53,6 +53,7 @@ describe('GET /api/projects', () => {
         expect(keys).toContain('TF');
         expect(keys).toContain('DEMO');
         expect(keys).toContain('INFRA'); // inactive project now visible
+        expect(res.body.total).toBeGreaterThanOrEqual(15);
     });
 
     it('should return only member active projects for regular user', async () => {
