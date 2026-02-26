@@ -24,12 +24,15 @@ This project includes a local Express/json-server mock backend in `mock/server.j
 
 ## Running Tests
 
-The project uses `@angular/build:unit-test` (Jasmine).
+The project uses `@angular/build:unit-test` (vitest under the hood).
 
-- To run all unit tests: `npm run ng test`
-- To run a specific test file: `npm run ng test -- --include src/path/to/file.spec.ts`
+- To run all unit tests (single-run, exits cleanly): `npm run test:ci`
+- To run a specific test file (single-run): `npm run test:ci -- --include src/path/to/file.spec.ts`
+- Watch mode (interactive dev): `npm run ng test`
 - NEVER use `npm test -- file.spec.ts --run` — this syntax does not work in this project.
 - Mock server tests (Jest): `npm run test:mock`
+- After implementation, run `npm run test:ci` (not `npm run ng test`) to avoid watch-mode hangs.
+- Only run the full suite once — skip individual file test runs to save time.
 
 ## Definition of Done
 
@@ -37,7 +40,7 @@ A story or task is not complete until:
 
 - Frontend changes include unit tests (Jasmine) for new components, services, guards, and interceptors.
 - Mock server changes include integration tests (Jest + supertest) for new or modified endpoints.
-- All existing tests still pass (`npm run ng test` for frontend, `npm run test:mock` for backend).
+- All existing tests still pass (`npm run test:ci` for frontend, `npm run test:mock` for backend).
 - Build passes: `npx ng build --configuration=development`.
 - Code follows the a11y steering rules (see `a11y.md`).
 

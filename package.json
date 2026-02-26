@@ -4,6 +4,7 @@
     "license": "EUPL-1.1",
     "scripts": {
         "ng": "ng",
+        "test:ci": "ng test --watch=false",
         "start-mock-server": "nodemon --watch ./mock ./mock/server.js",
     "test:mock": "jest --config mock/jest.config.js",
         "start-serve": "eui-cli serve-app --configuration=proxy-mock --configEnvTarget=mock",
