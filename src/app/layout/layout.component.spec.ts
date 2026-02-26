@@ -12,7 +12,7 @@ describe('LayoutComponent', () => {
     let component: LayoutComponent;
     let fixture: ComponentFixture<LayoutComponent>;
     let authServiceMock: { logout: ReturnType<typeof vi.fn> };
-    let permissionServiceMock: { setUser: ReturnType<typeof vi.fn>; clear: ReturnType<typeof vi.fn>; hasGlobalRole: ReturnType<typeof vi.fn>; getGlobalRole: ReturnType<typeof vi.fn> };
+    let permissionServiceMock: { setUser: ReturnType<typeof vi.fn>; clear: ReturnType<typeof vi.fn>; hasGlobalRole: ReturnType<typeof vi.fn>; getGlobalRole: ReturnType<typeof vi.fn>; getOriginalRole: ReturnType<typeof vi.fn> };
     let projectContextMock: { currentProject$: BehaviorSubject<Project | null> };
     let router: Router;
 
@@ -25,6 +25,7 @@ describe('LayoutComponent', () => {
             clear: vi.fn(),
             hasGlobalRole: vi.fn().mockReturnValue(false),
             getGlobalRole: vi.fn().mockReturnValue('USER'),
+            getOriginalRole: vi.fn().mockReturnValue('USER'),
         };
         projectContextMock = {
             currentProject$: new BehaviorSubject<Project | null>(null),
@@ -69,13 +70,13 @@ describe('LayoutComponent', () => {
         expect(router.navigate).toHaveBeenCalledWith(['/login']);
     });
 
-    it('should read userRole from permissionService.getGlobalRole() on init', () => {
-        permissionServiceMock.getGlobalRole.mockReturnValue('SUPER_ADMIN');
+    it('should read userRole from permissionService.getOriginalRole() on init', () => {
+        permissionServiceMock.getOriginalRole.mockReturnValue('PRODUCT_OWNER');
 
         component.ngOnInit();
 
-        expect(permissionServiceMock.getGlobalRole).toHaveBeenCalled();
-        expect(component.userRole).toBe('SUPER_ADMIN');
+        expect(permissionServiceMock.getOriginalRole).toHaveBeenCalled();
+        expect(component.userRole).toBe('PRODUCT_OWNER');
     });
 
     it('should call permissionService.clear() on logout', () => {

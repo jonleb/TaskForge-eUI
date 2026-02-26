@@ -16,10 +16,12 @@ export class PermissionService {
     private readonly growlService = inject(EuiGrowlService);
 
     private globalRole: GlobalRole = 'USER';
+    private originalRole = '';
     private userId = '';
 
     setUser(profile: UserProfile): void {
         this.userId = profile.userId;
+        this.originalRole = profile.role;
         this.globalRole = profile.role === 'SUPER_ADMIN' ? 'SUPER_ADMIN' : 'USER';
     }
 
@@ -49,6 +51,10 @@ export class PermissionService {
         return this.globalRole;
     }
 
+    getOriginalRole(): string {
+        return this.originalRole;
+    }
+
     getUserId(): string {
         return this.userId;
     }
@@ -63,6 +69,7 @@ export class PermissionService {
 
     clear(): void {
         this.globalRole = 'USER';
+        this.originalRole = '';
         this.userId = '';
     }
 }

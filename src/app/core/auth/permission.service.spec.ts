@@ -63,6 +63,16 @@ describe('PermissionService', () => {
             expect(service.getGlobalRole()).toBe('USER');
             expect(service.getUserId()).toBe('4');
         });
+
+        it('should store original role from profile', () => {
+            service.setUser(developerProfile);
+            expect(service.getOriginalRole()).toBe('DEVELOPER');
+        });
+
+        it('should store SUPER_ADMIN as original role', () => {
+            service.setUser(superAdminProfile);
+            expect(service.getOriginalRole()).toBe('SUPER_ADMIN');
+        });
     });
 
     describe('isSuperAdmin()', () => {
@@ -182,6 +192,7 @@ describe('PermissionService', () => {
 
             expect(service.isSuperAdmin()).toBe(false);
             expect(service.getGlobalRole()).toBe('USER');
+            expect(service.getOriginalRole()).toBe('');
             expect(service.getUserId()).toBe('');
         });
     });
