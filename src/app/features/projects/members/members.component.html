@@ -1,0 +1,63 @@
+<eui-page>
+    <eui-page-header label="Members">
+        @if (isManager) {
+            <eui-page-header-action-items>
+                <button euiButton euiPrimary (click)="openAddDialog()">Add Member</button>
+            </eui-page-header-action-items>
+        }
+    </eui-page-header>
+    <eui-page-content>
+        <table euiTable
+               [data]="members"
+               isAsync
+               [isLoading]="membersLoading"
+               isTableResponsive
+               aria-label="Project members">
+
+            <ng-template euiTemplate="header">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Role</th>
+                    @if (isManager) {
+                        <th scope="col">Actions</th>
+                    }
+                </tr>
+            </ng-template>
+
+            <ng-template let-row euiTemplate="body">
+                <tr>
+                    <td data-col-label="Name">{{ row.firstName }} {{ row.lastName }}</td>
+                    <td data-col-label="Email">{{ row.email }}</td>
+                    <td data-col-label="Role">
+                        <eui-chip euiSizeS [ariaLabel]="row.role">{{ row.role }}</eui-chip>
+                    </td>
+                    @if (isManager) {
+                        <td data-col-label="Actions">
+                            <eui-icon-button icon="eui-edit"
+                                [ariaLabel]="'Change role of ' + row.firstName + ' ' + row.lastName"
+                                (buttonClick)="openChangeRoleDialog(row)">
+                            </eui-icon-button>
+                            <eui-icon-button icon="eui-trash"
+                                [ariaLabel]="'Remove ' + row.firstName + ' ' + row.lastName"
+                                (buttonClick)="openRemoveDialog(row)">
+                            </eui-icon-button>
+                        </td>
+                    }
+                </tr>
+            </ng-template>
+
+            <ng-template euiTemplate="noData">
+                <tr>
+                    <td class="eui-u-text-center" [attr.colspan]="isManager ? 4 : 3">
+                        @if (memberError) {
+                            Unable to load members.
+                        } @else {
+                            No members found.
+                        }
+                    </td>
+                </tr>
+            </ng-template>
+        </table>
+    </eui-page-content>
+</eui-page>

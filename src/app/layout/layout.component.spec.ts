@@ -149,6 +149,7 @@ describe('LayoutComponent', () => {
 
         const labels = component.sidebarItems.map(i => i.label);
         expect(labels).toContain('Dashboard');
+        expect(labels).toContain('Members');
         expect(labels).toContain('Backlog');
         expect(labels).toContain('Board');
         expect(labels).toContain('Settings');
@@ -184,6 +185,7 @@ describe('LayoutComponent', () => {
 
         const urls = component.sidebarItems.map(i => i.url);
         expect(urls).toContain('screen/projects/42');
+        expect(urls).toContain('screen/projects/42/members');
         expect(urls).toContain('screen/projects/42/backlog');
         expect(urls).toContain('screen/projects/42/board');
         expect(urls).toContain('screen/projects/42/settings');

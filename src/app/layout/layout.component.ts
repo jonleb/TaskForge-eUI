@@ -96,6 +96,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this.sidebarItems = [
                 { label: '← All Projects', url: 'screen/projects' },
                 { label: 'Dashboard', url: base },
+                { label: 'Members', url: `${base}/members` },
                 { label: 'Backlog', url: `${base}/backlog` },
                 { label: 'Board', url: `${base}/board` },
                 { label: 'Settings', url: `${base}/settings` },
