@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { describe, it, beforeEach, expect, vi } from 'vitest';
+import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
@@ -8,7 +8,7 @@ import { EuiGrowlService } from '@eui/core';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { provideEuiCoreMocks, createBreadcrumbServiceMock } from '../../../testing/test-providers';
 import { PortfolioComponent } from './portfolio.component';
-import { ProjectService, Project } from '../../../core/project';
+import { ProjectService, Project, ProjectListResponse } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
 const mockProjects: Project[] = [
@@ -23,6 +23,13 @@ const mockProjects: Project[] = [
         created_at: '2025-03-01T14:00:00.000Z', updated_at: '2025-05-15T11:00:00.000Z', is_active: true,
     },
 ];
+
+const mockListResponse: ProjectListResponse = {
+    data: mockProjects,
+    total: 2,
+    page: 1,
+    limit: 10,
+};
 
 const createdProject: Project = {
     id: '4', key: 'NEW', name: 'New Project',
@@ -43,7 +50,7 @@ describe('PortfolioComponent', () => {
 
     beforeEach(async () => {
         projectServiceMock = {
-            getProjects: vi.fn().mockReturnValue(of(mockProjects)),
+            getProjects: vi.fn().mockReturnValue(of(mockListResponse)),
             createProject: vi.fn(),
         };
         permissionServiceMock = { isSuperAdmin: vi.fn().mockReturnValue(false) };
@@ -73,10 +80,13 @@ describe('PortfolioComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should load projects on init', () => {
+    it('should load projects on init with default params', () => {
         fixture.detectChanges();
-        expect(projectServiceMock.getProjects).toHaveBeenCalled();
+        expect(projectServiceMock.getProjects).toHaveBeenCalledWith({
+            _page: 1, _limit: 10, _sort: 'name', _order: 'asc',
+        });
         expect(component.projects).toEqual(mockProjects);
+        expect(component.total).toBe(2);
         expect(component.loading).toBe(false);
     });
 
@@ -84,6 +94,7 @@ describe('PortfolioComponent', () => {
         projectServiceMock.getProjects.mockReturnValue(throwError(() => new Error('Network error')));
         fixture.detectChanges();
         expect(component.projects).toEqual([]);
+        expect(component.total).toBe(0);
         expect(component.hasError).toBe(true);
     });
 
@@ -108,16 +119,17 @@ describe('PortfolioComponent', () => {
         fixture.detectChanges();
         expect(component.hasError).toBe(true);
 
-        projectServiceMock.getProjects.mockReturnValue(of(mockProjects));
+        projectServiceMock.getProjects.mockReturnValue(of(mockListResponse));
         component.loadProjects();
         expect(component.hasError).toBe(false);
         expect(component.projects).toEqual(mockProjects);
     });
 
     it('should handle empty project list', () => {
-        projectServiceMock.getProjects.mockReturnValue(of([]));
+        projectServiceMock.getProjects.mockReturnValue(of({ data: [], total: 0, page: 1, limit: 10 }));
         fixture.detectChanges();
         expect(component.projects).toEqual([]);
+        expect(component.total).toBe(0);
         expect(component.hasError).toBe(false);
     });
 
@@ -150,7 +162,6 @@ describe('PortfolioComponent', () => {
         fixture.detectChanges();
         component.createForm.get('name')?.setValue('A');
         expect(component.createForm.get('name')?.invalid).toBe(true);
-
         component.createForm.get('name')?.setValue('AB');
         expect(component.createForm.get('name')?.valid).toBe(true);
     });
@@ -165,13 +176,10 @@ describe('PortfolioComponent', () => {
         fixture.detectChanges();
         component.createForm.get('key')?.setValue('A');
         expect(component.createForm.get('key')?.invalid).toBe(true);
-
         component.createForm.get('key')?.setValue('AB');
         expect(component.createForm.get('key')?.valid).toBe(true);
-
         component.createForm.get('key')?.setValue('TOOLONGKEYYY');
         expect(component.createForm.get('key')?.invalid).toBe(true);
-
         component.createForm.get('key')?.setValue('ab!');
         expect(component.createForm.get('key')?.invalid).toBe(true);
     });
@@ -187,34 +195,26 @@ describe('PortfolioComponent', () => {
     it('should call projectService.createProject() on valid form submit', () => {
         projectServiceMock.createProject.mockReturnValue(of(createdProject));
         fixture.detectChanges();
-
         component.createForm.setValue({ name: 'New Project', key: 'NEW', description: 'A new project' });
         component.onCreateProject();
-
         expect(projectServiceMock.createProject).toHaveBeenCalledWith({
-            name: 'New Project',
-            key: 'NEW',
-            description: 'A new project',
+            name: 'New Project', key: 'NEW', description: 'A new project',
         });
     });
 
     it('should navigate to new project on successful creation', () => {
         projectServiceMock.createProject.mockReturnValue(of(createdProject));
         fixture.detectChanges();
-
         component.createForm.setValue({ name: 'New Project', key: '', description: '' });
         component.onCreateProject();
-
         expect(router.navigate).toHaveBeenCalledWith(['screen/projects', '4']);
     });
 
     it('should show success growl on creation', () => {
         projectServiceMock.createProject.mockReturnValue(of(createdProject));
         fixture.detectChanges();
-
         component.createForm.setValue({ name: 'New Project', key: '', description: '' });
         component.onCreateProject();
-
         expect(growlServiceMock.growl).toHaveBeenCalledWith({
             severity: 'success',
             summary: 'Project created',
@@ -224,29 +224,23 @@ describe('PortfolioComponent', () => {
 
     it('should show inline error on 409 conflict', () => {
         const errorResponse = new HttpErrorResponse({
-            error: { message: 'Project name already exists' },
-            status: 409,
+            error: { message: 'Project name already exists' }, status: 409,
         });
         projectServiceMock.createProject.mockReturnValue(throwError(() => errorResponse));
         fixture.detectChanges();
-
         component.createForm.setValue({ name: 'Duplicate', key: '', description: '' });
         component.onCreateProject();
-
         expect(component.createError).toBe('Project name already exists');
     });
 
     it('should show growl on non-409 error', () => {
         const errorResponse = new HttpErrorResponse({
-            error: { message: 'Server error' },
-            status: 500,
+            error: { message: 'Server error' }, status: 500,
         });
         projectServiceMock.createProject.mockReturnValue(throwError(() => errorResponse));
         fixture.detectChanges();
-
         component.createForm.setValue({ name: 'Test', key: '', description: '' });
         component.onCreateProject();
-
         expect(growlServiceMock.growl).toHaveBeenCalledWith({
             severity: 'error',
             summary: 'Creation failed',
@@ -258,9 +252,7 @@ describe('PortfolioComponent', () => {
         fixture.detectChanges();
         component.createForm.setValue({ name: 'Test', key: 'TST', description: 'desc' });
         component.createError = 'some error';
-
         component.resetCreateForm();
-
         expect(component.createForm.get('name')?.value).toBeNull();
         expect(component.createError).toBe('');
     });
@@ -279,5 +271,117 @@ describe('PortfolioComponent', () => {
         const event = { target: { value: 'AB-C!2' } } as unknown as Event;
         component.onKeyInput(event);
         expect((event.target as HTMLInputElement).value).toBe('ABC2');
+    });
+
+    // ─── Search ──────────────────────────────────────────────────────
+
+    it('should call getProjects with search param after debounce', () => {
+        vi.useFakeTimers();
+        fixture.detectChanges();
+        projectServiceMock.getProjects.mockClear();
+
+        component.onFilterChange('task');
+        vi.advanceTimersByTime(300);
+
+        expect(projectServiceMock.getProjects).toHaveBeenCalledWith(
+            expect.objectContaining({ q: 'task', _page: 1 }),
+        );
+        vi.useRealTimers();
+    });
+
+    it('should reset page to 1 on search', () => {
+        vi.useFakeTimers();
+        fixture.detectChanges();
+        component.params = { ...component.params, _page: 3 };
+        projectServiceMock.getProjects.mockClear();
+
+        component.onFilterChange('demo');
+        vi.advanceTimersByTime(300);
+
+        expect(projectServiceMock.getProjects).toHaveBeenCalledWith(
+            expect.objectContaining({ _page: 1 }),
+        );
+        vi.useRealTimers();
+    });
+
+    it('should not call getProjects before debounce completes', () => {
+        vi.useFakeTimers();
+        fixture.detectChanges();
+        projectServiceMock.getProjects.mockClear();
+
+        component.onFilterChange('task');
+        vi.advanceTimersByTime(100);
+
+        expect(projectServiceMock.getProjects).not.toHaveBeenCalled();
+
+        vi.advanceTimersByTime(200);
+        expect(projectServiceMock.getProjects).toHaveBeenCalled();
+        vi.useRealTimers();
+    });
+
+    // ─── Sort ────────────────────────────────────────────────────────
+
+    it('should call getProjects with sort params on sort change', () => {
+        fixture.detectChanges();
+        projectServiceMock.getProjects.mockClear();
+
+        component.onSortChange([{ sort: 'key', order: 'asc' }]);
+
+        expect(projectServiceMock.getProjects).toHaveBeenCalledWith(
+            expect.objectContaining({ _sort: 'key', _order: 'asc', _page: 1 }),
+        );
+    });
+
+    it('should reset page to 1 on sort change', () => {
+        fixture.detectChanges();
+        component.params = { ...component.params, _page: 5 };
+        projectServiceMock.getProjects.mockClear();
+
+        component.onSortChange([{ sort: 'name', order: 'desc' }]);
+
+        expect(component.params._page).toBe(1);
+    });
+
+    // ─── Pagination ──────────────────────────────────────────────────
+
+    it('should call getProjects with page params on page change', () => {
+        fixture.detectChanges();
+        component.ngAfterViewInit(); // set paginatorReady
+        projectServiceMock.getProjects.mockClear();
+
+        component.onPageChange({ page: 1, pageSize: 25 });
+
+        expect(projectServiceMock.getProjects).toHaveBeenCalledWith(
+            expect.objectContaining({ _page: 2, _limit: 25 }),
+        );
+    });
+
+    it('should ignore paginator init event before AfterViewInit', () => {
+        // Do NOT call fixture.detectChanges() which triggers ngOnInit
+        // Instead manually test the guard
+        projectServiceMock.getProjects.mockClear();
+
+        component.onPageChange({ page: 0, pageSize: 10 });
+
+        expect(projectServiceMock.getProjects).not.toHaveBeenCalled();
+    });
+
+    // ─── Empty state message ─────────────────────────────────────────
+
+    it('should return error message when hasError is true', () => {
+        component.hasError = true;
+        expect(component.emptyStateMessage).toBe('Could not load projects. Please try again.');
+    });
+
+    it('should return search message when q param is set', () => {
+        component.hasError = false;
+        component.params = { ...component.params, q: 'something' };
+        expect(component.emptyStateMessage).toBe('No projects match your search criteria.');
+    });
+
+    it('should return default message when no filters', () => {
+        component.hasError = false;
+        component.params = { _page: 1, _limit: 10, _sort: 'name', _order: 'asc' };
+        expect(component.emptyStateMessage).toBe('No projects available.');
     });
 });

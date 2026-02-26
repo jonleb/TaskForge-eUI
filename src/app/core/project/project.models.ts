@@ -24,3 +24,19 @@ export interface CreateProjectPayload {
     description?: string;
     key?: string;
 }
+
+export interface ProjectListParams {
+    _page?: number;
+    _limit?: number;
+    _sort?: string;
+    _order?: 'asc' | 'desc';
+    q?: string;
+    is_active?: 'true' | 'false';
+}
+
+export interface ProjectListResponse {
+    data: Project[];
+    total: number;
+    page: number;
+    limit: number;
+}

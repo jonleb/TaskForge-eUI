@@ -10,7 +10,12 @@
       ],
       "disabled": false,
       "autoApprove": [
-        "list-components"
+        "list-components",
+        "search-components",
+        "search-components",
+        "search-components",
+        "search-components",
+        "get-component-docs"
       ]
     }
   }

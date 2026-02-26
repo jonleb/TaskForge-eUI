@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { ProjectService } from './project.service';
-import { Project, ProjectMember } from './project.models';
+import { Project, ProjectMember, ProjectListResponse } from './project.models';
 
 const mockProject: Project = {
     id: '1',
@@ -24,6 +24,13 @@ const mockMember: ProjectMember = {
     firstName: 'Bob',
     lastName: 'Smith',
     email: 'bob.smith@taskforge.local',
+};
+
+const mockListResponse: ProjectListResponse = {
+    data: [mockProject],
+    total: 1,
+    page: 1,
+    limit: 10,
 };
 
 describe('ProjectService', () => {
@@ -52,27 +59,61 @@ describe('ProjectService', () => {
     });
 
     describe('getProjects()', () => {
-        it('should GET /api/projects and return typed array', () => {
-            const mockProjects: Project[] = [mockProject];
-
-            service.getProjects().subscribe(projects => {
-                expect(projects).toEqual(mockProjects);
-                expect(projects.length).toBe(1);
-                expect(projects[0].key).toBe('TF');
+        it('should GET /api/projects and return ProjectListResponse', () => {
+            service.getProjects().subscribe(res => {
+                expect(res.data).toEqual([mockProject]);
+                expect(res.total).toBe(1);
+                expect(res.page).toBe(1);
+                expect(res.limit).toBe(10);
             });
 
             const req = httpMock.expectOne('/api/projects');
             expect(req.request.method).toBe('GET');
-            req.flush(mockProjects);
+            req.flush(mockListResponse);
         });
 
-        it('should return empty array when no projects', () => {
-            service.getProjects().subscribe(projects => {
-                expect(projects).toEqual([]);
+        it('should pass query params when provided', () => {
+            service.getProjects({ _page: 2, _limit: 25, _sort: 'key', _order: 'desc' }).subscribe(res => {
+                expect(res.data).toEqual([mockProject]);
+            });
+
+            const req = httpMock.expectOne(r => r.url === '/api/projects');
+            expect(req.request.params.get('_page')).toBe('2');
+            expect(req.request.params.get('_limit')).toBe('25');
+            expect(req.request.params.get('_sort')).toBe('key');
+            expect(req.request.params.get('_order')).toBe('desc');
+            req.flush(mockListResponse);
+        });
+
+        it('should pass search and filter params', () => {
+            service.getProjects({ q: 'task', is_active: 'true' }).subscribe();
+
+            const req = httpMock.expectOne(r => r.url === '/api/projects');
+            expect(req.request.params.get('q')).toBe('task');
+            expect(req.request.params.get('is_active')).toBe('true');
+            req.flush(mockListResponse);
+        });
+
+        it('should omit undefined params', () => {
+            service.getProjects({ _page: 1 }).subscribe();
+
+            const req = httpMock.expectOne(r => r.url === '/api/projects');
+            expect(req.request.params.get('_page')).toBe('1');
+            expect(req.request.params.has('q')).toBe(false);
+            expect(req.request.params.has('is_active')).toBe(false);
+            req.flush(mockListResponse);
+        });
+
+        it('should return empty response', () => {
+            const emptyResponse: ProjectListResponse = { data: [], total: 0, page: 1, limit: 10 };
+
+            service.getProjects().subscribe(res => {
+                expect(res.data).toEqual([]);
+                expect(res.total).toBe(0);
             });
 
             const req = httpMock.expectOne('/api/projects');
-            req.flush([]);
+            req.flush(emptyResponse);
         });
     });
 

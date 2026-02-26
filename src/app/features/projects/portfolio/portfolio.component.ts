@@ -1,8 +1,10 @@
-import { Component, inject, OnInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, AfterViewInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { EUI_PAGE } from '@eui/components/eui-page';
-import { EUI_TABLE } from '@eui/components/eui-table';
+import { EUI_TABLE, Sort } from '@eui/components/eui-table';
 import { EUI_BUTTON } from '@eui/components/eui-button';
 import { EUI_LABEL } from '@eui/components/eui-label';
 import { EUI_INPUT_GROUP } from '@eui/components/eui-input-group';
@@ -12,9 +14,10 @@ import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiInputTextComponent } from '@eui/components/eui-input-text';
 import { EuiTextareaComponent } from '@eui/components/eui-textarea';
 import { EuiHelperTextComponent } from '@eui/components/eui-helper-text';
+import { EuiPaginatorComponent } from '@eui/components/eui-paginator';
 import { EuiGrowlService } from '@eui/core';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
-import { ProjectService, Project, CreateProjectPayload } from '../../../core/project';
+import { ProjectService, Project, CreateProjectPayload, ProjectListParams } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
 function keyFormatValidator(control: AbstractControl): ValidationErrors | null {
@@ -40,9 +43,10 @@ function keyFormatValidator(control: AbstractControl): ValidationErrors | null {
         EuiInputTextComponent,
         EuiTextareaComponent,
         EuiHelperTextComponent,
+        EuiPaginatorComponent,
     ],
 })
-export class PortfolioComponent implements OnInit {
+export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly projectService = inject(ProjectService);
     private readonly permissionService = inject(PermissionService);
     private readonly router = inject(Router);
@@ -50,14 +54,25 @@ export class PortfolioComponent implements OnInit {
     private readonly growlService = inject(EuiGrowlService);
     private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly fb = inject(FormBuilder);
+    private readonly destroy$ = new Subject<void>();
+    private readonly searchSubject = new Subject<string>();
+    private paginatorReady = false;
 
     @ViewChild('createDialog') createDialog!: EuiDialogComponent;
 
     projects: Project[] = [];
+    total = 0;
     loading = false;
     hasError = false;
     isSuperAdmin = false;
     createError = '';
+
+    params: ProjectListParams = {
+        _page: 1,
+        _limit: 10,
+        _sort: 'name',
+        _order: 'asc',
+    };
 
     createForm: FormGroup = this.fb.group({
         name: ['', [Validators.required, Validators.minLength(2)]],
@@ -70,20 +85,41 @@ export class PortfolioComponent implements OnInit {
         this.breadcrumbService.setBreadcrumb([
             { id: 'projects', label: 'Projects', link: null },
         ]);
+
+        this.searchSubject.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            takeUntil(this.destroy$),
+        ).subscribe(q => {
+            this.params = { ...this.params, q: q || undefined, _page: 1 };
+            this.loadProjects();
+        });
+
         this.loadProjects();
+    }
+
+    ngAfterViewInit(): void {
+        this.paginatorReady = true;
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
     loadProjects(): void {
         this.loading = true;
         this.hasError = false;
-        this.projectService.getProjects().subscribe({
-            next: projects => {
-                this.projects = projects;
+        this.projectService.getProjects(this.params).subscribe({
+            next: res => {
+                this.projects = res.data;
+                this.total = res.total;
                 this.loading = false;
                 this.cdr.markForCheck();
             },
             error: () => {
                 this.projects = [];
+                this.total = 0;
                 this.loading = false;
                 this.hasError = true;
                 this.growlService.growl({
@@ -94,6 +130,32 @@ export class PortfolioComponent implements OnInit {
                 this.cdr.markForCheck();
             },
         });
+    }
+
+    onFilterChange(searchTerm: string): void {
+        this.searchSubject.next(searchTerm);
+    }
+
+    onSortChange(sort: Sort[]): void {
+        if (sort.length > 0) {
+            this.params = {
+                ...this.params,
+                _sort: sort[0].sort,
+                _order: sort[0].order.toLowerCase() as 'asc' | 'desc',
+                _page: 1,
+            };
+        }
+        this.loadProjects();
+    }
+
+    onPageChange(event: { page: number; pageSize: number }): void {
+        if (!this.paginatorReady) return;
+        this.params = {
+            ...this.params,
+            _page: event.page + 1,
+            _limit: event.pageSize,
+        };
+        this.loadProjects();
     }
 
     onOpenProject(project: Project): void {
@@ -148,5 +210,15 @@ export class PortfolioComponent implements OnInit {
     resetCreateForm(): void {
         this.createForm.reset();
         this.createError = '';
+    }
+
+    get emptyStateMessage(): string {
+        if (this.hasError) {
+            return 'Could not load projects. Please try again.';
+        }
+        if (this.params.q) {
+            return 'No projects match your search criteria.';
+        }
+        return 'No projects available.';
     }
 }

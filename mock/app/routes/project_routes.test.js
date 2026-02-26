@@ -29,32 +29,33 @@ describe('GET /api/projects', () => {
         expect(res.status).toBe(401);
     });
 
-    it('should return all active projects for SUPER_ADMIN', async () => {
+    it('should return paginated response shape for SUPER_ADMIN', async () => {
         const token = await getTokenFor('superadmin');
         const res = await request(app)
             .get('/api/projects')
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
-        expect(Array.isArray(res.body)).toBe(true);
-
-        // Should include active projects TF and DEMO
-        const keys = res.body.map(p => p.key);
-        expect(keys).toContain('TF');
-        expect(keys).toContain('DEMO');
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.total).toBeDefined();
+        expect(res.body.page).toBe(1);
+        expect(res.body.limit).toBe(10);
     });
 
-    it('should not return inactive projects for SUPER_ADMIN', async () => {
+    it('should return all projects (active + inactive) for SUPER_ADMIN by default', async () => {
         const token = await getTokenFor('superadmin');
         const res = await request(app)
             .get('/api/projects')
             .set('Authorization', `Bearer ${token}`);
 
-        const keys = res.body.map(p => p.key);
-        expect(keys).not.toContain('INFRA');
+        expect(res.status).toBe(200);
+        const keys = res.body.data.map(p => p.key);
+        expect(keys).toContain('TF');
+        expect(keys).toContain('DEMO');
+        expect(keys).toContain('INFRA'); // inactive project now visible
     });
 
-    it('should return only member projects for regular user', async () => {
+    it('should return only member active projects for regular user', async () => {
         // User "developer" (id 4) is member of TF and DEMO
         const token = await getTokenFor('developer');
         const res = await request(app)
@@ -62,7 +63,9 @@ describe('GET /api/projects', () => {
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
-        const keys = res.body.map(p => p.key);
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.total).toBeDefined();
+        const keys = res.body.data.map(p => p.key);
         expect(keys).toContain('TF');
         expect(keys).toContain('DEMO');
     });
@@ -75,9 +78,183 @@ describe('GET /api/projects', () => {
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
-        const keys = res.body.map(p => p.key);
+        const keys = res.body.data.map(p => p.key);
         expect(keys).toContain('DEMO');
         expect(keys).not.toContain('TF');
+    });
+});
+
+// --- GET /api/projects — pagination, search, sort, filter ---
+
+describe('GET /api/projects — pagination, search, sort, filter', () => {
+
+    it('should respect custom _page and _limit', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects?_page=1&_limit=2')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBeLessThanOrEqual(2);
+        expect(res.body.limit).toBe(2);
+        expect(res.body.page).toBe(1);
+        expect(res.body.total).toBeGreaterThanOrEqual(3); // TF, DEMO, INFRA
+    });
+
+    it('should return empty data for page beyond results', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects?_page=999')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data).toEqual([]);
+        expect(res.body.total).toBeGreaterThanOrEqual(3);
+        expect(res.body.page).toBe(999);
+    });
+
+    it('should search by project name (case-insensitive)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects?q=taskforge')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBeGreaterThanOrEqual(1);
+        expect(res.body.data[0].key).toBe('TF');
+    });
+
+    it('should search by project key', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects?q=DEMO')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBeGreaterThanOrEqual(1);
+        const keys = res.body.data.map(p => p.key);
+        expect(keys).toContain('DEMO');
+    });
+
+    it('should search by description', async () => {
+        const token = await getTokenFor('superadmin');
+        // Use a word from a known project description
+        const allRes = await request(app)
+            .get('/api/projects')
+            .set('Authorization', `Bearer ${token}`);
+        const firstDesc = allRes.body.data.find(p => p.description)?.description || '';
+        if (firstDesc) {
+            const word = firstDesc.split(' ')[0];
+            const res = await request(app)
+                .get(`/api/projects?q=${encodeURIComponent(word)}`)
+                .set('Authorization', `Bearer ${token}`);
+            expect(res.status).toBe(200);
+            expect(res.body.data.length).toBeGreaterThanOrEqual(1);
+        }
+    });
+
+    it('should return empty results for non-matching search', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects?q=zzzznotfound')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data).toEqual([]);
+        expect(res.body.total).toBe(0);
+    });
+
+    it('should sort by name ascending', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects?_sort=name&_order=asc')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        const names = res.body.data.map(p => p.name.toLowerCase());
+        for (let i = 1; i < names.length; i++) {
+            expect(names[i] >= names[i - 1]).toBe(true);
+        }
+    });
+
+    it('should sort by name descending', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects?_sort=name&_order=desc')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        const names = res.body.data.map(p => p.name.toLowerCase());
+        for (let i = 1; i < names.length; i++) {
+            expect(names[i] <= names[i - 1]).toBe(true);
+        }
+    });
+
+    it('should sort by key ascending', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects?_sort=key&_order=asc')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        const keys = res.body.data.map(p => p.key.toLowerCase());
+        for (let i = 1; i < keys.length; i++) {
+            expect(keys[i] >= keys[i - 1]).toBe(true);
+        }
+    });
+
+    it('should filter active projects only for SUPER_ADMIN (is_active=true)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects?is_active=true')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        res.body.data.forEach(p => {
+            expect(p.is_active).toBe(true);
+        });
+        const keys = res.body.data.map(p => p.key);
+        expect(keys).not.toContain('INFRA');
+    });
+
+    it('should filter inactive projects only for SUPER_ADMIN (is_active=false)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects?is_active=false')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        res.body.data.forEach(p => {
+            expect(p.is_active).toBe(false);
+        });
+        const keys = res.body.data.map(p => p.key);
+        expect(keys).toContain('INFRA');
+    });
+
+    it('should ignore is_active filter for regular user', async () => {
+        const token = await getTokenFor('developer');
+        // Even with is_active=false, regular user should still see only their active projects
+        const res = await request(app)
+            .get('/api/projects?is_active=false')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        // Regular user should see their active member projects regardless of is_active param
+        res.body.data.forEach(p => {
+            expect(p.is_active).toBe(true);
+        });
+    });
+
+    it('should search within regular user scope only', async () => {
+        // eve.jones is member of DEMO only — searching for TF should return nothing
+        const token = await getTokenFor('eve.jones');
+        const res = await request(app)
+            .get('/api/projects?q=taskforge')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBe(0);
+        expect(res.body.total).toBe(0);
     });
 });
 

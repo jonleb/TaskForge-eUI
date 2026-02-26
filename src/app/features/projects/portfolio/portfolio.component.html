@@ -13,20 +13,27 @@
     </eui-page-header>
     <eui-page-content>
 
+        <eui-table-filter
+            placeholder="Search projects..."
+            (filterChange)="onFilterChange($event)">
+        </eui-table-filter>
+
         <p aria-live="polite" class="eui-u-mt-s eui-u-mb-s">
-            {{ projects.length }} project{{ projects.length !== 1 ? 's' : '' }} available
+            Showing {{ projects.length }} of {{ total }} project{{ total !== 1 ? 's' : '' }}
         </p>
 
         <table euiTable
                [data]="projects"
+               isAsync
                [isLoading]="loading"
                isTableResponsive
-               aria-label="List of accessible projects">
+               aria-label="List of accessible projects"
+               (sortChange)="onSortChange($event)">
 
             <ng-template euiTemplate="header">
                 <tr>
-                    <th scope="col">Key</th>
-                    <th scope="col">Name</th>
+                    <th scope="col" isSortable sortOn="key">Key</th>
+                    <th scope="col" isSortable sortOn="name">Name</th>
                     <th scope="col">Description</th>
                     <th scope="col">Actions</th>
                 </tr>
@@ -51,20 +58,25 @@
             <ng-template euiTemplate="noData">
                 <tr>
                     <td class="eui-u-text-center" colspan="4">
+                        {{ emptyStateMessage }}
                         @if (hasError) {
-                            Could not load projects. Please try again.
                             <button euiButton euiSecondary type="button"
                                     class="eui-u-ml-m"
                                     (click)="loadProjects()">
                                 Retry
                             </button>
-                        } @else {
-                            No projects available.
                         }
                     </td>
                 </tr>
             </ng-template>
         </table>
+
+        <eui-paginator
+            [length]="total"
+            [pageSize]="params._limit ?? 10"
+            [pageSizeOptions]="[10, 25, 50]"
+            (pageChange)="onPageChange($event)">
+        </eui-paginator>
 
     </eui-page-content>
 </eui-page>

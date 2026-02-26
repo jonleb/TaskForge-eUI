@@ -39,23 +39,66 @@ module.exports = function (app, db) {
         /**
          * GET /api/projects
          * Protected — requires valid token.
-         * SUPER_ADMIN sees all active projects.
-         * Regular users see only active projects they are a member of.
+         * Supports: _page, _limit, _sort, _order, q, is_active.
+         * SUPER_ADMIN sees all projects (active + inactive) by default, can filter by is_active.
+         * Regular users see only active projects they are a member of (is_active ignored).
+         * Response: { data: Project[], total: number, page: number, limit: number }
          */
         app.get('/api/projects', authMiddleware, (req, res) => {
-            const allProjects = db.get('projects').filter({ is_active: true }).value();
+            let projects;
 
             if (req.user.role === 'SUPER_ADMIN') {
-                return res.json(allProjects);
+                // SUPER_ADMIN sees all projects by default
+                projects = db.get('projects').value();
+
+                // Status filter (SUPER_ADMIN only)
+                const isActiveParam = req.query.is_active;
+                if (isActiveParam === 'true') {
+                    projects = projects.filter(p => p.is_active === true);
+                } else if (isActiveParam === 'false') {
+                    projects = projects.filter(p => p.is_active === false);
+                }
+            } else {
+                // Regular users: only active projects they are a member of
+                const activeProjects = db.get('projects').filter({ is_active: true }).value();
+                const memberProjectIds = db.get('project-members')
+                    .filter({ userId: String(req.user.userId) })
+                    .map('projectId')
+                    .value();
+                projects = activeProjects.filter(p => memberProjectIds.includes(p.id));
             }
 
-            const memberProjectIds = db.get('project-members')
-                .filter({ userId: String(req.user.userId) })
-                .map('projectId')
-                .value();
+            // Search
+            const q = (req.query.q || '').trim().toLowerCase();
+            if (q) {
+                projects = projects.filter(p =>
+                    p.name.toLowerCase().includes(q) ||
+                    p.key.toLowerCase().includes(q) ||
+                    (p.description || '').toLowerCase().includes(q)
+                );
+            }
 
-            const userProjects = allProjects.filter(p => memberProjectIds.includes(p.id));
-            return res.json(userProjects);
+            // Total count (after filter + search, before sort/paginate)
+            const total = projects.length;
+
+            // Sort
+            const sortField = req.query._sort || 'name';
+            const sortOrder = req.query._order || 'asc';
+            projects.sort((a, b) => {
+                const valA = (a[sortField] || '').toString().toLowerCase();
+                const valB = (b[sortField] || '').toString().toLowerCase();
+                if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+                if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            // Paginate
+            const page = Math.max(1, parseInt(req.query._page, 10) || 1);
+            const limit = Math.max(1, Math.min(100, parseInt(req.query._limit, 10) || 10));
+            const start = (page - 1) * limit;
+            const data = projects.slice(start, start + limit);
+
+            return res.json({ data, total, page, limit });
         });
 
         /**

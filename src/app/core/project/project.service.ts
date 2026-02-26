@@ -1,14 +1,22 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Project, ProjectMember, CreateProjectPayload } from './project.models';
+import { Project, ProjectMember, CreateProjectPayload, ProjectListParams, ProjectListResponse } from './project.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
     private readonly http = inject(HttpClient);
 
-    getProjects(): Observable<Project[]> {
-        return this.http.get<Project[]>('/api/projects');
+    getProjects(params?: ProjectListParams): Observable<ProjectListResponse> {
+        let httpParams = new HttpParams();
+        if (params) {
+            Object.entries(params).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                    httpParams = httpParams.set(key, String(value));
+                }
+            });
+        }
+        return this.http.get<ProjectListResponse>('/api/projects', { params: httpParams });
     }
 
     getProject(projectId: string): Observable<Project> {
