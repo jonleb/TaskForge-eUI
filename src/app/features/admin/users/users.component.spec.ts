@@ -3,9 +3,9 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import { TranslateModule } from '@ngx-translate/core';
-import { CONFIG_TOKEN, EuiGrowlService, I18nService, I18nState } from '@eui/core';
+import { CONFIG_TOKEN, EuiGrowlService, I18nService } from '@eui/core';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
-import { Observable, of } from 'rxjs';
+import { createI18nServiceMock, createGrowlServiceMock, createBreadcrumbServiceMock, TEST_CONFIG } from '../../../testing/test-providers';
 import { UsersComponent } from './users.component';
 import { AdminUserListResponse } from './admin-user.models';
 
@@ -36,21 +36,7 @@ describe('UsersComponent', () => {
     let fixture: ComponentFixture<UsersComponent>;
     let httpMock: HttpTestingController;
 
-    type GetStateReturnType<T> = T extends keyof I18nState ? Observable<I18nState[T]> : Observable<I18nState>;
-
-    const i18nServiceMock = {
-        init: () => { /* noop */ },
-        getState: <K extends keyof I18nState>(key?: K): GetStateReturnType<K> => {
-            if (typeof key === 'string') {
-                return of({ activeLang: 'en' }[key]) as GetStateReturnType<K>;
-            }
-            return of({ activeLang: 'en' }) as GetStateReturnType<K>;
-        },
-    };
-
-    const growlServiceMock = {
-        growl: vi.fn(),
-    };
+    const growlServiceMock = createGrowlServiceMock();
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -58,10 +44,10 @@ describe('UsersComponent', () => {
             providers: [
                 provideHttpClient(withInterceptorsFromDi()),
                 provideHttpClientTesting(),
-                { provide: I18nService, useValue: i18nServiceMock },
-                { provide: CONFIG_TOKEN, useValue: { global: {}, modules: {} } },
+                { provide: I18nService, useValue: createI18nServiceMock() },
+                { provide: CONFIG_TOKEN, useValue: TEST_CONFIG },
                 { provide: EuiGrowlService, useValue: growlServiceMock },
-                { provide: EuiBreadcrumbService, useValue: { setBreadcrumb: vi.fn(), breadcrumbs$: of([]) } },
+                { provide: EuiBreadcrumbService, useValue: createBreadcrumbServiceMock() },
             ],
         }).compileComponents();
 

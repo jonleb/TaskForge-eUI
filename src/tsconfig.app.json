@@ -15,7 +15,7 @@
     "exclude": [
       "**/*.spec.ts",
       "test-setup.ts",
-      "app/shared/testing/router.mock.ts",
+      "app/testing/**",
       "environments/environment.prod.ts",
       "environments/environment.dev.ts"
     ]

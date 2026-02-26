@@ -1,12 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideRouter, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
-import { CONFIG_TOKEN, I18nService, UserService, EuiAppConfig, EuiGrowlService } from '@eui/core';
+import { EuiGrowlService } from '@eui/core';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
+import { provideEuiCoreMocks, createBreadcrumbServiceMock } from '../../../testing/test-providers';
 import { PortfolioComponent } from './portfolio.component';
 import { ProjectService, Project } from '../../../core/project';
 
@@ -42,15 +41,10 @@ describe('PortfolioComponent', () => {
                 TranslateModule.forRoot(),
             ],
             providers: [
-                provideHttpClient(withInterceptorsFromDi()),
-                provideHttpClientTesting(),
-                provideRouter([]),
+                ...provideEuiCoreMocks(),
                 { provide: ProjectService, useValue: projectServiceMock },
                 { provide: EuiGrowlService, useValue: growlServiceMock },
-                { provide: UserService, useValue: { init: vi.fn() } },
-                { provide: I18nService, useValue: { init: vi.fn(), getState: vi.fn().mockReturnValue(of({ activeLang: 'en' })) } },
-                { provide: CONFIG_TOKEN, useValue: { global: {}, modules: { core: { base: 'localhost', userDetails: 'dummy' } } } as EuiAppConfig },
-                { provide: EuiBreadcrumbService, useValue: { setBreadcrumb: vi.fn(), breadcrumbs$: of([]) } },
+                { provide: EuiBreadcrumbService, useValue: createBreadcrumbServiceMock() },
             ],
         }).compileComponents();
 

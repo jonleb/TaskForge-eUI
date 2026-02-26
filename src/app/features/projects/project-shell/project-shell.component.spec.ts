@@ -1,11 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideRouter, Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { of, throwError, Subject } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
-import { CONFIG_TOKEN, I18nService, UserService, EuiAppConfig, EuiGrowlService } from '@eui/core';
+import { EuiGrowlService } from '@eui/core';
+import { provideEuiCoreMocks } from '../../../testing/test-providers';
 import { ProjectShellComponent } from './project-shell.component';
 import { ProjectService, ProjectContextService, Project } from '../../../core/project';
 
@@ -36,16 +35,11 @@ describe('ProjectShellComponent', () => {
                 TranslateModule.forRoot(),
             ],
             providers: [
-                provideHttpClient(withInterceptorsFromDi()),
-                provideHttpClientTesting(),
-                provideRouter([]),
+                ...provideEuiCoreMocks(),
                 { provide: ProjectService, useValue: projectServiceMock },
                 { provide: ProjectContextService, useValue: projectContextMock },
                 { provide: EuiGrowlService, useValue: growlServiceMock },
                 { provide: ActivatedRoute, useValue: { params: paramsSubject.asObservable() } },
-                { provide: UserService, useValue: { init: vi.fn() } },
-                { provide: I18nService, useValue: { init: vi.fn(), getState: vi.fn().mockReturnValue(of({ activeLang: 'en' })) } },
-                { provide: CONFIG_TOKEN, useValue: { global: {}, modules: { core: { base: 'localhost', userDetails: 'dummy' } } } as EuiAppConfig },
             ],
         }).compileComponents();
 

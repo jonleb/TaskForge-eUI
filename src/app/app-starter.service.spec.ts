@@ -2,15 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CONFIG_TOKEN, I18nService, UserService } from '@eui/core';
-import { EuiAppConfig } from '@eui/core';
 import { of, throwError } from 'rxjs';
 import { AppStarterService } from './app-starter.service';
 import { EuiServiceStatus } from '@eui/base';
-import { AuthService } from './core/auth';
-import { PermissionService } from './core/auth';
+import { AuthService, PermissionService } from './core/auth';
 import { ProjectContextService } from './core/project';
 import { UserProfile } from './core/auth/auth.models';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
+import { createI18nServiceMock, TEST_CONFIG } from './testing/test-providers';
 
 // eslint-disable-next-line
 type SpyObj<T> = { [K in keyof T]: T[K] extends (...args: any[]) => any ? ReturnType<typeof vi.fn> : T[K] };
@@ -18,7 +17,7 @@ type SpyObj<T> = { [K in keyof T]: T[K] extends (...args: any[]) => any ? Return
 describe('AppStarterService', () => {
     let service: AppStarterService;
     let userServiceMock: SpyObj<UserService>;
-    let i18nServiceMock: SpyObj<I18nService>;
+    let i18nServiceMock: ReturnType<typeof createI18nServiceMock>;
     let authServiceMock: {
         isAuthenticated: ReturnType<typeof vi.fn>;
         getCurrentUser: ReturnType<typeof vi.fn>;
@@ -30,7 +29,6 @@ describe('AppStarterService', () => {
     let projectContextMock: {
         restoreProject: ReturnType<typeof vi.fn>;
     };
-    let configMock: EuiAppConfig;
 
     const mockProfile: UserProfile = {
         userId: '1',
@@ -42,7 +40,7 @@ describe('AppStarterService', () => {
 
     beforeEach(() => {
         userServiceMock = { init: vi.fn() } as SpyObj<UserService>;
-        i18nServiceMock = { init: vi.fn() } as SpyObj<I18nService>;
+        i18nServiceMock = createI18nServiceMock();
         authServiceMock = {
             isAuthenticated: vi.fn().mockReturnValue(false),
             getCurrentUser: vi.fn(),
@@ -54,7 +52,6 @@ describe('AppStarterService', () => {
         projectContextMock = {
             restoreProject: vi.fn().mockReturnValue(of(null)),
         };
-        configMock = { global: {}, modules: { core: { base: 'localhost:3000', userDetails: 'dummy' } } };
 
         TestBed.configureTestingModule({
             providers: [
@@ -63,7 +60,7 @@ describe('AppStarterService', () => {
                 AppStarterService,
                 { provide: UserService, useValue: userServiceMock },
                 { provide: I18nService, useValue: i18nServiceMock },
-                { provide: CONFIG_TOKEN, useValue: configMock },
+                { provide: CONFIG_TOKEN, useValue: TEST_CONFIG },
                 { provide: AuthService, useValue: authServiceMock },
                 { provide: PermissionService, useValue: permissionServiceMock },
                 { provide: ProjectContextService, useValue: projectContextMock },

@@ -56,19 +56,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
     ];
 
     ngOnInit(): void {
-        this.authService.getCurrentUser().subscribe({
-            next: profile => {
-                this.userRole = profile.role;
-                this.permissionService.setUser(profile);
-                this.filterSidebarItems();
-                this.cdr.markForCheck();
-            },
-            error: () => {
-                this.userRole = '';
-                this.filterSidebarItems();
-                this.cdr.markForCheck();
-            },
-        });
+        // User profile already loaded by AppStarterService — read cached role
+        this.userRole = this.permissionService.getGlobalRole();
+        this.filterSidebarItems();
 
         this.projectContext.currentProject$.pipe(
             takeUntil(this.destroy$),

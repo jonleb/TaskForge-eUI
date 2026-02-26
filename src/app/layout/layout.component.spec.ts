@@ -1,63 +1,34 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideRouter, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
-import { CONFIG_TOKEN, I18nService, I18nState, UserService, EuiAppConfig } from '@eui/core';
+import { provideEuiCoreMocks } from '../testing/test-providers';
 import { LayoutComponent } from './layout.component';
 import { AuthService, PermissionService } from '../core/auth';
 import { ProjectContextService, Project } from '../core/project';
 
-// eslint-disable-next-line
-type SpyObj<T> = { [K in keyof T]: T[K] extends (...args: any[]) => any ? ReturnType<typeof vi.fn> : T[K] };
-
 describe('LayoutComponent', () => {
     let component: LayoutComponent;
     let fixture: ComponentFixture<LayoutComponent>;
-    let authServiceMock: { logout: ReturnType<typeof vi.fn>; getCurrentUser: ReturnType<typeof vi.fn> };
-    let permissionServiceMock: { setUser: ReturnType<typeof vi.fn>; clear: ReturnType<typeof vi.fn>; hasGlobalRole: ReturnType<typeof vi.fn> };
+    let authServiceMock: { logout: ReturnType<typeof vi.fn> };
+    let permissionServiceMock: { setUser: ReturnType<typeof vi.fn>; clear: ReturnType<typeof vi.fn>; hasGlobalRole: ReturnType<typeof vi.fn>; getGlobalRole: ReturnType<typeof vi.fn> };
     let projectContextMock: { currentProject$: BehaviorSubject<Project | null> };
     let router: Router;
-    let userServiceMock: SpyObj<UserService>;
-    let i18nServiceMock: SpyObj<I18nService>;
-    let configMock: EuiAppConfig;
-
-    const mockUserProfile = {
-        userId: '1',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@example.com',
-        role: 'DEVELOPER',
-    };
 
     beforeEach(async () => {
-        type GetStateReturnType<T> = T extends keyof I18nState ? Observable<I18nState[T]> : Observable<I18nState>;
-
         authServiceMock = {
             logout: vi.fn(),
-            getCurrentUser: vi.fn().mockReturnValue(of(mockUserProfile)),
         };
         permissionServiceMock = {
             setUser: vi.fn(),
             clear: vi.fn(),
             hasGlobalRole: vi.fn().mockReturnValue(false),
+            getGlobalRole: vi.fn().mockReturnValue('USER'),
         };
         projectContextMock = {
             currentProject$: new BehaviorSubject<Project | null>(null),
         };
-        userServiceMock = { init: vi.fn() } as SpyObj<UserService>;
-        i18nServiceMock = {
-            init: vi.fn(),
-            getState: vi.fn(<K extends keyof I18nState>(key?: K): GetStateReturnType<K> => {
-                if (typeof key === 'string') {
-                    return of({ activeLang: 'en' }[key]) as GetStateReturnType<K>;
-                }
-                return of({ activeLang: 'en' }) as GetStateReturnType<K>;
-            })
-        } as SpyObj<I18nService>;
-        configMock = { global: {}, modules: { core: { base: 'localhost:3000', userDetails: 'dummy' } } };
 
         await TestBed.configureTestingModule({
             imports: [
@@ -65,15 +36,10 @@ describe('LayoutComponent', () => {
                 TranslateModule.forRoot(),
             ],
             providers: [
-                provideHttpClient(withInterceptorsFromDi()),
-                provideHttpClientTesting(),
-                provideRouter([]),
+                ...provideEuiCoreMocks(),
                 { provide: AuthService, useValue: authServiceMock },
                 { provide: PermissionService, useValue: permissionServiceMock },
                 { provide: ProjectContextService, useValue: projectContextMock },
-                { provide: UserService, useValue: userServiceMock },
-                { provide: I18nService, useValue: i18nServiceMock },
-                { provide: CONFIG_TOKEN, useValue: configMock },
             ],
         }).compileComponents();
 
@@ -103,25 +69,13 @@ describe('LayoutComponent', () => {
         expect(router.navigate).toHaveBeenCalledWith(['/login']);
     });
 
-    it('should fetch current user and set userRole on init', () => {
-        component.ngOnInit();
-
-        expect(authServiceMock.getCurrentUser).toHaveBeenCalled();
-        expect(component.userRole).toBe('DEVELOPER');
-    });
-
-    it('should set userRole to empty string when getCurrentUser fails', () => {
-        authServiceMock.getCurrentUser.mockReturnValue(throwError(() => new Error('Network error')));
+    it('should read userRole from permissionService.getGlobalRole() on init', () => {
+        permissionServiceMock.getGlobalRole.mockReturnValue('SUPER_ADMIN');
 
         component.ngOnInit();
 
-        expect(component.userRole).toBe('');
-    });
-
-    it('should call permissionService.setUser() on init', () => {
-        component.ngOnInit();
-
-        expect(permissionServiceMock.setUser).toHaveBeenCalledWith(mockUserProfile);
+        expect(permissionServiceMock.getGlobalRole).toHaveBeenCalled();
+        expect(component.userRole).toBe('SUPER_ADMIN');
     });
 
     it('should call permissionService.clear() on logout', () => {
@@ -172,8 +126,8 @@ describe('LayoutComponent', () => {
         expect(component.sidebarItems.length).toBe(2);
     });
 
-    it('should filter sidebar on error (show only unrestricted items)', () => {
-        authServiceMock.getCurrentUser.mockReturnValue(throwError(() => new Error('fail')));
+    it('should filter sidebar with default role when permissionService returns USER', () => {
+        permissionServiceMock.getGlobalRole.mockReturnValue('USER');
         (component as any).allSidebarItems.push({ label: 'Admin', url: 'screen/admin', metadata: { roles: ['SUPER_ADMIN'] } });
 
         component.ngOnInit();
