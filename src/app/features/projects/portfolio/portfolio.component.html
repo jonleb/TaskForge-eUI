@@ -1,5 +1,16 @@
 <eui-page>
-    <eui-page-header label="Projects"></eui-page-header>
+    <eui-page-header label="Projects">
+        @if (isSuperAdmin) {
+            <eui-page-header-action-items>
+                <button euiButton euiPrimary
+                        type="button"
+                        aria-haspopup="dialog"
+                        (click)="createDialog.openDialog()">
+                    Create Project
+                </button>
+            </eui-page-header-action-items>
+        }
+    </eui-page-header>
     <eui-page-content>
 
         <p aria-live="polite" class="eui-u-mt-s eui-u-mb-s">
@@ -57,3 +68,57 @@
 
     </eui-page-content>
 </eui-page>
+
+<eui-dialog #createDialog
+    [title]="'Create Project'"
+    [acceptLabel]="'Create'"
+    [width]="'500px'"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onCreateProject()"
+    (dismiss)="resetCreateForm()">
+
+    <form [formGroup]="createForm" id="create-project-form">
+        @if (createError) {
+            <eui-feedback-message euiDanger class="eui-u-mb-m"
+                                  aria-live="polite">
+                {{ createError }}
+            </eui-feedback-message>
+        }
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="cp-name">Name</label>
+            <input euiInputText id="cp-name" formControlName="name"
+                   aria-required="true"
+                   [attr.aria-describedby]="createForm.get('name')?.invalid && createForm.get('name')?.touched ? 'cp-name-err' : null" />
+            @if (createForm.get('name')?.invalid && createForm.get('name')?.touched) {
+                <eui-feedback-message euiDanger id="cp-name-err">
+                    @if (createForm.get('name')?.errors?.['required']) {
+                        Project name is required
+                    } @else {
+                        Name must be at least 2 characters
+                    }
+                </eui-feedback-message>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel for="cp-key">Key</label>
+            <input euiInputText id="cp-key" formControlName="key"
+                   maxlength="10"
+                   (input)="onKeyInput($event)"
+                   [attr.aria-describedby]="createForm.get('key')?.invalid && createForm.get('key')?.touched ? 'cp-key-err' : 'cp-key-hint'" />
+            <eui-helper-text id="cp-key-hint">Leave empty to auto-generate from name. 2–10 uppercase alphanumeric characters.</eui-helper-text>
+            @if (createForm.get('key')?.invalid && createForm.get('key')?.touched) {
+                <eui-feedback-message euiDanger id="cp-key-err">
+                    Key must be 2–10 uppercase alphanumeric characters
+                </eui-feedback-message>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel for="cp-description">Description</label>
+            <textarea euiTextArea id="cp-description" formControlName="description"
+                      rows="3"></textarea>
+        </div>
+    </form>
+</eui-dialog>
