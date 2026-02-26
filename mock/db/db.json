@@ -330,6 +330,19 @@
       "is_active": false,
       "created_at": "2025-01-06T18:05:00.000Z",
       "updated_at": "2025-01-06T18:05:00.000Z"
+    },
+    {
+      "id": "26",
+      "username": "bousini",
+      "password": "Q3rWrHPQyPay",
+      "email": "bous@oi.local",
+      "role": "DEVELOPER",
+      "global_role": "DEVELOPER",
+      "firstName": "niko",
+      "lastName": "bousi",
+      "is_active": false,
+      "created_at": "2026-02-26T00:13:54.375Z",
+      "updated_at": "2026-02-26T00:14:08.819Z"
     }
   ],
   "projects": [
