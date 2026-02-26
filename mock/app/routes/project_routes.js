@@ -183,5 +183,52 @@ module.exports = function (app, db) {
             return res.status(201).json(newProject);
         });
 
+        /**
+         * PATCH /api/projects/:projectId
+         * Update project name/description. Key is immutable.
+         * Protected: SUPER_ADMIN only.
+         */
+        app.patch('/api/projects/:projectId', authMiddleware, requireGlobalRole('SUPER_ADMIN'), (req, res) => {
+            const project = db.get('projects').find({ id: req.params.projectId }).value();
+            if (!project) {
+                return res.status(404).json({ message: 'Project not found' });
+            }
+
+            const { name, description, key } = req.body;
+
+            // Key immutability — reject if different from current
+            if (key !== undefined && key !== null && key !== '') {
+                if (String(key).toUpperCase().trim() !== project.key.toUpperCase()) {
+                    return res.status(400).json({ message: 'Project key cannot be changed' });
+                }
+            }
+
+            const updates = { updated_at: new Date().toISOString() };
+
+            // Name validation & uniqueness
+            if (name !== undefined) {
+                const trimmedName = (name || '').trim();
+                if (!trimmedName || trimmedName.length < 2) {
+                    return res.status(400).json({ message: 'Project name is required (min 2 characters)' });
+                }
+                const duplicate = db.get('projects')
+                    .find(p => p.id !== req.params.projectId && p.name.toLowerCase() === trimmedName.toLowerCase())
+                    .value();
+                if (duplicate) {
+                    return res.status(409).json({ message: 'A project with this name already exists' });
+                }
+                updates.name = trimmedName;
+            }
+
+            // Description update
+            if (description !== undefined) {
+                updates.description = (description || '').trim();
+            }
+
+            db.get('projects').find({ id: req.params.projectId }).assign(updates).write();
+            const updated = db.get('projects').find({ id: req.params.projectId }).value();
+            return res.status(200).json(updated);
+        });
+
     });
 };

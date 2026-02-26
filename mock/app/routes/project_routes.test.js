@@ -376,3 +376,93 @@ describe('POST /api/projects', () => {
         expect(res2.body.key).toBe('DP1');
     });
 });
+
+// --- PATCH /api/projects/:projectId ---
+
+describe('PATCH /api/projects/:projectId', () => {
+
+    it('should return 401 without token', async () => {
+        const res = await request(app)
+            .patch('/api/projects/1')
+            .send({ name: 'Updated Name' });
+        expect(res.status).toBe(401);
+    });
+
+    it('should return 403 for non-SUPER_ADMIN user', async () => {
+        const token = await getTokenFor('developer');
+        const res = await request(app)
+            .patch('/api/projects/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Updated Name' });
+        expect(res.status).toBe(403);
+        expect(res.body.message).toBe('Forbidden');
+    });
+
+    it('should return 404 for non-existent project', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .patch('/api/projects/999')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Ghost Project' });
+        expect(res.status).toBe(404);
+        expect(res.body.message).toBe('Project not found');
+    });
+
+    it('should update name and description (200)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .patch('/api/projects/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'TaskForge Renamed', description: 'Updated description' });
+
+        expect(res.status).toBe(200);
+        expect(res.body.name).toBe('TaskForge Renamed');
+        expect(res.body.description).toBe('Updated description');
+        expect(res.body.key).toBe('TF'); // key unchanged
+        expect(res.body.updated_at).toBeDefined();
+    });
+
+    it('should accept same key without error (200)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .patch('/api/projects/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'TaskForge Core', key: 'TF' });
+
+        expect(res.status).toBe(200);
+        expect(res.body.key).toBe('TF');
+    });
+
+    it('should return 400 when attempting to change key', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .patch('/api/projects/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ key: 'NEWKEY' });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toBe('Project key cannot be changed');
+    });
+
+    it('should return 400 when name is empty', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .patch('/api/projects/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: '' });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toMatch(/name/i);
+    });
+
+    it('should return 409 when name conflicts with another project', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .patch('/api/projects/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Demo Project' });
+
+        expect(res.status).toBe(409);
+        expect(res.body.message).toMatch(/name already exists/i);
+    });
+});
