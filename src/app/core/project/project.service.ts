@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Project, ProjectMember, CreateProjectPayload, ProjectListParams, ProjectListResponse } from './project.models';
+import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, ProjectListParams, ProjectListResponse } from './project.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
@@ -29,5 +29,9 @@ export class ProjectService {
 
     createProject(payload: CreateProjectPayload): Observable<Project> {
         return this.http.post<Project>('/api/projects', payload);
+    }
+
+    updateProject(projectId: string, payload: UpdateProjectPayload): Observable<Project> {
+        return this.http.patch<Project>(`/api/projects/${projectId}`, payload);
     }
 }

@@ -64,6 +64,14 @@
                         }
                     </td>
                     <td data-col-label="Actions">
+                        @if (isSuperAdmin) {
+                            <eui-icon-button
+                                icon="eui-edit"
+                                size="s"
+                                [ariaLabel]="'Edit ' + row.name"
+                                (buttonClick)="openEditDialog(row)">
+                            </eui-icon-button>
+                        }
                         <button euiButton euiSecondary
                                 type="button"
                                 [attr.aria-label]="'Open ' + row.name"
@@ -149,6 +157,51 @@
         <div euiInputGroup>
             <label euiLabel for="cp-description">Description</label>
             <textarea euiTextArea id="cp-description" formControlName="description"
+                      rows="3"></textarea>
+        </div>
+    </form>
+</eui-dialog>
+
+<eui-dialog #editDialog
+    [title]="'Edit Project'"
+    [acceptLabel]="'Save'"
+    [width]="'500px'"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onUpdateProject()"
+    (dismiss)="resetEditForm()">
+
+    <form [formGroup]="editForm" id="edit-project-form">
+        @if (editError) {
+            <eui-feedback-message euiDanger class="eui-u-mb-m"
+                                  aria-live="polite">
+                {{ editError }}
+            </eui-feedback-message>
+        }
+
+        <div euiInputGroup>
+            <label euiLabel>Key</label>
+            <p class="eui-u-f-bold">{{ selectedProject?.key }}</p>
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="ep-name">Name</label>
+            <input euiInputText id="ep-name" formControlName="name"
+                   aria-required="true"
+                   [attr.aria-describedby]="editForm.get('name')?.invalid && editForm.get('name')?.touched ? 'ep-name-err' : null" />
+            @if (editForm.get('name')?.invalid && editForm.get('name')?.touched) {
+                <eui-feedback-message euiDanger id="ep-name-err">
+                    @if (editForm.get('name')?.errors?.['required']) {
+                        Project name is required
+                    } @else {
+                        Name must be at least 2 characters
+                    }
+                </eui-feedback-message>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel for="ep-description">Description</label>
+            <textarea euiTextArea id="ep-description" formControlName="description"
                       rows="3"></textarea>
         </div>
     </form>

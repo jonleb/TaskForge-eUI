@@ -25,6 +25,11 @@ export interface CreateProjectPayload {
     key?: string;
 }
 
+export interface UpdateProjectPayload {
+    name?: string;
+    description?: string;
+}
+
 export interface ProjectListParams {
     _page?: number;
     _limit?: number;

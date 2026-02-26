@@ -17,9 +17,10 @@ import { EuiHelperTextComponent } from '@eui/components/eui-helper-text';
 import { EuiPaginatorComponent } from '@eui/components/eui-paginator';
 import { EUI_TOGGLE_GROUP, EuiToggleGroupItemComponent } from '@eui/components/eui-toggle-group';
 import { EUI_CHIP } from '@eui/components/eui-chip';
+import { EuiIconButtonComponent } from '@eui/components/eui-icon-button';
 import { EuiGrowlService } from '@eui/core';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
-import { ProjectService, Project, CreateProjectPayload, ProjectListParams } from '../../../core/project';
+import { ProjectService, Project, CreateProjectPayload, UpdateProjectPayload, ProjectListParams } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
 function keyFormatValidator(control: AbstractControl): ValidationErrors | null {
@@ -49,6 +50,7 @@ function keyFormatValidator(control: AbstractControl): ValidationErrors | null {
         EuiPaginatorComponent,
         ...EUI_TOGGLE_GROUP,
         ...EUI_CHIP,
+        EuiIconButtonComponent,
     ],
 })
 export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -64,6 +66,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     private paginatorReady = false;
 
     @ViewChild('createDialog') createDialog!: EuiDialogComponent;
+    @ViewChild('editDialog') editDialog!: EuiDialogComponent;
 
     projects: Project[] = [];
     total = 0;
@@ -71,6 +74,8 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     hasError = false;
     isSuperAdmin = false;
     createError = '';
+    editError = '';
+    selectedProject: Project | null = null;
     activeStatusFilter: 'all' | 'active' | 'inactive' = 'all';
 
     params: ProjectListParams = {
@@ -83,6 +88,11 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     createForm: FormGroup = this.fb.group({
         name: ['', [Validators.required, Validators.minLength(2)]],
         key: ['', [keyFormatValidator]],
+        description: [''],
+    });
+
+    editForm: FormGroup = this.fb.group({
+        name: ['', [Validators.required, Validators.minLength(2)]],
         description: [''],
     });
 
@@ -237,6 +247,62 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     resetCreateForm(): void {
         this.createForm.reset();
         this.createError = '';
+    }
+
+    openEditDialog(project: Project): void {
+        this.selectedProject = project;
+        this.editError = '';
+        this.editForm.patchValue({
+            name: project.name,
+            description: project.description || '',
+        });
+        this.editForm.markAsUntouched();
+        this.editDialog.openDialog();
+    }
+
+    onUpdateProject(): void {
+        if (this.editForm.invalid) {
+            this.editForm.markAllAsTouched();
+            return;
+        }
+        if (!this.selectedProject) return;
+
+        this.editError = '';
+        const payload: UpdateProjectPayload = {
+            name: this.editForm.get('name')?.value.trim(),
+            description: this.editForm.get('description')?.value?.trim() ?? '',
+        };
+
+        this.projectService.updateProject(this.selectedProject.id, payload).subscribe({
+            next: updated => {
+                this.editDialog.closeDialog();
+                this.resetEditForm();
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: 'Project updated',
+                    detail: `${updated.name} has been updated.`,
+                });
+                this.loadProjects();
+            },
+            error: err => {
+                if (err.status === 409) {
+                    this.editError = err.error?.message || 'A project with this name already exists';
+                } else {
+                    this.growlService.growl({
+                        severity: 'error',
+                        summary: 'Update failed',
+                        detail: err.error?.message || 'Could not update project. Please try again.',
+                    });
+                }
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    resetEditForm(): void {
+        this.editForm.reset();
+        this.editError = '';
+        this.selectedProject = null;
     }
 
     get emptyStateMessage(): string {

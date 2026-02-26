@@ -43,6 +43,7 @@ describe('PortfolioComponent', () => {
     let projectServiceMock: {
         getProjects: ReturnType<typeof vi.fn>;
         createProject: ReturnType<typeof vi.fn>;
+        updateProject: ReturnType<typeof vi.fn>;
     };
     let permissionServiceMock: { isSuperAdmin: ReturnType<typeof vi.fn> };
     let growlServiceMock: { growl: ReturnType<typeof vi.fn> };
@@ -52,6 +53,7 @@ describe('PortfolioComponent', () => {
         projectServiceMock = {
             getProjects: vi.fn().mockReturnValue(of(mockListResponse)),
             createProject: vi.fn(),
+            updateProject: vi.fn(),
         };
         permissionServiceMock = { isSuperAdmin: vi.fn().mockReturnValue(false) };
         growlServiceMock = { growl: vi.fn() };
@@ -489,5 +491,114 @@ describe('PortfolioComponent', () => {
         component.params = { _page: 1, _limit: 10, _sort: 'name', _order: 'asc' };
         component.activeStatusFilter = 'inactive';
         expect(component.emptyStateMessage).toBe('No inactive projects found.');
+    });
+
+    // ─── Edit dialog (STORY-004) ─────────────────────────────────────
+
+    it('should show edit icon button for SUPER_ADMIN', () => {
+        permissionServiceMock.isSuperAdmin.mockReturnValue(true);
+        fixture.detectChanges();
+        const editBtns = fixture.nativeElement.querySelectorAll('eui-icon-button[icon="eui-edit"]');
+        expect(editBtns.length).toBe(mockProjects.length);
+    });
+
+    it('should hide edit icon button for regular user', () => {
+        permissionServiceMock.isSuperAdmin.mockReturnValue(false);
+        fixture.detectChanges();
+        const editBtns = fixture.nativeElement.querySelectorAll('eui-icon-button[icon="eui-edit"]');
+        expect(editBtns.length).toBe(0);
+    });
+
+    it('should populate editForm when openEditDialog is called', () => {
+        fixture.detectChanges();
+        component.openEditDialog(mockProjects[0]);
+        expect(component.selectedProject).toEqual(mockProjects[0]);
+        expect(component.editForm.get('name')?.value).toBe('TaskForge Core');
+        expect(component.editForm.get('description')?.value).toBe('Main product');
+    });
+
+    it('should show project key as read-only text in edit dialog', () => {
+        fixture.detectChanges();
+        component.openEditDialog(mockProjects[0]);
+        // Key is displayed as read-only text (not a form control) in the edit dialog
+        expect(component.selectedProject?.key).toBe('TF');
+        // editForm should NOT have a 'key' control
+        expect(component.editForm.get('key')).toBeNull();
+    });
+
+    it('should close dialog, show growl, and reload on successful update', () => {
+        const updatedProject = { ...mockProjects[0], name: 'Updated Name' };
+        projectServiceMock.updateProject.mockReturnValue(of(updatedProject));
+        fixture.detectChanges();
+
+        component.openEditDialog(mockProjects[0]);
+        component.editForm.patchValue({ name: 'Updated Name' });
+        projectServiceMock.getProjects.mockClear();
+
+        component.onUpdateProject();
+
+        expect(projectServiceMock.updateProject).toHaveBeenCalledWith('1', {
+            name: 'Updated Name',
+            description: 'Main product',
+        });
+        expect(growlServiceMock.growl).toHaveBeenCalledWith({
+            severity: 'success',
+            summary: 'Project updated',
+            detail: 'Updated Name has been updated.',
+        });
+        expect(projectServiceMock.getProjects).toHaveBeenCalled();
+        expect(component.selectedProject).toBeNull();
+    });
+
+    it('should show inline error on 409 conflict during update', () => {
+        const errorResponse = new HttpErrorResponse({
+            error: { message: 'A project with this name already exists' }, status: 409,
+        });
+        projectServiceMock.updateProject.mockReturnValue(throwError(() => errorResponse));
+        fixture.detectChanges();
+
+        component.openEditDialog(mockProjects[0]);
+        component.editForm.patchValue({ name: 'Duplicate' });
+        component.onUpdateProject();
+
+        expect(component.editError).toBe('A project with this name already exists');
+    });
+
+    it('should show growl on non-409 update error', () => {
+        const errorResponse = new HttpErrorResponse({
+            error: { message: 'Server error' }, status: 500,
+        });
+        projectServiceMock.updateProject.mockReturnValue(throwError(() => errorResponse));
+        fixture.detectChanges();
+
+        component.openEditDialog(mockProjects[0]);
+        component.editForm.patchValue({ name: 'Test' });
+        component.onUpdateProject();
+
+        expect(growlServiceMock.growl).toHaveBeenCalledWith({
+            severity: 'error',
+            summary: 'Update failed',
+            detail: 'Server error',
+        });
+    });
+
+    it('should reset edit form on resetEditForm()', () => {
+        fixture.detectChanges();
+        component.openEditDialog(mockProjects[0]);
+        component.editError = 'some error';
+
+        component.resetEditForm();
+
+        expect(component.editForm.get('name')?.value).toBeNull();
+        expect(component.editError).toBe('');
+        expect(component.selectedProject).toBeNull();
+    });
+
+    it('should not call updateProject when edit form is invalid', () => {
+        fixture.detectChanges();
+        component.openEditDialog(mockProjects[0]);
+        component.editForm.patchValue({ name: '' });
+        component.onUpdateProject();
+        expect(projectServiceMock.updateProject).not.toHaveBeenCalled();
     });
 });

@@ -47,3 +47,12 @@ Note: `<eui-page-header>` must use open/close tags (not self-closing `/>`) to al
 ## Toggle Group Width
 
 `eui-toggle-group` has `width: 100%` by default. Override with `::ng-deep { width: auto }` in component SCSS for compact layouts.
+
+## Icon Naming Convention
+
+`eui-icon-button` and `eui-icon-svg` silently render an empty container when the icon name is invalid. Icons use two naming conventions:
+
+- eUI built-in icons: `eui-edit`, `eui-trash`, `eui-close`, `eui-checkmark`, `eui-arrow-right`
+- Third-party icon sets: `key:regular`, `prohibit:regular`, `check-circle:regular`
+
+NEVER use bare names like `icon="edit"` — always use `icon="eui-edit"` or `icon="pencil:regular"`.

@@ -204,4 +204,20 @@ describe('ProjectService', () => {
             req.flush({ ...mockProject, id: '5', key: 'AKP', name: 'Auto Key Project' });
         });
     });
+
+    describe('updateProject()', () => {
+        it('should PATCH /api/projects/:id with payload and return updated project', () => {
+            const payload = { name: 'Updated Name', description: 'New desc' };
+
+            service.updateProject('1', payload).subscribe(project => {
+                expect(project.name).toBe('Updated Name');
+                expect(project.description).toBe('New desc');
+            });
+
+            const req = httpMock.expectOne('/api/projects/1');
+            expect(req.request.method).toBe('PATCH');
+            expect(req.request.body).toEqual(payload);
+            req.flush({ ...mockProject, name: 'Updated Name', description: 'New desc' });
+        });
+    });
 });
