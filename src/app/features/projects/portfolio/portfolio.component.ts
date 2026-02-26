@@ -15,6 +15,8 @@ import { EuiInputTextComponent } from '@eui/components/eui-input-text';
 import { EuiTextareaComponent } from '@eui/components/eui-textarea';
 import { EuiHelperTextComponent } from '@eui/components/eui-helper-text';
 import { EuiPaginatorComponent } from '@eui/components/eui-paginator';
+import { EUI_TOGGLE_GROUP, EuiToggleGroupItemComponent } from '@eui/components/eui-toggle-group';
+import { EUI_CHIP } from '@eui/components/eui-chip';
 import { EuiGrowlService } from '@eui/core';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { ProjectService, Project, CreateProjectPayload, ProjectListParams } from '../../../core/project';
@@ -29,6 +31,7 @@ function keyFormatValidator(control: AbstractControl): ValidationErrors | null {
 @Component({
     selector: 'app-portfolio',
     templateUrl: './portfolio.component.html',
+    styleUrls: ['./portfolio.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         ReactiveFormsModule,
@@ -44,6 +47,8 @@ function keyFormatValidator(control: AbstractControl): ValidationErrors | null {
         EuiTextareaComponent,
         EuiHelperTextComponent,
         EuiPaginatorComponent,
+        ...EUI_TOGGLE_GROUP,
+        ...EUI_CHIP,
     ],
 })
 export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -66,6 +71,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     hasError = false;
     isSuperAdmin = false;
     createError = '';
+    activeStatusFilter: 'all' | 'active' | 'inactive' = 'all';
 
     params: ProjectListParams = {
         _page: 1,
@@ -158,6 +164,27 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         this.loadProjects();
     }
 
+    onStatusFilterChange(item: EuiToggleGroupItemComponent): void {
+        const filterMap: Record<string, 'all' | 'active' | 'inactive'> = {
+            'status-all': 'all',
+            'status-active': 'active',
+            'status-inactive': 'inactive',
+        };
+        this.activeStatusFilter = filterMap[item.id] ?? 'all';
+
+        const isActiveMap: Record<string, 'true' | 'false' | undefined> = {
+            'all': undefined,
+            'active': 'true',
+            'inactive': 'false',
+        };
+        this.params = {
+            ...this.params,
+            is_active: isActiveMap[this.activeStatusFilter],
+            _page: 1,
+        };
+        this.loadProjects();
+    }
+
     onOpenProject(project: Project): void {
         this.router.navigate(['screen/projects', project.id]);
     }
@@ -218,6 +245,12 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         if (this.params.q) {
             return 'No projects match your search criteria.';
+        }
+        if (this.activeStatusFilter === 'active') {
+            return 'No active projects found.';
+        }
+        if (this.activeStatusFilter === 'inactive') {
+            return 'No inactive projects found.';
         }
         return 'No projects available.';
     }

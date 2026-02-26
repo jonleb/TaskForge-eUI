@@ -13,10 +13,21 @@
     </eui-page-header>
     <eui-page-content>
 
-        <eui-table-filter
-            placeholder="Search projects..."
-            (filterChange)="onFilterChange($event)">
-        </eui-table-filter>
+        <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-s">
+            <eui-table-filter
+                placeholder="Search projects..."
+                (filterChange)="onFilterChange($event)">
+            </eui-table-filter>
+
+            @if (isSuperAdmin) {
+                <eui-toggle-group aria-label="Filter projects by status"
+                                  (itemClick)="onStatusFilterChange($event)">
+                    <eui-toggle-group-item id="status-all" [isChecked]="true">All</eui-toggle-group-item>
+                    <eui-toggle-group-item id="status-active">Active</eui-toggle-group-item>
+                    <eui-toggle-group-item id="status-inactive">Inactive</eui-toggle-group-item>
+                </eui-toggle-group>
+            }
+        </div>
 
         <p aria-live="polite" class="eui-u-mt-s eui-u-mb-s">
             Showing {{ projects.length }} of {{ total }} project{{ total !== 1 ? 's' : '' }}
@@ -35,6 +46,7 @@
                     <th scope="col" isSortable sortOn="key">Key</th>
                     <th scope="col" isSortable sortOn="name">Name</th>
                     <th scope="col">Description</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Actions</th>
                 </tr>
             </ng-template>
@@ -44,6 +56,13 @@
                     <td data-col-label="Key">{{ row.key }}</td>
                     <td data-col-label="Name">{{ row.name }}</td>
                     <td data-col-label="Description">{{ row.description }}</td>
+                    <td data-col-label="Status">
+                        @if (row.is_active) {
+                            <eui-chip euiSuccess euiSizeS [ariaLabel]="'Active'">Active</eui-chip>
+                        } @else {
+                            <eui-chip euiDanger euiSizeS [ariaLabel]="'Inactive'">Inactive</eui-chip>
+                        }
+                    </td>
                     <td data-col-label="Actions">
                         <button euiButton euiSecondary
                                 type="button"
@@ -57,7 +76,7 @@
 
             <ng-template euiTemplate="noData">
                 <tr>
-                    <td class="eui-u-text-center" colspan="4">
+                    <td class="eui-u-text-center" colspan="5">
                         {{ emptyStateMessage }}
                         @if (hasError) {
                             <button euiButton euiSecondary type="button"

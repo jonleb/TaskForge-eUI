@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
+import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
@@ -383,5 +383,111 @@ describe('PortfolioComponent', () => {
         component.hasError = false;
         component.params = { _page: 1, _limit: 10, _sort: 'name', _order: 'asc' };
         expect(component.emptyStateMessage).toBe('No projects available.');
+    });
+
+    // ─── Status filter (STORY-003) ───────────────────────────────────
+
+    it('should show status toggle group for SUPER_ADMIN', () => {
+        permissionServiceMock.isSuperAdmin.mockReturnValue(true);
+        fixture.detectChanges();
+        const toggleGroup = fixture.nativeElement.querySelector('eui-toggle-group');
+        expect(toggleGroup).toBeTruthy();
+        expect(toggleGroup.getAttribute('aria-label')).toBe('Filter projects by status');
+
+        const items = fixture.nativeElement.querySelectorAll('eui-toggle-group-item');
+        expect(items.length).toBe(3);
+    });
+
+    it('should hide status toggle group for regular user', () => {
+        permissionServiceMock.isSuperAdmin.mockReturnValue(false);
+        fixture.detectChanges();
+        const toggleGroup = fixture.nativeElement.querySelector('eui-toggle-group');
+        expect(toggleGroup).toBeNull();
+    });
+
+    it('should call loadProjects with is_active=true when active filter selected', () => {
+        fixture.detectChanges();
+        projectServiceMock.getProjects.mockClear();
+
+        component.onStatusFilterChange({ id: 'status-active' } as any);
+
+        expect(component.activeStatusFilter).toBe('active');
+        expect(projectServiceMock.getProjects).toHaveBeenCalledWith(
+            expect.objectContaining({ is_active: 'true', _page: 1 }),
+        );
+    });
+
+    it('should call loadProjects with is_active=false when inactive filter selected', () => {
+        fixture.detectChanges();
+        projectServiceMock.getProjects.mockClear();
+
+        component.onStatusFilterChange({ id: 'status-inactive' } as any);
+
+        expect(component.activeStatusFilter).toBe('inactive');
+        expect(projectServiceMock.getProjects).toHaveBeenCalledWith(
+            expect.objectContaining({ is_active: 'false', _page: 1 }),
+        );
+    });
+
+    it('should reset page to 1 on status filter change', () => {
+        fixture.detectChanges();
+        component.params = { ...component.params, _page: 3 };
+        projectServiceMock.getProjects.mockClear();
+
+        component.onStatusFilterChange({ id: 'status-active' } as any);
+
+        expect(component.params._page).toBe(1);
+    });
+
+    it('should clear is_active param when "All" filter selected', () => {
+        fixture.detectChanges();
+        component.onStatusFilterChange({ id: 'status-active' } as any);
+        projectServiceMock.getProjects.mockClear();
+
+        component.onStatusFilterChange({ id: 'status-all' } as any);
+
+        expect(component.activeStatusFilter).toBe('all');
+        expect(projectServiceMock.getProjects).toHaveBeenCalledWith(
+            expect.objectContaining({ is_active: undefined }),
+        );
+    });
+
+    // ─── Status column (STORY-003) ───────────────────────────────────
+
+    it('should display "Active" chip for active projects', () => {
+        fixture.detectChanges();
+        const chips = fixture.nativeElement.querySelectorAll('eui-chip');
+        expect(chips.length).toBeGreaterThan(0);
+        const activeChip = chips[0];
+        expect(activeChip.textContent.trim()).toBe('Active');
+    });
+
+    it('should display "Inactive" chip for inactive projects', () => {
+        const inactiveProject: Project = {
+            ...mockProjects[0], id: '99', name: 'Archived', is_active: false,
+        };
+        projectServiceMock.getProjects.mockReturnValue(of({
+            data: [inactiveProject], total: 1, page: 1, limit: 10,
+        }));
+        fixture.detectChanges();
+        const chips = fixture.nativeElement.querySelectorAll('eui-chip');
+        expect(chips.length).toBe(1);
+        expect(chips[0].textContent.trim()).toBe('Inactive');
+    });
+
+    // ─── Empty state messages for status filter (STORY-003) ──────────
+
+    it('should return active filter message when activeStatusFilter is "active"', () => {
+        component.hasError = false;
+        component.params = { _page: 1, _limit: 10, _sort: 'name', _order: 'asc' };
+        component.activeStatusFilter = 'active';
+        expect(component.emptyStateMessage).toBe('No active projects found.');
+    });
+
+    it('should return inactive filter message when activeStatusFilter is "inactive"', () => {
+        component.hasError = false;
+        component.params = { _page: 1, _limit: 10, _sort: 'name', _order: 'asc' };
+        component.activeStatusFilter = 'inactive';
+        expect(component.emptyStateMessage).toBe('No inactive projects found.');
     });
 });
