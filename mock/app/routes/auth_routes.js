@@ -75,8 +75,8 @@ module.exports = function (app, db) {
                 return res.status(404).json({ message: 'User not found' });
             }
 
-            const { password, ...profile } = user;
-            return res.status(200).json(profile);
+            const { password, id, ...profile } = user;
+            return res.status(200).json({ userId: id, ...profile });
         });
 
     });

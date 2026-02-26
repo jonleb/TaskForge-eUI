@@ -208,7 +208,7 @@ describe('GET /api/auth/me', () => {
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
-        expect(res.body.id).toBe('1');
+        expect(res.body.userId).toBe('1');
         expect(res.body.firstName).toBe('Super');
         expect(res.body.lastName).toBe('Admin');
         expect(res.body.email).toBe('superadmin@taskforge.local');
