@@ -7,6 +7,19 @@
   },
   "users": [
     {
+      "id": "26",
+      "username": "bousini",
+      "password": "Q3rWrHPQyPay",
+      "email": "bous@oi.local",
+      "role": "DEVELOPER",
+      "global_role": "DEVELOPER",
+      "firstName": "niko",
+      "lastName": "bousi",
+      "is_active": false,
+      "created_at": "2026-02-26T00:13:54.375Z",
+      "updated_at": "2026-02-26T00:14:08.819Z"
+    },
+    {
       "id": "21",
       "username": "olivia.anderson",
       "password": "SecurePassword!123",
@@ -330,30 +343,37 @@
       "is_active": false,
       "created_at": "2025-01-06T18:05:00.000Z",
       "updated_at": "2025-01-06T18:05:00.000Z"
-    },
-    {
-      "id": "26",
-      "username": "bousini",
-      "password": "Q3rWrHPQyPay",
-      "email": "bous@oi.local",
-      "role": "DEVELOPER",
-      "global_role": "DEVELOPER",
-      "firstName": "niko",
-      "lastName": "bousi",
-      "is_active": false,
-      "created_at": "2026-02-26T00:13:54.375Z",
-      "updated_at": "2026-02-26T00:14:08.819Z"
     }
   ],
   "projects": [
     {
-      "id": "1",
-      "key": "TF",
-      "name": "TaskForge Core",
-      "description": "Main product — task and project management platform",
+      "id": "5",
+      "key": "API",
+      "name": "API Gateway",
+      "description": "Central API gateway and routing",
       "created_by": "1",
-      "created_at": "2025-01-20T09:00:00.000Z",
-      "updated_at": "2025-06-01T10:00:00.000Z",
+      "created_at": "2025-04-15T10:00:00.000Z",
+      "updated_at": "2025-08-01T11:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "15",
+      "key": "ARCHIVE",
+      "name": "Archived Project",
+      "description": "Completed project — read-only",
+      "created_by": "1",
+      "created_at": "2025-03-01T10:00:00.000Z",
+      "updated_at": "2025-10-01T08:00:00.000Z",
+      "is_active": false
+    },
+    {
+      "id": "10",
+      "key": "DATA",
+      "name": "Data Pipeline",
+      "description": "ETL and data processing workflows",
+      "created_by": "1",
+      "created_at": "2025-07-01T08:00:00.000Z",
+      "updated_at": "2026-01-10T09:00:00.000Z",
       "is_active": true
     },
     {
@@ -367,6 +387,26 @@
       "is_active": true
     },
     {
+      "id": "9",
+      "key": "DESIGN",
+      "name": "Design System",
+      "description": "UI/UX design tokens and guidelines",
+      "created_by": "2",
+      "created_at": "2025-06-15T14:00:00.000Z",
+      "updated_at": "2025-12-01T10:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "6",
+      "key": "DOCS",
+      "name": "Documentation Portal",
+      "description": "User and developer documentation",
+      "created_by": "2",
+      "created_at": "2025-05-01T08:00:00.000Z",
+      "updated_at": "2025-09-15T09:00:00.000Z",
+      "is_active": true
+    },
+    {
       "id": "3",
       "key": "INFRA",
       "name": "Infrastructure",
@@ -374,6 +414,26 @@
       "created_by": "1",
       "created_at": "2025-02-10T08:00:00.000Z",
       "updated_at": "2025-04-01T09:00:00.000Z",
+      "is_active": false
+    },
+    {
+      "id": "14",
+      "key": "I18N",
+      "name": "Internationalization",
+      "description": "Multi-language support",
+      "created_by": "2",
+      "created_at": "2025-09-01T08:00:00.000Z",
+      "updated_at": "2026-02-10T09:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "11",
+      "key": "LEGACY",
+      "name": "Legacy Migration",
+      "description": "Migration from legacy systems",
+      "created_by": "1",
+      "created_at": "2025-07-15T10:00:00.000Z",
+      "updated_at": "2025-12-15T11:00:00.000Z",
       "is_active": false
     },
     {
@@ -387,24 +447,24 @@
       "is_active": true
     },
     {
-      "id": "5",
-      "key": "API",
-      "name": "API Gateway",
-      "description": "Central API gateway and routing",
+      "id": "13",
+      "key": "PERF",
+      "name": "Performance Lab",
+      "description": "Load testing and benchmarks",
       "created_by": "1",
-      "created_at": "2025-04-15T10:00:00.000Z",
-      "updated_at": "2025-08-01T11:00:00.000Z",
+      "created_at": "2025-08-15T11:00:00.000Z",
+      "updated_at": "2026-02-01T10:00:00.000Z",
       "is_active": true
     },
     {
-      "id": "6",
-      "key": "DOCS",
-      "name": "Documentation Portal",
-      "description": "User and developer documentation",
+      "id": "12",
+      "key": "POC",
+      "name": "Proof of Concept",
+      "description": "Experimental features and spikes",
       "created_by": "2",
-      "created_at": "2025-05-01T08:00:00.000Z",
-      "updated_at": "2025-09-15T09:00:00.000Z",
-      "is_active": true
+      "created_at": "2025-08-01T09:00:00.000Z",
+      "updated_at": "2026-01-05T14:00:00.000Z",
+      "is_active": false
     },
     {
       "id": "7",
@@ -427,74 +487,24 @@
       "is_active": true
     },
     {
-      "id": "9",
-      "key": "DESIGN",
-      "name": "Design System",
-      "description": "UI/UX design tokens and guidelines",
-      "created_by": "2",
-      "created_at": "2025-06-15T14:00:00.000Z",
-      "updated_at": "2025-12-01T10:00:00.000Z",
+      "id": "1",
+      "key": "TF",
+      "name": "TaskForge Core",
+      "description": "Main product — task and project management platform",
+      "created_by": "1",
+      "created_at": "2025-01-20T09:00:00.000Z",
+      "updated_at": "2025-06-01T10:00:00.000Z",
       "is_active": true
     },
     {
-      "id": "10",
-      "key": "DATA",
-      "name": "Data Pipeline",
-      "description": "ETL and data processing workflows",
+      "id": "16",
+      "key": "BU",
+      "name": "BURK",
+      "description": "BURK",
       "created_by": "1",
-      "created_at": "2025-07-01T08:00:00.000Z",
-      "updated_at": "2026-01-10T09:00:00.000Z",
+      "created_at": "2026-02-26T11:15:09.535Z",
+      "updated_at": "2026-02-26T11:15:09.535Z",
       "is_active": true
-    },
-    {
-      "id": "11",
-      "key": "LEGACY",
-      "name": "Legacy Migration",
-      "description": "Migration from legacy systems",
-      "created_by": "1",
-      "created_at": "2025-07-15T10:00:00.000Z",
-      "updated_at": "2025-12-15T11:00:00.000Z",
-      "is_active": false
-    },
-    {
-      "id": "12",
-      "key": "POC",
-      "name": "Proof of Concept",
-      "description": "Experimental features and spikes",
-      "created_by": "2",
-      "created_at": "2025-08-01T09:00:00.000Z",
-      "updated_at": "2026-01-05T14:00:00.000Z",
-      "is_active": false
-    },
-    {
-      "id": "13",
-      "key": "PERF",
-      "name": "Performance Lab",
-      "description": "Load testing and benchmarks",
-      "created_by": "1",
-      "created_at": "2025-08-15T11:00:00.000Z",
-      "updated_at": "2026-02-01T10:00:00.000Z",
-      "is_active": true
-    },
-    {
-      "id": "14",
-      "key": "I18N",
-      "name": "Internationalization",
-      "description": "Multi-language support",
-      "created_by": "2",
-      "created_at": "2025-09-01T08:00:00.000Z",
-      "updated_at": "2026-02-10T09:00:00.000Z",
-      "is_active": true
-    },
-    {
-      "id": "15",
-      "key": "ARCHIVE",
-      "name": "Archived Project",
-      "description": "Completed project — read-only",
-      "created_by": "1",
-      "created_at": "2025-03-01T10:00:00.000Z",
-      "updated_at": "2025-10-01T08:00:00.000Z",
-      "is_active": false
     }
   ],
   "project-members": [

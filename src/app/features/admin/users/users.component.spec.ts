@@ -240,11 +240,13 @@ describe('UsersComponent', () => {
         });
     });
 
-    it('should display status as "Active"/"Inactive" text', () => {
+    it('should display status as chips with "Active"/"Inactive" text', () => {
         initWithData();
         const statusCells = fixture.nativeElement.querySelectorAll('td[data-col-label="Status"]');
-        expect(statusCells[0].textContent.trim()).toBe('Active');
-        expect(statusCells[1].textContent.trim()).toBe('Inactive');
+        expect(statusCells[0].querySelector('eui-chip')).toBeTruthy();
+        expect(statusCells[0].textContent).toContain('Active');
+        expect(statusCells[1].querySelector('eui-chip')).toBeTruthy();
+        expect(statusCells[1].textContent).toContain('Inactive');
     });
 
     it('should have aria-label on action buttons', () => {

@@ -60,7 +60,13 @@
                     <td data-col-label="Last Name">{{ row.lastName }}</td>
                     <td data-col-label="Email">{{ row.email }}</td>
                     <td data-col-label="Role">{{ row.role }}</td>
-                    <td data-col-label="Status">{{ row.is_active ? 'Active' : 'Inactive' }}</td>
+                    <td data-col-label="Status">
+                        @if (row.is_active) {
+                            <eui-chip euiSuccess euiSizeS [ariaLabel]="'Active'">Active</eui-chip>
+                        } @else {
+                            <eui-chip euiDanger euiSizeS [ariaLabel]="'Inactive'">Inactive</eui-chip>
+                        }
+                    </td>
                     <td data-col-label="Actions">
                         <eui-icon-button
                             icon="key:regular"

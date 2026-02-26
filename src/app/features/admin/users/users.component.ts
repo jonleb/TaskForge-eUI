@@ -15,6 +15,7 @@ import { EUI_LABEL } from '@eui/components/eui-label';
 import { EUI_INPUT_GROUP } from '@eui/components/eui-input-group';
 import { EUI_FEEDBACK_MESSAGE } from '@eui/components/eui-feedback-message';
 import { EUI_TOGGLE_GROUP, EuiToggleGroupItemComponent } from '@eui/components/eui-toggle-group';
+import { EUI_CHIP } from '@eui/components/eui-chip';
 import { EuiGrowlService } from '@eui/core';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { AdminUserService } from './admin-user.service';
@@ -36,6 +37,7 @@ import { AdminUser, AdminUserListParams, UserRole } from './admin-user.models';
         ...EUI_INPUT_GROUP,
         ...EUI_FEEDBACK_MESSAGE,
         ...EUI_TOGGLE_GROUP,
+        ...EUI_CHIP,
         EuiTemplateDirective,
         EuiPaginatorComponent,
         EuiDialogComponent,
