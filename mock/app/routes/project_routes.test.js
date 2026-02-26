@@ -644,3 +644,316 @@ describe('PATCH /api/projects/:projectId', () => {
         expect(res.body.message).toMatch(/name already exists/i);
     });
 });
+
+// --- PUT /api/projects/:projectId/members (upsert) ---
+
+describe('PUT /api/projects/:projectId/members', () => {
+
+    it('should return 401 without token', async () => {
+        const res = await request(app)
+            .put('/api/projects/1/members')
+            .send({ userId: '23', role: 'DEVELOPER' });
+        expect(res.status).toBe(401);
+    });
+
+    it('should return 403 for DEVELOPER (non-manager)', async () => {
+        const token = await getTokenFor('developer');
+        const res = await request(app)
+            .put('/api/projects/1/members')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ userId: '23', role: 'DEVELOPER' });
+        expect(res.status).toBe(403);
+    });
+
+    it('should return 403 for VIEWER (non-manager)', async () => {
+        const token = await getTokenFor('viewer');
+        const res = await request(app)
+            .put('/api/projects/1/members')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ userId: '23', role: 'DEVELOPER' });
+        expect(res.status).toBe(403);
+    });
+
+    it('should return 400 when userId is missing', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/members')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ role: 'DEVELOPER' });
+        expect(res.status).toBe(400);
+        expect(res.body.message).toMatch(/userId/i);
+    });
+
+    it('should return 400 when role is invalid', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/members')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ userId: '23', role: 'INVALID_ROLE' });
+        expect(res.status).toBe(400);
+        expect(res.body.message).toMatch(/invalid role/i);
+    });
+
+    it('should return 400 when target user does not exist', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/members')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ userId: '999', role: 'DEVELOPER' });
+        expect(res.status).toBe(400);
+        expect(res.body.message).toMatch(/not found or inactive/i);
+    });
+
+    it('should return 400 when target user is inactive', async () => {
+        // inactive_user has id 7, is_active: false
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/members')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ userId: '7', role: 'DEVELOPER' });
+        expect(res.status).toBe(400);
+        expect(res.body.message).toMatch(/not found or inactive/i);
+    });
+
+    it('should return 403 when PROJECT_ADMIN tries to mutate a SUPER_ADMIN membership', async () => {
+        // projectadmin (id 2) is PROJECT_ADMIN of project 1
+        // alice.smith (id 8) has global role SUPER_ADMIN
+        const token = await getTokenFor('projectadmin');
+        const res = await request(app)
+            .put('/api/projects/1/members')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ userId: '8', role: 'DEVELOPER' });
+        expect(res.status).toBe(403);
+        expect(res.body.message).toMatch(/super administrator/i);
+    });
+
+    it('should allow SUPER_ADMIN to mutate another SUPER_ADMIN membership', async () => {
+        // superadmin (id 1) adding alice.smith (id 8, SUPER_ADMIN) to project 1
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/members')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ userId: '8', role: 'DEVELOPER' });
+        // Could be 201 (new) or 200 (update) depending on prior state
+        expect([200, 201]).toContain(res.status);
+        expect(res.body.userId).toBe('8');
+        expect(res.body.role).toBe('DEVELOPER');
+        expect(res.body.firstName).toBe('Alice');
+    });
+
+    it('should add a new member (201) with enriched response', async () => {
+        // rachel.moore (id 23) is NOT a member of project 1
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/members')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ userId: '23', role: 'REPORTER' });
+
+        expect(res.status).toBe(201);
+        expect(res.body.userId).toBe('23');
+        expect(res.body.role).toBe('REPORTER');
+        expect(res.body.joined_at).toBeDefined();
+        expect(res.body.firstName).toBe('Rachel');
+        expect(res.body.lastName).toBe('Moore');
+        expect(res.body.email).toBe('rachel.moore@taskforge.local');
+        expect(res.body.id).toBeDefined();
+        expect(res.body.password).toBeUndefined();
+    });
+
+    it('should update role of existing member (200)', async () => {
+        // developer (id 4) is DEVELOPER in project 1 — change to REPORTER
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/members')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ userId: '4', role: 'REPORTER' });
+
+        expect(res.status).toBe(200);
+        expect(res.body.userId).toBe('4');
+        expect(res.body.role).toBe('REPORTER');
+        expect(res.body.firstName).toBe('Dev');
+    });
+});
+
+// --- DELETE /api/projects/:projectId/members/:userId ---
+
+describe('DELETE /api/projects/:projectId/members/:userId', () => {
+
+    it('should return 401 without token', async () => {
+        const res = await request(app)
+            .delete('/api/projects/1/members/4');
+        expect(res.status).toBe(401);
+    });
+
+    it('should return 403 for DEVELOPER (non-manager)', async () => {
+        const token = await getTokenFor('developer');
+        const res = await request(app)
+            .delete('/api/projects/1/members/6')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(403);
+    });
+
+    it('should return 404 when membership does not exist', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .delete('/api/projects/1/members/999')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(404);
+        expect(res.body.message).toMatch(/member not found/i);
+    });
+
+    it('should return 403 when PROJECT_ADMIN tries to remove a SUPER_ADMIN', async () => {
+        // First add alice.smith (id 8, SUPER_ADMIN) to project 1 via superadmin
+        const saToken = await getTokenFor('superadmin');
+        await request(app)
+            .put('/api/projects/1/members')
+            .set('Authorization', `Bearer ${saToken}`)
+            .send({ userId: '8', role: 'DEVELOPER' });
+
+        // Now projectadmin tries to remove her
+        const paToken = await getTokenFor('projectadmin');
+        const res = await request(app)
+            .delete('/api/projects/1/members/8')
+            .set('Authorization', `Bearer ${paToken}`);
+        expect(res.status).toBe(403);
+        expect(res.body.message).toMatch(/super administrator/i);
+    });
+
+    it('should remove a member (204)', async () => {
+        // First add leo.lopez (id 24) to project 1
+        const token = await getTokenFor('superadmin');
+        const addRes = await request(app)
+            .put('/api/projects/1/members')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ userId: '24', role: 'VIEWER' });
+        expect([200, 201]).toContain(addRes.status);
+
+        // Now remove
+        const res = await request(app)
+            .delete('/api/projects/1/members/24')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(204);
+
+        // Verify removed — should be 404 now
+        const res2 = await request(app)
+            .delete('/api/projects/1/members/24')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res2.status).toBe(404);
+    });
+});
+
+// --- GET /api/projects/:projectId/members/candidates ---
+
+describe('GET /api/projects/:projectId/members/candidates', () => {
+
+    it('should return 401 without token', async () => {
+        const res = await request(app)
+            .get('/api/projects/1/members/candidates?q=test');
+        expect(res.status).toBe(401);
+    });
+
+    it('should return 403 for DEVELOPER (non-manager)', async () => {
+        const token = await getTokenFor('developer');
+        const res = await request(app)
+            .get('/api/projects/1/members/candidates?q=test')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(403);
+    });
+
+    it('should return empty array when q is missing', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/members/candidates')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual([]);
+    });
+
+    it('should return empty array when q is too short (< 2 chars)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/members/candidates?q=a')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual([]);
+    });
+
+    it('should search by firstName (case-insensitive)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/members/candidates?q=leo')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+        // leo.lopez (id 24) is not a member of project 1
+        const ids = res.body.map(c => c.id);
+        expect(ids).toContain('24');
+    });
+
+    it('should search by email', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/members/candidates?q=leo.lopez')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+        const ids = res.body.map(c => c.id);
+        expect(ids).toContain('24');
+    });
+
+    it('should exclude existing project members', async () => {
+        const token = await getTokenFor('superadmin');
+        // developer (id 4) is a member of project 1 — should not appear
+        const res = await request(app)
+            .get('/api/projects/1/members/candidates?q=dev')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+        const ids = res.body.map(c => c.id);
+        expect(ids).not.toContain('4');
+    });
+
+    it('should not return inactive users', async () => {
+        const token = await getTokenFor('superadmin');
+        // inactive_user (id 7) is inactive
+        const res = await request(app)
+            .get('/api/projects/1/members/candidates?q=inactive')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+        const ids = res.body.map(c => c.id);
+        expect(ids).not.toContain('7');
+    });
+
+    it('should not include password in results', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/members/candidates?q=leo')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+        res.body.forEach(c => {
+            expect(c.password).toBeUndefined();
+            expect(c.id).toBeDefined();
+            expect(c.firstName).toBeDefined();
+            expect(c.lastName).toBeDefined();
+            expect(c.email).toBeDefined();
+            expect(c.role).toBeDefined();
+        });
+    });
+
+    it('should return max 10 results', async () => {
+        const token = await getTokenFor('superadmin');
+        // Search with a broad term that matches many users
+        const res = await request(app)
+            .get('/api/projects/1/members/candidates?q=taskforge')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+        expect(res.body.length).toBeLessThanOrEqual(10);
+    });
+
+    it('should allow PROJECT_ADMIN of the project to search', async () => {
+        // projectadmin (id 2) is PROJECT_ADMIN of project 1
+        const token = await getTokenFor('projectadmin');
+        const res = await request(app)
+            .get('/api/projects/1/members/candidates?q=leo')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+    });
+});

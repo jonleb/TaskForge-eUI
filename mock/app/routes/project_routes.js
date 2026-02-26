@@ -33,6 +33,22 @@ function generateProjectKey(name, existingKeys) {
     return base + Date.now(); // fallback — should never happen
 }
 
+/**
+ * Enriches a project-member record with user details (no password).
+ */
+function enrichMember(db, member) {
+    const user = db.get('users').find({ id: member.userId }).value();
+    return {
+        id: member.id,
+        userId: member.userId,
+        role: member.role,
+        joined_at: member.joined_at,
+        firstName: user ? user.firstName : '',
+        lastName: user ? user.lastName : '',
+        email: user ? user.email : '',
+    };
+}
+
 module.exports = function (app, db) {
     db.then(db => {
 
@@ -146,20 +162,153 @@ module.exports = function (app, db) {
                     .filter({ projectId: req.params.projectId })
                     .value();
 
-                const enriched = members.map(m => {
-                    const user = db.get('users').find({ id: m.userId }).value();
-                    return {
-                        id: m.id,
-                        userId: m.userId,
-                        role: m.role,
-                        joined_at: m.joined_at,
-                        firstName: user ? user.firstName : '',
-                        lastName: user ? user.lastName : '',
-                        email: user ? user.email : '',
-                    };
-                });
+                const enriched = members.map(m => enrichMember(db, m));
 
                 return res.json(enriched);
+            }
+        );
+
+        /**
+         * GET /api/projects/:projectId/members/candidates?q=search
+         * Protected — requires PROJECT_ADMIN role (SUPER_ADMIN bypasses).
+         * Returns active users matching search who are NOT already members of the project.
+         * Response: [{ id, firstName, lastName, email, role }] (max 10).
+         */
+        app.get(
+            '/api/projects/:projectId/members/candidates',
+            authMiddleware,
+            requireProjectRole(db, 'PROJECT_ADMIN'),
+            (req, res) => {
+                const q = (req.query.q || '').trim().toLowerCase();
+                if (q.length < 2) {
+                    return res.json([]);
+                }
+
+                const memberUserIds = db.get('project-members')
+                    .filter({ projectId: req.params.projectId })
+                    .map('userId')
+                    .value();
+
+                const candidates = db.get('users').value()
+                    .filter(u =>
+                        u.is_active === true &&
+                        !memberUserIds.includes(u.id) &&
+                        (
+                            u.firstName.toLowerCase().includes(q) ||
+                            u.lastName.toLowerCase().includes(q) ||
+                            u.email.toLowerCase().includes(q)
+                        )
+                    )
+                    .slice(0, 10)
+                    .map(u => ({
+                        id: u.id,
+                        firstName: u.firstName,
+                        lastName: u.lastName,
+                        email: u.email,
+                        role: u.role,
+                    }));
+
+                return res.json(candidates);
+            }
+        );
+
+        /**
+         * PUT /api/projects/:projectId/members
+         * Upsert a project member (add or update role).
+         * Protected — requires PROJECT_ADMIN role (SUPER_ADMIN bypasses).
+         * Body: { userId: string, role: string }
+         * Returns 201 for new member, 200 for role update. Body: enriched member.
+         */
+        app.put(
+            '/api/projects/:projectId/members',
+            authMiddleware,
+            requireProjectRole(db, 'PROJECT_ADMIN'),
+            (req, res) => {
+                const { userId, role } = req.body;
+
+                // Validate userId
+                if (!userId || String(userId).trim() === '') {
+                    return res.status(400).json({ message: 'userId is required' });
+                }
+
+                // Validate role
+                if (!role || !ALL_PROJECT_ROLES.includes(role)) {
+                    return res.status(400).json({
+                        message: 'Invalid role. Must be one of: PROJECT_ADMIN, PRODUCT_OWNER, DEVELOPER, REPORTER, VIEWER',
+                    });
+                }
+
+                // Check target user exists and is active
+                const targetUser = db.get('users').find({ id: String(userId) }).value();
+                if (!targetUser || targetUser.is_active === false) {
+                    return res.status(400).json({ message: 'User not found or inactive' });
+                }
+
+                // SUPER_ADMIN protection: PROJECT_ADMIN cannot mutate a SUPER_ADMIN membership
+                if (targetUser.role === 'SUPER_ADMIN' && req.user.role !== 'SUPER_ADMIN') {
+                    return res.status(403).json({ message: 'Cannot modify membership of a super administrator' });
+                }
+
+                const projectId = req.params.projectId;
+                const existing = db.get('project-members')
+                    .find({ projectId, userId: String(userId) })
+                    .value();
+
+                if (existing) {
+                    // Update role
+                    db.get('project-members')
+                        .find({ id: existing.id })
+                        .assign({ role })
+                        .write();
+                    const updated = db.get('project-members').find({ id: existing.id }).value();
+                    return res.status(200).json(enrichMember(db, updated));
+                } else {
+                    // Create new membership
+                    const allMembers = db.get('project-members').value();
+                    const maxId = allMembers.reduce((max, m) => Math.max(max, parseInt(m.id, 10) || 0), 0);
+                    const newMember = {
+                        id: String(maxId + 1),
+                        projectId,
+                        userId: String(userId),
+                        role,
+                        joined_at: new Date().toISOString(),
+                    };
+                    db.get('project-members').push(newMember).write();
+                    return res.status(201).json(enrichMember(db, newMember));
+                }
+            }
+        );
+
+        /**
+         * DELETE /api/projects/:projectId/members/:userId
+         * Remove a member from the project.
+         * Protected — requires PROJECT_ADMIN role (SUPER_ADMIN bypasses).
+         * Returns 204 on success.
+         */
+        app.delete(
+            '/api/projects/:projectId/members/:userId',
+            authMiddleware,
+            requireProjectRole(db, 'PROJECT_ADMIN'),
+            (req, res) => {
+                const projectId = req.params.projectId;
+                const userId = req.params.userId;
+
+                const membership = db.get('project-members')
+                    .find({ projectId, userId: String(userId) })
+                    .value();
+
+                if (!membership) {
+                    return res.status(404).json({ message: 'Member not found' });
+                }
+
+                // SUPER_ADMIN protection
+                const targetUser = db.get('users').find({ id: String(userId) }).value();
+                if (targetUser && targetUser.role === 'SUPER_ADMIN' && req.user.role !== 'SUPER_ADMIN') {
+                    return res.status(403).json({ message: 'Cannot modify membership of a super administrator' });
+                }
+
+                db.get('project-members').remove({ id: membership.id }).write();
+                return res.status(204).send();
             }
         );
 
