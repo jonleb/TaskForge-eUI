@@ -636,6 +636,132 @@ module.exports = function (app, db) {
         );
 
         /**
+         * GET /api/projects/:projectId/backlog/:ticketNumber/comments
+         * Returns all comments for a ticket, sorted by created_at desc.
+         * Protected — requires valid token + project membership (any role).
+         */
+        app.get(
+            '/api/projects/:projectId/backlog/:ticketNumber/comments',
+            authMiddleware,
+            requireProjectRole(db, ...ALL_PROJECT_ROLES),
+            (req, res) => {
+                const projectId = req.params.projectId;
+                const ticketNumber = parseInt(req.params.ticketNumber, 10);
+
+                if (isNaN(ticketNumber)) {
+                    return res.status(400).json({ message: 'Invalid ticket number' });
+                }
+
+                const item = db.get('backlog-items')
+                    .find({ projectId, ticket_number: ticketNumber })
+                    .value();
+
+                if (!item) {
+                    return res.status(404).json({ message: 'Ticket not found' });
+                }
+
+                const comments = db.get('ticket-comments')
+                    .filter({ projectId, ticketId: item.id })
+                    .sortBy('created_at')
+                    .value()
+                    .reverse();
+
+                return res.json(comments);
+            }
+        );
+
+        /**
+         * POST /api/projects/:projectId/backlog/:ticketNumber/comments
+         * Add a comment to a ticket.
+         * Body: { content: string } (1–2000 chars)
+         * Protected — requires non-VIEWER project role.
+         */
+        app.post(
+            '/api/projects/:projectId/backlog/:ticketNumber/comments',
+            authMiddleware,
+            requireProjectRole(db, 'PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER', 'REPORTER'),
+            (req, res) => {
+                const projectId = req.params.projectId;
+                const ticketNumber = parseInt(req.params.ticketNumber, 10);
+
+                if (isNaN(ticketNumber)) {
+                    return res.status(400).json({ message: 'Invalid ticket number' });
+                }
+
+                const item = db.get('backlog-items')
+                    .find({ projectId, ticket_number: ticketNumber })
+                    .value();
+
+                if (!item) {
+                    return res.status(404).json({ message: 'Ticket not found' });
+                }
+
+                const { content } = req.body;
+                const trimmed = (content || '').trim();
+                if (!trimmed || trimmed.length < 1 || trimmed.length > 2000) {
+                    return res.status(400).json({ message: 'Comment content must be 1–2000 characters' });
+                }
+
+                // Resolve author name
+                const author = db.get('users').find({ id: String(req.user.userId) }).value();
+                const authorName = author ? `${author.firstName} ${author.lastName}` : 'Unknown';
+
+                const allComments = db.get('ticket-comments').value();
+                const maxId = allComments.reduce((max, c) => Math.max(max, parseInt(c.id, 10) || 0), 0);
+
+                const now = new Date().toISOString();
+                const newComment = {
+                    id: String(maxId + 1),
+                    projectId,
+                    ticketId: item.id,
+                    ticketNumber,
+                    authorId: String(req.user.userId),
+                    authorName,
+                    content: trimmed,
+                    created_at: now,
+                };
+
+                db.get('ticket-comments').push(newComment).write();
+                return res.status(201).json(newComment);
+            }
+        );
+
+        /**
+         * GET /api/projects/:projectId/backlog/:ticketNumber/activity
+         * Returns all activity entries for a ticket, sorted by created_at desc.
+         * Protected — requires valid token + project membership (any role).
+         */
+        app.get(
+            '/api/projects/:projectId/backlog/:ticketNumber/activity',
+            authMiddleware,
+            requireProjectRole(db, ...ALL_PROJECT_ROLES),
+            (req, res) => {
+                const projectId = req.params.projectId;
+                const ticketNumber = parseInt(req.params.ticketNumber, 10);
+
+                if (isNaN(ticketNumber)) {
+                    return res.status(400).json({ message: 'Invalid ticket number' });
+                }
+
+                const item = db.get('backlog-items')
+                    .find({ projectId, ticket_number: ticketNumber })
+                    .value();
+
+                if (!item) {
+                    return res.status(404).json({ message: 'Ticket not found' });
+                }
+
+                const activities = db.get('ticket-activity')
+                    .filter({ projectId, ticketId: item.id })
+                    .sortBy('created_at')
+                    .value()
+                    .reverse();
+
+                return res.json(activities);
+            }
+        );
+
+        /**
          * PUT /api/projects/:projectId/members
          * Upsert a project member (add or update role).
          * Protected — requires PROJECT_ADMIN role (SUPER_ADMIN bypasses).

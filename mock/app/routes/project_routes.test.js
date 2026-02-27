@@ -1831,3 +1831,155 @@ describe('PATCH /api/projects/:projectId/backlog/:ticketNumber', () => {
         expect(res.status).toBe(200);
     });
 });
+
+// --- GET /api/projects/:projectId/backlog/:ticketNumber/comments ---
+
+describe('GET /api/projects/:projectId/backlog/:ticketNumber/comments', () => {
+
+    it('should return empty array for ticket with no comments', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog/2/comments')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+    });
+
+    it('should return 404 for non-existent ticket', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog/9999/comments')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(404);
+    });
+
+    it('should return 401 without token', async () => {
+        const res = await request(app).get('/api/projects/1/backlog/2/comments');
+        expect(res.status).toBe(401);
+    });
+});
+
+// --- POST /api/projects/:projectId/backlog/:ticketNumber/comments ---
+
+describe('POST /api/projects/:projectId/backlog/:ticketNumber/comments', () => {
+
+    it('should create a comment successfully', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog/2/comments')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ content: 'This is a test comment' });
+
+        expect(res.status).toBe(201);
+        expect(res.body.content).toBe('This is a test comment');
+        expect(res.body.authorId).toBe('1');
+        expect(res.body.authorName).toBeDefined();
+        expect(res.body.ticketNumber).toBe(2);
+    });
+
+    it('should validate content length (empty)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog/2/comments')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ content: '' });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain('1–2000');
+    });
+
+    it('should return 403 for VIEWER', async () => {
+        const token = await getTokenFor('viewer');
+        const res = await request(app)
+            .post('/api/projects/1/backlog/2/comments')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ content: 'Should not work' });
+
+        expect(res.status).toBe(403);
+    });
+
+    it('should return comments sorted by newest first', async () => {
+        const token = await getTokenFor('superadmin');
+        // Add a second comment
+        await request(app)
+            .post('/api/projects/1/backlog/2/comments')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ content: 'Second comment' });
+
+        const res = await request(app)
+            .get('/api/projects/1/backlog/2/comments')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.length).toBeGreaterThanOrEqual(2);
+        // Newest first
+        const dates = res.body.map(c => c.created_at);
+        for (let i = 1; i < dates.length; i++) {
+            expect(dates[i - 1] >= dates[i]).toBe(true);
+        }
+    });
+
+    it('should return 404 for non-existent ticket', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog/9999/comments')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ content: 'Should not work' });
+
+        expect(res.status).toBe(404);
+    });
+
+    it('should return 401 without token', async () => {
+        const res = await request(app)
+            .post('/api/projects/1/backlog/2/comments')
+            .send({ content: 'No auth' });
+
+        expect(res.status).toBe(401);
+    });
+});
+
+// --- GET /api/projects/:projectId/backlog/:ticketNumber/activity ---
+
+describe('GET /api/projects/:projectId/backlog/:ticketNumber/activity', () => {
+
+    it('should return activity entries after a PATCH', async () => {
+        const token = await getTokenFor('superadmin');
+        // The PATCH tests in STORY-001 already generated activity for ticket 6
+        const res = await request(app)
+            .get('/api/projects/1/backlog/6/activity')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBeGreaterThanOrEqual(1);
+        expect(res.body[0].field).toBeDefined();
+        expect(res.body[0].changedBy).toBeDefined();
+    });
+
+    it('should return empty array for ticket with no activity', async () => {
+        const token = await getTokenFor('superadmin');
+        // Ticket 7 in project 1 should have no activity
+        const res = await request(app)
+            .get('/api/projects/1/backlog/7/activity')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+    });
+
+    it('should return 404 for non-existent ticket', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog/9999/activity')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(404);
+    });
+
+    it('should return 401 without token', async () => {
+        const res = await request(app).get('/api/projects/1/backlog/2/activity');
+        expect(res.status).toBe(401);
+    });
+});
