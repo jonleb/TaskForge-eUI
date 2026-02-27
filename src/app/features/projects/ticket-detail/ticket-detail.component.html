@@ -225,6 +225,46 @@
                     </button>
                 </div>
             }
+
+            <!-- Comments section -->
+            <section class="comments-section eui-u-mt-l" aria-label="Comments">
+                <h3 class="eui-u-f-l eui-u-mb-m">{{ 'ticket-detail.comments.title' | translate }}</h3>
+
+                @if (canEdit) {
+                    <div class="add-comment eui-u-mb-m">
+                        <label euiLabel for="new-comment">{{ 'ticket-detail.comments.add-placeholder' | translate }}</label>
+                        <textarea euiTextArea id="new-comment"
+                                  [(ngModel)]="newCommentText"
+                                  [placeholder]="'ticket-detail.comments.add-placeholder' | translate"
+                                  maxlength="2000"
+                                  rows="3"
+                                  aria-required="true"></textarea>
+                        <div class="eui-u-mt-xs">
+                            <button euiButton euiPrimary euiSizeS
+                                    (click)="submitComment()"
+                                    [attr.aria-busy]="isAddingComment">
+                                {{ 'ticket-detail.comments.submit' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                }
+
+                @if (comments.length === 0) {
+                    <p class="eui-u-f-m eui-u-c-text-secondary">{{ 'ticket-detail.comments.empty' | translate }}</p>
+                } @else {
+                    <ul class="comment-list">
+                        @for (comment of comments; track comment.id) {
+                            <li class="comment-item eui-u-mb-m">
+                                <div class="comment-meta eui-u-f-s eui-u-c-text-secondary">
+                                    <span class="comment-author">{{ comment.authorName }}</span>
+                                    <span class="comment-date">{{ comment.created_at | date:'medium' }}</span>
+                                </div>
+                                <p class="comment-content eui-u-mt-2xs">{{ comment.content }}</p>
+                            </li>
+                        }
+                    </ul>
+                }
+            </section>
         }
     </eui-page-content>
 </eui-page>

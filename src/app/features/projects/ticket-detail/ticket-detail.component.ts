@@ -19,7 +19,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
     ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember,
     Workflow, WorkflowStatus, TicketPriority, UpdateTicketPayload,
-    TICKET_PRIORITIES,
+    TICKET_PRIORITIES, TicketComment,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
@@ -72,6 +72,11 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
     readonly priorities = TICKET_PRIORITIES;
 
+    // Comments
+    comments: TicketComment[] = [];
+    newCommentText = '';
+    isAddingComment = false;
+
     ngOnInit(): void {
         combineLatest([
             this.projectContext.currentProject$.pipe(filter((p): p is Project => p !== null)),
@@ -96,6 +101,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
                 this.ticket = ticket;
                 this.isLoading = false;
                 this.syncEditFields();
+                this.loadComments();
                 this.cdr.markForCheck();
             },
             error: (err) => {
@@ -240,6 +246,49 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         if (!ticket) return '';
         const member = this.members.find(m => m.userId === ticket.created_by);
         return member ? `${member.firstName} ${member.lastName}` : ticket.created_by;
+    }
+
+    // --- Comments ---
+
+    loadComments(): void {
+        if (!this.project || !this.ticket) return;
+        this.projectService.getComments(this.project.id, this.ticket.ticket_number).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe(comments => {
+            this.comments = comments;
+            this.cdr.markForCheck();
+        });
+    }
+
+    submitComment(): void {
+        if (!this.project || !this.ticket || this.isAddingComment || !this.newCommentText.trim()) return;
+        this.isAddingComment = true;
+        this.cdr.markForCheck();
+
+        this.projectService.addComment(this.project.id, this.ticket.ticket_number, this.newCommentText.trim()).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe({
+            next: () => {
+                this.newCommentText = '';
+                this.isAddingComment = false;
+                this.loadComments();
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: this.translate.instant('ticket-detail.comments.growl.added'),
+                    detail: this.translate.instant('ticket-detail.comments.growl.added'),
+                });
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.isAddingComment = false;
+                this.growlService.growl({
+                    severity: 'error',
+                    summary: this.translate.instant('ticket-detail.comments.growl.failed'),
+                    detail: this.translate.instant('ticket-detail.comments.growl.failed'),
+                });
+                this.cdr.markForCheck();
+            },
+        });
     }
 
     // --- Private ---

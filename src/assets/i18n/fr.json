@@ -273,5 +273,11 @@
   "ticket-detail.growl.updated-summary": "Ticket mis à jour",
   "ticket-detail.growl.updated-detail": "Modifications enregistrées.",
   "ticket-detail.growl.update-failed": "Échec de la sauvegarde.",
-  "ticket-detail.read-only": "Vous avez un accès en lecture seule à ce ticket."
+  "ticket-detail.read-only": "Vous avez un accès en lecture seule à ce ticket.",
+  "ticket-detail.comments.title": "Commentaires",
+  "ticket-detail.comments.add-placeholder": "Écrire un commentaire...",
+  "ticket-detail.comments.submit": "Ajouter un commentaire",
+  "ticket-detail.comments.empty": "Aucun commentaire.",
+  "ticket-detail.comments.growl.added": "Commentaire ajouté",
+  "ticket-detail.comments.growl.failed": "Échec de l'ajout du commentaire."
 }

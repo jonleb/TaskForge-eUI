@@ -375,4 +375,84 @@ describe('TicketDetailComponent', () => {
         component.saveChanges();
         expect(svc['updateTicket']).not.toHaveBeenCalled();
     });
+
+    // --- STORY-006: Comments Section ---
+
+    it('should load comments after ticket loads', () => {
+        svc['getComments'].mockReturnValue(of([]));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(svc['getComments']).toHaveBeenCalledWith('1', 5);
+    });
+
+    it('should display comment list', () => {
+        const mockComments = [
+            { id: 'c1', projectId: '1', ticketId: '17', ticketNumber: 5, authorId: '2', authorName: 'Bob Smith', content: 'Looks good', created_at: '2026-02-15T10:00:00.000Z' },
+            { id: 'c2', projectId: '1', ticketId: '17', ticketNumber: 5, authorId: '3', authorName: 'Jane Doe', content: 'Needs review', created_at: '2026-02-16T10:00:00.000Z' },
+        ];
+        svc['getComments'].mockReturnValue(of(mockComments));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const items = fixture.nativeElement.querySelectorAll('.comment-item');
+        expect(items.length).toBe(2);
+    });
+
+    it('should display author name and date in comment', () => {
+        const mockComments = [
+            { id: 'c1', projectId: '1', ticketId: '17', ticketNumber: 5, authorId: '2', authorName: 'Bob Smith', content: 'Test comment', created_at: '2026-02-15T10:00:00.000Z' },
+        ];
+        svc['getComments'].mockReturnValue(of(mockComments));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const author = fixture.nativeElement.querySelector('.comment-author');
+        expect(author.textContent).toContain('Bob Smith');
+        const content = fixture.nativeElement.querySelector('.comment-content');
+        expect(content.textContent).toContain('Test comment');
+    });
+
+    it('should show empty state when no comments', () => {
+        svc['getComments'].mockReturnValue(of([]));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(fixture.nativeElement.textContent).toContain('ticket-detail.comments.empty');
+    });
+
+    it('should show add comment form when canEdit', () => {
+        svc['getComments'].mockReturnValue(of([]));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const textarea = fixture.nativeElement.querySelector('#new-comment');
+        expect(textarea).toBeTruthy();
+    });
+
+    it('should hide add comment form when cannot edit', () => {
+        svc['getComments'].mockReturnValue(of([]));
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['hasProjectRole'].mockReturnValue(of(false));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const textarea = fixture.nativeElement.querySelector('#new-comment');
+        expect(textarea).toBeFalsy();
+    });
+
+    it('should call addComment on submit', () => {
+        svc['getComments'].mockReturnValue(of([]));
+        svc['addComment'].mockReturnValue(of({ id: 'c1', content: 'New comment' }));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.newCommentText = 'New comment';
+        component.submitComment();
+        expect(svc['addComment']).toHaveBeenCalledWith('1', 5, 'New comment');
+    });
+
+    it('should clear textarea after successful submit', () => {
+        svc['getComments'].mockReturnValue(of([]));
+        svc['addComment'].mockReturnValue(of({ id: 'c1', content: 'New comment' }));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.newCommentText = 'New comment';
+        component.submitComment();
+        expect(component.newCommentText).toBe('');
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+    });
 });

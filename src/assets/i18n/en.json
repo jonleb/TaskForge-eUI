@@ -273,5 +273,11 @@
   "ticket-detail.growl.updated-summary": "Ticket updated",
   "ticket-detail.growl.updated-detail": "Changes saved successfully.",
   "ticket-detail.growl.update-failed": "Failed to save changes.",
-  "ticket-detail.read-only": "You have read-only access to this ticket."
+  "ticket-detail.read-only": "You have read-only access to this ticket.",
+  "ticket-detail.comments.title": "Comments",
+  "ticket-detail.comments.add-placeholder": "Write a comment...",
+  "ticket-detail.comments.submit": "Add comment",
+  "ticket-detail.comments.empty": "No comments yet.",
+  "ticket-detail.comments.growl.added": "Comment added",
+  "ticket-detail.comments.growl.failed": "Failed to add comment."
 }
