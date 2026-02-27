@@ -1,5 +1,14 @@
 <eui-page>
     <eui-page-header [label]="'backlog.page-title' | translate">
+        @if (canCreate) {
+            <eui-page-header-action-items>
+                <button euiButton euiPrimary
+                        (click)="openCreateDialog()"
+                        aria-haspopup="dialog">
+                    {{ 'backlog.create-btn' | translate }}
+                </button>
+            </eui-page-header-action-items>
+        }
     </eui-page-header>
     <eui-page-content>
         @if (isLoading) {
@@ -58,3 +67,72 @@
         }
     </eui-page-content>
 </eui-page>
+
+<!-- Create Ticket Dialog -->
+<eui-dialog #createDialog
+    [title]="'backlog.dialog.create-title' | translate"
+    [acceptLabel]="'common.create' | translate"
+    [dismissLabel]="'common.cancel' | translate"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onCreateTicket()"
+    (dismiss)="resetCreateForm()">
+
+    @if (createError) {
+        <eui-feedback-message euiDanger aria-live="polite">
+            {{ createError }}
+        </eui-feedback-message>
+    }
+
+    <div class="dialog-form">
+        <!-- Type -->
+        <label euiLabel for="ticket-type" euiRequired>{{ 'ticket.field.type' | translate }}</label>
+        <select euiSelect id="ticket-type" [(ngModel)]="newTicketType" aria-required="true">
+            @for (t of creatableTypes; track t) {
+                <option [ngValue]="t">{{ 'workflow.ticket-type.' + t | translate }}</option>
+            }
+        </select>
+
+        <!-- Title -->
+        <label euiLabel for="ticket-title" euiRequired>{{ 'ticket.field.title' | translate }}</label>
+        <input euiInputText id="ticket-title" [(ngModel)]="newTicketTitle"
+               aria-required="true"
+               [attr.aria-describedby]="newTicketTitle.trim().length > 0 && newTicketTitle.trim().length < 2 ? 'title-error' : null"
+               maxlength="200" />
+        @if (newTicketTitle.trim().length > 0 && newTicketTitle.trim().length < 2) {
+            <span id="title-error" class="eui-u-c-danger">
+                {{ 'common.validation.min-length' | translate:{ field: ('ticket.field.title' | translate), min: 2 } }}
+            </span>
+        }
+
+        <!-- Description -->
+        <label euiLabel for="ticket-description">{{ 'ticket.field.description' | translate }}</label>
+        <textarea euiTextArea id="ticket-description" [(ngModel)]="newTicketDescription"
+                  maxlength="2000"></textarea>
+
+        <!-- Priority -->
+        <label euiLabel for="ticket-priority" euiRequired>{{ 'ticket.priority.label' | translate }}</label>
+        <select euiSelect id="ticket-priority" [(ngModel)]="newTicketPriority" aria-required="true">
+            @for (p of priorities; track p) {
+                <option [ngValue]="p">{{ 'ticket.priority.' + p | translate }}</option>
+            }
+        </select>
+
+        <!-- Assignee (optional) -->
+        <label euiLabel for="ticket-assignee">{{ 'ticket.field.assignee' | translate }}</label>
+        <select euiSelect id="ticket-assignee" [(ngModel)]="newTicketAssigneeId">
+            <option [ngValue]="null">—</option>
+            @for (m of members; track m.userId) {
+                <option [ngValue]="m.userId">{{ m.firstName }} {{ m.lastName }}</option>
+            }
+        </select>
+
+        <!-- Epic (optional) -->
+        <label euiLabel for="ticket-epic">{{ 'ticket.field.epic' | translate }}</label>
+        <select euiSelect id="ticket-epic" [(ngModel)]="newTicketEpicId">
+            <option [ngValue]="null">—</option>
+            @for (e of epics; track e.id) {
+                <option [ngValue]="e.id">{{ e.title }}</option>
+            }
+        </select>
+    </div>
+</eui-dialog>

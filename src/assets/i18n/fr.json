@@ -215,5 +215,12 @@
   "backlog.table-label": "Éléments du backlog du projet",
   "backlog.showing-count": "{{count}} élément(s)",
   "backlog.no-items": "Aucun élément dans le backlog. Créez un ticket pour commencer.",
-  "backlog.load-error": "Impossible de charger le backlog. Veuillez réessayer."
+  "backlog.load-error": "Impossible de charger le backlog. Veuillez réessayer.",
+  "backlog.create-btn": "Créer un ticket",
+  "backlog.dialog.create-title": "Créer un ticket",
+  "backlog.growl.created-summary": "Ticket créé",
+  "backlog.growl.created-detail": "{{key}}-{{number}} {{title}} a été créé.",
+  "backlog.growl.create-failed-summary": "Échec de la création",
+  "backlog.growl.create-failed-detail": "Impossible de créer le ticket. Veuillez réessayer.",
+  "backlog.error.create-default": "Une erreur est survenue lors de la création du ticket."
 }
