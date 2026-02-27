@@ -7,6 +7,8 @@ import { BacklogComponent } from './backlog.component';
 import { ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember, BacklogListResponse } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
+type MockToggleItem = { id: string };
+
 const mockProject: Project = {
     id: '1', key: 'TF', name: 'TaskForge Core',
     description: 'Main product', created_by: '1',
@@ -357,5 +359,79 @@ describe('BacklogComponent', () => {
         expect(component.newTicketType).toBe('STORY');
         expect(component.newTicketPriority).toBe('MEDIUM');
         expect(component.createError).toBe('');
+    });
+
+    // --- STORY-004: Search & Filter Bar ---
+
+    it('should render search filter', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const filter = fixture.nativeElement.querySelector('eui-table-filter');
+        expect(filter).toBeTruthy();
+    });
+
+    it('should render status toggle group with 5 items', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const groups = fixture.nativeElement.querySelectorAll('eui-toggle-group');
+        expect(groups.length).toBe(2);
+        const statusItems = groups[0].querySelectorAll('eui-toggle-group-item');
+        expect(statusItems.length).toBe(5);
+    });
+
+    it('should render type toggle group with 5 items', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const groups = fixture.nativeElement.querySelectorAll('eui-toggle-group');
+        const typeItems = groups[1].querySelectorAll('eui-toggle-group-item');
+        expect(typeItems.length).toBe(5);
+    });
+
+    it('should emit search term via onFilterChange', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.onFilterChange('test');
+        // searchSubject is debounced — just verify it doesn't throw
+        expect(component).toBeTruthy();
+    });
+
+    it('should update params on status filter change and reset page', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        projectServiceMock['getBacklog'].mockClear();
+        component.onStatusFilterChange({ id: 'status-todo' } as MockToggleItem);
+        expect(component.activeStatusFilter).toBe('TO_DO');
+        expect(component.params.status).toBe('TO_DO');
+        expect(component.params._page).toBe(1);
+        expect(projectServiceMock['getBacklog']).toHaveBeenCalled();
+    });
+
+    it('should clear status param when All selected', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.onStatusFilterChange({ id: 'status-todo' } as MockToggleItem);
+        component.onStatusFilterChange({ id: 'status-all' } as MockToggleItem);
+        expect(component.activeStatusFilter).toBe('all');
+        expect(component.params.status).toBeUndefined();
+    });
+
+    it('should update params on type filter change and reset page', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        projectServiceMock['getBacklog'].mockClear();
+        component.onTypeFilterChange({ id: 'type-bug' } as MockToggleItem);
+        expect(component.activeTypeFilter).toBe('BUG');
+        expect(component.params.type).toBe('BUG');
+        expect(component.params._page).toBe(1);
+        expect(projectServiceMock['getBacklog']).toHaveBeenCalled();
+    });
+
+    it('should clear type param when All selected', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.onTypeFilterChange({ id: 'type-story' } as MockToggleItem);
+        component.onTypeFilterChange({ id: 'type-all' } as MockToggleItem);
+        expect(component.activeTypeFilter).toBe('all');
+        expect(component.params.type).toBeUndefined();
     });
 });

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { EUI_PAGE } from '@eui/components/eui-page';
 import { EUI_TABLE, Sort } from '@eui/components/eui-table';
 import { EUI_CHIP } from '@eui/components/eui-chip';
@@ -14,6 +14,7 @@ import { EUI_TEXTAREA } from '@eui/components/eui-textarea';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiTemplateDirective } from '@eui/components/directives';
 import { EuiPaginatorComponent } from '@eui/components/eui-paginator';
+import { EUI_TOGGLE_GROUP, EuiToggleGroupItemComponent } from '@eui/components/eui-toggle-group';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
@@ -32,7 +33,7 @@ import { PermissionService } from '../../../core/auth';
         ...EUI_PAGE, ...EUI_TABLE, ...EUI_CHIP, ...EUI_BUTTON,
         ...EUI_FEEDBACK_MESSAGE, ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT,
         ...EUI_TEXTAREA, EuiDialogComponent, EuiTemplateDirective,
-        EuiPaginatorComponent, FormsModule, TranslateModule,
+        EuiPaginatorComponent, ...EUI_TOGGLE_GROUP, FormsModule, TranslateModule,
     ],
 })
 export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -43,6 +44,7 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly growlService = inject(EuiGrowlService);
     private readonly translate = inject(TranslateService);
     private readonly destroy$ = new Subject<void>();
+    private readonly searchSubject = new Subject<string>();
     private paginatorReady = false;
 
     @ViewChild('createDialog') createDialog!: EuiDialogComponent;
@@ -62,6 +64,9 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
         _order: 'desc',
     };
 
+    activeStatusFilter: 'all' | 'TO_DO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE' = 'all';
+    activeTypeFilter: 'all' | TicketType = 'all';
+
     // Dialog form state
     newTicketType: TicketType = 'STORY';
     newTicketTitle = '';
@@ -80,6 +85,15 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly assigneeMap = new Map<string, string>();
 
     ngOnInit(): void {
+        this.searchSubject.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            takeUntil(this.destroy$),
+        ).subscribe(q => {
+            this.params = { ...this.params, q: q || undefined, _page: 1 };
+            if (this.project) this.loadBacklog(this.project.id);
+        });
+
         this.projectContext.currentProject$.pipe(
             filter((p): p is Project => p !== null),
             takeUntil(this.destroy$),
@@ -144,6 +158,44 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
             ...this.params,
             _page: event.page + 1,
             _limit: event.pageSize,
+        };
+        if (this.project) this.loadBacklog(this.project.id);
+    }
+
+    onFilterChange(searchTerm: string): void {
+        this.searchSubject.next(searchTerm);
+    }
+
+    onStatusFilterChange(item: EuiToggleGroupItemComponent): void {
+        const filterMap: Record<string, typeof this.activeStatusFilter> = {
+            'status-all': 'all',
+            'status-todo': 'TO_DO',
+            'status-inprogress': 'IN_PROGRESS',
+            'status-inreview': 'IN_REVIEW',
+            'status-done': 'DONE',
+        };
+        this.activeStatusFilter = filterMap[item.id] ?? 'all';
+        this.params = {
+            ...this.params,
+            status: this.activeStatusFilter === 'all' ? undefined : this.activeStatusFilter,
+            _page: 1,
+        };
+        if (this.project) this.loadBacklog(this.project.id);
+    }
+
+    onTypeFilterChange(item: EuiToggleGroupItemComponent): void {
+        const filterMap: Record<string, typeof this.activeTypeFilter> = {
+            'type-all': 'all',
+            'type-story': 'STORY',
+            'type-bug': 'BUG',
+            'type-task': 'TASK',
+            'type-epic': 'EPIC',
+        };
+        this.activeTypeFilter = filterMap[item.id] ?? 'all';
+        this.params = {
+            ...this.params,
+            type: this.activeTypeFilter === 'all' ? undefined : this.activeTypeFilter,
+            _page: 1,
         };
         if (this.project) this.loadBacklog(this.project.id);
     }

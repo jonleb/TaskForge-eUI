@@ -12,6 +12,31 @@
     </eui-page-header>
     <eui-page-content>
 
+        <div class="filter-bar eui-u-d-flex eui-u-align-items-center eui-u-gap-s eui-u-mb-m">
+            <eui-table-filter
+                [placeholder]="'backlog.search-placeholder' | translate"
+                (filterChange)="onFilterChange($event)">
+            </eui-table-filter>
+
+            <eui-toggle-group [attr.aria-label]="'backlog.filter-status-label' | translate"
+                              (itemClick)="onStatusFilterChange($event)">
+                <eui-toggle-group-item id="status-all" [isChecked]="true">{{ 'common.all' | translate }}</eui-toggle-group-item>
+                <eui-toggle-group-item id="status-todo">{{ 'workflow.status.TO_DO' | translate }}</eui-toggle-group-item>
+                <eui-toggle-group-item id="status-inprogress">{{ 'workflow.status.IN_PROGRESS' | translate }}</eui-toggle-group-item>
+                <eui-toggle-group-item id="status-inreview">{{ 'workflow.status.IN_REVIEW' | translate }}</eui-toggle-group-item>
+                <eui-toggle-group-item id="status-done">{{ 'workflow.status.DONE' | translate }}</eui-toggle-group-item>
+            </eui-toggle-group>
+
+            <eui-toggle-group [attr.aria-label]="'backlog.filter-type-label' | translate"
+                              (itemClick)="onTypeFilterChange($event)">
+                <eui-toggle-group-item id="type-all" [isChecked]="true">{{ 'common.all' | translate }}</eui-toggle-group-item>
+                <eui-toggle-group-item id="type-story">{{ 'workflow.ticket-type.STORY' | translate }}</eui-toggle-group-item>
+                <eui-toggle-group-item id="type-bug">{{ 'workflow.ticket-type.BUG' | translate }}</eui-toggle-group-item>
+                <eui-toggle-group-item id="type-task">{{ 'workflow.ticket-type.TASK' | translate }}</eui-toggle-group-item>
+                <eui-toggle-group-item id="type-epic">{{ 'workflow.ticket-type.EPIC' | translate }}</eui-toggle-group-item>
+            </eui-toggle-group>
+        </div>
+
         <p aria-live="polite" class="eui-u-mt-s eui-u-mb-s">
             {{ 'backlog.showing-of' | translate:{ count: items.length, total: total } }}
         </p>
