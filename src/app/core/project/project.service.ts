@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListParams, BacklogListResponse } from './project.models';
+import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListParams, BacklogListResponse, UpdateTicketPayload, TicketComment, ActivityEntry } from './project.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
@@ -77,5 +77,25 @@ export class ProjectService {
         return this.getBacklog(projectId, { type: 'EPIC', _limit: 100 }).pipe(
             map(res => res.data),
         );
+    }
+
+    getTicket(projectId: string, ticketNumber: number): Observable<BacklogItem> {
+        return this.http.get<BacklogItem>(`/api/projects/${projectId}/backlog/${ticketNumber}`);
+    }
+
+    updateTicket(projectId: string, ticketNumber: number, payload: UpdateTicketPayload): Observable<BacklogItem> {
+        return this.http.patch<BacklogItem>(`/api/projects/${projectId}/backlog/${ticketNumber}`, payload);
+    }
+
+    getComments(projectId: string, ticketNumber: number): Observable<TicketComment[]> {
+        return this.http.get<TicketComment[]>(`/api/projects/${projectId}/backlog/${ticketNumber}/comments`);
+    }
+
+    addComment(projectId: string, ticketNumber: number, content: string): Observable<TicketComment> {
+        return this.http.post<TicketComment>(`/api/projects/${projectId}/backlog/${ticketNumber}/comments`, { content });
+    }
+
+    getActivity(projectId: string, ticketNumber: number): Observable<ActivityEntry[]> {
+        return this.http.get<ActivityEntry[]>(`/api/projects/${projectId}/backlog/${ticketNumber}/activity`);
     }
 }

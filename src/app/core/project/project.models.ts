@@ -138,3 +138,35 @@ export interface BacklogListResponse {
     page: number;
     limit: number;
 }
+
+export interface UpdateTicketPayload {
+    title?: string;
+    description?: string;
+    status?: WorkflowStatus;
+    priority?: TicketPriority | null;
+    assignee_id?: string | null;
+    epic_id?: string | null;
+}
+
+export interface TicketComment {
+    id: string;
+    projectId: string;
+    ticketId: string;
+    ticketNumber: number;
+    authorId: string;
+    authorName: string;
+    content: string;
+    created_at: string;
+}
+
+export interface ActivityEntry {
+    id: string;
+    projectId: string;
+    ticketId: string;
+    ticketNumber: number;
+    field: string;
+    oldValue: string;
+    newValue: string;
+    changedBy: string;
+    created_at: string;
+}

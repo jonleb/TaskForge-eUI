@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { ProjectService } from './project.service';
-import { Project, ProjectMember, ProjectListResponse, UserInfo, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListResponse } from './project.models';
+import { Project, ProjectMember, ProjectListResponse, UserInfo, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListResponse, UpdateTicketPayload, TicketComment, ActivityEntry } from './project.models';
 
 const mockProject: Project = {
     id: '1',
@@ -511,6 +511,82 @@ describe('ProjectService', () => {
             expect(req.request.params.get('type')).toBe('EPIC');
             expect(req.request.params.get('_limit')).toBe('100');
             req.flush({ data: [mockEpic], total: 1, page: 1, limit: 100 });
+        });
+    });
+
+    describe('getTicket()', () => {
+        it('should GET /api/projects/:id/backlog/:ticketNumber', () => {
+            const mockItem: BacklogItem = {
+                id: '17', projectId: '1', type: 'STORY', title: 'Auth flow',
+                description: 'Desc', status: 'TO_DO', priority: 'HIGH',
+                assignee_id: '2', epic_id: null, ticket_number: 2,
+                created_by: '1', created_at: '2026-01-05T09:00:00.000Z',
+            };
+
+            service.getTicket('1', 2).subscribe(item => {
+                expect(item).toEqual(mockItem);
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/backlog/2');
+            expect(req.request.method).toBe('GET');
+            req.flush(mockItem);
+        });
+    });
+
+    describe('updateTicket()', () => {
+        it('should PATCH /api/projects/:id/backlog/:ticketNumber with payload', () => {
+            const payload = { title: 'Updated title', status: 'IN_PROGRESS' as const };
+
+            service.updateTicket('1', 2, payload).subscribe(item => {
+                expect(item.title).toBe('Updated title');
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/backlog/2');
+            expect(req.request.method).toBe('PATCH');
+            expect(req.request.body).toEqual(payload);
+            req.flush({ id: '17', projectId: '1', type: 'STORY', title: 'Updated title',
+                description: '', status: 'IN_PROGRESS', priority: 'HIGH',
+                assignee_id: '2', epic_id: null, ticket_number: 2,
+                created_by: '1', created_at: '2026-01-05T09:00:00.000Z' });
+        });
+    });
+
+    describe('getComments()', () => {
+        it('should GET /api/projects/:id/backlog/:ticketNumber/comments', () => {
+            service.getComments('1', 2).subscribe(comments => {
+                expect(comments).toEqual([]);
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/backlog/2/comments');
+            expect(req.request.method).toBe('GET');
+            req.flush([]);
+        });
+    });
+
+    describe('addComment()', () => {
+        it('should POST /api/projects/:id/backlog/:ticketNumber/comments with content', () => {
+            service.addComment('1', 2, 'Test comment').subscribe(comment => {
+                expect(comment.content).toBe('Test comment');
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/backlog/2/comments');
+            expect(req.request.method).toBe('POST');
+            expect(req.request.body).toEqual({ content: 'Test comment' });
+            req.flush({ id: '1', projectId: '1', ticketId: '17', ticketNumber: 2,
+                authorId: '1', authorName: 'Super Admin', content: 'Test comment',
+                created_at: '2026-02-27T10:00:00.000Z' });
+        });
+    });
+
+    describe('getActivity()', () => {
+        it('should GET /api/projects/:id/backlog/:ticketNumber/activity', () => {
+            service.getActivity('1', 2).subscribe(entries => {
+                expect(entries).toEqual([]);
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/backlog/2/activity');
+            expect(req.request.method).toBe('GET');
+            req.flush([]);
         });
     });
 });

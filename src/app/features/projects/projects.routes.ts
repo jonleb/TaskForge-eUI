@@ -14,6 +14,7 @@ export const PROJECTS_ROUTES: Routes = [
             { path: '', component: DashboardComponent },
             { path: 'members', component: MembersComponent },
             { path: 'backlog', component: BacklogComponent },
+            { path: 'backlog/:ticketNumber', loadComponent: () => import('./ticket-detail/ticket-detail.component').then(m => m.TicketDetailComponent) },
             { path: 'settings', loadComponent: () => import('./settings/settings.component').then(m => m.SettingsComponent) },
         ],
     },
