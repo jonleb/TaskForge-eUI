@@ -210,5 +210,10 @@
   "ticket.field.type": "Type",
   "ticket.field.assignee": "Assigné",
   "ticket.field.epic": "Epic",
-  "ticket.field.ticket-number": "Ticket n°"
+  "ticket.field.ticket-number": "Ticket n°",
+  "backlog.page-title": "Backlog",
+  "backlog.table-label": "Éléments du backlog du projet",
+  "backlog.showing-count": "{{count}} élément(s)",
+  "backlog.no-items": "Aucun élément dans le backlog. Créez un ticket pour commencer.",
+  "backlog.load-error": "Impossible de charger le backlog. Veuillez réessayer."
 }
