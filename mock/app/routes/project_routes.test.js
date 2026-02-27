@@ -1006,3 +1006,121 @@ describe('GET /api/projects/:projectId/members/candidates', () => {
         expect(Array.isArray(res.body)).toBe(true);
     });
 });
+
+// --- GET /api/projects/:projectId/workflows ---
+
+describe('GET /api/projects/:projectId/workflows', () => {
+
+    it('should return 401 without token', async () => {
+        const res = await request(app).get('/api/projects/1/workflows');
+        expect(res.status).toBe(401);
+    });
+
+    it('should return 403 for non-member', async () => {
+        // reporter (id 5) is not a member of project 8
+        const token = await getTokenFor('reporter');
+        const res = await request(app)
+            .get('/api/projects/8/workflows')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(403);
+    });
+
+    it('should return 4 workflows for a seeded project', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/workflows')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body).toHaveLength(4);
+
+        const types = res.body.map(w => w.ticketType);
+        expect(types).toContain('STORY');
+        expect(types).toContain('BUG');
+        expect(types).toContain('TASK');
+        expect(types).toContain('EPIC');
+    });
+
+    it('should return workflows sorted by ticketType alphabetically', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/workflows')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        const types = res.body.map(w => w.ticketType);
+        expect(types).toEqual([...types].sort());
+    });
+
+    it('should return empty array for project without workflows', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/9999/workflows')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual([]);
+    });
+
+    it('should allow SUPER_ADMIN to access any project workflows', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/8/workflows')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+    });
+});
+
+// --- GET /api/projects/:projectId/backlog ---
+
+describe('GET /api/projects/:projectId/backlog', () => {
+
+    it('should return 401 without token', async () => {
+        const res = await request(app).get('/api/projects/1/backlog');
+        expect(res.status).toBe(401);
+    });
+
+    it('should return 403 for non-member', async () => {
+        const token = await getTokenFor('reporter');
+        const res = await request(app)
+            .get('/api/projects/8/backlog')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(403);
+    });
+
+    it('should return backlog items for a seeded project', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBeGreaterThanOrEqual(1);
+        expect(res.body[0].type).toBe('EPIC');
+        expect(res.body[0].title).toBe('Maintenance');
+    });
+
+    it('should filter by type when ?type=EPIC is provided', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?type=EPIC')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.every(i => i.type === 'EPIC')).toBe(true);
+    });
+
+    it('should return empty array for project without backlog items', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/9999/backlog')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual([]);
+    });
+});

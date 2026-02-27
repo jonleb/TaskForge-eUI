@@ -214,6 +214,55 @@ module.exports = function (app, db) {
         );
 
         /**
+         * GET /api/projects/:projectId/workflows
+         * Returns all workflows for the project, sorted by ticketType alphabetically.
+         * Protected — requires valid token + project membership (any role).
+         * SUPER_ADMIN bypasses membership check.
+         */
+        app.get(
+            '/api/projects/:projectId/workflows',
+            authMiddleware,
+            requireProjectRole(db, ...ALL_PROJECT_ROLES),
+            (req, res) => {
+                const workflows = db.get('workflows')
+                    .filter({ projectId: req.params.projectId })
+                    .sortBy('ticketType')
+                    .value();
+
+                return res.json(workflows);
+            }
+        );
+
+        /**
+         * GET /api/projects/:projectId/backlog
+         * Returns backlog items for the project, sorted by created_at descending.
+         * Optional query: ?type=EPIC to filter by item type.
+         * Protected — requires valid token + project membership (any role).
+         * SUPER_ADMIN bypasses membership check.
+         */
+        app.get(
+            '/api/projects/:projectId/backlog',
+            authMiddleware,
+            requireProjectRole(db, ...ALL_PROJECT_ROLES),
+            (req, res) => {
+                let items = db.get('backlog-items')
+                    .filter({ projectId: req.params.projectId })
+                    .value();
+
+                // Optional type filter
+                const type = req.query.type;
+                if (type) {
+                    items = items.filter(i => i.type === type);
+                }
+
+                // Sort by created_at descending
+                items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+                return res.json(items);
+            }
+        );
+
+        /**
          * PUT /api/projects/:projectId/members
          * Upsert a project member (add or update role).
          * Protected — requires PROJECT_ADMIN role (SUPER_ADMIN bypasses).
