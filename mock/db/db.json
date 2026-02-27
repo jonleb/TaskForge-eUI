@@ -7,147 +7,17 @@
   },
   "users": [
     {
-      "id": "26",
-      "username": "bousini",
-      "password": "Q3rWrHPQyPay",
-      "email": "bous@oi.local",
-      "role": "DEVELOPER",
-      "global_role": "DEVELOPER",
-      "firstName": "niko",
-      "lastName": "bousi",
-      "is_active": false,
-      "created_at": "2026-02-26T00:13:54.375Z",
-      "updated_at": "2026-02-26T00:14:08.819Z"
-    },
-    {
-      "id": "21",
-      "username": "olivia.anderson",
+      "id": "6",
+      "username": "viewer",
       "password": "SecurePassword!123",
-      "email": "olivia.anderson@taskforge.local",
-      "role": "PRODUCT_OWNER",
-      "global_role": "PRODUCT_OWNER",
-      "firstName": "Olivia",
-      "lastName": "Anderson",
-      "is_active": false,
-      "created_at": "2025-11-22T16:23:00.000Z",
-      "updated_at": "2026-02-25T23:32:37.065Z"
-    },
-    {
-      "id": "19",
-      "username": "quinn.taylor",
-      "password": "SecurePassword!123",
-      "email": "quinn.taylor@taskforge.local",
-      "role": "REPORTER",
-      "global_role": "REPORTER",
-      "firstName": "Quinn",
-      "lastName": "Taylor",
-      "is_active": false,
-      "created_at": "2025-11-10T17:30:00.000Z",
-      "updated_at": "2025-11-10T17:30:00.000Z"
-    },
-    {
-      "id": "16",
-      "username": "iris.rodriguez",
-      "password": "SecurePassword!123",
-      "email": "iris.rodriguez@taskforge.local",
-      "role": "PRODUCT_OWNER",
-      "global_role": "PRODUCT_OWNER",
-      "firstName": "Iris",
-      "lastName": "Rodriguez",
-      "is_active": true,
-      "created_at": "2025-08-17T15:47:00.000Z",
-      "updated_at": "2025-08-17T15:47:00.000Z"
-    },
-    {
-      "id": "10",
-      "username": "charlie.williams",
-      "password": "SecurePassword!123",
-      "email": "charlie.williams@taskforge.local",
-      "role": "PRODUCT_OWNER",
-      "global_role": "PRODUCT_OWNER",
-      "firstName": "Charlie",
-      "lastName": "Williams",
-      "is_active": true,
-      "created_at": "2025-07-11T10:13:00.000Z",
-      "updated_at": "2025-07-11T10:13:00.000Z"
-    },
-    {
-      "id": "15",
-      "username": "hector.davis",
-      "password": "SecurePassword!123",
-      "email": "hector.davis@taskforge.local",
-      "role": "PROJECT_ADMIN",
-      "global_role": "PROJECT_ADMIN",
-      "firstName": "Hector",
-      "lastName": "Davis",
-      "is_active": true,
-      "created_at": "2025-07-10T12:35:00.000Z",
-      "updated_at": "2025-07-10T12:35:00.000Z"
-    },
-    {
-      "id": "22",
-      "username": "paul.thomas",
-      "password": "SecurePassword!123",
-      "email": "paul.thomas@taskforge.local",
-      "role": "DEVELOPER",
-      "global_role": "DEVELOPER",
-      "firstName": "Paul",
-      "lastName": "Thomas",
-      "is_active": true,
-      "created_at": "2025-06-19T10:25:00.000Z",
-      "updated_at": "2025-06-19T10:25:00.000Z"
-    },
-    {
-      "id": "11",
-      "username": "diana.brown",
-      "password": "SecurePassword!123",
-      "email": "diana.brown@taskforge.local",
-      "role": "DEVELOPER",
-      "global_role": "DEVELOPER",
-      "firstName": "Diana",
-      "lastName": "Brown",
-      "is_active": true,
-      "created_at": "2025-06-10T17:03:00.000Z",
-      "updated_at": "2025-06-10T17:03:00.000Z"
-    },
-    {
-      "id": "8",
-      "username": "alice.smith",
-      "password": "SecurePassword!123",
-      "email": "alice.smith@taskforge.local",
-      "role": "SUPER_ADMIN",
-      "global_role": "SUPER_ADMIN",
-      "firstName": "Alice",
-      "lastName": "Smith",
-      "is_active": true,
-      "created_at": "2025-06-08T11:56:00.000Z",
-      "updated_at": "2025-06-08T11:56:00.000Z"
-    },
-    {
-      "id": "14",
-      "username": "karen.hernandez",
-      "password": "SecurePassword!123",
-      "email": "karen.hernandez@taskforge.local",
-      "role": "REPORTER",
-      "global_role": "REPORTER",
-      "firstName": "Karen",
-      "lastName": "Hernandez",
-      "is_active": true,
-      "created_at": "2025-05-24T18:30:00.000Z",
-      "updated_at": "2025-05-24T18:30:00.000Z"
-    },
-    {
-      "id": "23",
-      "username": "rachel.moore",
-      "password": "SecurePassword!123",
-      "email": "rachel.moore@taskforge.local",
+      "email": "viewer@taskforge.local",
       "role": "VIEWER",
       "global_role": "VIEWER",
-      "firstName": "Rachel",
-      "lastName": "Moore",
+      "firstName": "View",
+      "lastName": "Er",
       "is_active": true,
-      "created_at": "2025-05-12T15:35:00.000Z",
-      "updated_at": "2025-05-12T15:35:00.000Z"
+      "created_at": "2025-04-01T10:00:00.000Z",
+      "updated_at": "2025-04-01T10:00:00.000Z"
     },
     {
       "id": "25",
@@ -163,43 +33,17 @@
       "updated_at": "2025-04-25T09:15:00.000Z"
     },
     {
-      "id": "7",
-      "username": "inactive_user",
+      "id": "1",
+      "username": "superadmin",
       "password": "SecurePassword!123",
-      "email": "inactive@taskforge.local",
-      "role": "DEVELOPER",
-      "global_role": "DEVELOPER",
-      "firstName": "Inactive",
-      "lastName": "User",
-      "is_active": false,
-      "created_at": "2025-04-10T12:00:00.000Z",
-      "updated_at": "2025-06-01T08:00:00.000Z"
-    },
-    {
-      "id": "20",
-      "username": "kira.torres",
-      "password": "SecurePassword!123",
-      "email": "kira.torres@taskforge.local",
+      "email": "superadmin@taskforge.local",
       "role": "SUPER_ADMIN",
       "global_role": "SUPER_ADMIN",
-      "firstName": "Kira",
-      "lastName": "Torres",
-      "is_active": false,
-      "created_at": "2025-04-03T08:52:00.000Z",
-      "updated_at": "2025-04-03T08:52:00.000Z"
-    },
-    {
-      "id": "6",
-      "username": "viewer",
-      "password": "SecurePassword!123",
-      "email": "viewer@taskforge.local",
-      "role": "VIEWER",
-      "global_role": "VIEWER",
-      "firstName": "View",
-      "lastName": "Er",
+      "firstName": "Super",
+      "lastName": "Admin",
       "is_active": true,
-      "created_at": "2025-04-01T10:00:00.000Z",
-      "updated_at": "2025-04-01T10:00:00.000Z"
+      "created_at": "2025-01-15T10:00:00.000Z",
+      "updated_at": "2025-01-15T10:00:00.000Z"
     },
     {
       "id": "5",
@@ -215,69 +59,30 @@
       "updated_at": "2025-03-15T08:00:00.000Z"
     },
     {
-      "id": "13",
-      "username": "frank.garcia",
+      "id": "23",
+      "username": "rachel.moore",
       "password": "SecurePassword!123",
-      "email": "frank.garcia@taskforge.local",
+      "email": "rachel.moore@taskforge.local",
       "role": "VIEWER",
       "global_role": "VIEWER",
-      "firstName": "Frank",
-      "lastName": "Garcia",
+      "firstName": "Rachel",
+      "lastName": "Moore",
       "is_active": true,
-      "created_at": "2025-03-05T18:19:00.000Z",
-      "updated_at": "2025-03-05T18:19:00.000Z"
+      "created_at": "2025-05-12T15:35:00.000Z",
+      "updated_at": "2025-05-12T15:35:00.000Z"
     },
     {
-      "id": "4",
-      "username": "developer",
+      "id": "19",
+      "username": "quinn.taylor",
       "password": "SecurePassword!123",
-      "email": "developer@taskforge.local",
-      "role": "DEVELOPER",
-      "global_role": "DEVELOPER",
-      "firstName": "Dev",
-      "lastName": "Eloper",
+      "email": "quinn.taylor@taskforge.local",
+      "role": "REPORTER",
+      "global_role": "REPORTER",
+      "firstName": "Quinn",
+      "lastName": "Taylor",
       "is_active": true,
-      "created_at": "2025-03-05T11:00:00.000Z",
-      "updated_at": "2025-03-05T11:00:00.000Z"
-    },
-    {
-      "id": "18",
-      "username": "nathan.wilson",
-      "password": "SecurePassword!123",
-      "email": "nathan.wilson@taskforge.local",
-      "role": "PROJECT_ADMIN",
-      "global_role": "PROJECT_ADMIN",
-      "firstName": "Nathan",
-      "lastName": "Wilson",
-      "is_active": true,
-      "created_at": "2025-02-16T17:17:00.000Z",
-      "updated_at": "2025-02-16T17:17:00.000Z"
-    },
-    {
-      "id": "24",
-      "username": "leo.lopez",
-      "password": "SecurePassword!123",
-      "email": "leo.lopez@taskforge.local",
-      "role": "VIEWER",
-      "global_role": "VIEWER",
-      "firstName": "Leo",
-      "lastName": "Lopez",
-      "is_active": true,
-      "created_at": "2025-02-15T11:10:00.000Z",
-      "updated_at": "2025-02-15T11:10:00.000Z"
-    },
-    {
-      "id": "3",
-      "username": "productowner",
-      "password": "SecurePassword!123",
-      "email": "productowner@taskforge.local",
-      "role": "PRODUCT_OWNER",
-      "global_role": "PRODUCT_OWNER",
-      "firstName": "Product",
-      "lastName": "Owner",
-      "is_active": true,
-      "created_at": "2025-02-10T14:30:00.000Z",
-      "updated_at": "2025-02-10T14:30:00.000Z"
+      "created_at": "2025-11-10T17:30:00.000Z",
+      "updated_at": "2026-02-27T09:57:48.268Z"
     },
     {
       "id": "2",
@@ -293,6 +98,162 @@
       "updated_at": "2025-02-01T09:00:00.000Z"
     },
     {
+      "id": "3",
+      "username": "productowner",
+      "password": "SecurePassword!123",
+      "email": "productowner@taskforge.local",
+      "role": "PRODUCT_OWNER",
+      "global_role": "PRODUCT_OWNER",
+      "firstName": "Product",
+      "lastName": "Owner",
+      "is_active": true,
+      "created_at": "2025-02-10T14:30:00.000Z",
+      "updated_at": "2025-02-10T14:30:00.000Z"
+    },
+    {
+      "id": "22",
+      "username": "paul.thomas",
+      "password": "SecurePassword!123",
+      "email": "paul.thomas@taskforge.local",
+      "role": "DEVELOPER",
+      "global_role": "DEVELOPER",
+      "firstName": "Paul",
+      "lastName": "Thomas",
+      "is_active": true,
+      "created_at": "2025-06-19T10:25:00.000Z",
+      "updated_at": "2025-06-19T10:25:00.000Z"
+    },
+    {
+      "id": "21",
+      "username": "olivia.anderson",
+      "password": "SecurePassword!123",
+      "email": "olivia.anderson@taskforge.local",
+      "role": "PRODUCT_OWNER",
+      "global_role": "PRODUCT_OWNER",
+      "firstName": "Olivia",
+      "lastName": "Anderson",
+      "is_active": false,
+      "created_at": "2025-11-22T16:23:00.000Z",
+      "updated_at": "2026-02-25T23:32:37.065Z"
+    },
+    {
+      "id": "18",
+      "username": "nathan.wilson",
+      "password": "SecurePassword!123",
+      "email": "nathan.wilson@taskforge.local",
+      "role": "PROJECT_ADMIN",
+      "global_role": "PROJECT_ADMIN",
+      "firstName": "Nathan",
+      "lastName": "Wilson",
+      "is_active": false,
+      "created_at": "2025-02-16T17:17:00.000Z",
+      "updated_at": "2026-02-27T09:57:48.232Z"
+    },
+    {
+      "id": "24",
+      "username": "leo.lopez",
+      "password": "SecurePassword!123",
+      "email": "leo.lopez@taskforge.local",
+      "role": "VIEWER",
+      "global_role": "VIEWER",
+      "firstName": "Leo",
+      "lastName": "Lopez",
+      "is_active": true,
+      "created_at": "2025-02-15T11:10:00.000Z",
+      "updated_at": "2025-02-15T11:10:00.000Z"
+    },
+    {
+      "id": "20",
+      "username": "kira.torres",
+      "password": "SecurePassword!123",
+      "email": "kira.torres@taskforge.local",
+      "role": "SUPER_ADMIN",
+      "global_role": "SUPER_ADMIN",
+      "firstName": "Kira",
+      "lastName": "Torres",
+      "is_active": true,
+      "created_at": "2025-04-03T08:52:00.000Z",
+      "updated_at": "2026-02-27T09:57:48.281Z"
+    },
+    {
+      "id": "14",
+      "username": "karen.hernandez",
+      "password": "eUD7jMRGvUNa",
+      "email": "karen.hernandez@taskforge.local",
+      "role": "REPORTER",
+      "global_role": "REPORTER",
+      "firstName": "Karen",
+      "lastName": "Hernandez",
+      "is_active": true,
+      "created_at": "2025-05-24T18:30:00.000Z",
+      "updated_at": "2026-02-27T09:57:48.198Z"
+    },
+    {
+      "id": "17",
+      "username": "jack.martinez",
+      "password": "oROC4sFoD3kC",
+      "email": "jack.martinez@taskforge.local",
+      "role": "DEVELOPER",
+      "global_role": "DEVELOPER",
+      "firstName": "Jack",
+      "lastName": "Martinez",
+      "is_active": true,
+      "created_at": "2025-01-08T09:09:00.000Z",
+      "updated_at": "2026-02-27T09:57:48.221Z"
+    },
+    {
+      "id": "16",
+      "username": "iris.rodriguez",
+      "password": "SecurePassword!123",
+      "email": "iris.rodriguez@taskforge.local",
+      "role": "PRODUCT_OWNER",
+      "global_role": "PRODUCT_OWNER",
+      "firstName": "Iris",
+      "lastName": "Rodriguez",
+      "is_active": true,
+      "created_at": "2025-08-17T15:47:00.000Z",
+      "updated_at": "2025-08-17T15:47:00.000Z"
+    },
+    {
+      "id": "7",
+      "username": "inactive_user",
+      "password": "SecurePassword!123",
+      "email": "inactive@taskforge.local",
+      "role": "DEVELOPER",
+      "global_role": "DEVELOPER",
+      "firstName": "Inactive",
+      "lastName": "User",
+      "is_active": false,
+      "created_at": "2025-04-10T12:00:00.000Z",
+      "updated_at": "2025-06-01T08:00:00.000Z"
+    },
+    {
+      "id": "15",
+      "username": "hector.davis",
+      "password": "SecurePassword!123",
+      "email": "hector.davis@taskforge.local",
+      "role": "PROJECT_ADMIN",
+      "global_role": "PROJECT_ADMIN",
+      "firstName": "Hector",
+      "lastName": "Davis",
+      "is_active": true,
+      "created_at": "2025-07-10T12:35:00.000Z",
+      "updated_at": "2025-07-10T12:35:00.000Z"
+    },
+    {
+      "id": "13",
+      "username": "frank.garcia",
+      "password": "SecurePassword!123",
+      "email": "frank.garcia@taskforge.local",
+      "role": "VIEWER",
+      "global_role": "VIEWER",
+      "firstName": "Frank",
+      "lastName": "Garcia",
+      "is_active": true,
+      "created_at": "2025-03-05T18:19:00.000Z",
+      "updated_at": "2025-03-05T18:19:00.000Z"
+    },
+    {
       "id": "12",
       "username": "eve.jones",
       "password": "SecurePassword!123",
@@ -306,30 +267,56 @@
       "updated_at": "2025-01-18T14:17:00.000Z"
     },
     {
-      "id": "1",
-      "username": "superadmin",
+      "id": "11",
+      "username": "diana.brown",
       "password": "SecurePassword!123",
-      "email": "superadmin@taskforge.local",
-      "role": "SUPER_ADMIN",
-      "global_role": "SUPER_ADMIN",
-      "firstName": "Super",
-      "lastName": "Admin",
-      "is_active": true,
-      "created_at": "2025-01-15T10:00:00.000Z",
-      "updated_at": "2025-01-15T10:00:00.000Z"
-    },
-    {
-      "id": "17",
-      "username": "jack.martinez",
-      "password": "SecurePassword!123",
-      "email": "jack.martinez@taskforge.local",
+      "email": "diana.brown@taskforge.local",
       "role": "DEVELOPER",
       "global_role": "DEVELOPER",
-      "firstName": "Jack",
-      "lastName": "Martinez",
+      "firstName": "Diana",
+      "lastName": "Brown",
       "is_active": true,
-      "created_at": "2025-01-08T09:09:00.000Z",
-      "updated_at": "2025-01-08T09:09:00.000Z"
+      "created_at": "2025-06-10T17:03:00.000Z",
+      "updated_at": "2025-06-10T17:03:00.000Z"
+    },
+    {
+      "id": "4",
+      "username": "developer",
+      "password": "SecurePassword!123",
+      "email": "developer@taskforge.local",
+      "role": "DEVELOPER",
+      "global_role": "DEVELOPER",
+      "firstName": "Dev",
+      "lastName": "Eloper",
+      "is_active": true,
+      "created_at": "2025-03-05T11:00:00.000Z",
+      "updated_at": "2025-03-05T11:00:00.000Z"
+    },
+    {
+      "id": "10",
+      "username": "charlie.williams",
+      "password": "SecurePassword!123",
+      "email": "charlie.williams@taskforge.local",
+      "role": "PRODUCT_OWNER",
+      "global_role": "PRODUCT_OWNER",
+      "firstName": "Charlie",
+      "lastName": "Williams",
+      "is_active": true,
+      "created_at": "2025-07-11T10:13:00.000Z",
+      "updated_at": "2025-07-11T10:13:00.000Z"
+    },
+    {
+      "id": "26",
+      "username": "bousini",
+      "password": "Q3rWrHPQyPay",
+      "email": "bous@oi.local",
+      "role": "DEVELOPER",
+      "global_role": "DEVELOPER",
+      "firstName": "niko",
+      "lastName": "bousi",
+      "is_active": false,
+      "created_at": "2026-02-26T00:13:54.375Z",
+      "updated_at": "2026-02-26T00:14:08.819Z"
     },
     {
       "id": "9",
@@ -343,6 +330,110 @@
       "is_active": false,
       "created_at": "2025-01-06T18:05:00.000Z",
       "updated_at": "2025-01-06T18:05:00.000Z"
+    },
+    {
+      "id": "8",
+      "username": "alice.smith",
+      "password": "SecurePassword!123",
+      "email": "alice.smith@taskforge.local",
+      "role": "SUPER_ADMIN",
+      "global_role": "SUPER_ADMIN",
+      "firstName": "Alice",
+      "lastName": "Smith",
+      "is_active": true,
+      "created_at": "2025-06-08T11:56:00.000Z",
+      "updated_at": "2025-06-08T11:56:00.000Z"
+    },
+    {
+      "id": "27",
+      "username": "newuser-1772186267788-1",
+      "password": "7sSSnFKuY4TQ",
+      "email": "newuser-1772186267788-1@taskforge.local",
+      "role": "DEVELOPER",
+      "global_role": "DEVELOPER",
+      "firstName": "New",
+      "lastName": "User",
+      "is_active": true,
+      "created_at": "2026-02-27T09:57:48.033Z",
+      "updated_at": "2026-02-27T09:57:48.033Z"
+    },
+    {
+      "id": "28",
+      "username": "pwlen-1772186267788-2",
+      "password": "NukSz2EJaFvN",
+      "email": "pwlen-1772186267788-2@taskforge.local",
+      "role": "REPORTER",
+      "global_role": "REPORTER",
+      "firstName": "PW",
+      "lastName": "Len",
+      "is_active": true,
+      "created_at": "2026-02-27T09:57:48.038Z",
+      "updated_at": "2026-02-27T09:57:48.038Z"
+    },
+    {
+      "id": "29",
+      "username": "emailnorm-1772186267788-6",
+      "password": "VDfIx8yYcXmf",
+      "email": "emailnorm-1772186267788-6@taskforge.local",
+      "role": "VIEWER",
+      "global_role": "VIEWER",
+      "firstName": "Email",
+      "lastName": "Norm",
+      "is_active": true,
+      "created_at": "2026-02-27T09:57:48.128Z",
+      "updated_at": "2026-02-27T09:57:48.128Z"
+    },
+    {
+      "id": "30",
+      "username": "usernorm-1772186267788-7",
+      "password": "EjHXQ0KziMfh",
+      "email": "usernorm-1772186267788-7@taskforge.local",
+      "role": "VIEWER",
+      "global_role": "VIEWER",
+      "firstName": "User",
+      "lastName": "Norm",
+      "is_active": true,
+      "created_at": "2026-02-27T09:57:48.132Z",
+      "updated_at": "2026-02-27T09:57:48.132Z"
+    },
+    {
+      "id": "31",
+      "username": "active-1772186267788-8",
+      "password": "ICiEJTIXbPXF",
+      "email": "active-1772186267788-8@taskforge.local",
+      "role": "DEVELOPER",
+      "global_role": "DEVELOPER",
+      "firstName": "Active",
+      "lastName": "Test",
+      "is_active": true,
+      "created_at": "2026-02-27T09:57:48.145Z",
+      "updated_at": "2026-02-27T09:57:48.145Z"
+    },
+    {
+      "id": "32",
+      "username": "newsuperadmin-1772186267788-9",
+      "password": "np943HOx3WF2",
+      "email": "newsuperadmin-1772186267788-9@taskforge.local",
+      "role": "SUPER_ADMIN",
+      "global_role": "SUPER_ADMIN",
+      "firstName": "New",
+      "lastName": "SuperAdmin",
+      "is_active": true,
+      "created_at": "2026-02-27T09:57:48.149Z",
+      "updated_at": "2026-02-27T09:57:48.149Z"
+    },
+    {
+      "id": "33",
+      "username": "retrievable-1772186267788-10",
+      "password": "TcarOFmUcwmz",
+      "email": "retrievable-1772186267788-10@taskforge.local",
+      "role": "REPORTER",
+      "global_role": "REPORTER",
+      "firstName": "Retrieve",
+      "lastName": "Test",
+      "is_active": true,
+      "created_at": "2026-02-27T09:57:48.175Z",
+      "updated_at": "2026-02-27T09:57:48.175Z"
     }
   ],
   "projects": [
@@ -365,6 +456,16 @@
       "created_at": "2025-03-01T10:00:00.000Z",
       "updated_at": "2025-10-01T08:00:00.000Z",
       "is_active": false
+    },
+    {
+      "id": "16",
+      "key": "BU",
+      "name": "BURK",
+      "description": "BURK",
+      "created_by": "1",
+      "created_at": "2026-02-26T11:15:09.535Z",
+      "updated_at": "2026-02-26T11:15:09.535Z",
+      "is_active": true
     },
     {
       "id": "10",
@@ -490,20 +591,50 @@
       "id": "1",
       "key": "TF",
       "name": "TaskForge Core",
-      "description": "Main product — task and project management platform",
+      "description": "Updated description",
       "created_by": "1",
       "created_at": "2025-01-20T09:00:00.000Z",
-      "updated_at": "2025-06-01T10:00:00.000Z",
+      "updated_at": "2026-02-27T09:57:47.282Z",
       "is_active": true
     },
     {
-      "id": "16",
-      "key": "BU",
-      "name": "BURK",
-      "description": "BURK",
+      "id": "17",
+      "key": "MKP",
+      "name": "Manual Key Project",
+      "description": "Test project",
       "created_by": "1",
-      "created_at": "2026-02-26T11:15:09.535Z",
-      "updated_at": "2026-02-26T11:15:09.535Z",
+      "created_at": "2026-02-27T09:57:47.230Z",
+      "updated_at": "2026-02-27T09:57:47.230Z",
+      "is_active": true
+    },
+    {
+      "id": "18",
+      "key": "AGK",
+      "name": "Auto Generated Key",
+      "description": "",
+      "created_by": "1",
+      "created_at": "2026-02-27T09:57:47.239Z",
+      "updated_at": "2026-02-27T09:57:47.239Z",
+      "is_active": true
+    },
+    {
+      "id": "19",
+      "key": "DP",
+      "name": "Duplicate Prefix",
+      "description": "",
+      "created_by": "1",
+      "created_at": "2026-02-27T09:57:47.245Z",
+      "updated_at": "2026-02-27T09:57:47.245Z",
+      "is_active": true
+    },
+    {
+      "id": "20",
+      "key": "DP1",
+      "name": "Different Purpose",
+      "description": "",
+      "created_by": "1",
+      "created_at": "2026-02-27T09:57:47.249Z",
+      "updated_at": "2026-02-27T09:57:47.249Z",
       "is_active": true
     }
   ],
@@ -526,7 +657,7 @@
       "id": "3",
       "projectId": "1",
       "userId": "4",
-      "role": "DEVELOPER",
+      "role": "REPORTER",
       "joined_at": "2025-01-21T10:00:00.000Z"
     },
     {
@@ -829,6 +960,1768 @@
       "userId": "11",
       "role": "DEVELOPER",
       "joined_at": "2025-09-02T09:00:00.000Z"
+    },
+    {
+      "id": "47",
+      "projectId": "1",
+      "userId": "8",
+      "role": "DEVELOPER",
+      "joined_at": "2026-02-27T09:57:47.364Z"
+    },
+    {
+      "id": "48",
+      "projectId": "1",
+      "userId": "23",
+      "role": "REPORTER",
+      "joined_at": "2026-02-27T09:57:47.371Z"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "1",
+      "projectId": "1",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-01-20T09:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "projectId": "1",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-01-20T09:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "projectId": "1",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-01-20T09:00:00.000Z"
+    },
+    {
+      "id": "4",
+      "projectId": "1",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-01-20T09:00:00.000Z"
+    },
+    {
+      "id": "5",
+      "projectId": "2",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-03-01T14:00:00.000Z"
+    },
+    {
+      "id": "6",
+      "projectId": "2",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-03-01T14:00:00.000Z"
+    },
+    {
+      "id": "7",
+      "projectId": "2",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-03-01T14:00:00.000Z"
+    },
+    {
+      "id": "8",
+      "projectId": "2",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-03-01T14:00:00.000Z"
+    },
+    {
+      "id": "9",
+      "projectId": "3",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-02-10T08:00:00.000Z"
+    },
+    {
+      "id": "10",
+      "projectId": "3",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-02-10T08:00:00.000Z"
+    },
+    {
+      "id": "11",
+      "projectId": "3",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-02-10T08:00:00.000Z"
+    },
+    {
+      "id": "12",
+      "projectId": "3",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-02-10T08:00:00.000Z"
+    },
+    {
+      "id": "13",
+      "projectId": "4",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-04-01T09:00:00.000Z"
+    },
+    {
+      "id": "14",
+      "projectId": "4",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-04-01T09:00:00.000Z"
+    },
+    {
+      "id": "15",
+      "projectId": "4",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-04-01T09:00:00.000Z"
+    },
+    {
+      "id": "16",
+      "projectId": "4",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-04-01T09:00:00.000Z"
+    },
+    {
+      "id": "17",
+      "projectId": "5",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-04-15T10:00:00.000Z"
+    },
+    {
+      "id": "18",
+      "projectId": "5",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-04-15T10:00:00.000Z"
+    },
+    {
+      "id": "19",
+      "projectId": "5",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-04-15T10:00:00.000Z"
+    },
+    {
+      "id": "20",
+      "projectId": "5",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-04-15T10:00:00.000Z"
+    },
+    {
+      "id": "21",
+      "projectId": "6",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-05-01T08:00:00.000Z"
+    },
+    {
+      "id": "22",
+      "projectId": "6",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-05-01T08:00:00.000Z"
+    },
+    {
+      "id": "23",
+      "projectId": "6",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-05-01T08:00:00.000Z"
+    },
+    {
+      "id": "24",
+      "projectId": "6",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-05-01T08:00:00.000Z"
+    },
+    {
+      "id": "25",
+      "projectId": "7",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-05-20T11:00:00.000Z"
+    },
+    {
+      "id": "26",
+      "projectId": "7",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-05-20T11:00:00.000Z"
+    },
+    {
+      "id": "27",
+      "projectId": "7",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-05-20T11:00:00.000Z"
+    },
+    {
+      "id": "28",
+      "projectId": "7",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-05-20T11:00:00.000Z"
+    },
+    {
+      "id": "29",
+      "projectId": "8",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-06-01T09:00:00.000Z"
+    },
+    {
+      "id": "30",
+      "projectId": "8",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-06-01T09:00:00.000Z"
+    },
+    {
+      "id": "31",
+      "projectId": "8",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-06-01T09:00:00.000Z"
+    },
+    {
+      "id": "32",
+      "projectId": "8",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-06-01T09:00:00.000Z"
+    },
+    {
+      "id": "33",
+      "projectId": "9",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-06-15T14:00:00.000Z"
+    },
+    {
+      "id": "34",
+      "projectId": "9",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-06-15T14:00:00.000Z"
+    },
+    {
+      "id": "35",
+      "projectId": "9",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-06-15T14:00:00.000Z"
+    },
+    {
+      "id": "36",
+      "projectId": "9",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-06-15T14:00:00.000Z"
+    },
+    {
+      "id": "37",
+      "projectId": "10",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-07-01T08:00:00.000Z"
+    },
+    {
+      "id": "38",
+      "projectId": "10",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-07-01T08:00:00.000Z"
+    },
+    {
+      "id": "39",
+      "projectId": "10",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-07-01T08:00:00.000Z"
+    },
+    {
+      "id": "40",
+      "projectId": "10",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-07-01T08:00:00.000Z"
+    },
+    {
+      "id": "41",
+      "projectId": "11",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-07-15T10:00:00.000Z"
+    },
+    {
+      "id": "42",
+      "projectId": "11",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-07-15T10:00:00.000Z"
+    },
+    {
+      "id": "43",
+      "projectId": "11",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-07-15T10:00:00.000Z"
+    },
+    {
+      "id": "44",
+      "projectId": "11",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-07-15T10:00:00.000Z"
+    },
+    {
+      "id": "45",
+      "projectId": "12",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-08-01T09:00:00.000Z"
+    },
+    {
+      "id": "46",
+      "projectId": "12",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-08-01T09:00:00.000Z"
+    },
+    {
+      "id": "47",
+      "projectId": "12",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-08-01T09:00:00.000Z"
+    },
+    {
+      "id": "48",
+      "projectId": "12",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-08-01T09:00:00.000Z"
+    },
+    {
+      "id": "49",
+      "projectId": "13",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-08-15T11:00:00.000Z"
+    },
+    {
+      "id": "50",
+      "projectId": "13",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-08-15T11:00:00.000Z"
+    },
+    {
+      "id": "51",
+      "projectId": "13",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-08-15T11:00:00.000Z"
+    },
+    {
+      "id": "52",
+      "projectId": "13",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-08-15T11:00:00.000Z"
+    },
+    {
+      "id": "53",
+      "projectId": "14",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-09-01T08:00:00.000Z"
+    },
+    {
+      "id": "54",
+      "projectId": "14",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-09-01T08:00:00.000Z"
+    },
+    {
+      "id": "55",
+      "projectId": "14",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-09-01T08:00:00.000Z"
+    },
+    {
+      "id": "56",
+      "projectId": "14",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-09-01T08:00:00.000Z"
+    },
+    {
+      "id": "57",
+      "projectId": "15",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-03-01T10:00:00.000Z"
+    },
+    {
+      "id": "58",
+      "projectId": "15",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-03-01T10:00:00.000Z"
+    },
+    {
+      "id": "59",
+      "projectId": "15",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-03-01T10:00:00.000Z"
+    },
+    {
+      "id": "60",
+      "projectId": "15",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2025-03-01T10:00:00.000Z"
+    },
+    {
+      "id": "61",
+      "projectId": "16",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-26T11:15:09.535Z"
+    },
+    {
+      "id": "62",
+      "projectId": "16",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-26T11:15:09.535Z"
+    },
+    {
+      "id": "63",
+      "projectId": "16",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-26T11:15:09.535Z"
+    },
+    {
+      "id": "64",
+      "projectId": "16",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-26T11:15:09.535Z"
+    }
+  ],
+  "backlog-items": [
+    {
+      "id": "1",
+      "projectId": "1",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-01-20T09:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "projectId": "2",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-03-01T14:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "projectId": "3",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-02-10T08:00:00.000Z"
+    },
+    {
+      "id": "4",
+      "projectId": "4",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-04-01T09:00:00.000Z"
+    },
+    {
+      "id": "5",
+      "projectId": "5",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-04-15T10:00:00.000Z"
+    },
+    {
+      "id": "6",
+      "projectId": "6",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-05-01T08:00:00.000Z"
+    },
+    {
+      "id": "7",
+      "projectId": "7",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-05-20T11:00:00.000Z"
+    },
+    {
+      "id": "8",
+      "projectId": "8",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-06-01T09:00:00.000Z"
+    },
+    {
+      "id": "9",
+      "projectId": "9",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-06-15T14:00:00.000Z"
+    },
+    {
+      "id": "10",
+      "projectId": "10",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-07-01T08:00:00.000Z"
+    },
+    {
+      "id": "11",
+      "projectId": "11",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-07-15T10:00:00.000Z"
+    },
+    {
+      "id": "12",
+      "projectId": "12",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-08-01T09:00:00.000Z"
+    },
+    {
+      "id": "13",
+      "projectId": "13",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-08-15T11:00:00.000Z"
+    },
+    {
+      "id": "14",
+      "projectId": "14",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-09-01T08:00:00.000Z"
+    },
+    {
+      "id": "15",
+      "projectId": "15",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2025-03-01T10:00:00.000Z"
+    },
+    {
+      "id": "16",
+      "projectId": "16",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "created_by": "system",
+      "created_at": "2026-02-26T11:15:09.535Z"
     }
   ]
 }
