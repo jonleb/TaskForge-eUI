@@ -265,6 +265,28 @@
                     </ul>
                 }
             </section>
+
+            <!-- Activity timeline -->
+            <section class="activity-section eui-u-mt-l" aria-label="Activity">
+                <h3 class="eui-u-f-l eui-u-mb-m">{{ 'ticket-detail.activity.title' | translate }}</h3>
+
+                @if (activity.length === 0) {
+                    <p class="eui-u-f-m eui-u-c-text-secondary">{{ 'ticket-detail.activity.empty' | translate }}</p>
+                } @else {
+                    <ul class="activity-list">
+                        @for (entry of activity; track entry.id) {
+                            <li class="activity-item eui-u-mb-s">
+                                <span class="activity-text eui-u-f-s">
+                                    {{ 'ticket-detail.activity.changed' | translate:{ user: getChangerName(entry.changedBy), field: entry.field, oldValue: entry.oldValue, newValue: entry.newValue } }}
+                                </span>
+                                <span class="activity-date eui-u-f-s eui-u-c-text-secondary eui-u-ml-s">
+                                    {{ entry.created_at | date:'medium' }}
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </section>
         }
     </eui-page-content>
 </eui-page>

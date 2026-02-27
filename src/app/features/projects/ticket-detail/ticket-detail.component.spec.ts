@@ -81,8 +81,10 @@ describe('TicketDetailComponent', () => {
             createProject: vi.fn(), updateProject: vi.fn(),
             upsertMember: vi.fn(), removeMember: vi.fn(),
             searchCandidates: vi.fn(), createTicket: vi.fn(),
-            getComments: vi.fn(), addComment: vi.fn(),
-            getActivity: vi.fn(), getProjects: vi.fn(),
+            getComments: vi.fn().mockReturnValue(of([])),
+            addComment: vi.fn(),
+            getActivity: vi.fn().mockReturnValue(of([])),
+            getProjects: vi.fn(),
         };
 
         perm = {
@@ -454,5 +456,59 @@ describe('TicketDetailComponent', () => {
         component.submitComment();
         expect(component.newCommentText).toBe('');
         expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+    });
+
+    // --- STORY-007: Activity Timeline ---
+
+    it('should load activity after ticket loads', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(svc['getActivity']).toHaveBeenCalledWith('1', 5);
+    });
+
+    it('should display activity entries', () => {
+        const mockActivity = [
+            { id: 'a1', projectId: '1', ticketId: '17', ticketNumber: 5, field: 'status', oldValue: 'TO_DO', newValue: 'IN_PROGRESS', changedBy: '2', created_at: '2026-02-12T10:00:00.000Z' },
+            { id: 'a2', projectId: '1', ticketId: '17', ticketNumber: 5, field: 'priority', oldValue: 'MEDIUM', newValue: 'HIGH', changedBy: '3', created_at: '2026-02-13T10:00:00.000Z' },
+        ];
+        svc['getActivity'].mockReturnValue(of(mockActivity));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const items = fixture.nativeElement.querySelectorAll('.activity-item');
+        expect(items.length).toBe(2);
+    });
+
+    it('should show empty state when no activity', () => {
+        svc['getActivity'].mockReturnValue(of([]));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(fixture.nativeElement.textContent).toContain('ticket-detail.activity.empty');
+    });
+
+    it('should resolve changer name from members', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.getChangerName('2')).toBe('Bob Smith');
+        expect(component.getChangerName('unknown')).toBe('unknown');
+    });
+
+    it('should display activity section heading', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const headings = fixture.nativeElement.querySelectorAll('h3');
+        const texts = Array.from(headings).map((h: Element) => h.textContent?.trim());
+        expect(texts).toContain('ticket-detail.activity.title');
+    });
+
+    it('should show activity date', () => {
+        const mockActivity = [
+            { id: 'a1', projectId: '1', ticketId: '17', ticketNumber: 5, field: 'title', oldValue: 'Old', newValue: 'New', changedBy: '2', created_at: '2026-02-12T10:00:00.000Z' },
+        ];
+        svc['getActivity'].mockReturnValue(of(mockActivity));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const dateEl = fixture.nativeElement.querySelector('.activity-date');
+        expect(dateEl).toBeTruthy();
+        expect(dateEl.textContent.trim()).toBeTruthy();
     });
 });

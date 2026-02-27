@@ -19,7 +19,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
     ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember,
     Workflow, WorkflowStatus, TicketPriority, UpdateTicketPayload,
-    TICKET_PRIORITIES, TicketComment,
+    TICKET_PRIORITIES, TicketComment, ActivityEntry,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
@@ -77,6 +77,9 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     newCommentText = '';
     isAddingComment = false;
 
+    // Activity
+    activity: ActivityEntry[] = [];
+
     ngOnInit(): void {
         combineLatest([
             this.projectContext.currentProject$.pipe(filter((p): p is Project => p !== null)),
@@ -102,6 +105,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
                 this.isLoading = false;
                 this.syncEditFields();
                 this.loadComments();
+                this.loadActivity();
                 this.cdr.markForCheck();
             },
             error: (err) => {
@@ -246,6 +250,23 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         if (!ticket) return '';
         const member = this.members.find(m => m.userId === ticket.created_by);
         return member ? `${member.firstName} ${member.lastName}` : ticket.created_by;
+    }
+
+    // --- Activity ---
+
+    loadActivity(): void {
+        if (!this.project || !this.ticket) return;
+        this.projectService.getActivity(this.project.id, this.ticket.ticket_number).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe(activity => {
+            this.activity = activity;
+            this.cdr.markForCheck();
+        });
+    }
+
+    getChangerName(changedBy: string): string {
+        const member = this.members.find(m => m.userId === changedBy);
+        return member ? `${member.firstName} ${member.lastName}` : changedBy;
     }
 
     // --- Comments ---

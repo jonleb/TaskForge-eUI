@@ -279,5 +279,8 @@
   "ticket-detail.comments.submit": "Add comment",
   "ticket-detail.comments.empty": "No comments yet.",
   "ticket-detail.comments.growl.added": "Comment added",
-  "ticket-detail.comments.growl.failed": "Failed to add comment."
+  "ticket-detail.comments.growl.failed": "Failed to add comment.",
+  "ticket-detail.activity.title": "Activity",
+  "ticket-detail.activity.empty": "No activity yet.",
+  "ticket-detail.activity.changed": "{{user}} changed {{field}} from {{oldValue}} to {{newValue}}"
 }
