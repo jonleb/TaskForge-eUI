@@ -1622,3 +1622,212 @@ describe('POST /api/projects/:projectId/backlog', () => {
         expect(res.body.projectId).toBe('4');
     });
 });
+
+// --- GET /api/projects/:projectId/backlog/:ticketNumber ---
+
+describe('GET /api/projects/:projectId/backlog/:ticketNumber', () => {
+
+    it('should return a ticket by number', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog/2')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.ticket_number).toBe(2);
+        expect(res.body.projectId).toBe('1');
+        expect(res.body.title).toBeDefined();
+    });
+
+    it('should return 404 for non-existent ticket number', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog/9999')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(404);
+    });
+
+    it('should return 401 without token', async () => {
+        const res = await request(app).get('/api/projects/1/backlog/2');
+        expect(res.status).toBe(401);
+    });
+
+    it('should return 403 for non-member', async () => {
+        // eve.jones (id=12) is NOT a member of project 1
+        const token = await getTokenFor('eve.jones');
+        const res = await request(app)
+            .get('/api/projects/1/backlog/2')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(403);
+    });
+
+    it('should allow VIEWER to read a ticket', async () => {
+        const token = await getTokenFor('viewer');
+        const res = await request(app)
+            .get('/api/projects/1/backlog/2')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.ticket_number).toBe(2);
+    });
+});
+
+// --- PATCH /api/projects/:projectId/backlog/:ticketNumber ---
+
+describe('PATCH /api/projects/:projectId/backlog/:ticketNumber', () => {
+
+    it('should update title', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/2')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ title: 'Updated auth flow title' });
+
+        expect(res.status).toBe(200);
+        expect(res.body.title).toBe('Updated auth flow title');
+    });
+
+    it('should update status with valid transition (TO_DO → IN_PROGRESS)', async () => {
+        const token = await getTokenFor('superadmin');
+        // Ticket 3 in project 1 is a BUG with status TO_DO
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/3')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ status: 'IN_PROGRESS' });
+
+        expect(res.status).toBe(200);
+        expect(res.body.status).toBe('IN_PROGRESS');
+    });
+
+    it('should reject invalid status transition (TO_DO → DONE)', async () => {
+        const token = await getTokenFor('superadmin');
+        // Ticket 5 in project 1 is TO_DO
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/5')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ status: 'DONE' });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain('Invalid status transition');
+    });
+
+    it('should update priority', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/2')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ priority: 'CRITICAL' });
+
+        expect(res.status).toBe(200);
+        expect(res.body.priority).toBe('CRITICAL');
+    });
+
+    it('should update assignee_id to a valid project member', async () => {
+        const token = await getTokenFor('superadmin');
+        // userId 2 (projectadmin) is a member of project 1
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/2')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ assignee_id: '2' });
+
+        expect(res.status).toBe(200);
+        expect(res.body.assignee_id).toBe('2');
+    });
+
+    it('should validate title length (too short)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/2')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ title: 'A' });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain('Title');
+    });
+
+    it('should return 403 for VIEWER', async () => {
+        const token = await getTokenFor('viewer');
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/2')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ title: 'Should not work' });
+
+        expect(res.status).toBe(403);
+    });
+
+    it('should allow REPORTER to update own ticket', async () => {
+        // User 4 (developer username, REPORTER role in project 1) created ticket_number=4
+        const token = await getTokenFor('developer');
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/4')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ description: 'Updated by reporter' });
+
+        expect(res.status).toBe(200);
+        expect(res.body.description).toBe('Updated by reporter');
+    });
+
+    it('should reject REPORTER updating others ticket', async () => {
+        // User 4 (developer username, REPORTER role in project 1) did NOT create ticket_number=2
+        const token = await getTokenFor('developer');
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/2')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ title: 'Should not work' });
+
+        expect(res.status).toBe(403);
+        expect(res.body.message).toContain('own tickets');
+    });
+
+    it('should generate activity entries on update', async () => {
+        const token = await getTokenFor('superadmin');
+        // Update priority on ticket 6 to generate activity
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/6')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ priority: 'LOW' });
+
+        expect(res.status).toBe(200);
+        // Activity entries are stored in DB — verified via STORY-002 activity endpoint tests
+    });
+
+    it('should return 404 for non-existent ticket', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/9999')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ title: 'Does not exist' });
+
+        expect(res.status).toBe(404);
+    });
+
+    it('should return unchanged ticket when no fields differ', async () => {
+        const token = await getTokenFor('superadmin');
+        // First get the current ticket
+        const getRes = await request(app)
+            .get('/api/projects/1/backlog/2')
+            .set('Authorization', `Bearer ${token}`);
+        const currentTitle = getRes.body.title;
+
+        // PATCH with same title
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/2')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ title: currentTitle });
+
+        expect(res.status).toBe(200);
+    });
+
+    it('should allow DEVELOPER to update any ticket', async () => {
+        // diana.brown (id=11) is DEVELOPER in project 1
+        const token = await getTokenFor('diana.brown');
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/5')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ description: 'Updated by developer' });
+
+        expect(res.status).toBe(200);
+    });
+});

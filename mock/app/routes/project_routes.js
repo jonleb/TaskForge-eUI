@@ -436,6 +436,206 @@ module.exports = function (app, db) {
         );
 
         /**
+         * GET /api/projects/:projectId/backlog/:ticketNumber
+         * Returns a single backlog item by ticket number within the project.
+         * Protected — requires valid token + project membership (any role).
+         * SUPER_ADMIN bypasses membership check.
+         */
+        app.get(
+            '/api/projects/:projectId/backlog/:ticketNumber',
+            authMiddleware,
+            requireProjectRole(db, ...ALL_PROJECT_ROLES),
+            (req, res) => {
+                const projectId = req.params.projectId;
+                const ticketNumber = parseInt(req.params.ticketNumber, 10);
+
+                if (isNaN(ticketNumber)) {
+                    return res.status(400).json({ message: 'Invalid ticket number' });
+                }
+
+                const item = db.get('backlog-items')
+                    .find({ projectId, ticket_number: ticketNumber })
+                    .value();
+
+                if (!item) {
+                    return res.status(404).json({ message: 'Ticket not found' });
+                }
+
+                return res.json(item);
+            }
+        );
+
+        const VALID_STATUSES = ['TO_DO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE'];
+
+        /**
+         * PATCH /api/projects/:projectId/backlog/:ticketNumber
+         * Update a single backlog item. Allowed fields: title, description, status, priority, assignee_id, epic_id.
+         * Status changes are validated against workflow transitions.
+         * REPORTER can only update tickets they created.
+         * Protected — requires non-VIEWER project role.
+         * SUPER_ADMIN bypasses membership check.
+         * Generates activity entries for each changed field.
+         */
+        app.patch(
+            '/api/projects/:projectId/backlog/:ticketNumber',
+            authMiddleware,
+            requireProjectRole(db, 'PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER', 'REPORTER'),
+            (req, res) => {
+                const projectId = req.params.projectId;
+                const ticketNumber = parseInt(req.params.ticketNumber, 10);
+
+                if (isNaN(ticketNumber)) {
+                    return res.status(400).json({ message: 'Invalid ticket number' });
+                }
+
+                const item = db.get('backlog-items')
+                    .find({ projectId, ticket_number: ticketNumber })
+                    .value();
+
+                if (!item) {
+                    return res.status(404).json({ message: 'Ticket not found' });
+                }
+
+                // REPORTER can only update own tickets
+                if (req.projectRole === 'REPORTER' && item.created_by !== String(req.user.userId)) {
+                    return res.status(403).json({ message: 'Reporters can only edit their own tickets' });
+                }
+
+                const { title, description, status, priority, assignee_id, epic_id } = req.body;
+                const updates = {};
+                const activities = [];
+                const now = new Date().toISOString();
+
+                // Validate & collect title change
+                if (title !== undefined) {
+                    const trimmed = (title || '').trim();
+                    if (!trimmed || trimmed.length < 2 || trimmed.length > 200) {
+                        return res.status(400).json({ message: 'Title must be 2–200 characters' });
+                    }
+                    if (trimmed !== item.title) {
+                        activities.push({ field: 'title', oldValue: item.title, newValue: trimmed });
+                        updates.title = trimmed;
+                    }
+                }
+
+                // Validate & collect description change
+                if (description !== undefined) {
+                    const trimmed = (description || '').trim();
+                    if (trimmed.length > 2000) {
+                        return res.status(400).json({ message: 'Description must not exceed 2000 characters' });
+                    }
+                    if (trimmed !== item.description) {
+                        activities.push({ field: 'description', oldValue: item.description || '', newValue: trimmed });
+                        updates.description = trimmed;
+                    }
+                }
+
+                // Validate & collect status change (workflow transition)
+                if (status !== undefined) {
+                    if (!VALID_STATUSES.includes(status)) {
+                        return res.status(400).json({ message: 'Invalid status' });
+                    }
+                    if (status !== item.status) {
+                        const workflow = db.get('workflows')
+                            .find({ projectId, ticketType: item.type })
+                            .value();
+                        if (!workflow) {
+                            return res.status(400).json({ message: 'No workflow found for this ticket type' });
+                        }
+                        const allowed = workflow.transitions[item.status] || [];
+                        if (!allowed.includes(status)) {
+                            return res.status(400).json({
+                                message: `Invalid status transition from ${item.status} to ${status}`,
+                            });
+                        }
+                        activities.push({ field: 'status', oldValue: item.status, newValue: status });
+                        updates.status = status;
+                    }
+                }
+
+                // Validate & collect priority change
+                if (priority !== undefined) {
+                    if (priority !== null && !VALID_PRIORITIES.includes(priority)) {
+                        return res.status(400).json({ message: 'Invalid priority' });
+                    }
+                    if (priority !== item.priority) {
+                        activities.push({ field: 'priority', oldValue: item.priority || '', newValue: priority || '' });
+                        updates.priority = priority;
+                    }
+                }
+
+                // Validate & collect assignee change
+                if (assignee_id !== undefined) {
+                    if (assignee_id !== null && assignee_id !== '') {
+                        const targetUser = db.get('users').find({ id: String(assignee_id) }).value();
+                        if (!targetUser || !targetUser.is_active) {
+                            return res.status(400).json({ message: 'Assignee must be an active user' });
+                        }
+                        const membership = db.get('project-members')
+                            .find({ projectId, userId: String(assignee_id) })
+                            .value();
+                        if (!membership) {
+                            return res.status(400).json({ message: 'Assignee must be a project member' });
+                        }
+                    }
+                    const newAssignee = assignee_id === '' ? null : assignee_id;
+                    if (newAssignee !== item.assignee_id) {
+                        activities.push({ field: 'assignee_id', oldValue: item.assignee_id || '', newValue: newAssignee || '' });
+                        updates.assignee_id = newAssignee;
+                    }
+                }
+
+                // Validate & collect epic change
+                if (epic_id !== undefined) {
+                    if (epic_id !== null && epic_id !== '') {
+                        const epic = db.get('backlog-items')
+                            .find({ id: String(epic_id), projectId })
+                            .value();
+                        if (!epic || epic.type !== 'EPIC') {
+                            return res.status(400).json({ message: 'Epic not found in this project' });
+                        }
+                    }
+                    const newEpic = epic_id === '' ? null : epic_id;
+                    if (newEpic !== item.epic_id) {
+                        activities.push({ field: 'epic_id', oldValue: item.epic_id || '', newValue: newEpic || '' });
+                        updates.epic_id = newEpic;
+                    }
+                }
+
+                if (Object.keys(updates).length === 0) {
+                    return res.json(item);
+                }
+
+                // Apply updates
+                db.get('backlog-items')
+                    .find({ id: item.id })
+                    .assign(updates)
+                    .write();
+
+                // Generate activity entries
+                const allActivity = db.get('ticket-activity').value();
+                let actMaxId = allActivity.reduce((max, a) => Math.max(max, parseInt(a.id, 10) || 0), 0);
+                for (const act of activities) {
+                    actMaxId++;
+                    db.get('ticket-activity').push({
+                        id: String(actMaxId),
+                        projectId,
+                        ticketId: item.id,
+                        ticketNumber,
+                        field: act.field,
+                        oldValue: act.oldValue,
+                        newValue: act.newValue,
+                        changedBy: String(req.user.userId),
+                        created_at: now,
+                    }).write();
+                }
+
+                const updated = db.get('backlog-items').find({ id: item.id }).value();
+                return res.json(updated);
+            }
+        );
+
+        /**
          * PUT /api/projects/:projectId/members
          * Upsert a project member (add or update role).
          * Protected — requires PROJECT_ADMIN role (SUPER_ADMIN bypasses).
