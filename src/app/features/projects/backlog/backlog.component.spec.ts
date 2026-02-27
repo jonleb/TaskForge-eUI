@@ -7,7 +7,8 @@ import { BacklogComponent } from './backlog.component';
 import { ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember, BacklogListResponse } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
-type MockToggleItem = { id: string };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type MockToggleItem = any;
 
 const mockProject: Project = {
     id: '1', key: 'TF', name: 'TaskForge Core',
@@ -433,5 +434,62 @@ describe('BacklogComponent', () => {
         component.onTypeFilterChange({ id: 'type-all' } as MockToggleItem);
         expect(component.activeTypeFilter).toBe('all');
         expect(component.params.type).toBeUndefined();
+    });
+
+    // --- STORY-005: Contextual Empty States & Polish ---
+
+    it('should show search-specific empty message when search is active', () => {
+        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of(emptyResponse));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.params = { ...component.params, q: 'nonexistent' };
+        expect(component.emptyStateMessage).toBe('backlog.no-match-search');
+    });
+
+    it('should show filter-specific empty message when status filter is active', () => {
+        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of(emptyResponse));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.params = { ...component.params, status: 'DONE' };
+        expect(component.emptyStateMessage).toBe('backlog.no-match-filter');
+    });
+
+    it('should show filter-specific empty message when type filter is active', () => {
+        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of(emptyResponse));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.params = { ...component.params, type: 'BUG' };
+        expect(component.emptyStateMessage).toBe('backlog.no-match-filter');
+    });
+
+    it('should show default empty message when no filters active', () => {
+        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of(emptyResponse));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.emptyStateMessage).toBe('backlog.no-items');
+    });
+
+    it('should show growl notification on load error', () => {
+        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(throwError(() => new Error('fail')));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(growlServiceMock.growl).toHaveBeenCalledWith({
+            severity: 'error',
+            summary: 'backlog.growl.load-failed-summary',
+            detail: 'backlog.growl.load-failed-detail',
+        });
+    });
+
+    it('should render retry button in error state', () => {
+        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(throwError(() => new Error('fail')));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.hasError).toBe(true);
+        // Retry reloads
+        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of(mockResponse));
+        component.retry();
+        fixture.detectChanges();
+        expect(component.hasError).toBe(false);
+        expect(component.items.length).toBe(3);
     });
 });

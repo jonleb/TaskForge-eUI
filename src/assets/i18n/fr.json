@@ -227,5 +227,9 @@
   "backlog.growl.created-detail": "{{key}}-{{number}} {{title}} a été créé.",
   "backlog.growl.create-failed-summary": "Échec de la création",
   "backlog.growl.create-failed-detail": "Impossible de créer le ticket. Veuillez réessayer.",
-  "backlog.error.create-default": "Une erreur est survenue lors de la création du ticket."
+  "backlog.error.create-default": "Une erreur est survenue lors de la création du ticket.",
+  "backlog.no-match-search": "Aucun ticket ne correspond à votre recherche.",
+  "backlog.no-match-filter": "Aucun ticket ne correspond aux filtres sélectionnés.",
+  "backlog.growl.load-failed-summary": "Échec du chargement",
+  "backlog.growl.load-failed-detail": "Impossible de charger le backlog. Veuillez réessayer."
 }

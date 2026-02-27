@@ -135,6 +135,11 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.total = 0;
                 this.hasError = true;
                 this.isLoading = false;
+                this.growlService.growl({
+                    severity: 'error',
+                    summary: this.translate.instant('backlog.growl.load-failed-summary'),
+                    detail: this.translate.instant('backlog.growl.load-failed-detail'),
+                });
                 this.cdr.markForCheck();
             },
         });
@@ -273,6 +278,12 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
     get emptyStateMessage(): string {
         if (this.hasError) {
             return this.translate.instant('backlog.load-error');
+        }
+        if (this.params.q) {
+            return this.translate.instant('backlog.no-match-search');
+        }
+        if (this.params.status || this.params.type) {
+            return this.translate.instant('backlog.no-match-filter');
         }
         return this.translate.instant('backlog.no-items');
     }

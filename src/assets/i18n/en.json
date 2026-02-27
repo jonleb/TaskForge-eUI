@@ -227,5 +227,9 @@
   "backlog.growl.created-detail": "{{key}}-{{number}} {{title}} has been created.",
   "backlog.growl.create-failed-summary": "Creation failed",
   "backlog.growl.create-failed-detail": "Could not create ticket. Please try again.",
-  "backlog.error.create-default": "An error occurred while creating the ticket."
+  "backlog.error.create-default": "An error occurred while creating the ticket.",
+  "backlog.no-match-search": "No tickets match your search.",
+  "backlog.no-match-filter": "No tickets match the selected filters.",
+  "backlog.growl.load-failed-summary": "Load failed",
+  "backlog.growl.load-failed-detail": "Could not load backlog. Please try again."
 }
