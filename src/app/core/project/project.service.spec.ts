@@ -422,6 +422,30 @@ describe('ProjectService', () => {
             expect(req.request.params.get('q')).toBe('test');
             req.flush(mockBacklogResponse);
         });
+
+        it('should pass multi-value comma-separated status param', () => {
+            service.getBacklog('1', { status: 'TO_DO,IN_PROGRESS' }).subscribe();
+
+            const req = httpMock.expectOne(r => r.url === '/api/projects/1/backlog');
+            expect(req.request.params.get('status')).toBe('TO_DO,IN_PROGRESS');
+            req.flush(mockBacklogResponse);
+        });
+
+        it('should pass multi-value comma-separated type param', () => {
+            service.getBacklog('1', { type: 'STORY,BUG' }).subscribe();
+
+            const req = httpMock.expectOne(r => r.url === '/api/projects/1/backlog');
+            expect(req.request.params.get('type')).toBe('STORY,BUG');
+            req.flush(mockBacklogResponse);
+        });
+
+        it('should pass multi-value comma-separated priority param', () => {
+            service.getBacklog('1', { priority: 'HIGH,CRITICAL' }).subscribe();
+
+            const req = httpMock.expectOne(r => r.url === '/api/projects/1/backlog');
+            expect(req.request.params.get('priority')).toBe('HIGH,CRITICAL');
+            req.flush(mockBacklogResponse);
+        });
     });
 
     describe('createTicket()', () => {

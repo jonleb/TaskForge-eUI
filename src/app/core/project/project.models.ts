@@ -127,9 +127,9 @@ export interface BacklogListParams {
     _sort?: string;
     _order?: 'asc' | 'desc';
     q?: string;
-    type?: TicketType;
-    status?: WorkflowStatus;
-    priority?: TicketPriority;
+    type?: string;
+    status?: string;
+    priority?: string;
 }
 
 export interface BacklogListResponse {
