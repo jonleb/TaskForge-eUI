@@ -235,8 +235,9 @@ module.exports = function (app, db) {
 
         /**
          * GET /api/projects/:projectId/backlog
-         * Returns backlog items for the project, sorted by created_at descending.
+         * Returns backlog items for the project.
          * Optional query: ?type=EPIC to filter by item type.
+         * Optional query: ?_sort=field&_order=asc|desc for sorting (default: created_at desc).
          * Protected — requires valid token + project membership (any role).
          * SUPER_ADMIN bypasses membership check.
          */
@@ -255,10 +256,137 @@ module.exports = function (app, db) {
                     items = items.filter(i => i.type === type);
                 }
 
-                // Sort by created_at descending
-                items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                // Sort
+                const sortField = req.query._sort || 'created_at';
+                const sortOrder = req.query._order || 'desc';
+                items.sort((a, b) => {
+                    const valA = a[sortField];
+                    const valB = b[sortField];
+                    if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+                    if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+                    return 0;
+                });
 
                 return res.json(items);
+            }
+        );
+
+        const VALID_TICKET_TYPES = ['STORY', 'BUG', 'TASK'];
+        const VALID_PRIORITIES = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
+
+        /**
+         * POST /api/projects/:projectId/backlog
+         * Create a new ticket (STORY, BUG, or TASK) in the project backlog.
+         * Protected — requires project membership with non-VIEWER role.
+         * SUPER_ADMIN bypasses membership check.
+         * Body: { type, title, description?, priority, assignee_id?, epic_id? }
+         * Returns 201 with the created BacklogItem.
+         */
+        app.post(
+            '/api/projects/:projectId/backlog',
+            authMiddleware,
+            requireProjectRole(db, 'PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER', 'REPORTER'),
+            (req, res) => {
+                const projectId = req.params.projectId;
+
+                // Check project exists and is active
+                const project = db.get('projects').find({ id: projectId }).value();
+                if (!project) {
+                    return res.status(404).json({ message: 'Project not found' });
+                }
+                if (!project.is_active) {
+                    return res.status(400).json({ message: 'Cannot create tickets in an archived project' });
+                }
+
+                const { type, title, description, priority, assignee_id, epic_id } = req.body;
+
+                // Validate type
+                if (type === 'EPIC') {
+                    return res.status(400).json({ message: 'Cannot create EPIC tickets. EPICs are system-managed.' });
+                }
+                if (!type || !VALID_TICKET_TYPES.includes(type)) {
+                    return res.status(400).json({ message: 'Invalid type. Must be one of: STORY, BUG, TASK' });
+                }
+
+                // Validate title
+                const trimmedTitle = (title || '').trim();
+                if (!trimmedTitle || trimmedTitle.length < 2 || trimmedTitle.length > 200) {
+                    return res.status(400).json({ message: 'Title is required (2–200 characters)' });
+                }
+
+                // Validate description
+                const trimmedDesc = (description || '').trim();
+                if (trimmedDesc.length > 2000) {
+                    return res.status(400).json({ message: 'Description must not exceed 2000 characters' });
+                }
+
+                // Validate priority
+                if (!priority || !VALID_PRIORITIES.includes(priority)) {
+                    return res.status(400).json({ message: 'Invalid priority. Must be one of: CRITICAL, HIGH, MEDIUM, LOW' });
+                }
+
+                // Validate assignee_id (optional)
+                let resolvedAssignee = null;
+                if (assignee_id !== undefined && assignee_id !== null && assignee_id !== '') {
+                    const targetUser = db.get('users').find({ id: String(assignee_id) }).value();
+                    if (!targetUser || !targetUser.is_active) {
+                        return res.status(400).json({ message: 'Assignee must be an active project member' });
+                    }
+                    const membership = db.get('project-members')
+                        .find({ projectId, userId: String(assignee_id) })
+                        .value();
+                    if (!membership) {
+                        return res.status(400).json({ message: 'Assignee must be an active project member' });
+                    }
+                    resolvedAssignee = String(assignee_id);
+                }
+
+                // Validate epic_id (optional)
+                let resolvedEpic = null;
+                if (epic_id !== undefined && epic_id !== null && epic_id !== '') {
+                    const epic = db.get('backlog-items')
+                        .find({ id: String(epic_id), projectId })
+                        .value();
+                    if (!epic || epic.type !== 'EPIC') {
+                        return res.status(400).json({ message: 'Epic not found in this project' });
+                    }
+                    resolvedEpic = String(epic_id);
+                }
+
+                // Validate workflow exists for this ticket type
+                const workflow = db.get('workflows')
+                    .find({ projectId, ticketType: type })
+                    .value();
+                if (!workflow || !workflow.statuses.includes('TO_DO')) {
+                    return res.status(400).json({ message: 'No valid workflow found for this ticket type' });
+                }
+
+                // Auto-increment ticket_number per project
+                const projectItems = db.get('backlog-items').filter({ projectId }).value();
+                const maxNumber = projectItems.reduce((max, item) => Math.max(max, item.ticket_number || 0), 0);
+
+                // Auto-increment ID
+                const allItems = db.get('backlog-items').value();
+                const maxId = allItems.reduce((max, item) => Math.max(max, parseInt(item.id, 10) || 0), 0);
+
+                const now = new Date().toISOString();
+                const newItem = {
+                    id: String(maxId + 1),
+                    projectId,
+                    type,
+                    title: trimmedTitle,
+                    description: trimmedDesc,
+                    status: 'TO_DO',
+                    priority,
+                    assignee_id: resolvedAssignee,
+                    epic_id: resolvedEpic,
+                    ticket_number: maxNumber + 1,
+                    created_by: String(req.user.userId),
+                    created_at: now,
+                };
+
+                db.get('backlog-items').push(newItem).write();
+                return res.status(201).json(newItem);
             }
         );
 

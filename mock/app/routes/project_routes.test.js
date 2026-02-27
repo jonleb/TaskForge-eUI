@@ -1123,4 +1123,244 @@ describe('GET /api/projects/:projectId/backlog', () => {
         expect(res.status).toBe(200);
         expect(res.body).toEqual([]);
     });
+
+    it('should sort by _sort=ticket_number&_order=asc', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?_sort=ticket_number&_order=asc')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        for (let i = 1; i < res.body.length; i++) {
+            expect(res.body[i].ticket_number).toBeGreaterThanOrEqual(res.body[i - 1].ticket_number);
+        }
+    });
+});
+
+// --- POST /api/projects/:projectId/backlog ---
+
+describe('POST /api/projects/:projectId/backlog', () => {
+
+    const validPayload = {
+        type: 'STORY',
+        title: 'Test ticket',
+        description: 'A test description',
+        priority: 'MEDIUM',
+    };
+
+    it('should return 401 without token', async () => {
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .send(validPayload);
+        expect(res.status).toBe(401);
+    });
+
+    it('should return 403 for VIEWER role', async () => {
+        const token = await getTokenFor('viewer');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send(validPayload);
+        expect(res.status).toBe(403);
+    });
+
+    it('should create a STORY with all fields (201)', async () => {
+        const token = await getTokenFor('superadmin');
+        // userId '2' is a seed member of project 1 (PROJECT_ADMIN)
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                type: 'STORY',
+                title: 'My first story',
+                description: 'Story description',
+                priority: 'HIGH',
+                assignee_id: '2',
+                epic_id: '1',
+            });
+
+        expect(res.status).toBe(201);
+        expect(res.body.type).toBe('STORY');
+        expect(res.body.title).toBe('My first story');
+        expect(res.body.priority).toBe('HIGH');
+        expect(res.body.status).toBe('TO_DO');
+        expect(res.body.assignee_id).toBe('2');
+        expect(res.body.epic_id).toBe('1');
+        expect(res.body.ticket_number).toBeGreaterThan(1);
+        expect(res.body.created_by).toBe('1');
+        expect(res.body.projectId).toBe('1');
+    });
+
+    it('should create a BUG with minimal fields (201)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ type: 'BUG', title: 'A bug report', priority: 'LOW' });
+
+        expect(res.status).toBe(201);
+        expect(res.body.type).toBe('BUG');
+        expect(res.body.assignee_id).toBeNull();
+        expect(res.body.epic_id).toBeNull();
+        expect(res.body.description).toBe('');
+    });
+
+    it('should create a TASK with priority CRITICAL (201)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ type: 'TASK', title: 'Critical task', priority: 'CRITICAL' });
+
+        expect(res.status).toBe(201);
+        expect(res.body.priority).toBe('CRITICAL');
+    });
+
+    it('should reject EPIC type (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ type: 'EPIC', title: 'An epic', priority: 'MEDIUM' });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain('EPIC');
+    });
+
+    it('should reject invalid type (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ type: 'FEATURE', title: 'Invalid', priority: 'MEDIUM' });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain('Invalid type');
+    });
+
+    it('should reject missing title (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ type: 'STORY', priority: 'MEDIUM' });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain('Title');
+    });
+
+    it('should reject title too short — 1 char (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ type: 'STORY', title: 'A', priority: 'MEDIUM' });
+
+        expect(res.status).toBe(400);
+    });
+
+    it('should reject title too long — 201 chars (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ type: 'STORY', title: 'A'.repeat(201), priority: 'MEDIUM' });
+
+        expect(res.status).toBe(400);
+    });
+
+    it('should reject invalid priority (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ type: 'STORY', title: 'Valid title', priority: 'URGENT' });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain('priority');
+    });
+
+    it('should reject missing priority (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ type: 'STORY', title: 'Valid title' });
+
+        expect(res.status).toBe(400);
+    });
+
+    it('should reject assignee who is not a project member (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        // userId '25' (tina.martin) may not be a member of project 1
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ ...validPayload, assignee_id: '9999' });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain('Assignee');
+    });
+
+    it('should reject epic_id that does not exist (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ ...validPayload, epic_id: '9999' });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain('Epic');
+    });
+
+    it('should auto-increment ticket_number per project', async () => {
+        const token = await getTokenFor('superadmin');
+        const res1 = await request(app)
+            .post('/api/projects/2/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ type: 'STORY', title: 'First in project 2', priority: 'LOW' });
+
+        const res2 = await request(app)
+            .post('/api/projects/2/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ type: 'BUG', title: 'Second in project 2', priority: 'HIGH' });
+
+        expect(res1.status).toBe(201);
+        expect(res2.status).toBe(201);
+        expect(res2.body.ticket_number).toBe(res1.body.ticket_number + 1);
+    });
+
+    it('should always set status to TO_DO', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send(validPayload);
+
+        expect(res.status).toBe(201);
+        expect(res.body.status).toBe('TO_DO');
+    });
+
+    it('should reject description over 2000 chars (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ ...validPayload, description: 'X'.repeat(2001) });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain('Description');
+    });
+
+    it('SUPER_ADMIN can create tickets in any project', async () => {
+        const token = await getTokenFor('superadmin');
+        // Use project 2 (active with workflows) — project 3 is archived
+        const res = await request(app)
+            .post('/api/projects/4/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send(validPayload);
+
+        expect(res.status).toBe(201);
+        expect(res.body.projectId).toBe('4');
+    });
 });
