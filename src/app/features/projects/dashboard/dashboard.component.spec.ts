@@ -41,7 +41,7 @@ describe('DashboardComponent', () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
         projectServiceMock = {
             getUser: vi.fn().mockReturnValue(of(mockUser)),
-            getBacklog: vi.fn().mockReturnValue(of(mockBacklogItems)),
+            getBacklog: vi.fn().mockReturnValue(of({ data: mockBacklogItems, total: 2, page: 1, limit: 10 })),
             getProjects: vi.fn(),
             getProject: vi.fn(),
             createProject: vi.fn(),
@@ -187,7 +187,7 @@ describe('DashboardComponent', () => {
     });
 
     it('should show empty state when no backlog items', () => {
-        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of([]));
+        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of({ data: [], total: 0, page: 1, limit: 10 }));
         currentProject$.next(mockProject);
         fixture.detectChanges();
         const backlogSection = fixture.nativeElement.querySelector('.backlog-summary');

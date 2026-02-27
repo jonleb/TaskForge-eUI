@@ -1,3 +1,3 @@
 export { ProjectService } from './project.service';
 export { ProjectContextService } from './project-context.service';
-export { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, PROJECT_ROLES, ProjectRole, Workflow, BacklogItem, TicketType, WorkflowStatus, TICKET_TYPES, WORKFLOW_STATUSES, TicketPriority, TICKET_PRIORITIES, CREATABLE_TICKET_TYPES, CreateTicketPayload } from './project.models';
+export { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, PROJECT_ROLES, ProjectRole, Workflow, BacklogItem, TicketType, WorkflowStatus, TICKET_TYPES, WORKFLOW_STATUSES, TicketPriority, TICKET_PRIORITIES, CREATABLE_TICKET_TYPES, CreateTicketPayload, BacklogListParams, BacklogListResponse } from './project.models';

@@ -121,3 +121,20 @@ export interface CreateTicketPayload {
 
 export const TICKET_TYPES: TicketType[] = ['STORY', 'BUG', 'TASK', 'EPIC'];
 export const WORKFLOW_STATUSES: WorkflowStatus[] = ['TO_DO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE'];
+export interface BacklogListParams {
+    _page?: number;
+    _limit?: number;
+    _sort?: string;
+    _order?: 'asc' | 'desc';
+    q?: string;
+    type?: TicketType;
+    status?: WorkflowStatus;
+    priority?: TicketPriority;
+}
+
+export interface BacklogListResponse {
+    data: BacklogItem[];
+    total: number;
+    page: number;
+    limit: number;
+}

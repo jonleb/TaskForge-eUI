@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, TicketType, CreateTicketPayload } from './project.models';
+import { map } from 'rxjs/operators';
+import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListParams, BacklogListResponse } from './project.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
@@ -56,12 +57,16 @@ export class ProjectService {
         return this.http.get<Workflow[]>(`/api/projects/${projectId}/workflows`);
     }
 
-    getBacklog(projectId: string, type?: TicketType): Observable<BacklogItem[]> {
-        let params = new HttpParams();
-        if (type) {
-            params = params.set('type', type);
+    getBacklog(projectId: string, params?: BacklogListParams): Observable<BacklogListResponse> {
+        let httpParams = new HttpParams();
+        if (params) {
+            Object.entries(params).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                    httpParams = httpParams.set(key, String(value));
+                }
+            });
         }
-        return this.http.get<BacklogItem[]>(`/api/projects/${projectId}/backlog`, { params });
+        return this.http.get<BacklogListResponse>(`/api/projects/${projectId}/backlog`, { params: httpParams });
     }
 
     createTicket(projectId: string, payload: CreateTicketPayload): Observable<BacklogItem> {
@@ -69,6 +74,8 @@ export class ProjectService {
     }
 
     getEpics(projectId: string): Observable<BacklogItem[]> {
-        return this.getBacklog(projectId, 'EPIC');
+        return this.getBacklog(projectId, { type: 'EPIC', _limit: 100 }).pipe(
+            map(res => res.data),
+        );
     }
 }

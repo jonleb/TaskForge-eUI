@@ -93,8 +93,8 @@ export class BacklogComponent implements OnInit, OnDestroy {
         this.projectService.getBacklog(projectId).pipe(
             takeUntil(this.destroy$),
         ).subscribe({
-            next: items => {
-                this.items = [...items].sort((a, b) => b.ticket_number - a.ticket_number);
+            next: res => {
+                this.items = [...res.data].sort((a, b) => b.ticket_number - a.ticket_number);
                 this.isLoading = false;
                 this.cdr.markForCheck();
                 this.loadAssignees(projectId);

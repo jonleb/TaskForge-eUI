@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { ProjectService } from './project.service';
-import { Project, ProjectMember, ProjectListResponse, UserInfo, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload } from './project.models';
+import { Project, ProjectMember, ProjectListResponse, UserInfo, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListResponse } from './project.models';
 
 const mockProject: Project = {
     id: '1',
@@ -392,25 +392,35 @@ describe('ProjectService', () => {
             created_at: '2025-01-20T09:00:00.000Z',
         };
 
-        it('should GET /api/projects/:id/backlog and return BacklogItem[]', () => {
-            service.getBacklog('1').subscribe(items => {
-                expect(items).toEqual([mockBacklogItem]);
-                expect(items[0].type).toBe('EPIC');
+        const mockBacklogResponse: BacklogListResponse = {
+            data: [mockBacklogItem],
+            total: 1,
+            page: 1,
+            limit: 10,
+        };
+
+        it('should GET /api/projects/:id/backlog and return BacklogListResponse', () => {
+            service.getBacklog('1').subscribe(res => {
+                expect(res.data).toEqual([mockBacklogItem]);
+                expect(res.total).toBe(1);
+                expect(res.page).toBe(1);
+                expect(res.limit).toBe(10);
             });
 
             const req = httpMock.expectOne('/api/projects/1/backlog');
             expect(req.request.method).toBe('GET');
-            req.flush([mockBacklogItem]);
+            req.flush(mockBacklogResponse);
         });
 
-        it('should append ?type=EPIC when type filter is provided', () => {
-            service.getBacklog('1', 'EPIC').subscribe(items => {
-                expect(items).toEqual([mockBacklogItem]);
-            });
+        it('should pass params as query string when provided', () => {
+            service.getBacklog('1', { type: 'EPIC', _page: 2, _limit: 25, q: 'test' }).subscribe();
 
             const req = httpMock.expectOne(r => r.url === '/api/projects/1/backlog');
             expect(req.request.params.get('type')).toBe('EPIC');
-            req.flush([mockBacklogItem]);
+            expect(req.request.params.get('_page')).toBe('2');
+            expect(req.request.params.get('_limit')).toBe('25');
+            expect(req.request.params.get('q')).toBe('test');
+            req.flush(mockBacklogResponse);
         });
     });
 
@@ -452,7 +462,7 @@ describe('ProjectService', () => {
     });
 
     describe('getEpics()', () => {
-        it('should call getBacklog with type EPIC', () => {
+        it('should call getBacklog with type EPIC and _limit 100, and return unwrapped data', () => {
             const mockEpic: BacklogItem = {
                 id: '1',
                 projectId: '1',
@@ -475,7 +485,8 @@ describe('ProjectService', () => {
 
             const req = httpMock.expectOne(r => r.url === '/api/projects/1/backlog');
             expect(req.request.params.get('type')).toBe('EPIC');
-            req.flush([mockEpic]);
+            expect(req.request.params.get('_limit')).toBe('100');
+            req.flush({ data: [mockEpic], total: 1, page: 1, limit: 100 });
         });
     });
 });

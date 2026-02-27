@@ -73,8 +73,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.projectService.getBacklog(projectId).pipe(
             takeUntil(this.destroy$),
         ).subscribe({
-            next: items => {
-                this.backlogItems = items;
+            next: res => {
+                this.backlogItems = res.data;
                 this.backlogLoading = false;
                 this.cdr.markForCheck();
             },

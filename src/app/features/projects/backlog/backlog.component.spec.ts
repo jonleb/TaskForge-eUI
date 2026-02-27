@@ -54,7 +54,7 @@ describe('BacklogComponent', () => {
     beforeEach(async () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
         projectServiceMock = {
-            getBacklog: vi.fn().mockReturnValue(of(mockItems)),
+            getBacklog: vi.fn().mockReturnValue(of({ data: mockItems, total: 3, page: 1, limit: 10 })),
             getProjectMembers: vi.fn().mockReturnValue(of(mockMembers)),
             getProjects: vi.fn(),
             getProject: vi.fn(),
@@ -172,7 +172,7 @@ describe('BacklogComponent', () => {
     });
 
     it('should display empty state when no items', () => {
-        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of([]));
+        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of({ data: [], total: 0, page: 1, limit: 10 }));
         currentProject$.next(mockProject);
         fixture.detectChanges();
         const info = fixture.nativeElement.querySelector('eui-feedback-message');
