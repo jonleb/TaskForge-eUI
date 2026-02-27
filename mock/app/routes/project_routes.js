@@ -235,9 +235,17 @@ module.exports = function (app, db) {
 
         /**
          * GET /api/projects/:projectId/backlog
-         * Returns backlog items for the project.
-         * Optional query: ?type=EPIC to filter by item type.
-         * Optional query: ?_sort=field&_order=asc|desc for sorting (default: created_at desc).
+         * Returns paginated backlog items for the project.
+         * Query params:
+         *   ?type=EPIC         — filter by ticket type
+         *   ?status=TO_DO      — filter by workflow status
+         *   ?priority=HIGH     — filter by priority (excludes null-priority items)
+         *   ?q=search          — case-insensitive search on title or description
+         *   ?_sort=field       — sort field (default: created_at)
+         *   ?_order=asc|desc   — sort order (default: desc)
+         *   ?_page=1           — page number, 1-indexed (default: 1)
+         *   ?_limit=10         — items per page (default: 10, max: 100)
+         * Response: { data: BacklogItem[], total: number, page: number, limit: number }
          * Protected — requires valid token + project membership (any role).
          * SUPER_ADMIN bypasses membership check.
          */
@@ -250,24 +258,52 @@ module.exports = function (app, db) {
                     .filter({ projectId: req.params.projectId })
                     .value();
 
+                // Text search (q) — case-insensitive on title or description
+                const q = (req.query.q || '').toLowerCase().trim();
+                if (q) {
+                    items = items.filter(i =>
+                        i.title.toLowerCase().includes(q) ||
+                        (i.description && i.description.toLowerCase().includes(q))
+                    );
+                }
+
                 // Optional type filter
                 const type = req.query.type;
                 if (type) {
                     items = items.filter(i => i.type === type);
                 }
 
+                // Status filter
+                const status = req.query.status;
+                if (status) {
+                    items = items.filter(i => i.status === status);
+                }
+
+                // Priority filter
+                const priority = req.query.priority;
+                if (priority) {
+                    items = items.filter(i => i.priority === priority);
+                }
+
                 // Sort
                 const sortField = req.query._sort || 'created_at';
                 const sortOrder = req.query._order || 'desc';
                 items.sort((a, b) => {
-                    const valA = a[sortField];
-                    const valB = b[sortField];
+                    const valA = a[sortField] ?? '';
+                    const valB = b[sortField] ?? '';
                     if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
                     if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
                     return 0;
                 });
 
-                return res.json(items);
+                // Pagination
+                const total = items.length;
+                const page = Math.max(1, parseInt(req.query._page, 10) || 1);
+                const limit = Math.min(100, Math.max(1, parseInt(req.query._limit, 10) || 10));
+                const start = (page - 1) * limit;
+                const data = items.slice(start, start + limit);
+
+                return res.json({ data, total, page, limit });
             }
         );
 

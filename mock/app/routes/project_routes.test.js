@@ -1091,17 +1091,20 @@ describe('GET /api/projects/:projectId/backlog', () => {
         expect(res.status).toBe(403);
     });
 
-    it('should return backlog items for a seeded project', async () => {
+    it('should return paginated backlog items for a seeded project', async () => {
         const token = await getTokenFor('superadmin');
         const res = await request(app)
             .get('/api/projects/1/backlog')
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
-        expect(Array.isArray(res.body)).toBe(true);
-        expect(res.body.length).toBeGreaterThanOrEqual(1);
-        expect(res.body[0].type).toBe('EPIC');
-        expect(res.body[0].title).toBe('Maintenance');
+        expect(res.body).toHaveProperty('data');
+        expect(res.body).toHaveProperty('total');
+        expect(res.body).toHaveProperty('page', 1);
+        expect(res.body).toHaveProperty('limit', 10);
+        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(res.body.data.length).toBeGreaterThanOrEqual(1);
+        expect(res.body.total).toBeGreaterThanOrEqual(1);
     });
 
     it('should filter by type when ?type=EPIC is provided', async () => {
@@ -1111,17 +1114,19 @@ describe('GET /api/projects/:projectId/backlog', () => {
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
-        expect(res.body.every(i => i.type === 'EPIC')).toBe(true);
+        expect(res.body.data.every(i => i.type === 'EPIC')).toBe(true);
+        expect(res.body.total).toBe(res.body.data.length);
     });
 
-    it('should return empty array for project without backlog items', async () => {
+    it('should return empty data for non-existent project', async () => {
         const token = await getTokenFor('superadmin');
         const res = await request(app)
             .get('/api/projects/9999/backlog')
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
-        expect(res.body).toEqual([]);
+        expect(res.body.data).toEqual([]);
+        expect(res.body.total).toBe(0);
     });
 
     it('should sort by _sort=ticket_number&_order=asc', async () => {
@@ -1131,9 +1136,154 @@ describe('GET /api/projects/:projectId/backlog', () => {
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
-        for (let i = 1; i < res.body.length; i++) {
-            expect(res.body[i].ticket_number).toBeGreaterThanOrEqual(res.body[i - 1].ticket_number);
+        for (let i = 1; i < res.body.data.length; i++) {
+            expect(res.body.data[i].ticket_number).toBeGreaterThanOrEqual(res.body.data[i - 1].ticket_number);
         }
+    });
+
+    // --- Pagination tests ---
+
+    it('should return default pagination (page 1, limit 10)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.page).toBe(1);
+        expect(res.body.limit).toBe(10);
+        expect(res.body.data.length).toBeLessThanOrEqual(10);
+    });
+
+    it('should paginate with _page and _limit', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?_page=1&_limit=1')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.page).toBe(1);
+        expect(res.body.limit).toBe(1);
+        expect(res.body.data.length).toBe(1);
+        expect(res.body.total).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should return empty data when page exceeds total', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?_page=999&_limit=10')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data).toEqual([]);
+        expect(res.body.total).toBeGreaterThanOrEqual(1);
+        expect(res.body.page).toBe(999);
+    });
+
+    // --- Text search tests ---
+
+    it('should search by q param on title (case-insensitive)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?q=maintenance')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBeGreaterThanOrEqual(1);
+        expect(res.body.data.every(i =>
+            i.title.toLowerCase().includes('maintenance') ||
+            (i.description && i.description.toLowerCase().includes('maintenance'))
+        )).toBe(true);
+    });
+
+    it('should return empty data when q matches nothing', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?q=zzzznonexistent')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data).toEqual([]);
+        expect(res.body.total).toBe(0);
+    });
+
+    // --- Status filter tests ---
+
+    it('should filter by status=TO_DO', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?status=TO_DO')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.every(i => i.status === 'TO_DO')).toBe(true);
+        expect(res.body.total).toBe(res.body.data.length);
+    });
+
+    // --- Priority filter tests ---
+
+    it('should filter by priority=CRITICAL (excludes null-priority items)', async () => {
+        const token = await getTokenFor('superadmin');
+        // First get all items to check if any have CRITICAL priority
+        const allRes = await request(app)
+            .get('/api/projects/1/backlog?_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        const res = await request(app)
+            .get('/api/projects/1/backlog?priority=CRITICAL')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        // All returned items must have CRITICAL priority
+        res.body.data.forEach(i => expect(i.priority).toBe('CRITICAL'));
+        // No null-priority items should be included
+        res.body.data.forEach(i => expect(i.priority).not.toBeNull());
+    });
+
+    // --- Combined filter tests ---
+
+    it('should combine type and status filters (AND logic)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?type=EPIC&status=TO_DO')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        res.body.data.forEach(i => {
+            expect(i.type).toBe('EPIC');
+            expect(i.status).toBe('TO_DO');
+        });
+    });
+
+    it('should combine q search with type filter (AND logic)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?q=maintenance&type=EPIC')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        res.body.data.forEach(i => {
+            expect(i.type).toBe('EPIC');
+            expect(
+                i.title.toLowerCase().includes('maintenance') ||
+                (i.description && i.description.toLowerCase().includes('maintenance'))
+            ).toBe(true);
+        });
+    });
+
+    it('should reflect filtered total in pagination metadata', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?type=EPIC&_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.total).toBe(res.body.data.length);
+        // total should be less than or equal to unfiltered total
+        const allRes = await request(app)
+            .get('/api/projects/1/backlog?_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+        expect(res.body.total).toBeLessThanOrEqual(allRes.body.total);
     });
 });
 
