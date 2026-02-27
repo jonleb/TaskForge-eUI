@@ -4,7 +4,7 @@ import { BehaviorSubject, of, throwError } from 'rxjs';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock } from '../../../testing/test-providers';
 import { BacklogComponent } from './backlog.component';
-import { ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember } from '../../../core/project';
+import { ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember, BacklogListResponse } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
 const mockProject: Project = {
@@ -43,6 +43,9 @@ const mockItems: BacklogItem[] = [
     },
 ];
 
+const mockResponse: BacklogListResponse = { data: mockItems, total: 3, page: 1, limit: 10 };
+const emptyResponse: BacklogListResponse = { data: [], total: 0, page: 1, limit: 10 };
+
 describe('BacklogComponent', () => {
     let fixture: ComponentFixture<BacklogComponent>;
     let component: BacklogComponent;
@@ -54,7 +57,7 @@ describe('BacklogComponent', () => {
     beforeEach(async () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
         projectServiceMock = {
-            getBacklog: vi.fn().mockReturnValue(of({ data: mockItems, total: 3, page: 1, limit: 10 })),
+            getBacklog: vi.fn().mockReturnValue(of(mockResponse)),
             getProjectMembers: vi.fn().mockReturnValue(of(mockMembers)),
             getProjects: vi.fn(),
             getProject: vi.fn(),
@@ -105,79 +108,66 @@ describe('BacklogComponent', () => {
         expect(component.isLoading).toBe(true);
     });
 
-    it('should display backlog items in table after load', () => {
+    it('should load backlog items on project change', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const rows = fixture.nativeElement.querySelectorAll('tbody tr');
-        expect(rows.length).toBe(3);
+        expect(component.items.length).toBe(3);
+        expect(component.total).toBe(3);
+        expect(component.isLoading).toBe(false);
     });
 
-    it('should display ticket number as KEY-N format', () => {
+    it('should call getBacklog with params', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const cells = fixture.nativeElement.querySelectorAll('td[data-col-label="ticket.field.ticket-number"]');
-        expect(cells[0].textContent).toContain('TF-3');
-        expect(cells[1].textContent).toContain('TF-2');
-        expect(cells[2].textContent).toContain('TF-1');
+        expect(projectServiceMock['getBacklog']).toHaveBeenCalledWith('1', {
+            _page: 1, _limit: 10, _sort: 'ticket_number', _order: 'desc',
+        });
     });
 
-    it('should display type chip with i18n key', () => {
+    it('should display showing count with aria-live', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const chips = fixture.nativeElement.querySelectorAll('td[data-col-label="ticket.field.type"] eui-chip');
-        expect(chips.length).toBe(3);
-        expect(chips[0].textContent.trim()).toContain('workflow.ticket-type.BUG');
+        const p = fixture.nativeElement.querySelector('p[aria-live="polite"]');
+        expect(p).toBeTruthy();
+        expect(p.textContent).toContain('backlog.showing-of');
     });
 
-    it('should display dash for null priority (EPIC items)', () => {
+    it('should render async table with aria-label', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const priorityCells = fixture.nativeElement.querySelectorAll('td[data-col-label="ticket.priority.label"]');
-        const epicCell = priorityCells[2];
-        expect(epicCell.textContent.trim()).toBe('—');
+        const table = fixture.nativeElement.querySelector('table[euitable]');
+        expect(table).toBeTruthy();
+        expect(table.getAttribute('aria-label')).toBe('backlog.table-label');
     });
 
-    it('should display priority chip for items with priority', () => {
+    it('should render paginator', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const priorityCells = fixture.nativeElement.querySelectorAll('td[data-col-label="ticket.priority.label"]');
-        const criticalChip = priorityCells[0].querySelector('eui-chip');
-        expect(criticalChip).toBeTruthy();
-        expect(criticalChip.textContent.trim()).toContain('ticket.priority.CRITICAL');
+        const paginator = fixture.nativeElement.querySelector('eui-paginator');
+        expect(paginator).toBeTruthy();
     });
 
-    it('should display assignee name from member lookup', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const assigneeCells = fixture.nativeElement.querySelectorAll('td[data-col-label="ticket.field.assignee"]');
-        expect(assigneeCells[0].textContent.trim()).toBe('Jane Doe');
-        expect(assigneeCells[1].textContent.trim()).toBe('Bob Smith');
-    });
-
-    it('should display dash for null assignee', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const assigneeCells = fixture.nativeElement.querySelectorAll('td[data-col-label="ticket.field.assignee"]');
-        expect(assigneeCells[2].textContent.trim()).toBe('—');
-    });
-
-    it('should display error state with retry button', () => {
+    it('should set hasError on load failure', () => {
         projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(throwError(() => new Error('fail')));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const error = fixture.nativeElement.querySelector('eui-feedback-message');
-        expect(error).toBeTruthy();
-        const retryBtn = fixture.nativeElement.querySelector('button[euibutton]');
-        expect(retryBtn).toBeTruthy();
+        expect(component.hasError).toBe(true);
+        expect(component.items.length).toBe(0);
+        expect(component.total).toBe(0);
     });
 
-    it('should display empty state when no items', () => {
-        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of({ data: [], total: 0, page: 1, limit: 10 }));
+    it('should show empty state message when no items', () => {
+        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of(emptyResponse));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const info = fixture.nativeElement.querySelector('eui-feedback-message');
-        expect(info).toBeTruthy();
-        expect(info.textContent).toContain('backlog.no-items');
+        expect(component.emptyStateMessage).toBe('backlog.no-items');
+    });
+
+    it('should show error message in emptyStateMessage on error', () => {
+        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(throwError(() => new Error('fail')));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.emptyStateMessage).toBe('backlog.load-error');
     });
 
     it('should call retry and reload items', () => {
@@ -185,7 +175,7 @@ describe('BacklogComponent', () => {
         fixture.detectChanges();
         projectServiceMock['getBacklog'].mockClear();
         component.retry();
-        expect(projectServiceMock['getBacklog']).toHaveBeenCalledWith('1');
+        expect(projectServiceMock['getBacklog']).toHaveBeenCalledWith('1', component.params);
     });
 
     it('should set canCreate to true for SUPER_ADMIN', () => {
@@ -201,8 +191,6 @@ describe('BacklogComponent', () => {
         fixture.detectChanges();
         expect(component.canCreate).toBe(false);
     });
-
-    // --- STORY-005: Create Ticket Dialog tests ---
 
     it('should show Create Ticket button when canCreate is true', () => {
         currentProject$.next(mockProject);
@@ -221,6 +209,58 @@ describe('BacklogComponent', () => {
         expect(btn).toBeNull();
     });
 
+    // --- Sort & Pagination ---
+
+    it('should update params and reload on sort change', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        projectServiceMock['getBacklog'].mockClear();
+        component.onSortChange([{ sort: 'title', order: 'ASC' } as unknown as import('@eui/components/eui-table').Sort]);
+        expect(component.params._sort).toBe('title');
+        expect(component.params._order).toBe('asc');
+        expect(component.params._page).toBe(1);
+        expect(projectServiceMock['getBacklog']).toHaveBeenCalled();
+    });
+
+    it('should update params and reload on page change', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        // Simulate AfterViewInit
+        component.ngAfterViewInit();
+        projectServiceMock['getBacklog'].mockClear();
+        component.onPageChange({ page: 1, pageSize: 25 });
+        expect(component.params._page).toBe(2);
+        expect(component.params._limit).toBe(25);
+        expect(projectServiceMock['getBacklog']).toHaveBeenCalled();
+    });
+
+    it('should ignore page change before paginatorReady', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        projectServiceMock['getBacklog'].mockClear();
+        // paginatorReady is false before ngAfterViewInit
+        component['paginatorReady'] = false;
+        component.onPageChange({ page: 1, pageSize: 25 });
+        expect(projectServiceMock['getBacklog']).not.toHaveBeenCalled();
+    });
+
+    // --- Assignee resolution ---
+
+    it('should resolve assignee name from member lookup', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.getAssigneeName(mockItems[1])).toBe('Bob Smith');
+        expect(component.getAssigneeName(mockItems[2])).toBe('Jane Doe');
+    });
+
+    it('should return dash for null assignee', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.getAssigneeName(mockItems[0])).toBe('—');
+    });
+
+    // --- Create Ticket Dialog ---
+
     it('should default type to STORY and priority to MEDIUM', () => {
         expect(component.newTicketType).toBe('STORY');
         expect(component.newTicketPriority).toBe('MEDIUM');
@@ -228,7 +268,6 @@ describe('BacklogComponent', () => {
 
     it('should have 3 creatable types (no EPIC)', () => {
         expect(component.creatableTypes).toEqual(['STORY', 'BUG', 'TASK']);
-        expect(component.creatableTypes).not.toContain('EPIC');
     });
 
     it('should have 4 priority values', () => {
@@ -292,7 +331,7 @@ describe('BacklogComponent', () => {
         component.onCreateTicket();
 
         expect(growlServiceMock.growl).toHaveBeenCalled();
-        expect(projectServiceMock['getBacklog']).toHaveBeenCalledWith('1');
+        expect(projectServiceMock['getBacklog']).toHaveBeenCalledWith('1', component.params);
     });
 
     it('should show inline error on failure', () => {

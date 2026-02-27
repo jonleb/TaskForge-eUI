@@ -11,60 +11,80 @@
         }
     </eui-page-header>
     <eui-page-content>
-        @if (isLoading) {
-            <output aria-live="polite">{{ 'common.loading' | translate }}</output>
-        } @else if (hasError) {
-            <eui-feedback-message euiDanger aria-live="polite">
-                {{ 'backlog.load-error' | translate }}
-            </eui-feedback-message>
-            <button euiButton euiSecondary (click)="retry()">{{ 'common.retry' | translate }}</button>
-        } @else if (items.length === 0) {
-            <eui-feedback-message euiInfo>
-                {{ 'backlog.no-items' | translate }}
-            </eui-feedback-message>
-        } @else {
-            <p aria-live="polite">{{ 'backlog.showing-count' | translate:{ count: items.length } }}</p>
-            <table eui-table [attr.aria-label]="'backlog.table-label' | translate">
-                <thead>
-                    <tr>
-                        <th scope="col">{{ 'ticket.field.ticket-number' | translate }}</th>
-                        <th scope="col">{{ 'ticket.field.type' | translate }}</th>
-                        <th scope="col">{{ 'ticket.field.title' | translate }}</th>
-                        <th scope="col">{{ 'ticket.priority.label' | translate }}</th>
-                        <th scope="col">{{ 'common.field.status' | translate }}</th>
-                        <th scope="col">{{ 'ticket.field.assignee' | translate }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (item of items; track item.id) {
-                        <tr>
-                            <td [attr.data-col-label]="'ticket.field.ticket-number' | translate">{{ projectKey }}-{{ item.ticket_number }}</td>
-                            <td [attr.data-col-label]="'ticket.field.type' | translate">
-                                <eui-chip euiSizeS [ariaLabel]="'workflow.ticket-type.' + item.type | translate">
-                                    {{ 'workflow.ticket-type.' + item.type | translate }}
-                                </eui-chip>
-                            </td>
-                            <td [attr.data-col-label]="'ticket.field.title' | translate">{{ item.title }}</td>
-                            <td [attr.data-col-label]="'ticket.priority.label' | translate">
-                                @if (item.priority) {
-                                    <eui-chip euiSizeS
-                                        [class.eui-chip--danger]="item.priority === 'CRITICAL'"
-                                        [class.eui-chip--warning]="item.priority === 'HIGH'"
-                                        [class.eui-chip--info]="item.priority === 'MEDIUM'"
-                                        [ariaLabel]="'ticket.priority.' + item.priority | translate">
-                                        {{ 'ticket.priority.' + item.priority | translate }}
-                                    </eui-chip>
-                                } @else {
-                                    —
-                                }
-                            </td>
-                            <td [attr.data-col-label]="'common.field.status' | translate">{{ 'workflow.status.' + item.status | translate }}</td>
-                            <td [attr.data-col-label]="'ticket.field.assignee' | translate">{{ getAssigneeName(item) }}</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
+
+        <p aria-live="polite" class="eui-u-mt-s eui-u-mb-s">
+            {{ 'backlog.showing-of' | translate:{ count: items.length, total: total } }}
+        </p>
+
+        <table euiTable
+               [data]="items"
+               isAsync
+               [isLoading]="isLoading"
+               isTableResponsive
+               [attr.aria-label]="'backlog.table-label' | translate"
+               (sortChange)="onSortChange($event)">
+
+            <ng-template euiTemplate="header">
+                <tr>
+                    <th scope="col" isSortable sortOn="ticket_number">{{ 'ticket.field.ticket-number' | translate }}</th>
+                    <th scope="col" isSortable sortOn="type">{{ 'ticket.field.type' | translate }}</th>
+                    <th scope="col" isSortable sortOn="title">{{ 'ticket.field.title' | translate }}</th>
+                    <th scope="col" isSortable sortOn="priority">{{ 'ticket.priority.label' | translate }}</th>
+                    <th scope="col" isSortable sortOn="status">{{ 'common.field.status' | translate }}</th>
+                    <th scope="col">{{ 'ticket.field.assignee' | translate }}</th>
+                </tr>
+            </ng-template>
+
+            <ng-template let-row euiTemplate="body">
+                <tr>
+                    <td [attr.data-col-label]="'ticket.field.ticket-number' | translate">{{ projectKey }}-{{ row.ticket_number }}</td>
+                    <td [attr.data-col-label]="'ticket.field.type' | translate">
+                        <eui-chip euiSizeS [ariaLabel]="'workflow.ticket-type.' + row.type | translate">
+                            {{ 'workflow.ticket-type.' + row.type | translate }}
+                        </eui-chip>
+                    </td>
+                    <td [attr.data-col-label]="'ticket.field.title' | translate">{{ row.title }}</td>
+                    <td [attr.data-col-label]="'ticket.priority.label' | translate">
+                        @if (row.priority) {
+                            <eui-chip euiSizeS
+                                [class.eui-chip--danger]="row.priority === 'CRITICAL'"
+                                [class.eui-chip--warning]="row.priority === 'HIGH'"
+                                [class.eui-chip--info]="row.priority === 'MEDIUM'"
+                                [ariaLabel]="'ticket.priority.' + row.priority | translate">
+                                {{ 'ticket.priority.' + row.priority | translate }}
+                            </eui-chip>
+                        } @else {
+                            —
+                        }
+                    </td>
+                    <td [attr.data-col-label]="'common.field.status' | translate">{{ 'workflow.status.' + row.status | translate }}</td>
+                    <td [attr.data-col-label]="'ticket.field.assignee' | translate">{{ getAssigneeName(row) }}</td>
+                </tr>
+            </ng-template>
+
+            <ng-template euiTemplate="noData">
+                <tr>
+                    <td class="eui-u-text-center" colspan="6">
+                        {{ emptyStateMessage }}
+                        @if (hasError) {
+                            <button euiButton euiSecondary type="button"
+                                    class="eui-u-ml-m"
+                                    (click)="retry()">
+                                {{ 'common.retry' | translate }}
+                            </button>
+                        }
+                    </td>
+                </tr>
+            </ng-template>
+        </table>
+
+        <eui-paginator
+            [length]="total"
+            [pageSize]="params._limit ?? 10"
+            [pageSizeOptions]="[10, 25, 50]"
+            (pageChange)="onPageChange($event)">
+        </eui-paginator>
+
     </eui-page-content>
 </eui-page>
 

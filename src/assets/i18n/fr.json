@@ -215,6 +215,7 @@
   "backlog.page-title": "Backlog",
   "backlog.table-label": "Éléments du backlog du projet",
   "backlog.showing-count": "{{count}} élément(s)",
+  "backlog.showing-of": "Affichage de {{count}} sur {{total}} éléments",
   "backlog.no-items": "Aucun élément dans le backlog. Créez un ticket pour commencer.",
   "backlog.load-error": "Impossible de charger le backlog. Veuillez réessayer.",
   "backlog.create-btn": "Créer un ticket",
