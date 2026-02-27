@@ -199,5 +199,16 @@
   "settings.from": "De",
   "settings.to": "Vers",
   "settings.no-workflows": "Aucun flux de travail configuré",
-  "settings.error-loading": "Échec du chargement des flux de travail. Veuillez réessayer."
+  "settings.error-loading": "Échec du chargement des flux de travail. Veuillez réessayer.",
+  "ticket.priority.CRITICAL": "Critique",
+  "ticket.priority.HIGH": "Haute",
+  "ticket.priority.MEDIUM": "Moyenne",
+  "ticket.priority.LOW": "Basse",
+  "ticket.priority.label": "Priorité",
+  "ticket.field.title": "Titre",
+  "ticket.field.description": "Description",
+  "ticket.field.type": "Type",
+  "ticket.field.assignee": "Assigné",
+  "ticket.field.epic": "Epic",
+  "ticket.field.ticket-number": "Ticket n°"
 }

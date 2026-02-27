@@ -95,8 +95,28 @@ export interface BacklogItem {
     title: string;
     description: string;
     status: WorkflowStatus;
+    priority: TicketPriority | null;
+    assignee_id: string | null;
+    epic_id: string | null;
+    ticket_number: number;
     created_by: string;
     created_at: string;
+}
+
+export type TicketPriority = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+
+export const TICKET_PRIORITIES: TicketPriority[] = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
+
+/** Ticket types that can be created by users (excludes EPIC) */
+export const CREATABLE_TICKET_TYPES: TicketType[] = ['STORY', 'BUG', 'TASK'];
+
+export interface CreateTicketPayload {
+    type: TicketType;
+    title: string;
+    description?: string;
+    priority: TicketPriority;
+    assignee_id?: string | null;
+    epic_id?: string | null;
 }
 
 export const TICKET_TYPES: TicketType[] = ['STORY', 'BUG', 'TASK', 'EPIC'];

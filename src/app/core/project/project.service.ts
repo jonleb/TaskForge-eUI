@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, TicketType } from './project.models';
+import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, TicketType, CreateTicketPayload } from './project.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
@@ -62,5 +62,13 @@ export class ProjectService {
             params = params.set('type', type);
         }
         return this.http.get<BacklogItem[]>(`/api/projects/${projectId}/backlog`, { params });
+    }
+
+    createTicket(projectId: string, payload: CreateTicketPayload): Observable<BacklogItem> {
+        return this.http.post<BacklogItem>(`/api/projects/${projectId}/backlog`, payload);
+    }
+
+    getEpics(projectId: string): Observable<BacklogItem[]> {
+        return this.getBacklog(projectId, 'EPIC');
     }
 }

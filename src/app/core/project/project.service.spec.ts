@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { ProjectService } from './project.service';
-import { Project, ProjectMember, ProjectListResponse, UserInfo, MemberCandidate, Workflow, BacklogItem } from './project.models';
+import { Project, ProjectMember, ProjectListResponse, UserInfo, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload } from './project.models';
 
 const mockProject: Project = {
     id: '1',
@@ -384,6 +384,10 @@ describe('ProjectService', () => {
             title: 'Maintenance',
             description: 'Default epic for maintenance and operational tasks',
             status: 'TO_DO',
+            priority: null,
+            assignee_id: null,
+            epic_id: null,
+            ticket_number: 1,
             created_by: 'system',
             created_at: '2025-01-20T09:00:00.000Z',
         };
@@ -407,6 +411,71 @@ describe('ProjectService', () => {
             const req = httpMock.expectOne(r => r.url === '/api/projects/1/backlog');
             expect(req.request.params.get('type')).toBe('EPIC');
             req.flush([mockBacklogItem]);
+        });
+    });
+
+    describe('createTicket()', () => {
+        it('should POST to /api/projects/:id/backlog with payload', () => {
+            const payload: CreateTicketPayload = {
+                type: 'STORY',
+                title: 'New story',
+                description: 'A description',
+                priority: 'MEDIUM',
+                assignee_id: '2',
+                epic_id: '1',
+            };
+            const mockResponse: BacklogItem = {
+                id: '17',
+                projectId: '1',
+                type: 'STORY',
+                title: 'New story',
+                description: 'A description',
+                status: 'TO_DO',
+                priority: 'MEDIUM',
+                assignee_id: '2',
+                epic_id: '1',
+                ticket_number: 2,
+                created_by: '1',
+                created_at: '2026-02-27T10:00:00.000Z',
+            };
+
+            service.createTicket('1', payload).subscribe(item => {
+                expect(item).toEqual(mockResponse);
+                expect(item.ticket_number).toBe(2);
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/backlog');
+            expect(req.request.method).toBe('POST');
+            expect(req.request.body).toEqual(payload);
+            req.flush(mockResponse);
+        });
+    });
+
+    describe('getEpics()', () => {
+        it('should call getBacklog with type EPIC', () => {
+            const mockEpic: BacklogItem = {
+                id: '1',
+                projectId: '1',
+                type: 'EPIC',
+                title: 'Maintenance',
+                description: 'Default epic',
+                status: 'TO_DO',
+                priority: null,
+                assignee_id: null,
+                epic_id: null,
+                ticket_number: 1,
+                created_by: 'system',
+                created_at: '2025-01-20T09:00:00.000Z',
+            };
+
+            service.getEpics('1').subscribe(items => {
+                expect(items).toEqual([mockEpic]);
+                expect(items[0].type).toBe('EPIC');
+            });
+
+            const req = httpMock.expectOne(r => r.url === '/api/projects/1/backlog');
+            expect(req.request.params.get('type')).toBe('EPIC');
+            req.flush([mockEpic]);
         });
     });
 });

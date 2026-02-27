@@ -199,5 +199,16 @@
   "settings.from": "From",
   "settings.to": "To",
   "settings.no-workflows": "No workflows configured",
-  "settings.error-loading": "Failed to load workflows. Please try again."
+  "settings.error-loading": "Failed to load workflows. Please try again.",
+  "ticket.priority.CRITICAL": "Critical",
+  "ticket.priority.HIGH": "High",
+  "ticket.priority.MEDIUM": "Medium",
+  "ticket.priority.LOW": "Low",
+  "ticket.priority.label": "Priority",
+  "ticket.field.title": "Title",
+  "ticket.field.description": "Description",
+  "ticket.field.type": "Type",
+  "ticket.field.assignee": "Assignee",
+  "ticket.field.epic": "Epic",
+  "ticket.field.ticket-number": "Ticket #"
 }
