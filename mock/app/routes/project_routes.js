@@ -267,22 +267,31 @@ module.exports = function (app, db) {
                     );
                 }
 
-                // Optional type filter
-                const type = req.query.type;
+                // Type filter (supports comma-separated multi-value, e.g. ?type=STORY,BUG)
+                const type = (req.query.type || '').trim();
                 if (type) {
-                    items = items.filter(i => i.type === type);
+                    const types = type.split(',').map(t => t.trim()).filter(Boolean);
+                    if (types.length > 0) {
+                        items = items.filter(i => types.includes(i.type));
+                    }
                 }
 
-                // Status filter
-                const status = req.query.status;
+                // Status filter (supports comma-separated multi-value, e.g. ?status=TO_DO,IN_PROGRESS)
+                const status = (req.query.status || '').trim();
                 if (status) {
-                    items = items.filter(i => i.status === status);
+                    const statuses = status.split(',').map(s => s.trim()).filter(Boolean);
+                    if (statuses.length > 0) {
+                        items = items.filter(i => statuses.includes(i.status));
+                    }
                 }
 
-                // Priority filter
-                const priority = req.query.priority;
+                // Priority filter (supports comma-separated multi-value, e.g. ?priority=HIGH,CRITICAL)
+                const priority = (req.query.priority || '').trim();
                 if (priority) {
-                    items = items.filter(i => i.priority === priority);
+                    const priorities = priority.split(',').map(p => p.trim()).filter(Boolean);
+                    if (priorities.length > 0) {
+                        items = items.filter(i => i.priority && priorities.includes(i.priority));
+                    }
                 }
 
                 // Sort

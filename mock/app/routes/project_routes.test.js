@@ -1212,7 +1212,7 @@ describe('GET /api/projects/:projectId/backlog', () => {
     it('should filter by status=TO_DO', async () => {
         const token = await getTokenFor('superadmin');
         const res = await request(app)
-            .get('/api/projects/1/backlog?status=TO_DO')
+            .get('/api/projects/1/backlog?status=TO_DO&_limit=100')
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.status).toBe(200);
@@ -1284,6 +1284,114 @@ describe('GET /api/projects/:projectId/backlog', () => {
             .get('/api/projects/1/backlog?_limit=100')
             .set('Authorization', `Bearer ${token}`);
         expect(res.body.total).toBeLessThanOrEqual(allRes.body.total);
+    });
+
+    // --- Multi-value filter tests (STORY-001) ---
+
+    it('should filter by multi-value status (comma-separated)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?status=TO_DO,IN_PROGRESS&_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBeGreaterThanOrEqual(1);
+        res.body.data.forEach(i => {
+            expect(['TO_DO', 'IN_PROGRESS']).toContain(i.status);
+        });
+    });
+
+    it('should filter by multi-value type (comma-separated)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?type=STORY,BUG&_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBeGreaterThanOrEqual(1);
+        res.body.data.forEach(i => {
+            expect(['STORY', 'BUG']).toContain(i.type);
+        });
+    });
+
+    it('should filter by multi-value priority (comma-separated)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?priority=HIGH,CRITICAL&_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBeGreaterThanOrEqual(1);
+        res.body.data.forEach(i => {
+            expect(['HIGH', 'CRITICAL']).toContain(i.priority);
+        });
+    });
+
+    it('should still work with single-value status (backward compatible)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?status=DONE&_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        res.body.data.forEach(i => {
+            expect(i.status).toBe('DONE');
+        });
+    });
+
+    it('should combine multi-value status with single type (AND across, OR within)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?status=TO_DO,IN_PROGRESS&type=STORY&_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        res.body.data.forEach(i => {
+            expect(['TO_DO', 'IN_PROGRESS']).toContain(i.status);
+            expect(i.type).toBe('STORY');
+        });
+    });
+
+    it('should combine multi-value filters with text search', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?status=TO_DO,DONE&q=dialog&_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        res.body.data.forEach(i => {
+            expect(['TO_DO', 'DONE']).toContain(i.status);
+            expect(
+                i.title.toLowerCase().includes('dialog') ||
+                (i.description && i.description.toLowerCase().includes('dialog'))
+            ).toBe(true);
+        });
+    });
+
+    it('should ignore empty multi-value param', async () => {
+        const token = await getTokenFor('superadmin');
+        const allRes = await request(app)
+            .get('/api/projects/1/backlog?_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+        const emptyRes = await request(app)
+            .get('/api/projects/1/backlog?status=&_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(emptyRes.status).toBe(200);
+        expect(emptyRes.body.total).toBe(allRes.body.total);
+    });
+
+    it('should only apply valid values in multi-value filter (invalid ignored)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog?status=TO_DO,INVALID_STATUS&_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        // Should still return TO_DO items (INVALID_STATUS just won't match anything)
+        res.body.data.forEach(i => {
+            expect(['TO_DO', 'INVALID_STATUS']).toContain(i.status);
+        });
     });
 });
 
