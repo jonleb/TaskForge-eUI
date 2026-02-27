@@ -2,12 +2,21 @@
     display: block;
 }
 
-.filter-bar {
-    flex-wrap: wrap;
+.filter-fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
 }
 
-::ng-deep eui-toggle-group {
-    width: auto;
+.filter-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.empty-state {
+    min-height: 200px;
+    text-align: center;
 }
 
 .dialog-form {

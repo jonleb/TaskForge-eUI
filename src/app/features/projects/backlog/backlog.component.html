@@ -1,115 +1,243 @@
 <eui-page>
-    <eui-page-header [label]="'backlog.page-title' | translate">
-        @if (canCreate) {
-            <eui-page-header-action-items>
-                <button euiButton euiPrimary
-                        (click)="openCreateDialog()"
-                        aria-haspopup="dialog">
-                    {{ 'backlog.create-btn' | translate }}
-                </button>
-            </eui-page-header-action-items>
-        }
-    </eui-page-header>
     <eui-page-content>
-
-        <div class="filter-bar eui-u-d-flex eui-u-align-items-center eui-u-gap-s eui-u-mb-m">
-            <eui-table-filter
-                [placeholder]="'backlog.search-placeholder' | translate"
-                (filterChange)="onFilterChange($event)">
-            </eui-table-filter>
-
-            <eui-toggle-group [attr.aria-label]="'backlog.filter-status-label' | translate"
-                              (itemClick)="onStatusFilterChange($event)">
-                <eui-toggle-group-item id="status-all" [isChecked]="true">{{ 'common.all' | translate }}</eui-toggle-group-item>
-                <eui-toggle-group-item id="status-todo">{{ 'workflow.status.TO_DO' | translate }}</eui-toggle-group-item>
-                <eui-toggle-group-item id="status-inprogress">{{ 'workflow.status.IN_PROGRESS' | translate }}</eui-toggle-group-item>
-                <eui-toggle-group-item id="status-inreview">{{ 'workflow.status.IN_REVIEW' | translate }}</eui-toggle-group-item>
-                <eui-toggle-group-item id="status-done">{{ 'workflow.status.DONE' | translate }}</eui-toggle-group-item>
-            </eui-toggle-group>
-
-            <eui-toggle-group [attr.aria-label]="'backlog.filter-type-label' | translate"
-                              (itemClick)="onTypeFilterChange($event)">
-                <eui-toggle-group-item id="type-all" [isChecked]="true">{{ 'common.all' | translate }}</eui-toggle-group-item>
-                <eui-toggle-group-item id="type-story">{{ 'workflow.ticket-type.STORY' | translate }}</eui-toggle-group-item>
-                <eui-toggle-group-item id="type-bug">{{ 'workflow.ticket-type.BUG' | translate }}</eui-toggle-group-item>
-                <eui-toggle-group-item id="type-task">{{ 'workflow.ticket-type.TASK' | translate }}</eui-toggle-group-item>
-                <eui-toggle-group-item id="type-epic">{{ 'workflow.ticket-type.EPIC' | translate }}</eui-toggle-group-item>
-            </eui-toggle-group>
-        </div>
-
-        <p aria-live="polite" class="eui-u-mt-s eui-u-mb-s">
-            {{ 'backlog.showing-of' | translate:{ count: items.length, total: total } }}
-        </p>
-
-        <table euiTable
-               [data]="items"
-               isAsync
-               [isLoading]="isLoading"
-               isTableResponsive
-               [attr.aria-label]="'backlog.table-label' | translate"
-               (sortChange)="onSortChange($event)">
-
-            <ng-template euiTemplate="header">
-                <tr>
-                    <th scope="col" isSortable sortOn="ticket_number">{{ 'ticket.field.ticket-number' | translate }}</th>
-                    <th scope="col" isSortable sortOn="type">{{ 'ticket.field.type' | translate }}</th>
-                    <th scope="col" isSortable sortOn="title">{{ 'ticket.field.title' | translate }}</th>
-                    <th scope="col" isSortable sortOn="priority">{{ 'ticket.priority.label' | translate }}</th>
-                    <th scope="col" isSortable sortOn="status">{{ 'common.field.status' | translate }}</th>
-                    <th scope="col">{{ 'ticket.field.assignee' | translate }}</th>
-                </tr>
-            </ng-template>
-
-            <ng-template let-row euiTemplate="body">
-                <tr>
-                    <td [attr.data-col-label]="'ticket.field.ticket-number' | translate">{{ projectKey }}-{{ row.ticket_number }}</td>
-                    <td [attr.data-col-label]="'ticket.field.type' | translate">
-                        <eui-chip euiSizeS [ariaLabel]="'workflow.ticket-type.' + row.type | translate">
-                            {{ 'workflow.ticket-type.' + row.type | translate }}
-                        </eui-chip>
-                    </td>
-                    <td [attr.data-col-label]="'ticket.field.title' | translate">{{ row.title }}</td>
-                    <td [attr.data-col-label]="'ticket.priority.label' | translate">
-                        @if (row.priority) {
-                            <eui-chip euiSizeS
-                                [class.eui-chip--danger]="row.priority === 'CRITICAL'"
-                                [class.eui-chip--warning]="row.priority === 'HIGH'"
-                                [class.eui-chip--info]="row.priority === 'MEDIUM'"
-                                [ariaLabel]="'ticket.priority.' + row.priority | translate">
-                                {{ 'ticket.priority.' + row.priority | translate }}
-                            </eui-chip>
-                        } @else {
-                            —
+        <eui-page-columns>
+            <!-- Outer column: wraps header + nested columns -->
+            <eui-page-column hasSubColumns>
+                <eui-page-column-header-body>
+                    <eui-page-header [label]="'backlog.page-title' | translate">
+                        @if (canCreate) {
+                            <eui-page-header-action-items>
+                                <button euiButton euiPrimary
+                                        (click)="openCreateDialog()"
+                                        aria-haspopup="dialog">
+                                    {{ 'backlog.create-btn' | translate }}
+                                </button>
+                            </eui-page-header-action-items>
                         }
-                    </td>
-                    <td [attr.data-col-label]="'common.field.status' | translate">{{ 'workflow.status.' + row.status | translate }}</td>
-                    <td [attr.data-col-label]="'ticket.field.assignee' | translate">{{ getAssigneeName(row) }}</td>
-                </tr>
-            </ng-template>
+                    </eui-page-header>
+                </eui-page-column-header-body>
 
-            <ng-template euiTemplate="noData">
-                <tr>
-                    <td class="eui-u-text-center" colspan="6">
-                        {{ emptyStateMessage }}
-                        @if (hasError) {
-                            <button euiButton euiSecondary type="button"
-                                    class="eui-u-ml-m"
-                                    (click)="retry()">
-                                {{ 'common.retry' | translate }}
-                            </button>
-                        }
-                    </td>
-                </tr>
-            </ng-template>
-        </table>
+                <eui-page-column-body>
+                    <!-- Nested columns: filter + results -->
+                    <eui-page-columns>
 
-        <eui-paginator
-            [length]="total"
-            [pageSize]="params._limit ?? 10"
-            [pageSizeOptions]="[10, 25, 50]"
-            (pageChange)="onPageChange($event)">
-        </eui-paginator>
+                        <!-- Left: collapsible filter column -->
+                        <eui-page-column
+                            [label]="'backlog.filter.column-label' | translate"
+                            euiSize2XL
+                            [isCollapsible]="true"
+                            [isCollapsed]="isFilterCollapsed"
+                            [isAutocloseOnMobile]="true"
+                            [expandAriaLabel]="'backlog.filter.expand-label' | translate"
+                            [collapseAriaLabel]="'backlog.filter.collapse-label' | translate"
+                            (collapse)="onFilterColumnCollapse($event)">
+                            <eui-page-column-body>
 
+                                <!-- Search -->
+                                <div class="eui-u-mb-m">
+                                    <label euiLabel for="backlog-search">{{ 'backlog.filter.search-label' | translate }}</label>
+                                    <input euiInputText id="backlog-search"
+                                           [value]="searchValue"
+                                           [placeholder]="'backlog.search-placeholder' | translate"
+                                           (input)="onFilterChange($any($event.target).value)" />
+                                </div>
+
+                                <!-- Status filter -->
+                                <eui-card [euiCollapsible]="true" [euiCollapsed]="false" euiNoShadow class="eui-u-mb-s">
+                                    <eui-card-header>
+                                        <eui-card-header-title>{{ 'backlog.filter.status-legend' | translate }}</eui-card-header-title>
+                                    </eui-card-header>
+                                    <eui-card-content>
+                                        <fieldset class="filter-fieldset">
+                                            <legend class="eui-u-sr-only">{{ 'backlog.filter.status-legend' | translate }}</legend>
+                                            @for (s of workflowStatuses; track s) {
+                                                <div class="filter-checkbox eui-u-mb-2xs">
+                                                    <input euiInputCheckBox
+                                                           [id]="'status-' + s"
+                                                           [(ngModel)]="statusChecks[s]"
+                                                           (change)="onStatusCheckChange()" />
+                                                    <label [for]="'status-' + s">{{ 'workflow.status.' + s | translate }}</label>
+                                                </div>
+                                            }
+                                        </fieldset>
+                                    </eui-card-content>
+                                </eui-card>
+
+                                <!-- Type filter -->
+                                <eui-card [euiCollapsible]="true" [euiCollapsed]="false" euiNoShadow class="eui-u-mb-s">
+                                    <eui-card-header>
+                                        <eui-card-header-title>{{ 'backlog.filter.type-legend' | translate }}</eui-card-header-title>
+                                    </eui-card-header>
+                                    <eui-card-content>
+                                        <fieldset class="filter-fieldset">
+                                            <legend class="eui-u-sr-only">{{ 'backlog.filter.type-legend' | translate }}</legend>
+                                            @for (t of ticketTypes; track t) {
+                                                <div class="filter-checkbox eui-u-mb-2xs">
+                                                    <input euiInputCheckBox
+                                                           [id]="'type-' + t"
+                                                           [(ngModel)]="typeChecks[t]"
+                                                           (change)="onTypeCheckChange()" />
+                                                    <label [for]="'type-' + t">{{ 'workflow.ticket-type.' + t | translate }}</label>
+                                                </div>
+                                            }
+                                        </fieldset>
+                                    </eui-card-content>
+                                </eui-card>
+
+                                <!-- Priority filter -->
+                                <eui-card [euiCollapsible]="true" [euiCollapsed]="false" euiNoShadow class="eui-u-mb-s">
+                                    <eui-card-header>
+                                        <eui-card-header-title>{{ 'backlog.filter.priority-legend' | translate }}</eui-card-header-title>
+                                    </eui-card-header>
+                                    <eui-card-content>
+                                        <fieldset class="filter-fieldset">
+                                            <legend class="eui-u-sr-only">{{ 'backlog.filter.priority-legend' | translate }}</legend>
+                                            @for (p of priorities; track p) {
+                                                <div class="filter-checkbox eui-u-mb-2xs">
+                                                    <input euiInputCheckBox
+                                                           [id]="'priority-' + p"
+                                                           [(ngModel)]="priorityChecks[p]"
+                                                           (change)="onPriorityCheckChange()" />
+                                                    <label [for]="'priority-' + p">{{ 'ticket.priority.' + p | translate }}</label>
+                                                </div>
+                                            }
+                                        </fieldset>
+                                    </eui-card-content>
+                                </eui-card>
+
+                            </eui-page-column-body>
+                        </eui-page-column>
+
+                        <!-- Right: results column -->
+                        <eui-page-column>
+                            <eui-page-column-body>
+
+                                <!-- List header -->
+                                <div class="eui-u-d-flex eui-u-align-items-center eui-u-flex-justify-content-between eui-u-mb-s">
+                                    <p aria-live="polite" class="eui-u-f-m">
+                                        {{ 'backlog.results-found' | translate:{ total: total } }}
+                                    </p>
+                                    <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-s">
+                                        <label euiLabel for="sort-select" class="eui-u-f-s">{{ 'backlog.sort-label' | translate }}</label>
+                                        <select euiSelect id="sort-select"
+                                                [(ngModel)]="selectedSortIndex"
+                                                (change)="onSortSelectChange()">
+                                            @for (opt of sortOptions; track opt.label; let i = $index) {
+                                                <option [ngValue]="i">{{ opt.label | translate }}</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Selected criteria chips -->
+                                @if (hasActiveFilters) {
+                                    <section class="eui-u-d-flex eui-u-align-items-center eui-u-flex-wrap eui-u-gap-xs eui-u-mb-m"
+                                             [attr.aria-label]="'backlog.selected-filters' | translate">
+                                        <span class="eui-u-f-s">{{ 'backlog.selected-filters' | translate }}:</span>
+                                        @for (chip of activeFilterChips; track chip.key) {
+                                            <eui-chip euiSizeS
+                                                      [isChipRemovable]="true"
+                                                      [ariaLabel]="chip.label"
+                                                      (remove)="onChipRemove(chip)">
+                                                {{ chip.label }}
+                                            </eui-chip>
+                                        }
+                                        <button euiButton euiSecondary euiSizeS
+                                                type="button"
+                                                (click)="clearAllFilters()">
+                                            {{ 'backlog.clear-all' | translate }}
+                                        </button>
+                                    </section>
+                                }
+
+                                <!-- Loading state -->
+                                @if (isLoading) {
+                                    <eui-progress-bar [isIndeterminate]="true"
+                                                      [label]="'common.loading' | translate">
+                                    </eui-progress-bar>
+                                } @else if (items.length === 0) {
+                                    <!-- Empty state -->
+                                    <output class="empty-state eui-u-d-flex eui-u-flex-direction-column eui-u-align-items-center eui-u-pv-xl">
+                                        <p class="eui-u-f-l eui-u-mb-s">{{ emptyStateMessage }}</p>
+                                        @if (emptyStateHint) {
+                                            <p class="eui-u-f-m">{{ emptyStateHint }}</p>
+                                        }
+                                        @if (hasError) {
+                                            <button euiButton euiSecondary euiSizeS
+                                                    type="button"
+                                                    class="eui-u-mt-m"
+                                                    (click)="retry()">
+                                                {{ 'backlog.retry' | translate }}
+                                            </button>
+                                        }
+                                    </output>
+                                } @else {
+                                    <!-- Card list -->
+                                    @for (item of items; track item.id) {
+                                        <eui-content-card class="eui-u-mb-s">
+                                            <eui-content-card-header>
+                                                <eui-content-card-header-start>
+                                                    <eui-chip euiSizeS
+                                                              [ariaLabel]="'workflow.ticket-type.' + item.type | translate">
+                                                        {{ 'workflow.ticket-type.' + item.type | translate }}
+                                                    </eui-chip>
+                                                </eui-content-card-header-start>
+
+                                                <eui-content-card-header-title>
+                                                    {{ item.title }}
+                                                </eui-content-card-header-title>
+
+                                                <eui-content-card-header-subtitle>
+                                                    {{ projectKey }}-{{ item.ticket_number }}
+                                                </eui-content-card-header-subtitle>
+
+                                                <eui-content-card-header-end>
+                                                    <eui-chip euiSizeS
+                                                              [ariaLabel]="'workflow.status.' + item.status | translate">
+                                                        {{ 'workflow.status.' + item.status | translate }}
+                                                    </eui-chip>
+                                                </eui-content-card-header-end>
+
+                                                <eui-content-card-header-metadata>
+                                                    @if (item.priority) {
+                                                        <eui-chip euiSizeS
+                                                                  [class.eui-chip--danger]="item.priority === 'CRITICAL'"
+                                                                  [class.eui-chip--warning]="item.priority === 'HIGH'"
+                                                                  [class.eui-chip--info]="item.priority === 'MEDIUM'"
+                                                                  [ariaLabel]="'ticket.priority.' + item.priority | translate">
+                                                            {{ 'ticket.priority.' + item.priority | translate }}
+                                                        </eui-chip>
+                                                    }
+                                                    <span class="eui-u-ml-s">{{ getAssigneeName(item) }}</span>
+                                                </eui-content-card-header-metadata>
+                                            </eui-content-card-header>
+
+                                            @if (item.description) {
+                                                <eui-content-card-body>
+                                                    {{ truncateDescription(item.description) }}
+                                                </eui-content-card-body>
+                                            }
+                                        </eui-content-card>
+                                    }
+                                }
+
+                                <!-- Paginator -->
+                                @if (!isLoading) {
+                                    <eui-paginator
+                                        [length]="total"
+                                        [pageSize]="params._limit ?? 10"
+                                        [pageSizeOptions]="[10, 25, 50]"
+                                        (pageChange)="onPageChange($event)">
+                                    </eui-paginator>
+                                }
+
+                            </eui-page-column-body>
+                        </eui-page-column>
+
+                    </eui-page-columns>
+                </eui-page-column-body>
+            </eui-page-column>
+        </eui-page-columns>
     </eui-page-content>
 </eui-page>
 
