@@ -50,14 +50,27 @@
                     <ul class="backlog-list">
                         @for (item of backlogItems; track item.id) {
                             <li>
+                                <span class="ticket-number">{{ project?.key }}-{{ item.ticket_number }}</span>
                                 <eui-chip euiSizeS [ariaLabel]="'workflow.ticket-type.' + item.type | translate">
                                     {{ 'workflow.ticket-type.' + item.type | translate }}
                                 </eui-chip>
-                                <span>{{ item.title }}</span>
+                                @if (item.priority) {
+                                    <eui-chip euiSizeS
+                                        [class.eui-chip--danger]="item.priority === 'CRITICAL'"
+                                        [class.eui-chip--warning]="item.priority === 'HIGH'"
+                                        [class.eui-chip--info]="item.priority === 'MEDIUM'"
+                                        [ariaLabel]="'ticket.priority.' + item.priority | translate">
+                                        {{ 'ticket.priority.' + item.priority | translate }}
+                                    </eui-chip>
+                                }
+                                <span class="ticket-title">{{ item.title }}</span>
                                 <span class="backlog-status">{{ 'workflow.status.' + item.status | translate }}</span>
                             </li>
                         }
                     </ul>
+                    <a [routerLink]="['backlog']" class="view-backlog-link">
+                        {{ 'dashboard.view-backlog' | translate }}
+                    </a>
                 }
             </section>
 

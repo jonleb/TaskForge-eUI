@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
+import { RouterModule } from '@angular/router';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { TranslateTestingModule, provideEuiCoreMocks, createBreadcrumbServiceMock } from '../../../testing/test-providers';
 import { DashboardComponent } from './dashboard.component';
@@ -18,7 +19,14 @@ const mockBacklogItems: BacklogItem[] = [
     {
         id: '1', projectId: '1', type: 'EPIC', title: 'Maintenance',
         description: 'Default epic for maintenance and operational tasks',
-        status: 'TO_DO', created_by: 'system', created_at: '2025-01-20T09:00:00.000Z',
+        status: 'TO_DO', priority: null, assignee_id: null, epic_id: null,
+        ticket_number: 1, created_by: 'system', created_at: '2025-01-20T09:00:00.000Z',
+    },
+    {
+        id: '17', projectId: '1', type: 'STORY', title: 'Login page',
+        description: 'Implement login', status: 'IN_PROGRESS', priority: 'HIGH',
+        assignee_id: '2', epic_id: '1', ticket_number: 2,
+        created_by: '1', created_at: '2026-02-27T10:00:00.000Z',
     },
 ];
 
@@ -42,7 +50,7 @@ describe('DashboardComponent', () => {
         breadcrumbMock = createBreadcrumbServiceMock();
 
         await TestBed.configureTestingModule({
-            imports: [DashboardComponent, TranslateTestingModule],
+            imports: [DashboardComponent, TranslateTestingModule, RouterModule.forRoot([])],
             providers: [
                 ...provideEuiCoreMocks(),
                 { provide: ProjectContextService, useValue: { currentProject$ } },
@@ -165,16 +173,17 @@ describe('DashboardComponent', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         const listItems = fixture.nativeElement.querySelectorAll('.backlog-list li');
-        expect(listItems.length).toBe(1);
+        expect(listItems.length).toBe(2);
         expect(listItems[0].textContent).toContain('Maintenance');
     });
 
     it('should show ticket type chip for backlog item', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const chips = fixture.nativeElement.querySelectorAll('.backlog-list eui-chip');
-        expect(chips.length).toBe(1);
-        expect(chips[0].textContent).toContain('workflow.ticket-type.EPIC');
+        const typeChips = fixture.nativeElement.querySelectorAll('.backlog-list eui-chip');
+        // 2 items: EPIC has 1 type chip, STORY has 1 type chip + 1 priority chip = 4 total
+        expect(typeChips.length).toBeGreaterThanOrEqual(2);
+        expect(typeChips[0].textContent).toContain('workflow.ticket-type.EPIC');
     });
 
     it('should show empty state when no backlog items', () => {
@@ -190,6 +199,52 @@ describe('DashboardComponent', () => {
         fixture.detectChanges();
         const heading = fixture.nativeElement.querySelector('.backlog-summary h2');
         expect(heading.textContent).toContain('dashboard.backlog-heading');
+    });
+
+    // --- STORY-006: Dashboard Backlog Summary Enhancement tests ---
+
+    it('should display ticket number in KEY-N format', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const ticketNumbers = fixture.nativeElement.querySelectorAll('.ticket-number');
+        expect(ticketNumbers.length).toBe(2);
+        expect(ticketNumbers[0].textContent.trim()).toBe('TF-1');
+        expect(ticketNumbers[1].textContent.trim()).toBe('TF-2');
+    });
+
+    it('should display priority chip for items with priority', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const listItems = fixture.nativeElement.querySelectorAll('.backlog-list li');
+        // Second item (STORY) has priority HIGH
+        const storyChips = listItems[1].querySelectorAll('eui-chip');
+        // type chip + priority chip = 2
+        expect(storyChips.length).toBe(2);
+        expect(storyChips[1].textContent).toContain('ticket.priority.HIGH');
+    });
+
+    it('should not display priority chip for items with null priority', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const listItems = fixture.nativeElement.querySelectorAll('.backlog-list li');
+        // First item (EPIC) has null priority — only 1 chip (type)
+        const epicChips = listItems[0].querySelectorAll('eui-chip');
+        expect(epicChips.length).toBe(1);
+    });
+
+    it('should display "View full backlog" link', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const link = fixture.nativeElement.querySelector('.view-backlog-link');
+        expect(link).toBeTruthy();
+        expect(link.textContent).toContain('dashboard.view-backlog');
+    });
+
+    it('should link to backlog route', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const link = fixture.nativeElement.querySelector('.view-backlog-link');
+        expect(link.getAttribute('href')).toContain('backlog');
     });
 
 });

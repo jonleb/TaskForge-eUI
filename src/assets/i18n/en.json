@@ -141,6 +141,7 @@
   "dashboard.backlog-heading": "Backlog",
   "dashboard.backlog-count": "{{count}} item(s) in backlog",
   "dashboard.no-backlog-items": "No backlog items yet",
+  "dashboard.view-backlog": "View full backlog →",
   "members.page-title": "Members",
   "members.add-btn": "Add Member",
   "members.table-label": "Project members",

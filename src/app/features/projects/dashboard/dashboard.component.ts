@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, 
 import { DatePipe } from '@angular/common';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { RouterLink } from '@angular/router';
 import { EUI_PAGE } from '@eui/components/eui-page';
 import { EUI_CHIP } from '@eui/components/eui-chip';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
@@ -13,7 +14,7 @@ import { ProjectContextService, ProjectService, Project, BacklogItem } from '../
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [...EUI_PAGE, ...EUI_CHIP, DatePipe, TranslateModule],
+    imports: [...EUI_PAGE, ...EUI_CHIP, DatePipe, TranslateModule, RouterLink],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
     private readonly projectContext = inject(ProjectContextService);

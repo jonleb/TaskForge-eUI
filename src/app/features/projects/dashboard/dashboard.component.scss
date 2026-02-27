@@ -54,11 +54,32 @@
         border-bottom: 1px solid var(--eui-color-grey-25, #d1d5db);
     }
 
+    .ticket-number {
+        font-family: monospace;
+        font-size: 0.85rem;
+        color: var(--eui-color-grey-60, #6b7280);
+        white-space: nowrap;
+    }
+
+    .ticket-title {
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
     .backlog-status {
         margin-left: auto;
         color: var(--eui-color-grey-60, #6b7280);
         font-size: 0.85rem;
     }
+}
+
+.view-backlog-link {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
 }
 
 .widgets {
