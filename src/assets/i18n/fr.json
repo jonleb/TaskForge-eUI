@@ -184,7 +184,7 @@
   "workflow.ticket-type.STORY": "User Story",
   "workflow.ticket-type.BUG": "Bug",
   "workflow.ticket-type.TASK": "Tâche",
-  "workflow.ticket-type.EPIC": "Épique",
+  "workflow.ticket-type.EPIC": "Epic",
   "workflow.status.TO_DO": "À faire",
   "workflow.status.IN_PROGRESS": "En cours",
   "workflow.status.IN_REVIEW": "En revue",
