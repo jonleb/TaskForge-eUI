@@ -12,6 +12,7 @@ export const PROJECTS_ROUTES: Routes = [
         children: [
             { path: '', component: DashboardComponent },
             { path: 'members', component: MembersComponent },
+            { path: 'settings', loadComponent: () => import('./settings/settings.component').then(m => m.SettingsComponent) },
         ],
     },
 ];

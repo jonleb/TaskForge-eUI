@@ -188,5 +188,13 @@
   "workflow.status.TO_DO": "To Do",
   "workflow.status.IN_PROGRESS": "In Progress",
   "workflow.status.IN_REVIEW": "In Review",
-  "workflow.status.DONE": "Done"
+  "workflow.status.DONE": "Done",
+  "settings.title": "Project Settings",
+  "settings.workflows-heading": "Workflows",
+  "settings.status-flow": "Status Flow",
+  "settings.transitions": "Transitions",
+  "settings.from": "From",
+  "settings.to": "To",
+  "settings.no-workflows": "No workflows configured",
+  "settings.error-loading": "Failed to load workflows. Please try again."
 }

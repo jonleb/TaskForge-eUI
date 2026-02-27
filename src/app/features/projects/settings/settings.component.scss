@@ -1,0 +1,52 @@
+.loading-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.workflow-section {
+    margin-bottom: 2rem;
+
+    h3 {
+        margin-bottom: 0.5rem;
+    }
+
+    h4 {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+}
+
+.status-flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.status-flow-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.transitions-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.25rem;
+
+    th,
+    td {
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--eui-c-border);
+    }
+
+    th {
+        font-weight: 600;
+    }
+}

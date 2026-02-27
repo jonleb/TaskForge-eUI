@@ -1,0 +1,73 @@
+<eui-page>
+    <eui-page-header [label]="'settings.title' | translate"></eui-page-header>
+    <eui-page-content>
+        @if (isLoading) {
+            <div class="loading-container">
+                <output aria-live="polite">{{ 'common.loading' | translate }}</output>
+            </div>
+        } @else if (hasError) {
+            <eui-feedback-message euiDanger aria-live="polite">
+                {{ 'settings.error-loading' | translate }}
+            </eui-feedback-message>
+            <button euiButton euiSecondary class="eui-u-mt-s" (click)="retry()">
+                {{ 'common.retry' | translate }}
+            </button>
+        } @else if (workflows.length === 0) {
+            <eui-feedback-message euiInfo>
+                {{ 'settings.no-workflows' | translate }}
+            </eui-feedback-message>
+        } @else {
+            <h2>{{ 'settings.workflows-heading' | translate }}</h2>
+            @for (workflow of workflows; track workflow.id) {
+                <section class="workflow-section" [attr.aria-label]="'workflow.ticket-type.' + workflow.ticketType | translate">
+                    <h3>{{ 'workflow.ticket-type.' + workflow.ticketType | translate }}</h3>
+
+                    <h4>{{ 'settings.status-flow' | translate }}</h4>
+                    <ul class="status-flow" [attr.aria-label]="'settings.status-flow' | translate">
+                        @for (status of workflow.statuses; track status; let last = $last) {
+                            <li class="status-flow-item">
+                                <span euiStatusBadge euiInfo euiSizeS
+                                      [attr.aria-label]="'workflow.status.' + status | translate">
+                                    {{ 'workflow.status.' + status | translate }}
+                                </span>
+                                @if (!last) {
+                                    <eui-icon-svg icon="eui-arrow-right" size="s" aria-hidden="true"></eui-icon-svg>
+                                }
+                            </li>
+                        }
+                    </ul>
+
+                    <h4>{{ 'settings.transitions' | translate }}</h4>
+                    <table class="transitions-table"
+                           [attr.aria-label]="('settings.transitions' | translate) + ' — ' + ('workflow.ticket-type.' + workflow.ticketType | translate)">
+                        <caption class="eui-u-sr-only">
+                            {{ 'settings.transitions' | translate }} — {{ 'workflow.ticket-type.' + workflow.ticketType | translate }}
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ 'settings.from' | translate }}</th>
+                                <th scope="col">{{ 'settings.to' | translate }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (status of workflow.statuses; track status) {
+                                @if (getTransitionTargets(workflow, status).length > 0) {
+                                    <tr>
+                                        <td data-col-label="From">
+                                            {{ 'workflow.status.' + status | translate }}
+                                        </td>
+                                        <td data-col-label="To">
+                                            @for (target of getTransitionTargets(workflow, status); track target; let lastTarget = $last) {
+                                                {{ 'workflow.status.' + target | translate }}@if (!lastTarget) {, }
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </section>
+            }
+        }
+    </eui-page-content>
+</eui-page>

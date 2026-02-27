@@ -188,5 +188,13 @@
   "workflow.status.TO_DO": "À faire",
   "workflow.status.IN_PROGRESS": "En cours",
   "workflow.status.IN_REVIEW": "En revue",
-  "workflow.status.DONE": "Terminé"
+  "workflow.status.DONE": "Terminé",
+  "settings.title": "Paramètres du projet",
+  "settings.workflows-heading": "Flux de travail",
+  "settings.status-flow": "Flux de statuts",
+  "settings.transitions": "Transitions",
+  "settings.from": "De",
+  "settings.to": "Vers",
+  "settings.no-workflows": "Aucun flux de travail configuré",
+  "settings.error-loading": "Échec du chargement des flux de travail. Veuillez réessayer."
 }
