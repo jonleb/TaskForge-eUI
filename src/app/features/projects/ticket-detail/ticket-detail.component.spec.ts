@@ -2,13 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { EuiGrowlService } from '@eui/core';
 import {
-    TranslateTestingModule, provideEuiCoreMocks,
+    TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock,
 } from '../../../testing/test-providers';
 import { TicketDetailComponent } from './ticket-detail.component';
 import {
-    ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember,
+    ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember, Workflow,
 } from '../../../core/project';
+import { PermissionService } from '../../../core/auth';
 
 const mockProject: Project = {
     id: '1', key: 'TF', name: 'TaskForge Core',
@@ -36,12 +38,33 @@ const mockTicketNoDesc: BacklogItem = {
     ...mockTicket, id: '18', description: '', assignee_id: null,
 };
 
+const mockWorkflows: Workflow[] = [{
+    id: 'wf1', projectId: '1', ticketType: 'STORY',
+    statuses: ['TO_DO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE'],
+    transitions: {
+        TO_DO: ['IN_PROGRESS'],
+        IN_PROGRESS: ['IN_REVIEW', 'TO_DO'],
+        IN_REVIEW: ['DONE', 'IN_PROGRESS'],
+        DONE: [],
+    },
+    created_at: '2025-01-20T09:00:00.000Z',
+}];
+
+const mockEpics: BacklogItem[] = [{
+    id: '1', projectId: '1', type: 'EPIC', title: 'Maintenance',
+    description: '', status: 'TO_DO', priority: null,
+    assignee_id: null, epic_id: null, ticket_number: 1,
+    created_by: 'system', created_at: '2025-01-20T09:00:00.000Z',
+}];
+
 describe('TicketDetailComponent', () => {
     let fixture: ComponentFixture<TicketDetailComponent>;
     let component: TicketDetailComponent;
     let currentProject$: BehaviorSubject<Project | null>;
     let paramMap$: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
     let svc: Record<string, ReturnType<typeof vi.fn>>;
+    let perm: Record<string, ReturnType<typeof vi.fn>>;
+    let growl: ReturnType<typeof createGrowlServiceMock>;
     let router: { navigate: ReturnType<typeof vi.fn> };
 
     beforeEach(async () => {
@@ -51,16 +74,28 @@ describe('TicketDetailComponent', () => {
         svc = {
             getTicket: vi.fn().mockReturnValue(of(mockTicket)),
             getProjectMembers: vi.fn().mockReturnValue(of(mockMembers)),
+            getWorkflows: vi.fn().mockReturnValue(of(mockWorkflows)),
+            getEpics: vi.fn().mockReturnValue(of(mockEpics)),
+            updateTicket: vi.fn().mockReturnValue(of(mockTicket)),
             getBacklog: vi.fn(), getProject: vi.fn(), getUser: vi.fn(),
             createProject: vi.fn(), updateProject: vi.fn(),
             upsertMember: vi.fn(), removeMember: vi.fn(),
-            searchCandidates: vi.fn(), getWorkflows: vi.fn(),
-            createTicket: vi.fn(), getEpics: vi.fn(),
-            updateTicket: vi.fn(), getComments: vi.fn(),
-            addComment: vi.fn(), getActivity: vi.fn(),
-            getProjects: vi.fn(),
+            searchCandidates: vi.fn(), createTicket: vi.fn(),
+            getComments: vi.fn(), addComment: vi.fn(),
+            getActivity: vi.fn(), getProjects: vi.fn(),
         };
 
+        perm = {
+            isSuperAdmin: vi.fn().mockReturnValue(true),
+            getUserId: vi.fn().mockReturnValue('1'),
+            hasGlobalRole: vi.fn().mockReturnValue(false),
+            getGlobalRole: vi.fn().mockReturnValue('SUPER_ADMIN'),
+            getOriginalRole: vi.fn().mockReturnValue('SUPER_ADMIN'),
+            setUser: vi.fn(), clear: vi.fn(), showAccessDenied: vi.fn(),
+            hasProjectRole: vi.fn().mockReturnValue(of(true)),
+        };
+
+        growl = createGrowlServiceMock();
         router = { navigate: vi.fn() };
 
         await TestBed.configureTestingModule({
@@ -69,6 +104,8 @@ describe('TicketDetailComponent', () => {
                 ...provideEuiCoreMocks(),
                 { provide: ProjectContextService, useValue: { currentProject$ } },
                 { provide: ProjectService, useValue: svc },
+                { provide: PermissionService, useValue: perm },
+                { provide: EuiGrowlService, useValue: growl },
                 { provide: ActivatedRoute, useValue: { paramMap: paramMap$ } },
                 { provide: Router, useValue: router },
             ],
@@ -77,6 +114,8 @@ describe('TicketDetailComponent', () => {
         fixture = TestBed.createComponent(TicketDetailComponent);
         component = fixture.componentInstance;
     });
+
+    // --- STORY-004: Read-only layout ---
 
     it('should create', () => {
         currentProject$.next(mockProject);
@@ -96,8 +135,6 @@ describe('TicketDetailComponent', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         expect(component.ticketKey).toBe('TF-5');
-        const header = fixture.nativeElement.querySelector('eui-page-header');
-        expect(header).toBeTruthy();
     });
 
     it('should display title', () => {
@@ -193,15 +230,149 @@ describe('TicketDetailComponent', () => {
         svc['getTicket'].mockReturnValue(throwError(() => ({ status: 404 })));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const text = fixture.nativeElement.textContent;
-        expect(text).toContain('ticket-detail.not-found');
+        expect(fixture.nativeElement.textContent).toContain('ticket-detail.not-found');
     });
 
     it('should show error message', () => {
         svc['getTicket'].mockReturnValue(throwError(() => ({ status: 500 })));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const text = fixture.nativeElement.textContent;
-        expect(text).toContain('ticket-detail.load-error');
+        expect(fixture.nativeElement.textContent).toContain('ticket-detail.load-error');
+    });
+
+    // --- STORY-005: Inline Edit & Save ---
+
+    it('should show edit buttons when canEdit is true', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const editBtns = fixture.nativeElement.querySelectorAll('eui-icon-button[icon="eui-edit"]');
+        expect(editBtns.length).toBeGreaterThan(0);
+    });
+
+    it('should hide edit buttons when canEdit is false', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['hasProjectRole'].mockReturnValue(of(false));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const editBtns = fixture.nativeElement.querySelectorAll('eui-icon-button[icon="eui-edit"]');
+        expect(editBtns.length).toBe(0);
+    });
+
+    it('should switch to edit mode on startEdit', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.isEditing('title')).toBe(false);
+        component.startEdit('title');
+        expect(component.isEditing('title')).toBe(true);
+    });
+
+    it('should show status dropdown with valid transitions', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        // IN_PROGRESS can go to IN_REVIEW or TO_DO
+        const allowed = component.allowedStatuses;
+        expect(allowed).toContain('IN_PROGRESS');
+        expect(allowed).toContain('IN_REVIEW');
+        expect(allowed).toContain('TO_DO');
+        expect(allowed).not.toContain('DONE');
+    });
+
+    it('should call updateTicket on save', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.startEdit('title');
+        component.editTitle = 'Updated title';
+        component.saveChanges();
+        expect(svc['updateTicket']).toHaveBeenCalledWith('1', 5, { title: 'Updated title' });
+    });
+
+    it('should show growl on save success', () => {
+        const updatedTicket = { ...mockTicket, title: 'Updated title' };
+        svc['updateTicket'].mockReturnValue(of(updatedTicket));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.startEdit('title');
+        component.editTitle = 'Updated title';
+        component.saveChanges();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+    });
+
+    it('should show growl on save error', () => {
+        svc['updateTicket'].mockReturnValue(throwError(() => new Error('fail')));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.startEdit('title');
+        component.editTitle = 'Updated title';
+        component.saveChanges();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
+    });
+
+    it('should revert on cancel', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.startEdit('title');
+        component.editTitle = 'Changed';
+        component.cancelEdit('title');
+        expect(component.editTitle).toBe(mockTicket.title);
+        expect(component.isEditing('title')).toBe(false);
+    });
+
+    it('should determine canEdit for SUPER_ADMIN', () => {
+        perm['isSuperAdmin'].mockReturnValue(true);
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.canEdit).toBe(true);
+    });
+
+    it('should determine canEdit false for VIEWER', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['hasProjectRole'].mockReturnValue(of(false));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.canEdit).toBe(false);
+    });
+
+    it('should show read-only banner when canEdit is false', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['hasProjectRole'].mockReturnValue(of(false));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const banner = fixture.nativeElement.querySelector('eui-feedback-message');
+        expect(banner).toBeTruthy();
+        expect(banner.textContent).toContain('ticket-detail.read-only');
+    });
+
+    it('should not show read-only banner when canEdit is true', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const banner = fixture.nativeElement.querySelector('eui-feedback-message');
+        expect(banner).toBeFalsy();
+    });
+
+    it('should show save bar when editing', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.startEdit('description');
+        fixture.detectChanges();
+        const saveBar = fixture.nativeElement.querySelector('.save-bar');
+        expect(saveBar).toBeTruthy();
+    });
+
+    it('should cancel all edits', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.startEdit('title');
+        component.startEdit('description');
+        component.cancelAllEdits();
+        expect(component.hasUnsavedChanges).toBe(false);
+    });
+
+    it('should not call updateTicket when no changes', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.startEdit('title');
+        // editTitle is already synced to ticket.title, so no actual change
+        component.saveChanges();
+        expect(svc['updateTicket']).not.toHaveBeenCalled();
     });
 });

@@ -1,5 +1,8 @@
 .ticket-title {
     margin-top: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .detail-list {
@@ -13,6 +16,9 @@
         font-weight: 600;
         margin-bottom: var(--eui-size-2xs, 0.25rem);
         color: var(--eui-c-text-secondary, #6c757d);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
     }
 
     dd {
@@ -23,4 +29,29 @@
 .description-text {
     white-space: pre-wrap;
     max-width: 60ch;
+}
+
+.field-row {
+    display: flex;
+    align-items: flex-start;
+}
+
+.edit-field {
+    flex: 1;
+    max-width: 40rem;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.inline-edit-select {
+    display: inline-flex;
+    align-items: center;
+}
+
+.save-bar {
+    padding-top: var(--eui-size-m, 1rem);
+    border-top: 1px solid var(--eui-c-border, #dee2e6);
 }

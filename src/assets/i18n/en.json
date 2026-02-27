@@ -266,5 +266,12 @@
   "ticket-detail.no-description": "No description provided.",
   "ticket-detail.not-found": "Ticket not found.",
   "ticket-detail.load-error": "Failed to load ticket.",
-  "ticket-detail.unassigned": "Unassigned"
+  "ticket-detail.unassigned": "Unassigned",
+  "ticket-detail.edit": "Edit",
+  "ticket-detail.save": "Save changes",
+  "ticket-detail.cancel": "Cancel",
+  "ticket-detail.growl.updated-summary": "Ticket updated",
+  "ticket-detail.growl.updated-detail": "Changes saved successfully.",
+  "ticket-detail.growl.update-failed": "Failed to save changes.",
+  "ticket-detail.read-only": "You have read-only access to this ticket."
 }

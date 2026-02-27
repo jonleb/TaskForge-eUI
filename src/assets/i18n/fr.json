@@ -266,5 +266,12 @@
   "ticket-detail.no-description": "Aucune description fournie.",
   "ticket-detail.not-found": "Ticket introuvable.",
   "ticket-detail.load-error": "Impossible de charger le ticket.",
-  "ticket-detail.unassigned": "Non assigné"
+  "ticket-detail.unassigned": "Non assigné",
+  "ticket-detail.edit": "Modifier",
+  "ticket-detail.save": "Enregistrer les modifications",
+  "ticket-detail.cancel": "Annuler",
+  "ticket-detail.growl.updated-summary": "Ticket mis à jour",
+  "ticket-detail.growl.updated-detail": "Modifications enregistrées.",
+  "ticket-detail.growl.update-failed": "Échec de la sauvegarde.",
+  "ticket-detail.read-only": "Vous avez un accès en lecture seule à ce ticket."
 }
