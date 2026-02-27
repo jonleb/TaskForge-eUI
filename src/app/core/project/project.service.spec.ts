@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { ProjectService } from './project.service';
-import { Project, ProjectMember, ProjectListResponse, UserInfo, MemberCandidate } from './project.models';
+import { Project, ProjectMember, ProjectListResponse, UserInfo, MemberCandidate, Workflow, BacklogItem } from './project.models';
 
 const mockProject: Project = {
     id: '1',
@@ -346,6 +346,67 @@ describe('ProjectService', () => {
 
             const req = httpMock.expectOne(r => r.url === '/api/projects/1/members/candidates');
             req.flush([]);
+        });
+    });
+
+    describe('getWorkflows()', () => {
+        const mockWorkflow: Workflow = {
+            id: '1',
+            projectId: '1',
+            ticketType: 'STORY',
+            statuses: ['TO_DO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE'],
+            transitions: {
+                TO_DO: ['IN_PROGRESS'],
+                IN_PROGRESS: ['IN_REVIEW', 'TO_DO'],
+                IN_REVIEW: ['DONE', 'IN_PROGRESS'],
+                DONE: [],
+            },
+            created_at: '2025-01-20T09:00:00.000Z',
+        };
+
+        it('should GET /api/projects/:id/workflows and return Workflow[]', () => {
+            service.getWorkflows('1').subscribe(workflows => {
+                expect(workflows).toEqual([mockWorkflow]);
+                expect(workflows[0].ticketType).toBe('STORY');
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/workflows');
+            expect(req.request.method).toBe('GET');
+            req.flush([mockWorkflow]);
+        });
+    });
+
+    describe('getBacklog()', () => {
+        const mockBacklogItem: BacklogItem = {
+            id: '1',
+            projectId: '1',
+            type: 'EPIC',
+            title: 'Maintenance',
+            description: 'Default epic for maintenance and operational tasks',
+            status: 'TO_DO',
+            created_by: 'system',
+            created_at: '2025-01-20T09:00:00.000Z',
+        };
+
+        it('should GET /api/projects/:id/backlog and return BacklogItem[]', () => {
+            service.getBacklog('1').subscribe(items => {
+                expect(items).toEqual([mockBacklogItem]);
+                expect(items[0].type).toBe('EPIC');
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/backlog');
+            expect(req.request.method).toBe('GET');
+            req.flush([mockBacklogItem]);
+        });
+
+        it('should append ?type=EPIC when type filter is provided', () => {
+            service.getBacklog('1', 'EPIC').subscribe(items => {
+                expect(items).toEqual([mockBacklogItem]);
+            });
+
+            const req = httpMock.expectOne(r => r.url === '/api/projects/1/backlog');
+            expect(req.request.params.get('type')).toBe('EPIC');
+            req.flush([mockBacklogItem]);
         });
     });
 });

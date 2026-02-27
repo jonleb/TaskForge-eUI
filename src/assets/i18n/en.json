@@ -2,11 +2,9 @@
   "app.name": "TaskForge",
   "app.environment": "MOCK",
   "app.search.button": "Search",
-
   "eui.my-profile-informations": "My profile information",
   "eui.you-are-logged-in-as": "You are logged in as",
   "eui.sign-out": "Sign out",
-
   "common.active": "Active",
   "common.inactive": "Inactive",
   "common.all": "All",
@@ -21,7 +19,6 @@
   "common.unknown": "Unknown",
   "common.coming-soon": "Coming soon.",
   "common.showing-of": "Showing {{count}} of {{total}}",
-
   "common.field.username": "Username",
   "common.field.first-name": "First Name",
   "common.field.last-name": "Last Name",
@@ -33,11 +30,9 @@
   "common.field.description": "Description",
   "common.field.key": "Key",
   "common.field.password": "Password",
-
   "common.validation.required": "{{field}} is required",
   "common.validation.email-invalid": "Enter a valid email address",
   "common.validation.min-length": "{{field}} must be at least {{min}} characters",
-
   "nav.home": "Home",
   "nav.projects": "Projects",
   "nav.users": "Users",
@@ -47,15 +42,12 @@
   "nav.backlog": "Backlog",
   "nav.board": "Board",
   "nav.settings": "Settings",
-
   "login.title": "TaskForge",
   "login.sign-in": "Sign in",
   "login.signing-in": "Signing in...",
   "login.error.unexpected": "An unexpected error occurred",
-
   "page.home.title": "Welcome to TaskForge",
   "page.home.overview": "Overview",
-
   "users.page-title": "User Administration",
   "users.create-btn": "Create User",
   "users.search-placeholder": "Search users...",
@@ -67,26 +59,21 @@
   "users.no-inactive": "No inactive users found.",
   "users.no-users": "No users found.",
   "users.load-error": "An error occurred while loading users.",
-
   "users.action.reset-password": "Reset password for {{username}}",
   "users.action.deactivate": "Deactivate {{username}}",
   "users.action.reactivate": "Reactivate {{username}}",
-
   "users.dialog.create-title": "Create User",
   "users.dialog.create-accept": "Create",
   "users.dialog.select-role": "Select a role",
-
   "users.dialog.temp-password-title-created": "User Created Successfully",
   "users.dialog.temp-password-title-reset": "Password Reset Successfully",
   "users.dialog.temp-password-warning": "This password will not be shown again. Please copy it now.",
   "users.dialog.temp-password-label": "Temporary Password",
   "users.dialog.copy-btn": "Copy to Clipboard",
-
   "users.dialog.reset-title": "Reset Password",
   "users.dialog.reset-accept": "Reset Password",
   "users.dialog.reset-confirm": "Are you sure you want to reset the password for <strong>{{username}}</strong>?",
   "users.dialog.reset-info": "A new temporary password will be generated.",
-
   "users.dialog.deactivate-title": "Deactivate User",
   "users.dialog.reactivate-title": "Reactivate User",
   "users.dialog.deactivate-accept": "Deactivate",
@@ -94,7 +81,6 @@
   "users.dialog.deactivate-confirm": "Are you sure you want to deactivate <strong>{{username}}</strong>?",
   "users.dialog.deactivate-info": "They will no longer be able to log in.",
   "users.dialog.reactivate-confirm": "Are you sure you want to reactivate <strong>{{username}}</strong>?",
-
   "users.growl.created-summary": "User created",
   "users.growl.created-detail": "Account for {{username}} has been created.",
   "users.growl.copied-summary": "Copied",
@@ -111,7 +97,6 @@
   "users.growl.deactivate-failed-detail": "Could not deactivate user. Please try again.",
   "users.growl.reactivate-failed-detail": "Could not reactivate user. Please try again.",
   "users.error.create-default": "An error occurred while creating the user",
-
   "projects.page-title": "Projects",
   "projects.create-btn": "Create Project",
   "projects.search-placeholder": "Search projects...",
@@ -125,7 +110,6 @@
   "projects.load-error": "Could not load projects. Please try again.",
   "projects.action.edit": "Edit {{name}}",
   "projects.action.open": "Open {{name}}",
-
   "projects.dialog.create-title": "Create Project",
   "projects.dialog.create-accept": "Create",
   "projects.dialog.edit-title": "Edit Project",
@@ -134,7 +118,6 @@
   "projects.dialog.name-min-length": "Name must be at least 2 characters",
   "projects.dialog.key-hint": "Leave empty to auto-generate from name. 2–10 uppercase alphanumeric characters.",
   "projects.dialog.key-format-error": "Key must be 2–10 uppercase alphanumeric characters",
-
   "projects.growl.created-summary": "Project created",
   "projects.growl.created-detail": "{{name}} ({{key}}) has been created.",
   "projects.growl.updated-summary": "Project updated",
@@ -147,7 +130,6 @@
   "projects.growl.update-failed-detail": "Could not update project. Please try again.",
   "projects.error.duplicate-name-key": "A project with this name or key already exists",
   "projects.error.duplicate-name": "A project with this name already exists",
-
   "dashboard.project-details-label": "Project details",
   "dashboard.created-by": "Created by",
   "dashboard.created": "Created",
@@ -156,7 +138,6 @@
   "dashboard.recent-activity": "Recent Activity",
   "dashboard.open-tickets": "Open Tickets",
   "dashboard.sprint-progress": "Sprint Progress",
-
   "members.page-title": "Members",
   "members.add-btn": "Add Member",
   "members.table-label": "Project members",
@@ -164,7 +145,6 @@
   "members.load-error": "Unable to load members.",
   "members.action.change-role": "Change role of {{name}}",
   "members.action.remove": "Remove {{name}}",
-
   "members.dialog.add-title": "Add Member",
   "members.dialog.add-accept": "Add",
   "members.dialog.search-label": "Search user",
@@ -172,17 +152,14 @@
   "members.dialog.candidates-label": "Candidate results",
   "members.dialog.selected": "Selected: {{name}} ({{email}})",
   "members.dialog.role-label": "Role",
-
   "members.dialog.remove-title": "Remove Member",
   "members.dialog.remove-accept": "Remove",
   "members.dialog.remove-confirm": "Are you sure you want to remove {{name}} from this project?",
   "members.dialog.remove-info": "This will revoke their access immediately.",
-
   "members.dialog.change-role-title": "Change Role",
   "members.dialog.change-role-accept": "Save",
   "members.dialog.change-role-label": "Change role for {{name}}:",
   "members.dialog.new-role-label": "New role",
-
   "members.growl.added-summary": "Member added",
   "members.growl.added-detail": "{{name}} has been added as {{role}}.",
   "members.growl.role-updated-summary": "Role updated",
@@ -196,14 +173,20 @@
   "members.error.add-default": "Could not add member. Please try again.",
   "members.error.super-admin-modify": "Cannot modify membership of a super administrator.",
   "members.error.super-admin-remove": "Cannot remove a super administrator.",
-
   "shell.error.no-access": "You do not have access to this project.",
   "shell.error.not-found": "Project not found.",
   "shell.growl.nav-error-summary": "Navigation error",
-
   "auth.access-denied-summary": "Access denied",
   "auth.access-denied-detail": "You do not have permission to access this page.",
   "auth.access-denied-action": "You do not have permission to perform this action.",
   "auth.session-expired-summary": "Session expired",
-  "auth.session-expired-detail": "Your session has expired. Please sign in again."
+  "auth.session-expired-detail": "Your session has expired. Please sign in again.",
+  "workflow.ticket-type.STORY": "Story",
+  "workflow.ticket-type.BUG": "Bug",
+  "workflow.ticket-type.TASK": "Task",
+  "workflow.ticket-type.EPIC": "Epic",
+  "workflow.status.TO_DO": "To Do",
+  "workflow.status.IN_PROGRESS": "In Progress",
+  "workflow.status.IN_REVIEW": "In Review",
+  "workflow.status.DONE": "Done"
 }

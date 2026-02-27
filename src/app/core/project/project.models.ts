@@ -75,3 +75,29 @@ export const PROJECT_ROLES = [
 ] as const;
 
 export type ProjectRole = typeof PROJECT_ROLES[number];
+
+export type TicketType = 'STORY' | 'BUG' | 'TASK' | 'EPIC';
+export type WorkflowStatus = 'TO_DO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE';
+
+export interface Workflow {
+    id: string;
+    projectId: string;
+    ticketType: TicketType;
+    statuses: WorkflowStatus[];
+    transitions: Record<WorkflowStatus, WorkflowStatus[]>;
+    created_at: string;
+}
+
+export interface BacklogItem {
+    id: string;
+    projectId: string;
+    type: TicketType;
+    title: string;
+    description: string;
+    status: WorkflowStatus;
+    created_by: string;
+    created_at: string;
+}
+
+export const TICKET_TYPES: TicketType[] = ['STORY', 'BUG', 'TASK', 'EPIC'];
+export const WORKFLOW_STATUSES: WorkflowStatus[] = ['TO_DO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE'];
