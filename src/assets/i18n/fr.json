@@ -256,5 +256,15 @@
   "backlog.clear-all": "Tout effacer",
   "backlog.selected-filters": "Filtres sélectionnés",
   "backlog.no-items-hint": "Créez votre premier ticket pour commencer.",
-  "backlog.retry": "Réessayer"
+  "backlog.retry": "Réessayer",
+  "ticket-detail.back": "Retour au backlog",
+  "ticket-detail.field.description": "Description",
+  "ticket-detail.field.assignee": "Assigné",
+  "ticket-detail.field.epic": "Epic",
+  "ticket-detail.field.created-by": "Créé par",
+  "ticket-detail.field.created-at": "Créé le",
+  "ticket-detail.no-description": "Aucune description fournie.",
+  "ticket-detail.not-found": "Ticket introuvable.",
+  "ticket-detail.load-error": "Impossible de charger le ticket.",
+  "ticket-detail.unassigned": "Non assigné"
 }

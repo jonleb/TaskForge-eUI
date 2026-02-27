@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
@@ -43,7 +44,7 @@ interface FilterChip {
         ...EUI_FEEDBACK_MESSAGE, ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT,
         ...EUI_TEXTAREA, EuiDialogComponent, EuiPaginatorComponent,
         ...EUI_CONTENT_CARD, ...EUI_CARD, ...EUI_INPUT_CHECKBOX,
-        ...EUI_PROGRESS_BAR, FormsModule, TranslateModule,
+        ...EUI_PROGRESS_BAR, FormsModule, TranslateModule, RouterLink,
     ],
 })
 export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {

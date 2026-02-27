@@ -1,0 +1,26 @@
+.ticket-title {
+    margin-top: 0;
+}
+
+.detail-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--eui-size-m, 1rem);
+}
+
+.detail-item {
+    dt {
+        font-weight: 600;
+        margin-bottom: var(--eui-size-2xs, 0.25rem);
+        color: var(--eui-c-text-secondary, #6c757d);
+    }
+
+    dd {
+        margin-left: 0;
+    }
+}
+
+.description-text {
+    white-space: pre-wrap;
+    max-width: 60ch;
+}

@@ -174,6 +174,9 @@
                                 } @else {
                                     <!-- Card list -->
                                     @for (item of items; track item.id) {
+                                        <a [routerLink]="['backlog', item.ticket_number]"
+                                           class="card-link"
+                                           [attr.aria-label]="projectKey + '-' + item.ticket_number + ' ' + item.title">
                                         <eui-content-card class="eui-u-mb-s">
                                             <eui-content-card-header>
                                                 <eui-content-card-header-start>
@@ -218,6 +221,7 @@
                                                 </eui-content-card-body>
                                             }
                                         </eui-content-card>
+                                        </a>
                                     }
                                 }
 

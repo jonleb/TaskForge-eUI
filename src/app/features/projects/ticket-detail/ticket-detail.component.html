@@ -1,0 +1,78 @@
+<eui-page>
+    <eui-page-header [label]="ticketKey">
+        <eui-page-header-action-items>
+            <eui-icon-button icon="arrow-left:regular"
+                             [ariaLabel]="'ticket-detail.back' | translate"
+                             (buttonClick)="goBack()">
+            </eui-icon-button>
+        </eui-page-header-action-items>
+    </eui-page-header>
+    <eui-page-content>
+        @if (isLoading) {
+            <eui-progress-bar [isIndeterminate]="true"
+                              [label]="'common.loading' | translate">
+            </eui-progress-bar>
+        } @else if (notFound) {
+            <p class="eui-u-f-l eui-u-pv-xl eui-u-text-center">
+                {{ 'ticket-detail.not-found' | translate }}
+            </p>
+        } @else if (hasError) {
+            <p class="eui-u-f-l eui-u-pv-xl eui-u-text-center">
+                {{ 'ticket-detail.load-error' | translate }}
+            </p>
+        } @else if (ticket) {
+            <h2 class="ticket-title eui-u-f-xl eui-u-mb-m">{{ ticket.title }}</h2>
+
+            <div class="ticket-chips eui-u-d-flex eui-u-gap-s eui-u-mb-l">
+                <eui-chip euiSizeS [ariaLabel]="'workflow.ticket-type.' + ticket.type | translate">
+                    {{ 'workflow.ticket-type.' + ticket.type | translate }}
+                </eui-chip>
+                <eui-chip euiSizeS [ariaLabel]="'workflow.status.' + ticket.status | translate">
+                    {{ 'workflow.status.' + ticket.status | translate }}
+                </eui-chip>
+                @if (ticket.priority) {
+                    <eui-chip euiSizeS
+                              [class.eui-chip--danger]="ticket.priority === 'CRITICAL'"
+                              [class.eui-chip--warning]="ticket.priority === 'HIGH'"
+                              [class.eui-chip--info]="ticket.priority === 'MEDIUM'"
+                              [ariaLabel]="'ticket.priority.' + ticket.priority | translate">
+                        {{ 'ticket.priority.' + ticket.priority | translate }}
+                    </eui-chip>
+                }
+            </div>
+
+            <section class="ticket-fields" aria-label="Ticket details">
+                <dl class="detail-list">
+                    <div class="detail-item">
+                        <dt>{{ 'ticket-detail.field.description' | translate }}</dt>
+                        <dd class="description-text">
+                            @if (ticket.description) {
+                                {{ ticket.description }}
+                            } @else {
+                                <em>{{ 'ticket-detail.no-description' | translate }}</em>
+                            }
+                        </dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>{{ 'ticket-detail.field.assignee' | translate }}</dt>
+                        <dd>{{ getAssigneeName() }}</dd>
+                    </div>
+                    @if (getEpicName()) {
+                        <div class="detail-item">
+                            <dt>{{ 'ticket-detail.field.epic' | translate }}</dt>
+                            <dd>{{ getEpicName() }}</dd>
+                        </div>
+                    }
+                    <div class="detail-item">
+                        <dt>{{ 'ticket-detail.field.created-by' | translate }}</dt>
+                        <dd>{{ getCreatorName() }}</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>{{ 'ticket-detail.field.created-at' | translate }}</dt>
+                        <dd>{{ ticket.created_at | date:'mediumDate' }}</dd>
+                    </div>
+                </dl>
+            </section>
+        }
+    </eui-page-content>
+</eui-page>
