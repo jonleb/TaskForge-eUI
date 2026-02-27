@@ -13,10 +13,14 @@ module.exports = function (app, db) {
     });
 
     app.get('/api/users/:userId', authMiddleware, (req, res) => {
-      res.send(
-        db.get('users')
-          .find({ userId: req.params.userId })
-      );
+      const user = db.get('users')
+          .find({ id: req.params.userId })
+          .value();
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      const { password, ...safeUser } = user;
+      res.send(safeUser);
     });
 
     app.put('/api/users/:userId', authMiddleware, (req, res) => {
