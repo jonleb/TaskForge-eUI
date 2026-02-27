@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EuiGrowlService } from '@eui/core';
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { GlobalRole, ProjectRole, UserProfile } from './auth.models';
@@ -14,6 +15,7 @@ interface ProjectMemberResponse {
 export class PermissionService {
     private readonly http = inject(HttpClient);
     private readonly growlService = inject(EuiGrowlService);
+    private readonly translate = inject(TranslateService);
 
     private globalRole: GlobalRole = 'USER';
     private originalRole = '';
@@ -62,8 +64,8 @@ export class PermissionService {
     showAccessDenied(message?: string): void {
         this.growlService.growl({
             severity: 'warning',
-            summary: 'Access denied',
-            detail: message || 'You do not have permission to perform this action.',
+            summary: this.translate.instant('auth.access-denied-summary'),
+            detail: message || this.translate.instant('auth.access-denied-action'),
         });
     }
 

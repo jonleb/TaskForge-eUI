@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import { EuiGrowlService } from '@eui/core';
+import { TranslateTestingModule } from '../../testing/test-providers';
 import { PermissionService } from './permission.service';
 import { UserProfile } from './auth.models';
 
@@ -31,6 +32,7 @@ describe('PermissionService', () => {
         growlServiceMock = { growl: vi.fn() };
 
         TestBed.configureTestingModule({
+            imports: [TranslateTestingModule],
             providers: [
                 provideHttpClient(withInterceptorsFromDi()),
                 provideHttpClientTesting(),
@@ -203,8 +205,8 @@ describe('PermissionService', () => {
 
             expect(growlServiceMock.growl).toHaveBeenCalledWith({
                 severity: 'warning',
-                summary: 'Access denied',
-                detail: 'You do not have permission to perform this action.',
+                summary: 'auth.access-denied-summary',
+                detail: 'auth.access-denied-action',
             });
         });
 
@@ -213,7 +215,7 @@ describe('PermissionService', () => {
 
             expect(growlServiceMock.growl).toHaveBeenCalledWith({
                 severity: 'warning',
-                summary: 'Access denied',
+                summary: 'auth.access-denied-summary',
                 detail: 'Cannot delete this project.',
             });
         });

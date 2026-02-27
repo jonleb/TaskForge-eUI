@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { EuiGrowlService } from '@eui/core';
 import { catchError, throwError } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './auth.service';
 import { PermissionService } from './permission.service';
 
@@ -11,6 +12,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
     const router = inject(Router);
     const growlService = inject(EuiGrowlService);
     const permissionService = inject(PermissionService);
+    const translate = inject(TranslateService);
 
     const isLoginRequest = req.url.includes('/api/auth/login');
 
@@ -36,15 +38,15 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
                 authService.isAuthenticated$.next(false);
                 growlService.growl({
                     severity: 'warning',
-                    summary: 'Session expired',
-                    detail: 'Your session has expired. Please sign in again.',
+                    summary: translate.instant('auth.session-expired-summary'),
+                    detail: translate.instant('auth.session-expired-detail'),
                 });
                 router.navigate(['/login']);
             }
 
             if (error.status === 403) {
                 permissionService.showAccessDenied(
-                    error.error?.message || 'You do not have permission to perform this action.',
+                    error.error?.message || translate.instant('auth.access-denied-action'),
                 );
             }
 

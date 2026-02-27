@@ -8,6 +8,7 @@ import { LoginComponent } from './login.component';
 import { AuthService } from '../../core/auth';
 import { AppStarterService } from '../../app-starter.service';
 import { LoginResponse } from '../../core/auth/auth.models';
+import { TranslateTestingModule } from '../../testing/test-providers';
 
 describe('LoginComponent', () => {
     let component: LoginComponent;
@@ -38,7 +39,7 @@ describe('LoginComponent', () => {
         };
 
         await TestBed.configureTestingModule({
-            imports: [LoginComponent],
+            imports: [LoginComponent, TranslateTestingModule],
             providers: [
                 provideHttpClient(withInterceptorsFromDi()),
                 provideHttpClientTesting(),
@@ -69,7 +70,7 @@ describe('LoginComponent', () => {
         const compiled = fixture.nativeElement as HTMLElement;
         const button = compiled.querySelector('button[type="submit"]');
         expect(button).toBeTruthy();
-        expect(button?.textContent?.trim()).toBe('Sign in');
+        expect(button?.textContent?.trim()).toBe('login.sign-in');
     });
 
     it('should show validation errors when submitting empty form', () => {
@@ -141,7 +142,7 @@ describe('LoginComponent', () => {
         fixture.detectChanges();
 
         const button = fixture.nativeElement.querySelector('button[type="submit"]');
-        expect(button?.textContent?.trim()).toBe('Signing in...');
+        expect(button?.textContent?.trim()).toBe('login.signing-in');
     });
 
     it('should redirect to /screen/home if already authenticated', () => {

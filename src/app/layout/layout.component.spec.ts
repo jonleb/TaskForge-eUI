@@ -2,8 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
-import { provideEuiCoreMocks } from '../testing/test-providers';
+import { TranslateTestingModule, provideEuiCoreMocks } from '../testing/test-providers';
 import { LayoutComponent } from './layout.component';
 import { AuthService, PermissionService } from '../core/auth';
 import { ProjectContextService, Project } from '../core/project';
@@ -34,7 +33,7 @@ describe('LayoutComponent', () => {
         await TestBed.configureTestingModule({
             imports: [
                 LayoutComponent,
-                TranslateModule.forRoot(),
+                TranslateTestingModule,
             ],
             providers: [
                 ...provideEuiCoreMocks(),
@@ -97,25 +96,23 @@ describe('LayoutComponent', () => {
 
     it('should show all items when user has matching role', () => {
         permissionServiceMock.hasGlobalRole.mockReturnValue(true);
-        // Add a role-gated item to test filtering
-        (component as any).allSidebarItems.push({ label: 'Admin', url: 'screen/admin', metadata: { roles: ['SUPER_ADMIN'] } });
 
         component.ngOnInit();
 
         const labels = component.sidebarItems.map(i => i.label);
-        expect(labels).toContain('Admin');
-        expect(labels).toContain('Home');
+        // Users item (role-gated) should be visible when role matches
+        expect(labels).toContain('nav.users');
+        expect(labels).toContain('nav.home');
     });
 
     it('should hide role-gated items when user lacks required role', () => {
         permissionServiceMock.hasGlobalRole.mockReturnValue(false);
-        (component as any).allSidebarItems.push({ label: 'Admin', url: 'screen/admin', metadata: { roles: ['SUPER_ADMIN'] } });
 
         component.ngOnInit();
 
         const labels = component.sidebarItems.map(i => i.label);
-        expect(labels).not.toContain('Admin');
-        expect(labels).toContain('Home');
+        expect(labels).not.toContain('nav.users');
+        expect(labels).toContain('nav.home');
     });
 
     it('should show items without metadata.roles to all users', () => {
@@ -129,13 +126,13 @@ describe('LayoutComponent', () => {
 
     it('should filter sidebar with default role when permissionService returns USER', () => {
         permissionServiceMock.getGlobalRole.mockReturnValue('USER');
-        (component as any).allSidebarItems.push({ label: 'Admin', url: 'screen/admin', metadata: { roles: ['SUPER_ADMIN'] } });
+        permissionServiceMock.hasGlobalRole.mockReturnValue(false);
 
         component.ngOnInit();
 
         const labels = component.sidebarItems.map(i => i.label);
-        expect(labels).not.toContain('Admin');
-        expect(labels).toContain('Home');
+        expect(labels).not.toContain('nav.users');
+        expect(labels).toContain('nav.home');
     });
 
     it('should switch to project-scoped sidebar when a project is set', () => {
@@ -148,12 +145,12 @@ describe('LayoutComponent', () => {
         });
 
         const labels = component.sidebarItems.map(i => i.label);
-        expect(labels).toContain('Dashboard');
-        expect(labels).toContain('Members');
-        expect(labels).toContain('Backlog');
-        expect(labels).toContain('Board');
-        expect(labels).toContain('Settings');
-        expect(labels).toContain('← All Projects');
+        expect(labels).toContain('nav.dashboard');
+        expect(labels).toContain('nav.members');
+        expect(labels).toContain('nav.backlog');
+        expect(labels).toContain('nav.board');
+        expect(labels).toContain('nav.settings');
+        expect(labels).toContain('nav.all-projects');
     });
 
     it('should revert to global sidebar when project is cleared', () => {
@@ -165,13 +162,13 @@ describe('LayoutComponent', () => {
             description: '', created_by: '1',
             created_at: '', updated_at: '', is_active: true,
         });
-        expect(component.sidebarItems.map(i => i.label)).toContain('Dashboard');
+        expect(component.sidebarItems.map(i => i.label)).toContain('nav.dashboard');
 
         projectContextMock.currentProject$.next(null);
         const labels = component.sidebarItems.map(i => i.label);
-        expect(labels).toContain('Home');
-        expect(labels).toContain('Projects');
-        expect(labels).not.toContain('Dashboard');
+        expect(labels).toContain('nav.home');
+        expect(labels).toContain('nav.projects');
+        expect(labels).not.toContain('nav.dashboard');
     });
 
     it('should build correct project-scoped URLs', () => {

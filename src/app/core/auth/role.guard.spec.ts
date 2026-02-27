@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { EuiGrowlService } from '@eui/core';
+import { TranslateTestingModule } from '../../testing/test-providers';
 import { roleGuard } from './role.guard';
 import { PermissionService } from './permission.service';
 
@@ -24,6 +25,7 @@ describe('roleGuard', () => {
         };
 
         TestBed.configureTestingModule({
+            imports: [TranslateTestingModule],
             providers: [
                 { provide: PermissionService, useValue: permissionServiceMock },
                 { provide: EuiGrowlService, useValue: growlServiceMock },
@@ -59,8 +61,8 @@ describe('roleGuard', () => {
 
         expect(growlServiceMock.growl).toHaveBeenCalledWith({
             severity: 'warning',
-            summary: 'Access denied',
-            detail: 'You do not have permission to access this page.',
+            summary: 'auth.access-denied-summary',
+            detail: 'auth.access-denied-detail',
         });
     });
 

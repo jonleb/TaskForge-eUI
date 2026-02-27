@@ -3,10 +3,9 @@ import { Router } from '@angular/router';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-import { TranslateModule } from '@ngx-translate/core';
 import { EuiGrowlService } from '@eui/core';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
-import { provideEuiCoreMocks, createBreadcrumbServiceMock } from '../../../testing/test-providers';
+import { TranslateTestingModule, provideEuiCoreMocks, createBreadcrumbServiceMock } from '../../../testing/test-providers';
 import { PortfolioComponent } from './portfolio.component';
 import { ProjectService, Project, ProjectListResponse } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
@@ -61,7 +60,7 @@ describe('PortfolioComponent', () => {
         await TestBed.configureTestingModule({
             imports: [
                 PortfolioComponent,
-                TranslateModule.forRoot(),
+                TranslateTestingModule,
             ],
             providers: [
                 ...provideEuiCoreMocks(),
@@ -105,8 +104,8 @@ describe('PortfolioComponent', () => {
         fixture.detectChanges();
         expect(growlServiceMock.growl).toHaveBeenCalledWith({
             severity: 'error',
-            summary: 'Load failed',
-            detail: 'Could not load projects. Please try again.',
+            summary: 'projects.growl.load-failed-summary',
+            detail: 'projects.growl.load-failed-detail',
         });
     });
 
@@ -149,7 +148,7 @@ describe('PortfolioComponent', () => {
         fixture.detectChanges();
         const btn = fixture.nativeElement.querySelector('button[aria-haspopup="dialog"]');
         expect(btn).toBeTruthy();
-        expect(btn?.textContent?.trim()).toBe('Create Project');
+        expect(btn?.textContent?.trim()).toBe('projects.create-btn');
     });
 
     // ─── Create form validation ──────────────────────────────────────
@@ -219,8 +218,8 @@ describe('PortfolioComponent', () => {
         component.onCreateProject();
         expect(growlServiceMock.growl).toHaveBeenCalledWith({
             severity: 'success',
-            summary: 'Project created',
-            detail: 'New Project (NEW) has been created.',
+            summary: 'projects.growl.created-summary',
+            detail: 'projects.growl.created-detail',
         });
     });
 
@@ -245,7 +244,7 @@ describe('PortfolioComponent', () => {
         component.onCreateProject();
         expect(growlServiceMock.growl).toHaveBeenCalledWith({
             severity: 'error',
-            summary: 'Creation failed',
+            summary: 'projects.growl.create-failed-summary',
             detail: 'Server error',
         });
     });
@@ -372,19 +371,19 @@ describe('PortfolioComponent', () => {
 
     it('should return error message when hasError is true', () => {
         component.hasError = true;
-        expect(component.emptyStateMessage).toBe('Could not load projects. Please try again.');
+        expect(component.emptyStateMessage).toBe('projects.load-error');
     });
 
     it('should return search message when q param is set', () => {
         component.hasError = false;
         component.params = { ...component.params, q: 'something' };
-        expect(component.emptyStateMessage).toBe('No projects match your search criteria.');
+        expect(component.emptyStateMessage).toBe('projects.no-match');
     });
 
     it('should return default message when no filters', () => {
         component.hasError = false;
         component.params = { _page: 1, _limit: 10, _sort: 'name', _order: 'asc' };
-        expect(component.emptyStateMessage).toBe('No projects available.');
+        expect(component.emptyStateMessage).toBe('projects.no-projects');
     });
 
     // ─── Status filter (STORY-003) ───────────────────────────────────
@@ -394,7 +393,7 @@ describe('PortfolioComponent', () => {
         fixture.detectChanges();
         const toggleGroup = fixture.nativeElement.querySelector('eui-toggle-group');
         expect(toggleGroup).toBeTruthy();
-        expect(toggleGroup.getAttribute('aria-label')).toBe('Filter projects by status');
+        expect(toggleGroup.getAttribute('aria-label')).toBe('projects.filter-status-label');
 
         const items = fixture.nativeElement.querySelectorAll('eui-toggle-group-item');
         expect(items.length).toBe(3);
@@ -461,7 +460,7 @@ describe('PortfolioComponent', () => {
         const chips = fixture.nativeElement.querySelectorAll('eui-chip');
         expect(chips.length).toBeGreaterThan(0);
         const activeChip = chips[0];
-        expect(activeChip.textContent.trim()).toBe('Active');
+        expect(activeChip.textContent.trim()).toBe('common.active');
     });
 
     it('should display "Inactive" chip for inactive projects', () => {
@@ -474,7 +473,7 @@ describe('PortfolioComponent', () => {
         fixture.detectChanges();
         const chips = fixture.nativeElement.querySelectorAll('eui-chip');
         expect(chips.length).toBe(1);
-        expect(chips[0].textContent.trim()).toBe('Inactive');
+        expect(chips[0].textContent.trim()).toBe('common.inactive');
     });
 
     // ─── Empty state messages for status filter (STORY-003) ──────────
@@ -483,14 +482,14 @@ describe('PortfolioComponent', () => {
         component.hasError = false;
         component.params = { _page: 1, _limit: 10, _sort: 'name', _order: 'asc' };
         component.activeStatusFilter = 'active';
-        expect(component.emptyStateMessage).toBe('No active projects found.');
+        expect(component.emptyStateMessage).toBe('projects.no-active');
     });
 
     it('should return inactive filter message when activeStatusFilter is "inactive"', () => {
         component.hasError = false;
         component.params = { _page: 1, _limit: 10, _sort: 'name', _order: 'asc' };
         component.activeStatusFilter = 'inactive';
-        expect(component.emptyStateMessage).toBe('No inactive projects found.');
+        expect(component.emptyStateMessage).toBe('projects.no-inactive');
     });
 
     // ─── Edit dialog (STORY-004) ─────────────────────────────────────
@@ -543,8 +542,8 @@ describe('PortfolioComponent', () => {
         });
         expect(growlServiceMock.growl).toHaveBeenCalledWith({
             severity: 'success',
-            summary: 'Project updated',
-            detail: 'Updated Name has been updated.',
+            summary: 'projects.growl.updated-summary',
+            detail: 'projects.growl.updated-detail',
         });
         expect(projectServiceMock.getProjects).toHaveBeenCalled();
         expect(component.selectedProject).toBeNull();
@@ -577,7 +576,7 @@ describe('PortfolioComponent', () => {
 
         expect(growlServiceMock.growl).toHaveBeenCalledWith({
             severity: 'error',
-            summary: 'Update failed',
+            summary: 'projects.growl.update-failed-summary',
             detail: 'Server error',
         });
     });

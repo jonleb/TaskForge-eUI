@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
-import { provideEuiCoreMocks, createBreadcrumbServiceMock } from '../../../testing/test-providers';
+import { TranslateTestingModule, provideEuiCoreMocks, createBreadcrumbServiceMock } from '../../../testing/test-providers';
 import { DashboardComponent } from './dashboard.component';
 import { ProjectContextService, ProjectService, Project, UserInfo } from '../../../core/project';
 
@@ -34,7 +33,7 @@ describe('DashboardComponent', () => {
         breadcrumbMock = createBreadcrumbServiceMock();
 
         await TestBed.configureTestingModule({
-            imports: [DashboardComponent, TranslateModule.forRoot()],
+            imports: [DashboardComponent, TranslateTestingModule],
             providers: [
                 ...provideEuiCoreMocks(),
                 { provide: ProjectContextService, useValue: { currentProject$ } },
@@ -79,7 +78,7 @@ describe('DashboardComponent', () => {
         fixture.detectChanges();
         const chip = fixture.nativeElement.querySelector('eui-chip');
         expect(chip).toBeTruthy();
-        expect(chip.textContent).toContain('Active');
+        expect(chip.textContent).toContain('common.active');
     });
 
     it('should show Inactive chip when project is inactive', () => {
@@ -87,7 +86,7 @@ describe('DashboardComponent', () => {
         fixture.detectChanges();
         const chip = fixture.nativeElement.querySelector('eui-chip');
         expect(chip).toBeTruthy();
-        expect(chip.textContent).toContain('Inactive');
+        expect(chip.textContent).toContain('common.inactive');
     });
 
     it('should display creator name after loading', () => {
@@ -107,7 +106,7 @@ describe('DashboardComponent', () => {
         projectServiceMock['getUser'] = vi.fn().mockReturnValue(throwError(() => new Error('Not found')));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        expect(component.creatorName).toBe('Unknown');
+        expect(component.creatorName).toBe('common.unknown');
     });
 
     it('should display last updated date', () => {
@@ -128,7 +127,7 @@ describe('DashboardComponent', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         expect(breadcrumbMock.setBreadcrumb).toHaveBeenCalledWith([
-            { id: 'projects', label: 'Projects', link: '/screen/projects' },
+            { id: 'projects', label: 'nav.projects', link: '/screen/projects' },
             { id: 'project', label: 'TaskForge Core', link: null },
         ]);
     });

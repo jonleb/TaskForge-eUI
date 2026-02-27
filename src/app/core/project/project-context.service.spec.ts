@@ -5,6 +5,7 @@ import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import { ProjectContextService } from './project-context.service';
 import { ProjectService } from './project.service';
 import { Project } from './project.models';
+import { TranslateTestingModule } from '../../testing/test-providers';
 
 const mockProject: Project = {
     id: '1',
@@ -25,6 +26,7 @@ describe('ProjectContextService', () => {
         sessionStorage.clear();
 
         TestBed.configureTestingModule({
+            imports: [TranslateTestingModule],
             providers: [
                 provideHttpClient(withInterceptorsFromDi()),
                 provideHttpClientTesting(),

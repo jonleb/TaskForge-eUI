@@ -8,6 +8,7 @@ import { authInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
 import { PermissionService } from './permission.service';
 import { EuiGrowlService } from '@eui/core';
+import { TranslateTestingModule } from '../../testing/test-providers';
 
 describe('authInterceptor', () => {
     let httpMock: HttpTestingController;
@@ -28,6 +29,7 @@ describe('authInterceptor', () => {
         permissionServiceMock = { showAccessDenied: vi.fn() };
 
         TestBed.configureTestingModule({
+            imports: [TranslateTestingModule],
             providers: [
                 provideHttpClient(withInterceptors([authInterceptor])),
                 provideHttpClientTesting(),
@@ -165,7 +167,7 @@ describe('authInterceptor', () => {
         expect(growlServiceMock.growl).toHaveBeenCalledWith(
             expect.objectContaining({
                 severity: 'warning',
-                summary: 'Session expired',
+                summary: 'auth.session-expired-summary',
             }),
         );
     });
@@ -195,7 +197,7 @@ describe('authInterceptor', () => {
             );
 
             expect(permissionServiceMock.showAccessDenied).toHaveBeenCalledWith(
-                'You do not have permission to perform this action.',
+                'auth.access-denied-action',
             );
         });
 

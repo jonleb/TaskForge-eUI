@@ -4,6 +4,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { AuthService } from './auth.service';
 import { LoginResponse } from './auth.models';
+import { TranslateTestingModule } from '../../testing/test-providers';
 
 describe('AuthService', () => {
     let service: AuthService;
@@ -24,6 +25,7 @@ describe('AuthService', () => {
         localStorage.clear();
 
         TestBed.configureTestingModule({
+            imports: [TranslateTestingModule],
             providers: [
                 provideHttpClient(withInterceptorsFromDi()),
                 provideHttpClientTesting(),

@@ -1,4 +1,4 @@
-# eUI Project Steering Rules
+# eUI Frontend Steering Rules
 
 ## Component Selection: eUI-First Policy
 
@@ -13,16 +13,7 @@ Before proposing any UI implementation, ALWAYS check the eUI component library f
 
 Before writing specs, tasks, or enabler stories, consult eUI documentation and guidelines via the MCP tools or the skill references in `.kiro/skills/eui-skills/references/`.
 
-## Backend: Use the Mock Server
-
-This project includes a local Express/json-server mock backend in `mock/server.js`.
-
-- For any backend API needs, add or modify endpoints in the `mock/` folder.
-- Start the full dev environment (frontend + mock server) with: `npm start`
-- Start only the mock server with: `npm run start-mock-server`
-- Do NOT set up separate backend services or external API stubs.
-
-## Running Tests
+## Running Frontend Tests
 
 The project uses `@angular/build:unit-test` (vitest under the hood).
 
@@ -30,17 +21,13 @@ The project uses `@angular/build:unit-test` (vitest under the hood).
 - To run a specific test file (single-run): `npm run test:ci -- --include src/path/to/file.spec.ts`
 - Watch mode (interactive dev): `npm run ng test`
 - NEVER use `npm test -- file.spec.ts --run` — this syntax does not work in this project.
-- Mock server tests (Jest): `npm run test:mock`
 - After implementation, run `npm run test:ci` (not `npm run ng test`) to avoid watch-mode hangs.
 - Only run the full suite once — skip individual file test runs to save time.
 
-## Definition of Done
+## Frontend Definition of Done
 
-A story or task is not complete until:
-
-- Frontend changes include unit tests (Jasmine) for new components, services, guards, and interceptors.
-- Mock server changes include integration tests (Jest + supertest) for new or modified endpoints.
-- All existing tests still pass (`npm run test:ci` for frontend, `npm run test:mock` for backend).
+- Frontend changes include unit tests for new components, services, guards, and interceptors.
+- All existing frontend tests still pass: `npm run test:ci`.
 - Build passes: `npx ng build --configuration=development`.
 - Code follows the a11y steering rules (see `a11y.md`).
 

@@ -20,6 +20,7 @@ import { EUI_CHIP } from '@eui/components/eui-chip';
 import { EuiIconButtonComponent } from '@eui/components/eui-icon-button';
 import { EuiGrowlService } from '@eui/core';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProjectService, Project, CreateProjectPayload, UpdateProjectPayload, ProjectListParams } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
@@ -51,6 +52,7 @@ function keyFormatValidator(control: AbstractControl): ValidationErrors | null {
         ...EUI_TOGGLE_GROUP,
         ...EUI_CHIP,
         EuiIconButtonComponent,
+        TranslateModule,
     ],
 })
 export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -61,6 +63,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly growlService = inject(EuiGrowlService);
     private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly fb = inject(FormBuilder);
+    private readonly translate = inject(TranslateService);
     private readonly destroy$ = new Subject<void>();
     private readonly searchSubject = new Subject<string>();
     private paginatorReady = false;
@@ -99,7 +102,7 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit(): void {
         this.isSuperAdmin = this.permissionService.isSuperAdmin();
         this.breadcrumbService.setBreadcrumb([
-            { id: 'projects', label: 'Projects', link: null },
+            { id: 'projects', label: this.translate.instant('nav.projects'), link: null },
         ]);
 
         this.searchSubject.pipe(
@@ -140,8 +143,8 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.hasError = true;
                 this.growlService.growl({
                     severity: 'error',
-                    summary: 'Load failed',
-                    detail: 'Could not load projects. Please try again.',
+                    summary: this.translate.instant('projects.growl.load-failed-summary'),
+                    detail: this.translate.instant('projects.growl.load-failed-detail'),
                 });
                 this.cdr.markForCheck();
             },
@@ -224,19 +227,19 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.resetCreateForm();
                 this.growlService.growl({
                     severity: 'success',
-                    summary: 'Project created',
-                    detail: `${project.name} (${project.key}) has been created.`,
+                    summary: this.translate.instant('projects.growl.created-summary'),
+                    detail: this.translate.instant('projects.growl.created-detail', { name: project.name, key: project.key }),
                 });
                 this.router.navigate(['screen/projects', project.id]);
             },
             error: err => {
                 if (err.status === 409) {
-                    this.createError = err.error?.message || 'A project with this name or key already exists';
+                    this.createError = err.error?.message || this.translate.instant('projects.error.duplicate-name-key');
                 } else {
                     this.growlService.growl({
                         severity: 'error',
-                        summary: 'Creation failed',
-                        detail: err.error?.message || 'Could not create project. Please try again.',
+                        summary: this.translate.instant('projects.growl.create-failed-summary'),
+                        detail: err.error?.message || this.translate.instant('projects.growl.create-failed-detail'),
                     });
                 }
                 this.cdr.markForCheck();
@@ -279,19 +282,19 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.resetEditForm();
                 this.growlService.growl({
                     severity: 'success',
-                    summary: 'Project updated',
-                    detail: `${updated.name} has been updated.`,
+                    summary: this.translate.instant('projects.growl.updated-summary'),
+                    detail: this.translate.instant('projects.growl.updated-detail', { name: updated.name }),
                 });
                 this.loadProjects();
             },
             error: err => {
                 if (err.status === 409) {
-                    this.editError = err.error?.message || 'A project with this name already exists';
+                    this.editError = err.error?.message || this.translate.instant('projects.error.duplicate-name');
                 } else {
                     this.growlService.growl({
                         severity: 'error',
-                        summary: 'Update failed',
-                        detail: err.error?.message || 'Could not update project. Please try again.',
+                        summary: this.translate.instant('projects.growl.update-failed-summary'),
+                        detail: err.error?.message || this.translate.instant('projects.growl.update-failed-detail'),
                     });
                 }
                 this.cdr.markForCheck();
@@ -307,17 +310,17 @@ export class PortfolioComponent implements OnInit, AfterViewInit, OnDestroy {
 
     get emptyStateMessage(): string {
         if (this.hasError) {
-            return 'Could not load projects. Please try again.';
+            return this.translate.instant('projects.load-error');
         }
         if (this.params.q) {
-            return 'No projects match your search criteria.';
+            return this.translate.instant('projects.no-match');
         }
         if (this.activeStatusFilter === 'active') {
-            return 'No active projects found.';
+            return this.translate.instant('projects.no-active');
         }
         if (this.activeStatusFilter === 'inactive') {
-            return 'No inactive projects found.';
+            return this.translate.instant('projects.no-inactive');
         }
-        return 'No projects available.';
+        return this.translate.instant('projects.no-projects');
     }
 }

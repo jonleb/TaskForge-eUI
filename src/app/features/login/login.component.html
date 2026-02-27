@@ -1,6 +1,6 @@
 <main class="login-container">
     <div class="login-form-wrapper">
-        <h1 class="eui-u-text-center eui-u-mb-l">TaskForge</h1>
+        <h1 class="eui-u-text-center eui-u-mb-l">{{ 'login.title' | translate }}</h1>
 
         @if (errorMessage) {
             <div aria-live="polite" class="eui-u-mb-m">
@@ -10,7 +10,7 @@
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             <div euiInputGroup class="eui-u-mb-m">
-                <label euiLabel euiRequired for="login-username">Username</label>
+                <label euiLabel euiRequired for="login-username">{{ 'common.field.username' | translate }}</label>
                 <input euiInputText
                        id="login-username"
                        formControlName="username"
@@ -18,12 +18,12 @@
                        aria-required="true"
                        [attr.aria-describedby]="loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required') ? 'username-error' : null" />
                 @if (loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required')) {
-                    <eui-feedback-message euiDanger id="username-error">Username is required</eui-feedback-message>
+                    <eui-feedback-message euiDanger id="username-error">{{ 'common.validation.required' | translate:{ field: ('common.field.username' | translate) } }}</eui-feedback-message>
                 }
             </div>
 
             <div euiInputGroup class="eui-u-mb-m">
-                <label euiLabel euiRequired for="login-password">Password</label>
+                <label euiLabel euiRequired for="login-password">{{ 'common.field.password' | translate }}</label>
                 <input euiInputText
                        id="login-password"
                        type="password"
@@ -32,7 +32,7 @@
                        aria-required="true"
                        [attr.aria-describedby]="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required') ? 'password-error' : null" />
                 @if (loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')) {
-                    <eui-feedback-message euiDanger id="password-error">Password is required</eui-feedback-message>
+                    <eui-feedback-message euiDanger id="password-error">{{ 'common.validation.required' | translate:{ field: ('common.field.password' | translate) } }}</eui-feedback-message>
                 }
             </div>
 
@@ -42,9 +42,9 @@
                     type="submit"
                     [euiDisabled]="isLoading">
                 @if (isLoading) {
-                    Signing in...
+                    {{ 'login.signing-in' | translate }}
                 } @else {
-                    Sign in
+                    {{ 'login.sign-in' | translate }}
                 }
             </button>
         </form>

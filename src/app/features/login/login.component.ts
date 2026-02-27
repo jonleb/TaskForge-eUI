@@ -8,6 +8,7 @@ import { EUI_LABEL } from '@eui/components/eui-label';
 import { EUI_INPUT_GROUP } from '@eui/components/eui-input-group';
 import { EUI_FEEDBACK_MESSAGE } from '@eui/components/eui-feedback-message';
 
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/auth';
 import { AppStarterService } from '../../app-starter.service';
 
@@ -17,6 +18,7 @@ import { AppStarterService } from '../../app-starter.service';
     styleUrl: './login.component.scss',
     imports: [
         ReactiveFormsModule,
+        TranslateModule,
         ...EUI_BUTTON,
         ...EUI_INPUT_TEXT,
         ...EUI_LABEL,
@@ -29,6 +31,7 @@ export class LoginComponent implements OnInit {
     private readonly appStarter = inject(AppStarterService);
     private readonly router = inject(Router);
     private readonly cdr = inject(ChangeDetectorRef);
+    private readonly translate = inject(TranslateService);
 
     loginForm = new FormGroup({
         username: new FormControl('', [Validators.required]),
@@ -66,7 +69,7 @@ export class LoginComponent implements OnInit {
             },
             error: (err) => {
                 this.isLoading = false;
-                this.errorMessage = err.error?.message || 'An unexpected error occurred';
+                this.errorMessage = err.error?.message || this.translate.instant('login.error.unexpected');
                 this.cdr.detectChanges();
             },
         });

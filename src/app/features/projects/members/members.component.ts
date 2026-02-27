@@ -14,6 +14,7 @@ import { EuiTemplateDirective } from '@eui/components/directives';
 import { EuiIconButtonComponent } from '@eui/components/eui-icon-button';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiGrowlService } from '@eui/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProjectContextService, ProjectService, Project, ProjectMember, MemberCandidate, PROJECT_ROLES } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
@@ -27,6 +28,7 @@ import { PermissionService } from '../../../core/auth';
         ...EUI_SELECT, ...EUI_LABEL, ...EUI_FEEDBACK_MESSAGE, ...EUI_INPUT_TEXT,
         EuiTemplateDirective, EuiIconButtonComponent, EuiDialogComponent,
         FormsModule,
+        TranslateModule,
     ],
 })
 export class MembersComponent implements OnInit, OnDestroy {
@@ -35,6 +37,7 @@ export class MembersComponent implements OnInit, OnDestroy {
     private readonly permissionService = inject(PermissionService);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly growlService = inject(EuiGrowlService);
+    private readonly translate = inject(TranslateService);
     private readonly destroy$ = new Subject<void>();
 
     @ViewChild('changeRoleDialog') changeRoleDialog!: EuiDialogComponent;
@@ -158,14 +161,14 @@ export class MembersComponent implements OnInit, OnDestroy {
                 this.addDialog.closeDialog();
                 this.growlService.growl({
                     severity: 'success',
-                    summary: 'Member added',
-                    detail: `${candidateName} has been added as ${this.selectedAddRole}.`,
+                    summary: this.translate.instant('members.growl.added-summary'),
+                    detail: this.translate.instant('members.growl.added-detail', { name: candidateName, role: this.selectedAddRole }),
                 });
                 this.resetAddForm();
                 this.loadMembers(projectId);
             },
             error: (err) => {
-                this.addError = err.error?.message || 'Could not add member. Please try again.';
+                this.addError = err.error?.message || this.translate.instant('members.error.add-default');
                 this.cdr.markForCheck();
             },
         });
@@ -202,20 +205,20 @@ export class MembersComponent implements OnInit, OnDestroy {
                 this.changeRoleDialog.closeDialog();
                 this.growlService.growl({
                     severity: 'success',
-                    summary: 'Role updated',
-                    detail: `${memberName} is now ${this.newRole}.`,
+                    summary: this.translate.instant('members.growl.role-updated-summary'),
+                    detail: this.translate.instant('members.growl.role-updated-detail', { name: memberName, role: this.newRole }),
                 });
                 this.resetChangeRoleForm();
                 this.loadMembers(projectId);
             },
             error: (err) => {
                 if (err.status === 403) {
-                    this.changeRoleError = err.error?.message || 'Cannot modify membership of a super administrator.';
+                    this.changeRoleError = err.error?.message || this.translate.instant('members.error.super-admin-modify');
                 } else {
                     this.growlService.growl({
                         severity: 'error',
-                        summary: 'Update failed',
-                        detail: err.error?.message || 'Could not update role. Please try again.',
+                        summary: this.translate.instant('members.growl.update-failed-summary'),
+                        detail: err.error?.message || this.translate.instant('members.growl.update-failed-detail'),
                     });
                 }
                 this.cdr.markForCheck();
@@ -249,20 +252,20 @@ export class MembersComponent implements OnInit, OnDestroy {
                 this.removeDialog.closeDialog();
                 this.growlService.growl({
                     severity: 'success',
-                    summary: 'Member removed',
-                    detail: `${memberName} has been removed from the project.`,
+                    summary: this.translate.instant('members.growl.removed-summary'),
+                    detail: this.translate.instant('members.growl.removed-detail', { name: memberName }),
                 });
                 this.resetRemoveForm();
                 this.loadMembers(projectId);
             },
             error: (err) => {
                 if (err.status === 403) {
-                    this.removeError = err.error?.message || 'Cannot remove a super administrator.';
+                    this.removeError = err.error?.message || this.translate.instant('members.error.super-admin-remove');
                 } else {
                     this.growlService.growl({
                         severity: 'error',
-                        summary: 'Removal failed',
-                        detail: err.error?.message || 'Could not remove member. Please try again.',
+                        summary: this.translate.instant('members.growl.remove-failed-summary'),
+                        detail: err.error?.message || this.translate.instant('members.growl.remove-failed-detail'),
                     });
                 }
                 this.cdr.markForCheck();

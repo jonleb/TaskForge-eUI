@@ -13,6 +13,27 @@ import { provideRouter } from '@angular/router';
 import { vi } from 'vitest';
 import { Observable, of } from 'rxjs';
 import { CONFIG_TOKEN, I18nService, I18nState, UserService, EuiAppConfig } from '@eui/core';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+
+/**
+ * TranslateLoader that returns the key itself as the translation value.
+ * This makes tests work with `translate.instant('key')` returning 'key',
+ * and `{{ 'key' | translate }}` rendering 'key'.
+ *
+ * For tests that need to assert on actual English text, use the `instant` spy approach.
+ */
+class PassthroughTranslateLoader implements TranslateLoader {
+    getTranslation(): Observable<Record<string, string>> {
+        // Return empty — TranslateService falls back to returning the key itself
+        return of({});
+    }
+}
+
+/** Pre-configured TranslateModule for tests — keys pass through as-is. */
+export const TranslateTestingModule = TranslateModule.forRoot({
+    loader: { provide: TranslateLoader, useClass: PassthroughTranslateLoader },
+    fallbackLang: 'en',
+});
 
 /** Typed I18nService mock that satisfies the generic getState<K>() overload. */
 export function createI18nServiceMock() {

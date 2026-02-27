@@ -9,7 +9,7 @@ import { AuthService, PermissionService } from './core/auth';
 import { ProjectContextService } from './core/project';
 import { UserProfile } from './core/auth/auth.models';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
-import { createI18nServiceMock, TEST_CONFIG } from './testing/test-providers';
+import { createI18nServiceMock, TEST_CONFIG, TranslateTestingModule } from './testing/test-providers';
 
 // eslint-disable-next-line
 type SpyObj<T> = { [K in keyof T]: T[K] extends (...args: any[]) => any ? ReturnType<typeof vi.fn> : T[K] };
@@ -54,6 +54,7 @@ describe('AppStarterService', () => {
         };
 
         TestBed.configureTestingModule({
+            imports: [TranslateTestingModule],
             providers: [
                 provideHttpClient(withInterceptorsFromDi()),
                 provideHttpClientTesting(),

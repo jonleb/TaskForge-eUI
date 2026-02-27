@@ -2,10 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
-import { TranslateModule } from '@ngx-translate/core';
 import { CONFIG_TOKEN, EuiGrowlService, I18nService } from '@eui/core';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
-import { createI18nServiceMock, createGrowlServiceMock, createBreadcrumbServiceMock, TEST_CONFIG } from '../../../testing/test-providers';
+import { TranslateTestingModule, createI18nServiceMock, createGrowlServiceMock, createBreadcrumbServiceMock, TEST_CONFIG } from '../../../testing/test-providers';
 import { UsersComponent } from './users.component';
 import { AdminUserListResponse } from './admin-user.models';
 
@@ -40,7 +39,7 @@ describe('UsersComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [UsersComponent, TranslateModule.forRoot()],
+            imports: [UsersComponent, TranslateTestingModule],
             providers: [
                 provideHttpClient(withInterceptorsFromDi()),
                 provideHttpClientTesting(),
@@ -82,7 +81,7 @@ describe('UsersComponent', () => {
         initWithData();
         const header = fixture.nativeElement.querySelector('eui-page-header');
         expect(header).toBeTruthy();
-        expect(header.getAttribute('label')).toBe('User Administration');
+        expect(header.textContent).toContain('users.page-title');
     });
 
     it('should render eui-table-filter', () => {
@@ -115,14 +114,14 @@ describe('UsersComponent', () => {
     it('should display "No users found" when data is empty', () => {
         initWithData(emptyResponse);
         const noData = fixture.nativeElement.querySelector('table');
-        expect(noData.textContent).toContain('No users found');
+        expect(noData.textContent).toContain('users.no-users');
     });
 
     it('should show result count with aria-live="polite"', () => {
         initWithData();
         const liveRegion = fixture.nativeElement.querySelector('[aria-live="polite"]');
         expect(liveRegion).toBeTruthy();
-        expect(liveRegion.textContent).toContain('Showing 2 of 2 users');
+        expect(liveRegion.textContent).toContain('users.showing-of');
     });
 
     // ─── Search ──────────────────────────────────────────────────────────
@@ -221,7 +220,7 @@ describe('UsersComponent', () => {
         initWithData();
         const table = fixture.nativeElement.querySelector('table');
         expect(table).toBeTruthy();
-        expect(table.getAttribute('aria-label')).toBe('List of platform users');
+        expect(table.getAttribute('aria-label')).toBe('users.table-label');
     });
 
     it('should have scope="col" on all th elements', () => {
@@ -242,11 +241,11 @@ describe('UsersComponent', () => {
 
     it('should display status as chips with "Active"/"Inactive" text', () => {
         initWithData();
-        const statusCells = fixture.nativeElement.querySelectorAll('td[data-col-label="Status"]');
+        const statusCells = fixture.nativeElement.querySelectorAll('td[data-col-label="common.field.status"]');
         expect(statusCells[0].querySelector('eui-chip')).toBeTruthy();
-        expect(statusCells[0].textContent).toContain('Active');
+        expect(statusCells[0].textContent).toContain('common.active');
         expect(statusCells[1].querySelector('eui-chip')).toBeTruthy();
-        expect(statusCells[1].textContent).toContain('Inactive');
+        expect(statusCells[1].textContent).toContain('common.inactive');
     });
 
     it('should have aria-label on action buttons', () => {
@@ -264,7 +263,7 @@ describe('UsersComponent', () => {
         initWithData();
         const buttons = fixture.nativeElement.querySelectorAll('button[euibutton]');
         const createBtn = Array.from(buttons).find(
-            (b: any) => b.textContent.trim().includes('Create User')
+            (b: any) => b.textContent.trim().includes('users.create-btn')
         ) as HTMLElement;
         expect(createBtn).toBeTruthy();
         expect(createBtn.getAttribute('aria-haspopup')).toBe('dialog');
@@ -447,7 +446,7 @@ describe('UsersComponent', () => {
 
         expect(writeTextMock).toHaveBeenCalledWith('TestPass123');
         expect(growlServiceMock.growl).toHaveBeenCalledWith(
-            expect.objectContaining({ severity: 'success', summary: 'Copied' })
+            expect.objectContaining({ severity: 'success', summary: 'users.growl.copied-summary' })
         );
     });
 
@@ -477,7 +476,7 @@ describe('UsersComponent', () => {
         req.flush({ temporaryPassword: 'NewPass789' });
 
         expect(component.temporaryPassword).toBe('NewPass789');
-        expect(component.tempPasswordTitle).toBe('Password Reset Successfully');
+        expect(component.tempPasswordTitle).toBe('users.dialog.temp-password-title-reset');
         expect(component.tempPasswordDialog.openDialog).toHaveBeenCalled();
     });
 
@@ -497,7 +496,7 @@ describe('UsersComponent', () => {
         );
 
         expect(growlServiceMock.growl).toHaveBeenCalledWith(
-            expect.objectContaining({ severity: 'error', summary: 'Reset failed' })
+            expect.objectContaining({ severity: 'error', summary: 'users.growl.reset-failed-summary' })
         );
         expect(component.tempPasswordDialog.openDialog).not.toHaveBeenCalled();
     });
@@ -535,7 +534,7 @@ describe('UsersComponent', () => {
         const listReq = httpMock.expectOne(r => r.url === '/api/admin/users' && r.method === 'GET');
         listReq.flush(mockListResponse);
 
-        expect(component.tempPasswordTitle).toBe('User Created Successfully');
+        expect(component.tempPasswordTitle).toBe('users.dialog.temp-password-title-created');
     });
 
     // ─── Deactivate / Reactivate ─────────────────────────────────────────
@@ -549,8 +548,8 @@ describe('UsersComponent', () => {
 
         expect(component.selectedUser).toBe(user);
         expect(component.toggleDialogIsDeactivate).toBe(true);
-        expect(component.toggleDialogTitle).toBe('Deactivate User');
-        expect(component.toggleDialogAcceptLabel).toBe('Deactivate');
+        expect(component.toggleDialogTitle).toBe('users.dialog.deactivate-title');
+        expect(component.toggleDialogAcceptLabel).toBe('users.dialog.deactivate-accept');
         expect(component.toggleStatusDialog.openDialog).toHaveBeenCalled();
     });
 
@@ -562,8 +561,8 @@ describe('UsersComponent', () => {
         component.onToggleStatus(user);
 
         expect(component.toggleDialogIsDeactivate).toBe(false);
-        expect(component.toggleDialogTitle).toBe('Reactivate User');
-        expect(component.toggleDialogAcceptLabel).toBe('Reactivate');
+        expect(component.toggleDialogTitle).toBe('users.dialog.reactivate-title');
+        expect(component.toggleDialogAcceptLabel).toBe('users.dialog.reactivate-accept');
     });
 
     it('should call deactivateUser API when confirming for an active user', () => {
@@ -583,7 +582,7 @@ describe('UsersComponent', () => {
         listReq.flush(mockListResponse);
 
         expect(growlServiceMock.growl).toHaveBeenCalledWith(
-            expect.objectContaining({ severity: 'success', summary: 'User deactivated' })
+            expect.objectContaining({ severity: 'success', summary: 'users.growl.deactivated-summary' })
         );
     });
 
@@ -603,7 +602,7 @@ describe('UsersComponent', () => {
         listReq.flush(mockListResponse);
 
         expect(growlServiceMock.growl).toHaveBeenCalledWith(
-            expect.objectContaining({ severity: 'success', summary: 'User reactivated' })
+            expect.objectContaining({ severity: 'success', summary: 'users.growl.reactivated-summary' })
         );
     });
 
@@ -646,7 +645,7 @@ describe('UsersComponent', () => {
         );
 
         expect(growlServiceMock.growl).toHaveBeenCalledWith(
-            expect.objectContaining({ severity: 'error', summary: 'Action failed' })
+            expect.objectContaining({ severity: 'error', summary: 'users.growl.action-failed-summary' })
         );
     });
 
@@ -665,7 +664,7 @@ describe('UsersComponent', () => {
         initWithData();
         const toggleGroup = fixture.nativeElement.querySelector('eui-toggle-group');
         expect(toggleGroup).toBeTruthy();
-        expect(toggleGroup.getAttribute('aria-label')).toBe('Filter users by status');
+        expect(toggleGroup.getAttribute('aria-label')).toBe('users.filter-status-label');
 
         const items = fixture.nativeElement.querySelectorAll('eui-toggle-group-item');
         expect(items.length).toBe(3);
@@ -727,7 +726,7 @@ describe('UsersComponent', () => {
         expect(component.hasLoadError).toBe(true);
         expect(component.users).toEqual([]);
         expect(growlServiceMock.growl).toHaveBeenCalledWith(
-            expect.objectContaining({ severity: 'error', summary: 'Load failed' })
+            expect.objectContaining({ severity: 'error', summary: 'users.growl.load-failed-summary' })
         );
     });
 
@@ -739,7 +738,7 @@ describe('UsersComponent', () => {
 
         const retryBtn = fixture.nativeElement.querySelector('button[euibutton][euisecondary]');
         expect(retryBtn).toBeTruthy();
-        expect(retryBtn.textContent.trim()).toContain('Retry');
+        expect(retryBtn.textContent.trim()).toContain('common.retry');
     });
 
     it('should reload users when retry button is clicked', () => {
@@ -760,25 +759,25 @@ describe('UsersComponent', () => {
     it('should show contextual empty message for search with no results', () => {
         initWithData(emptyResponse);
         component.params = { ...component.params, q: 'nonexistent' };
-        expect(component.emptyStateMessage).toBe('No users match your search criteria.');
+        expect(component.emptyStateMessage).toBe('users.no-match');
     });
 
     it('should show contextual empty message for active filter with no results', () => {
         initWithData(emptyResponse);
         component.activeStatusFilter = 'active';
-        expect(component.emptyStateMessage).toBe('No active users found.');
+        expect(component.emptyStateMessage).toBe('users.no-active');
     });
 
     it('should show contextual empty message for inactive filter with no results', () => {
         initWithData(emptyResponse);
         component.activeStatusFilter = 'inactive';
-        expect(component.emptyStateMessage).toBe('No inactive users found.');
+        expect(component.emptyStateMessage).toBe('users.no-inactive');
     });
 
     it('should show error empty message when hasLoadError is true', () => {
         initWithData(emptyResponse);
         component.hasLoadError = true;
-        expect(component.emptyStateMessage).toBe('An error occurred while loading users.');
+        expect(component.emptyStateMessage).toBe('users.load-error');
     });
 
     it('should set operationPending during reset password operation', () => {

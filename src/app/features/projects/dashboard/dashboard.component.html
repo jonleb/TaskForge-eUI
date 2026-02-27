@@ -1,54 +1,54 @@
 <eui-page>
-    <eui-page-header [label]="project?.name ?? 'Project'"></eui-page-header>
+    <eui-page-header [label]="project?.name ?? ('nav.projects' | translate)"></eui-page-header>
     <eui-page-content>
         @if (project) {
-            <section class="project-details" aria-label="Project details">
+            <section class="project-details" [attr.aria-label]="'dashboard.project-details-label' | translate">
                 <dl>
                     <div class="detail-item">
-                        <dt>Key</dt>
+                        <dt>{{ 'common.field.key' | translate }}</dt>
                         <dd>{{ project.key }}</dd>
                     </div>
                     <div class="detail-item">
-                        <dt>Description</dt>
+                        <dt>{{ 'common.field.description' | translate }}</dt>
                         <dd>{{ project.description || '—' }}</dd>
                     </div>
                     <div class="detail-item">
-                        <dt>Status</dt>
+                        <dt>{{ 'common.field.status' | translate }}</dt>
                         <dd>
                             @if (project.is_active) {
-                                <eui-chip euiSuccess euiSizeS [ariaLabel]="'Active'">Active</eui-chip>
+                                <eui-chip euiSuccess euiSizeS [ariaLabel]="'common.active' | translate">{{ 'common.active' | translate }}</eui-chip>
                             } @else {
-                                <eui-chip euiDanger euiSizeS [ariaLabel]="'Inactive'">Inactive</eui-chip>
+                                <eui-chip euiDanger euiSizeS [ariaLabel]="'common.inactive' | translate">{{ 'common.inactive' | translate }}</eui-chip>
                             }
                         </dd>
                     </div>
                     <div class="detail-item">
-                        <dt>Created by</dt>
-                        <dd>{{ creatorName ?? 'Loading…' }}</dd>
+                        <dt>{{ 'dashboard.created-by' | translate }}</dt>
+                        <dd>{{ creatorName ?? ('common.loading' | translate) }}</dd>
                     </div>
                     <div class="detail-item">
-                        <dt>Created</dt>
+                        <dt>{{ 'dashboard.created' | translate }}</dt>
                         <dd>{{ project.created_at | date:'mediumDate' }}</dd>
                     </div>
                     <div class="detail-item">
-                        <dt>Last updated</dt>
+                        <dt>{{ 'dashboard.last-updated' | translate }}</dt>
                         <dd>{{ project.updated_at | date:'mediumDate' }}</dd>
                     </div>
                 </dl>
             </section>
 
-            <section class="widgets" aria-label="Dashboard widgets">
+            <section class="widgets" [attr.aria-label]="'dashboard.widgets-label' | translate">
                 <div class="widget-placeholder">
-                    <h2>Recent Activity</h2>
-                    <p>Coming soon.</p>
+                    <h2>{{ 'dashboard.recent-activity' | translate }}</h2>
+                    <p>{{ 'common.coming-soon' | translate }}</p>
                 </div>
                 <div class="widget-placeholder">
-                    <h2>Open Tickets</h2>
-                    <p>Coming soon.</p>
+                    <h2>{{ 'dashboard.open-tickets' | translate }}</h2>
+                    <p>{{ 'common.coming-soon' | translate }}</p>
                 </div>
                 <div class="widget-placeholder">
-                    <h2>Sprint Progress</h2>
-                    <p>Coming soon.</p>
+                    <h2>{{ 'dashboard.sprint-progress' | translate }}</h2>
+                    <p>{{ 'common.coming-soon' | translate }}</p>
                 </div>
             </section>
         }

@@ -8,8 +8,8 @@ import { AppStarterService } from './app-starter.service';
 import { CONFIG_TOKEN, I18nService, I18nState, UserService } from '@eui/core';
 import { EuiAppConfig } from '@eui/core';
 import { Observable, of } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
+import { TranslateTestingModule } from './testing/test-providers';
 
 // eslint-disable-next-line
 type SpyObj<T> = { [K in keyof T]: T[K] extends (...args: any[]) => any ? ReturnType<typeof vi.fn> : T[K] };
@@ -39,7 +39,7 @@ describe('AppComponent', () => {
         await TestBed.configureTestingModule({
             imports: [
                 RouterModule.forRoot(routes),
-                TranslateModule.forRoot(),
+                TranslateTestingModule,
             ],
             providers: [
                 provideHttpClient(withInterceptorsFromDi()),

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { of, throwError, Subject } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateTestingModule } from '../../../testing/test-providers';
 import { EuiGrowlService } from '@eui/core';
 import { provideEuiCoreMocks } from '../../../testing/test-providers';
 import { ProjectShellComponent } from './project-shell.component';
@@ -32,7 +32,7 @@ describe('ProjectShellComponent', () => {
         await TestBed.configureTestingModule({
             imports: [
                 ProjectShellComponent,
-                TranslateModule.forRoot(),
+                TranslateTestingModule,
             ],
             providers: [
                 ...provideEuiCoreMocks(),
@@ -71,8 +71,8 @@ describe('ProjectShellComponent', () => {
 
         expect(growlServiceMock.growl).toHaveBeenCalledWith({
             severity: 'error',
-            summary: 'Navigation error',
-            detail: 'Project not found.',
+            summary: 'shell.growl.nav-error-summary',
+            detail: 'shell.error.not-found',
         });
         expect(router.navigate).toHaveBeenCalledWith(['screen/projects']);
     });
@@ -87,8 +87,8 @@ describe('ProjectShellComponent', () => {
 
         expect(growlServiceMock.growl).toHaveBeenCalledWith({
             severity: 'error',
-            summary: 'Navigation error',
-            detail: 'You do not have access to this project.',
+            summary: 'shell.growl.nav-error-summary',
+            detail: 'shell.error.no-access',
         });
         expect(router.navigate).toHaveBeenCalledWith(['screen/projects']);
     });

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { EuiGrowlService } from '@eui/core';
+import { TranslateService } from '@ngx-translate/core';
 import { ProjectService, ProjectContextService } from '../../../core/project';
 
 @Component({
@@ -16,6 +17,7 @@ export class ProjectShellComponent implements OnInit, OnDestroy {
     private readonly projectService = inject(ProjectService);
     private readonly projectContext = inject(ProjectContextService);
     private readonly growlService = inject(EuiGrowlService);
+    private readonly translate = inject(TranslateService);
     private readonly destroy$ = new Subject<void>();
 
     ngOnInit(): void {
@@ -28,11 +30,11 @@ export class ProjectShellComponent implements OnInit, OnDestroy {
             },
             error: (err) => {
                 const message = err.status === 403
-                    ? 'You do not have access to this project.'
-                    : 'Project not found.';
+                    ? this.translate.instant('shell.error.no-access')
+                    : this.translate.instant('shell.error.not-found');
                 this.growlService.growl({
                     severity: 'error',
-                    summary: 'Navigation error',
+                    summary: this.translate.instant('shell.growl.nav-error-summary'),
                     detail: message,
                 });
                 this.router.navigate(['screen/projects']);

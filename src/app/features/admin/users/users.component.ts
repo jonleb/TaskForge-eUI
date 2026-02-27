@@ -18,6 +18,7 @@ import { EUI_TOGGLE_GROUP, EuiToggleGroupItemComponent } from '@eui/components/e
 import { EUI_CHIP } from '@eui/components/eui-chip';
 import { EuiGrowlService } from '@eui/core';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AdminUserService } from './admin-user.service';
 import { AdminUser, AdminUserListParams, UserRole } from './admin-user.models';
 
@@ -42,6 +43,7 @@ import { AdminUser, AdminUserListParams, UserRole } from './admin-user.models';
         EuiPaginatorComponent,
         EuiDialogComponent,
         ReactiveFormsModule,
+        TranslateModule,
     ],
 })
 export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -50,6 +52,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly fb = inject(FormBuilder);
     private readonly growlService = inject(EuiGrowlService);
     private readonly breadcrumbService = inject(EuiBreadcrumbService);
+    private readonly translate = inject(TranslateService);
     private readonly destroy$ = new Subject<void>();
     private readonly searchSubject = new Subject<string>();
     private paginatorReady = false;
@@ -66,7 +69,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     operationPending = false;
     activeStatusFilter: 'all' | 'active' | 'inactive' = 'all';
     selectedUser: AdminUser | null = null;
-    tempPasswordTitle = 'User Created Successfully';
+    tempPasswordTitle = '';
     toggleDialogTitle = '';
     toggleDialogAcceptLabel = '';
     toggleDialogIsDeactivate = false;
@@ -99,7 +102,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnInit(): void {
         this.breadcrumbService.setBreadcrumb([
-            { id: 'users', label: 'Users', link: null },
+            { id: 'users', label: this.translate.instant('nav.users'), link: null },
         ]);
 
         this.searchSubject.pipe(
@@ -142,8 +145,8 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.hasLoadError = true;
                 this.growlService.growl({
                     severity: 'error',
-                    summary: 'Load failed',
-                    detail: 'Could not load users. Please try again.',
+                    summary: this.translate.instant('users.growl.load-failed-summary'),
+                    detail: this.translate.instant('users.growl.load-failed-detail'),
                 });
                 this.cdr.markForCheck();
             },
@@ -201,18 +204,18 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     get emptyStateMessage(): string {
         if (this.hasLoadError) {
-            return 'An error occurred while loading users.';
+            return this.translate.instant('users.load-error');
         }
         if (this.params.q) {
-            return 'No users match your search criteria.';
+            return this.translate.instant('users.no-match');
         }
         if (this.activeStatusFilter === 'active') {
-            return 'No active users found.';
+            return this.translate.instant('users.no-active');
         }
         if (this.activeStatusFilter === 'inactive') {
-            return 'No inactive users found.';
+            return this.translate.instant('users.no-inactive');
         }
-        return 'No users found.';
+        return this.translate.instant('users.no-users');
     }
 
     // ─── Create user ─────────────────────────────────────────────────
@@ -229,17 +232,17 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
             next: res => {
                 this.operationPending = false;
                 this.temporaryPassword = res.temporaryPassword;
-                this.tempPasswordTitle = 'User Created Successfully';
+                this.tempPasswordTitle = this.translate.instant('users.dialog.temp-password-title-created');
                 this.createDialog.closeDialog();
                 this.resetCreateForm();
                 this.loadUsers();
                 this.tempPasswordDialog.openDialog();
-                this.growlService.growl({ severity: 'success', summary: 'User created', detail: `Account for ${res.user.username} has been created.` });
+                this.growlService.growl({ severity: 'success', summary: this.translate.instant('users.growl.created-summary'), detail: this.translate.instant('users.growl.created-detail', { username: res.user.username }) });
                 this.cdr.markForCheck();
             },
             error: err => {
                 this.operationPending = false;
-                this.createError = err.error?.message || 'An error occurred while creating the user';
+                this.createError = err.error?.message || this.translate.instant('users.error.create-default');
                 this.cdr.markForCheck();
             },
         });
@@ -252,7 +255,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
 
     copyPassword(): void {
         navigator.clipboard.writeText(this.temporaryPassword).then(() => {
-            this.growlService.growl({ severity: 'success', summary: 'Copied', detail: 'Password copied to clipboard.' });
+            this.growlService.growl({ severity: 'success', summary: this.translate.instant('users.growl.copied-summary'), detail: this.translate.instant('users.growl.copied-detail') });
         });
     }
 
@@ -273,7 +276,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
             next: res => {
                 this.operationPending = false;
                 this.temporaryPassword = res.temporaryPassword;
-                this.tempPasswordTitle = 'Password Reset Successfully';
+                this.tempPasswordTitle = this.translate.instant('users.dialog.temp-password-title-reset');
                 this.tempPasswordDialog.openDialog();
                 this.cdr.markForCheck();
             },
@@ -281,8 +284,8 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.operationPending = false;
                 this.growlService.growl({
                     severity: 'error',
-                    summary: 'Reset failed',
-                    detail: err.error?.message || 'Could not reset password. Please try again.',
+                    summary: this.translate.instant('users.growl.reset-failed-summary'),
+                    detail: err.error?.message || this.translate.instant('users.growl.reset-failed-detail'),
                 });
                 this.cdr.markForCheck();
             },
@@ -294,8 +297,12 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     onToggleStatus(user: AdminUser): void {
         this.selectedUser = user;
         this.toggleDialogIsDeactivate = user.is_active;
-        this.toggleDialogTitle = user.is_active ? 'Deactivate User' : 'Reactivate User';
-        this.toggleDialogAcceptLabel = user.is_active ? 'Deactivate' : 'Reactivate';
+        this.toggleDialogTitle = user.is_active
+            ? this.translate.instant('users.dialog.deactivate-title')
+            : this.translate.instant('users.dialog.reactivate-title');
+        this.toggleDialogAcceptLabel = user.is_active
+            ? this.translate.instant('users.dialog.deactivate-accept')
+            : this.translate.instant('users.dialog.reactivate-accept');
         this.cdr.detectChanges();
         this.toggleStatusDialog.openDialog();
     }
@@ -309,7 +316,6 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
         const action$ = isDeactivate
             ? this.adminUserService.deactivateUser(this.selectedUser.id)
             : this.adminUserService.reactivateUser(this.selectedUser.id);
-        const actionLabel = isDeactivate ? 'deactivated' : 'reactivated';
         const username = this.selectedUser.username;
 
         this.operationPending = true;
@@ -319,8 +325,12 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.loadUsers();
                 this.growlService.growl({
                     severity: 'success',
-                    summary: `User ${actionLabel}`,
-                    detail: `${username} has been ${actionLabel}.`,
+                    summary: isDeactivate
+                        ? this.translate.instant('users.growl.deactivated-summary')
+                        : this.translate.instant('users.growl.reactivated-summary'),
+                    detail: isDeactivate
+                        ? this.translate.instant('users.growl.deactivated-detail', { username })
+                        : this.translate.instant('users.growl.reactivated-detail', { username }),
                 });
                 this.cdr.markForCheck();
             },
@@ -328,8 +338,10 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.operationPending = false;
                 this.growlService.growl({
                     severity: 'error',
-                    summary: 'Action failed',
-                    detail: err.error?.message || `Could not ${isDeactivate ? 'deactivate' : 'reactivate'} user. Please try again.`,
+                    summary: this.translate.instant('users.growl.action-failed-summary'),
+                    detail: err.error?.message || (isDeactivate
+                        ? this.translate.instant('users.growl.deactivate-failed-detail')
+                        : this.translate.instant('users.growl.reactivate-failed-detail')),
                 });
                 this.cdr.markForCheck();
             },

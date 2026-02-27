@@ -2,9 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-import { TranslateModule } from '@ngx-translate/core';
 import { EuiGrowlService } from '@eui/core';
-import { provideEuiCoreMocks, createGrowlServiceMock } from '../../../testing/test-providers';
+import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock } from '../../../testing/test-providers';
 import { MembersComponent } from './members.component';
 import { ProjectContextService, ProjectService, Project, ProjectMember, MemberCandidate } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
@@ -56,7 +55,7 @@ describe('MembersComponent', () => {
         growlServiceMock = createGrowlServiceMock();
 
         await TestBed.configureTestingModule({
-            imports: [MembersComponent, TranslateModule.forRoot()],
+            imports: [MembersComponent, TranslateTestingModule],
             providers: [
                 ...provideEuiCoreMocks(),
                 { provide: ProjectContextService, useValue: { currentProject$ } },
@@ -84,7 +83,7 @@ describe('MembersComponent', () => {
     it('should display member names in table', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const cells = fixture.nativeElement.querySelectorAll('td[data-col-label="Name"]');
+        const cells = fixture.nativeElement.querySelectorAll('td[data-col-label="common.field.name"]');
         expect(cells.length).toBe(3);
         expect(cells[0].textContent).toContain('John Doe');
         expect(cells[1].textContent).toContain('Jane Smith');
@@ -94,7 +93,7 @@ describe('MembersComponent', () => {
     it('should display member emails in table', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const cells = fixture.nativeElement.querySelectorAll('td[data-col-label="Email"]');
+        const cells = fixture.nativeElement.querySelectorAll('td[data-col-label="common.field.email"]');
         expect(cells.length).toBe(3);
         expect(cells[0].textContent).toContain('john@example.com');
     });
@@ -102,7 +101,7 @@ describe('MembersComponent', () => {
     it('should display member roles as chips', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const chips = fixture.nativeElement.querySelectorAll('td[data-col-label="Role"] eui-chip');
+        const chips = fixture.nativeElement.querySelectorAll('td[data-col-label="common.field.role"] eui-chip');
         expect(chips.length).toBe(3);
         expect(chips[0].textContent).toContain('PROJECT_ADMIN');
         expect(chips[1].textContent).toContain('DEVELOPER');
@@ -112,7 +111,7 @@ describe('MembersComponent', () => {
     it('should have aria-label on table', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const table = fixture.nativeElement.querySelector('table[aria-label="Project members"]');
+        const table = fixture.nativeElement.querySelector('table[aria-label="members.table-label"]');
         expect(table).toBeTruthy();
     });
 
@@ -129,7 +128,7 @@ describe('MembersComponent', () => {
         fixture.detectChanges();
         const btn = fixture.nativeElement.querySelector('button[euibutton]');
         expect(btn).toBeTruthy();
-        expect(btn.textContent).toContain('Add Member');
+        expect(btn.textContent).toContain('members.add-btn');
     });
 
     it('should show action buttons for SUPER_ADMIN', () => {
@@ -175,7 +174,7 @@ describe('MembersComponent', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         const noData = fixture.nativeElement.querySelector('td.eui-u-text-center');
-        expect(noData?.textContent).toContain('Unable to load members');
+        expect(noData?.textContent).toContain('members.load-error');
     });
 
     it('should show "No members found" when list is empty', () => {
@@ -183,15 +182,15 @@ describe('MembersComponent', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         const noData = fixture.nativeElement.querySelector('td.eui-u-text-center');
-        expect(noData?.textContent).toContain('No members found');
+        expect(noData?.textContent).toContain('members.no-members');
     });
 
     it('should have data-col-label on body cells', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const nameCells = fixture.nativeElement.querySelectorAll('td[data-col-label="Name"]');
-        const emailCells = fixture.nativeElement.querySelectorAll('td[data-col-label="Email"]');
-        const roleCells = fixture.nativeElement.querySelectorAll('td[data-col-label="Role"]');
+        const nameCells = fixture.nativeElement.querySelectorAll('td[data-col-label="common.field.name"]');
+        const emailCells = fixture.nativeElement.querySelectorAll('td[data-col-label="common.field.email"]');
+        const roleCells = fixture.nativeElement.querySelectorAll('td[data-col-label="common.field.role"]');
         expect(nameCells.length).toBe(3);
         expect(emailCells.length).toBe(3);
         expect(roleCells.length).toBe(3);

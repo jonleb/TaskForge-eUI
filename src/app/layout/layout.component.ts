@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, inject, OnInit, OnDestroy } from '@angula
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { EUI_LANGUAGE_SELECTOR } from '@eui/components/eui-language-selector';
 import { EUI_USER_PROFILE } from '@eui/components/eui-user-profile';
 import { EUI_ICON } from '@eui/components/eui-icon';
@@ -38,16 +38,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private readonly router = inject(Router);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly destroy$ = new Subject<void>();
+    private readonly translate = inject(TranslateService);
     readonly breadcrumbService = inject(EuiBreadcrumbService);
 
     userRole = '';
 
-    private readonly allSidebarItems: EuiMenuItem<SidebarItemMetadata>[] = [
-        { label: 'Home', url: 'screen/home' },
-        { label: 'Projects', url: 'screen/projects' },
-        { label: 'Users', url: 'screen/admin/users', metadata: { roles: ['SUPER_ADMIN'] } },
-    ];
     sidebarItems: EuiMenuItem<SidebarItemMetadata>[] = [];
+    private currentProject: Project | null = null;
     notificationItems = [
         { label: 'Title label 1', subLabel: 'Subtitle label' },
         { label: 'Title label 2', subLabel: 'Subtitle label' },
@@ -63,7 +60,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.projectContext.currentProject$.pipe(
             takeUntil(this.destroy$),
         ).subscribe(project => {
+            this.currentProject = project;
             this.buildSidebar(project);
+            this.cdr.markForCheck();
+        });
+
+        // Rebuild sidebar labels when language changes
+        this.translate.onLangChange.pipe(
+            takeUntil(this.destroy$),
+        ).subscribe(() => {
+            this.buildSidebar(this.currentProject);
             this.cdr.markForCheck();
         });
     }
@@ -81,7 +87,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
 
     private filterSidebarItems(): void {
-        this.sidebarItems = this.allSidebarItems.filter(item => {
+        const allItems: EuiMenuItem<SidebarItemMetadata>[] = [
+            { label: this.translate.instant('nav.home'), url: 'screen/home' },
+            { label: this.translate.instant('nav.projects'), url: 'screen/projects' },
+            { label: this.translate.instant('nav.users'), url: 'screen/admin/users', metadata: { roles: ['SUPER_ADMIN'] } },
+        ];
+        this.sidebarItems = allItems.filter(item => {
             const roles = item.metadata?.roles;
             if (!roles || roles.length === 0) {
                 return true;
@@ -94,12 +105,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (project) {
             const base = `screen/projects/${project.id}`;
             this.sidebarItems = [
-                { label: '← All Projects', url: 'screen/projects' },
-                { label: 'Dashboard', url: base },
-                { label: 'Members', url: `${base}/members` },
-                { label: 'Backlog', url: `${base}/backlog` },
-                { label: 'Board', url: `${base}/board` },
-                { label: 'Settings', url: `${base}/settings` },
+                { label: this.translate.instant('nav.all-projects'), url: 'screen/projects' },
+                { label: this.translate.instant('nav.dashboard'), url: base },
+                { label: this.translate.instant('nav.members'), url: `${base}/members` },
+                { label: this.translate.instant('nav.backlog'), url: `${base}/backlog` },
+                { label: this.translate.instant('nav.board'), url: `${base}/board` },
+                { label: this.translate.instant('nav.settings'), url: `${base}/settings` },
             ];
         } else {
             this.filterSidebarItems();
