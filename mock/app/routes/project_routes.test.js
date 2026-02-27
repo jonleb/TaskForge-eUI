@@ -555,6 +555,55 @@ describe('POST /api/projects', () => {
     });
 });
 
+// --- POST /api/projects — bootstrap side effects ---
+
+describe('POST /api/projects — bootstrap side effects', () => {
+
+    it('should create 4 workflows for the new project', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Bootstrap Test Project', key: 'BTP' });
+
+        expect(res.status).toBe(201);
+        const projectId = res.body.id;
+
+        const workflows = db.get('workflows').filter({ projectId }).value();
+        expect(workflows).toHaveLength(4);
+
+        const types = workflows.map(w => w.ticketType).sort();
+        expect(types).toEqual(['BUG', 'EPIC', 'STORY', 'TASK']);
+    });
+
+    it('should create 1 backlog item (maintenance epic) for the new project', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'Bootstrap Backlog Test', key: 'BBT' });
+
+        expect(res.status).toBe(201);
+        const projectId = res.body.id;
+
+        const items = db.get('backlog-items').filter({ projectId }).value();
+        expect(items).toHaveLength(1);
+        expect(items[0].type).toBe('EPIC');
+        expect(items[0].title).toBe('Maintenance');
+    });
+
+    it('should not include bootstrapWarning on success', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ name: 'No Warning Test', key: 'NWT' });
+
+        expect(res.status).toBe(201);
+        expect(res.body.bootstrapWarning).toBeUndefined();
+    });
+});
+
 // --- PATCH /api/projects/:projectId ---
 
 describe('PATCH /api/projects/:projectId', () => {

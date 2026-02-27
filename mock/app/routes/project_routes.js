@@ -1,5 +1,6 @@
 const authMiddleware = require('../middleware/auth');
 const { requireGlobalRole, requireProjectRole } = require('../middleware/authorize');
+const { bootstrapProject } = require('../services/bootstrap');
 
 const ALL_PROJECT_ROLES = ['PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER', 'REPORTER', 'VIEWER'];
 
@@ -372,7 +373,19 @@ module.exports = function (app, db) {
 
             db.get('projects').push(newProject).write();
 
-            return res.status(201).json(newProject);
+            // Bootstrap default agile assets (workflows + maintenance epic)
+            let bootstrapWarning = null;
+            try {
+                bootstrapProject(db, newProject.id);
+            } catch (err) {
+                bootstrapWarning = 'Project created but agile bootstrap failed. Default workflows may be missing.';
+            }
+
+            const response = { ...newProject };
+            if (bootstrapWarning) {
+                response.bootstrapWarning = bootstrapWarning;
+            }
+            return res.status(201).json(response);
         });
 
         /**
