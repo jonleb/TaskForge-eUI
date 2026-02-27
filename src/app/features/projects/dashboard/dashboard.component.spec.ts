@@ -4,7 +4,7 @@ import { BehaviorSubject, of, throwError } from 'rxjs';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { TranslateTestingModule, provideEuiCoreMocks, createBreadcrumbServiceMock } from '../../../testing/test-providers';
 import { DashboardComponent } from './dashboard.component';
-import { ProjectContextService, ProjectService, Project, UserInfo } from '../../../core/project';
+import { ProjectContextService, ProjectService, Project, UserInfo, BacklogItem } from '../../../core/project';
 
 const mockProject: Project = {
     id: '1', key: 'TF', name: 'TaskForge Core',
@@ -13,6 +13,14 @@ const mockProject: Project = {
 };
 
 const mockUser: UserInfo = { id: '1', firstName: 'Super', lastName: 'Admin', email: 'superadmin@taskforge.local' };
+
+const mockBacklogItems: BacklogItem[] = [
+    {
+        id: '1', projectId: '1', type: 'EPIC', title: 'Maintenance',
+        description: 'Default epic for maintenance and operational tasks',
+        status: 'TO_DO', created_by: 'system', created_at: '2025-01-20T09:00:00.000Z',
+    },
+];
 
 describe('DashboardComponent', () => {
     let fixture: ComponentFixture<DashboardComponent>;
@@ -25,6 +33,7 @@ describe('DashboardComponent', () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
         projectServiceMock = {
             getUser: vi.fn().mockReturnValue(of(mockUser)),
+            getBacklog: vi.fn().mockReturnValue(of(mockBacklogItems)),
             getProjects: vi.fn(),
             getProject: vi.fn(),
             createProject: vi.fn(),
@@ -137,6 +146,50 @@ describe('DashboardComponent', () => {
         fixture.detectChanges();
         const dd = fixture.nativeElement.querySelectorAll('dd');
         expect(dd[1].textContent).toContain('\u2014');
+    });
+
+    it('should call getBacklog with project ID on init', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(projectServiceMock['getBacklog']).toHaveBeenCalledWith('1');
+    });
+
+    it('should display backlog count', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const backlogSection = fixture.nativeElement.querySelector('.backlog-summary');
+        expect(backlogSection.textContent).toContain('dashboard.backlog-count');
+    });
+
+    it('should display maintenance epic title', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const listItems = fixture.nativeElement.querySelectorAll('.backlog-list li');
+        expect(listItems.length).toBe(1);
+        expect(listItems[0].textContent).toContain('Maintenance');
+    });
+
+    it('should show ticket type chip for backlog item', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const chips = fixture.nativeElement.querySelectorAll('.backlog-list eui-chip');
+        expect(chips.length).toBe(1);
+        expect(chips[0].textContent).toContain('workflow.ticket-type.EPIC');
+    });
+
+    it('should show empty state when no backlog items', () => {
+        projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of([]));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const backlogSection = fixture.nativeElement.querySelector('.backlog-summary');
+        expect(backlogSection.textContent).toContain('dashboard.no-backlog-items');
+    });
+
+    it('should display backlog heading with i18n key', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const heading = fixture.nativeElement.querySelector('.backlog-summary h2');
+        expect(heading.textContent).toContain('dashboard.backlog-heading');
     });
 
 });

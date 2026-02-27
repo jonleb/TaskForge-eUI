@@ -6,7 +6,7 @@ import { EUI_PAGE } from '@eui/components/eui-page';
 import { EUI_CHIP } from '@eui/components/eui-chip';
 import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ProjectContextService, ProjectService, Project } from '../../../core/project';
+import { ProjectContextService, ProjectService, Project, BacklogItem } from '../../../core/project';
 
 @Component({
     selector: 'app-dashboard',
@@ -25,6 +25,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     project: Project | null = null;
     creatorName: string | null = null;
+    backlogItems: BacklogItem[] = [];
+    backlogLoading = false;
 
     ngOnInit(): void {
         this.projectContext.currentProject$.pipe(
@@ -39,6 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             ]);
             this.cdr.markForCheck();
             this.loadCreator(project.created_by);
+            this.loadBacklog(project.id);
         });
     }
 
@@ -57,6 +60,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
             },
             error: () => {
                 this.creatorName = this.translate.instant('common.unknown');
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    private loadBacklog(projectId: string): void {
+        this.backlogLoading = true;
+        this.backlogItems = [];
+        this.cdr.markForCheck();
+        this.projectService.getBacklog(projectId).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe({
+            next: items => {
+                this.backlogItems = items;
+                this.backlogLoading = false;
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.backlogLoading = false;
                 this.cdr.markForCheck();
             },
         });

@@ -37,6 +37,30 @@
                 </dl>
             </section>
 
+            <section class="backlog-summary" [attr.aria-label]="'dashboard.backlog-heading' | translate">
+                <h2>{{ 'dashboard.backlog-heading' | translate }}</h2>
+                @if (backlogLoading) {
+                    <p>{{ 'common.loading' | translate }}</p>
+                } @else if (backlogItems.length === 0) {
+                    <p>{{ 'dashboard.no-backlog-items' | translate }}</p>
+                } @else {
+                    <p aria-live="polite">
+                        {{ 'dashboard.backlog-count' | translate:{ count: backlogItems.length } }}
+                    </p>
+                    <ul class="backlog-list">
+                        @for (item of backlogItems; track item.id) {
+                            <li>
+                                <eui-chip euiSizeS [ariaLabel]="'workflow.ticket-type.' + item.type | translate">
+                                    {{ 'workflow.ticket-type.' + item.type | translate }}
+                                </eui-chip>
+                                <span>{{ item.title }}</span>
+                                <span class="backlog-status">{{ 'workflow.status.' + item.status | translate }}</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </section>
+
             <section class="widgets" [attr.aria-label]="'dashboard.widgets-label' | translate">
                 <div class="widget-placeholder">
                     <h2>{{ 'dashboard.recent-activity' | translate }}</h2>
