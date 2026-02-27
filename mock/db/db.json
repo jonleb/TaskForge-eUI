@@ -458,6 +458,36 @@
       "is_active": false
     },
     {
+      "id": "18",
+      "key": "AGK",
+      "name": "Auto Generated Key",
+      "description": "",
+      "created_by": "1",
+      "created_at": "2026-02-27T09:57:47.239Z",
+      "updated_at": "2026-02-27T09:57:47.239Z",
+      "is_active": true
+    },
+    {
+      "id": "22",
+      "key": "BBT",
+      "name": "Bootstrap Backlog Test",
+      "description": "",
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:34.747Z",
+      "updated_at": "2026-02-27T14:19:34.747Z",
+      "is_active": true
+    },
+    {
+      "id": "21",
+      "key": "BTP",
+      "name": "Bootstrap Test Project",
+      "description": "",
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:34.729Z",
+      "updated_at": "2026-02-27T14:19:34.729Z",
+      "is_active": true
+    },
+    {
       "id": "16",
       "key": "BU",
       "name": "BURK",
@@ -498,6 +528,16 @@
       "is_active": true
     },
     {
+      "id": "20",
+      "key": "DP1",
+      "name": "Different Purpose",
+      "description": "",
+      "created_by": "1",
+      "created_at": "2026-02-27T09:57:47.249Z",
+      "updated_at": "2026-02-27T09:57:47.249Z",
+      "is_active": true
+    },
+    {
       "id": "6",
       "key": "DOCS",
       "name": "Documentation Portal",
@@ -505,6 +545,16 @@
       "created_by": "2",
       "created_at": "2025-05-01T08:00:00.000Z",
       "updated_at": "2025-09-15T09:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "19",
+      "key": "DP",
+      "name": "Duplicate Prefix",
+      "description": "",
+      "created_by": "1",
+      "created_at": "2026-02-27T09:57:47.245Z",
+      "updated_at": "2026-02-27T09:57:47.245Z",
       "is_active": true
     },
     {
@@ -538,6 +588,16 @@
       "is_active": false
     },
     {
+      "id": "17",
+      "key": "MKP",
+      "name": "Manual Key Project",
+      "description": "Test project",
+      "created_by": "1",
+      "created_at": "2026-02-27T09:57:47.230Z",
+      "updated_at": "2026-02-27T09:57:47.230Z",
+      "is_active": true
+    },
+    {
       "id": "4",
       "key": "MOBILE",
       "name": "Mobile App",
@@ -545,6 +605,16 @@
       "created_by": "1",
       "created_at": "2025-04-01T09:00:00.000Z",
       "updated_at": "2025-07-10T14:00:00.000Z",
+      "is_active": true
+    },
+    {
+      "id": "23",
+      "key": "NWT",
+      "name": "No Warning Test",
+      "description": "",
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:34.758Z",
+      "updated_at": "2026-02-27T14:19:34.758Z",
       "is_active": true
     },
     {
@@ -594,47 +664,7 @@
       "description": "Updated description",
       "created_by": "1",
       "created_at": "2025-01-20T09:00:00.000Z",
-      "updated_at": "2026-02-27T09:57:47.282Z",
-      "is_active": true
-    },
-    {
-      "id": "17",
-      "key": "MKP",
-      "name": "Manual Key Project",
-      "description": "Test project",
-      "created_by": "1",
-      "created_at": "2026-02-27T09:57:47.230Z",
-      "updated_at": "2026-02-27T09:57:47.230Z",
-      "is_active": true
-    },
-    {
-      "id": "18",
-      "key": "AGK",
-      "name": "Auto Generated Key",
-      "description": "",
-      "created_by": "1",
-      "created_at": "2026-02-27T09:57:47.239Z",
-      "updated_at": "2026-02-27T09:57:47.239Z",
-      "is_active": true
-    },
-    {
-      "id": "19",
-      "key": "DP",
-      "name": "Duplicate Prefix",
-      "description": "",
-      "created_by": "1",
-      "created_at": "2026-02-27T09:57:47.245Z",
-      "updated_at": "2026-02-27T09:57:47.245Z",
-      "is_active": true
-    },
-    {
-      "id": "20",
-      "key": "DP1",
-      "name": "Different Purpose",
-      "description": "",
-      "created_by": "1",
-      "created_at": "2026-02-27T09:57:47.249Z",
-      "updated_at": "2026-02-27T09:57:47.249Z",
+      "updated_at": "2026-02-27T14:19:50.196Z",
       "is_active": true
     }
   ],
@@ -2560,6 +2590,303 @@
         "DONE": []
       },
       "created_at": "2026-02-26T11:15:09.535Z"
+    },
+    {
+      "id": "65",
+      "projectId": "21",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-27T14:19:34.731Z"
+    },
+    {
+      "id": "66",
+      "projectId": "21",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-27T14:19:34.731Z"
+    },
+    {
+      "id": "67",
+      "projectId": "21",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-27T14:19:34.731Z"
+    },
+    {
+      "id": "68",
+      "projectId": "21",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-27T14:19:34.731Z"
+    },
+    {
+      "id": "69",
+      "projectId": "22",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-27T14:19:34.748Z"
+    },
+    {
+      "id": "70",
+      "projectId": "22",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-27T14:19:34.748Z"
+    },
+    {
+      "id": "71",
+      "projectId": "22",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-27T14:19:34.748Z"
+    },
+    {
+      "id": "72",
+      "projectId": "22",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-27T14:19:34.748Z"
+    },
+    {
+      "id": "73",
+      "projectId": "23",
+      "ticketType": "STORY",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-27T14:19:34.759Z"
+    },
+    {
+      "id": "74",
+      "projectId": "23",
+      "ticketType": "BUG",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-27T14:19:34.759Z"
+    },
+    {
+      "id": "75",
+      "projectId": "23",
+      "ticketType": "TASK",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "IN_REVIEW",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "IN_REVIEW",
+          "TO_DO"
+        ],
+        "IN_REVIEW": [
+          "DONE",
+          "IN_PROGRESS"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-27T14:19:34.759Z"
+    },
+    {
+      "id": "76",
+      "projectId": "23",
+      "ticketType": "EPIC",
+      "statuses": [
+        "TO_DO",
+        "IN_PROGRESS",
+        "DONE"
+      ],
+      "transitions": {
+        "TO_DO": [
+          "IN_PROGRESS"
+        ],
+        "IN_PROGRESS": [
+          "DONE",
+          "TO_DO"
+        ],
+        "DONE": []
+      },
+      "created_at": "2026-02-27T14:19:34.759Z"
     }
   ],
   "backlog-items": [
@@ -2786,6 +3113,622 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2026-02-26T11:15:09.535Z"
+    },
+    {
+      "id": "17",
+      "projectId": "1",
+      "type": "STORY",
+      "title": "Implement user authentication flow",
+      "description": "Add login, logout, and session management for all user roles",
+      "status": "IN_PROGRESS",
+      "priority": "HIGH",
+      "assignee_id": "11",
+      "epic_id": null,
+      "ticket_number": 2,
+      "created_by": "11",
+      "created_at": "2026-01-05T09:00:00.000Z"
+    },
+    {
+      "id": "18",
+      "projectId": "1",
+      "type": "BUG",
+      "title": "Dashboard chart not rendering on Firefox",
+      "description": "The pie chart on the dashboard page shows a blank area on Firefox 120+",
+      "status": "TO_DO",
+      "priority": "CRITICAL",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 3,
+      "created_by": "system",
+      "created_at": "2026-01-08T10:30:00.000Z"
+    },
+    {
+      "id": "19",
+      "projectId": "1",
+      "type": "TASK",
+      "title": "Update project dependencies to latest versions",
+      "description": "Run npm audit and upgrade all outdated packages",
+      "status": "DONE",
+      "priority": "LOW",
+      "assignee_id": "4",
+      "epic_id": null,
+      "ticket_number": 4,
+      "created_by": "4",
+      "created_at": "2026-01-10T14:00:00.000Z"
+    },
+    {
+      "id": "20",
+      "projectId": "1",
+      "type": "STORY",
+      "title": "Add export to CSV for backlog items",
+      "description": "Users should be able to export the current filtered backlog view as a CSV file",
+      "status": "TO_DO",
+      "priority": "MEDIUM",
+      "assignee_id": "3",
+      "epic_id": null,
+      "ticket_number": 5,
+      "created_by": "3",
+      "created_at": "2026-01-15T08:00:00.000Z"
+    },
+    {
+      "id": "21",
+      "projectId": "1",
+      "type": "BUG",
+      "title": "Pagination resets when switching tabs",
+      "description": "Navigating away from backlog and returning resets the page to 1",
+      "status": "IN_REVIEW",
+      "priority": "HIGH",
+      "assignee_id": "11",
+      "epic_id": null,
+      "ticket_number": 6,
+      "created_by": "11",
+      "created_at": "2026-01-18T11:00:00.000Z"
+    },
+    {
+      "id": "22",
+      "projectId": "1",
+      "type": "TASK",
+      "title": "Write unit tests for permission service",
+      "description": "Cover all role-check branches in PermissionService",
+      "status": "IN_PROGRESS",
+      "priority": "MEDIUM",
+      "assignee_id": "5",
+      "epic_id": null,
+      "ticket_number": 7,
+      "created_by": "5",
+      "created_at": "2026-01-22T09:30:00.000Z"
+    },
+    {
+      "id": "23",
+      "projectId": "1",
+      "type": "STORY",
+      "title": "Implement notification preferences",
+      "description": "Allow users to configure email and in-app notification settings",
+      "status": "TO_DO",
+      "priority": "LOW",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 8,
+      "created_by": "system",
+      "created_at": "2026-01-25T13:00:00.000Z"
+    },
+    {
+      "id": "24",
+      "projectId": "1",
+      "type": "BUG",
+      "title": "Create ticket dialog does not clear on cancel",
+      "description": "Reopening the create dialog after cancelling shows stale form data",
+      "status": "DONE",
+      "priority": "HIGH",
+      "assignee_id": "2",
+      "epic_id": null,
+      "ticket_number": 9,
+      "created_by": "2",
+      "created_at": "2026-01-28T10:00:00.000Z"
+    },
+    {
+      "id": "25",
+      "projectId": "1",
+      "type": "TASK",
+      "title": "Set up CI pipeline for automated testing",
+      "description": "Configure GitHub Actions to run test:ci and test:mock on every PR",
+      "status": "IN_PROGRESS",
+      "priority": "MEDIUM",
+      "assignee_id": "15",
+      "epic_id": null,
+      "ticket_number": 10,
+      "created_by": "15",
+      "created_at": "2026-02-01T08:00:00.000Z"
+    },
+    {
+      "id": "26",
+      "projectId": "2",
+      "type": "STORY",
+      "title": "Create onboarding wizard for new users",
+      "description": "Step-by-step guide that walks new users through project setup",
+      "status": "IN_PROGRESS",
+      "priority": "HIGH",
+      "assignee_id": "17",
+      "epic_id": null,
+      "ticket_number": 2,
+      "created_by": "17",
+      "created_at": "2026-01-06T09:00:00.000Z"
+    },
+    {
+      "id": "27",
+      "projectId": "2",
+      "type": "BUG",
+      "title": "Sidebar menu flickers on page load",
+      "description": "The sidebar briefly shows all items then collapses to the correct set",
+      "status": "TO_DO",
+      "priority": "MEDIUM",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 3,
+      "created_by": "system",
+      "created_at": "2026-01-09T10:00:00.000Z"
+    },
+    {
+      "id": "28",
+      "projectId": "2",
+      "type": "TASK",
+      "title": "Translate all labels to French",
+      "description": "Complete the fr.json translation file for all existing i18n keys",
+      "status": "DONE",
+      "priority": "LOW",
+      "assignee_id": "12",
+      "epic_id": null,
+      "ticket_number": 4,
+      "created_by": "12",
+      "created_at": "2026-01-12T14:00:00.000Z"
+    },
+    {
+      "id": "29",
+      "projectId": "2",
+      "type": "STORY",
+      "title": "Add dark mode support",
+      "description": "Implement theme toggle using EuiThemeService for dark mode",
+      "status": "TO_DO",
+      "priority": "MEDIUM",
+      "assignee_id": "10",
+      "epic_id": null,
+      "ticket_number": 5,
+      "created_by": "10",
+      "created_at": "2026-01-16T08:00:00.000Z"
+    },
+    {
+      "id": "30",
+      "projectId": "2",
+      "type": "BUG",
+      "title": "Member role dropdown shows wrong default",
+      "description": "When editing a member role the dropdown pre-selects VIEWER instead of current role",
+      "status": "IN_REVIEW",
+      "priority": "CRITICAL",
+      "assignee_id": "17",
+      "epic_id": null,
+      "ticket_number": 6,
+      "created_by": "17",
+      "created_at": "2026-01-20T11:00:00.000Z"
+    },
+    {
+      "id": "31",
+      "projectId": "2",
+      "type": "TASK",
+      "title": "Clean up unused CSS classes",
+      "description": "Remove dead CSS from legacy components after the portfolio redesign",
+      "status": "IN_PROGRESS",
+      "priority": "LOW",
+      "assignee_id": "4",
+      "epic_id": null,
+      "ticket_number": 7,
+      "created_by": "4",
+      "created_at": "2026-01-23T09:30:00.000Z"
+    },
+    {
+      "id": "32",
+      "projectId": "2",
+      "type": "EPIC",
+      "title": "Q1 2026 Feature Roadmap",
+      "description": "Epic grouping all planned features for Q1 2026 delivery",
+      "status": "TO_DO",
+      "priority": null,
+      "assignee_id": "2",
+      "epic_id": null,
+      "ticket_number": 8,
+      "created_by": "2",
+      "created_at": "2026-01-26T13:00:00.000Z"
+    },
+    {
+      "id": "33",
+      "projectId": "2",
+      "type": "STORY",
+      "title": "Implement bulk ticket status update",
+      "description": "Allow selecting multiple tickets and changing their status in one action",
+      "status": "TO_DO",
+      "priority": "HIGH",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 9,
+      "created_by": "system",
+      "created_at": "2026-01-29T10:00:00.000Z"
+    },
+    {
+      "id": "34",
+      "projectId": "2",
+      "type": "BUG",
+      "title": "Search filter does not reset on project switch",
+      "description": "Switching projects keeps the previous search term active",
+      "status": "DONE",
+      "priority": "MEDIUM",
+      "assignee_id": "10",
+      "epic_id": null,
+      "ticket_number": 10,
+      "created_by": "10",
+      "created_at": "2026-02-02T08:00:00.000Z"
+    },
+    {
+      "id": "35",
+      "projectId": "5",
+      "type": "STORY",
+      "title": "Design rate limiting middleware",
+      "description": "Implement token bucket rate limiter for all public API endpoints",
+      "status": "IN_PROGRESS",
+      "priority": "CRITICAL",
+      "assignee_id": "11",
+      "epic_id": null,
+      "ticket_number": 2,
+      "created_by": "11",
+      "created_at": "2026-01-07T09:00:00.000Z"
+    },
+    {
+      "id": "36",
+      "projectId": "5",
+      "type": "BUG",
+      "title": "502 errors on concurrent POST requests",
+      "description": "Under load the gateway returns 502 for roughly 5% of POST requests",
+      "status": "TO_DO",
+      "priority": "CRITICAL",
+      "assignee_id": "22",
+      "epic_id": null,
+      "ticket_number": 3,
+      "created_by": "22",
+      "created_at": "2026-01-11T10:30:00.000Z"
+    },
+    {
+      "id": "37",
+      "projectId": "5",
+      "type": "TASK",
+      "title": "Document all API endpoints in OpenAPI spec",
+      "description": "Create a comprehensive openapi.yaml covering every route",
+      "status": "DONE",
+      "priority": "MEDIUM",
+      "assignee_id": "5",
+      "epic_id": null,
+      "ticket_number": 4,
+      "created_by": "5",
+      "created_at": "2026-01-14T14:00:00.000Z"
+    },
+    {
+      "id": "38",
+      "projectId": "5",
+      "type": "STORY",
+      "title": "Add request/response logging",
+      "description": "Log all incoming requests and outgoing responses with correlation IDs",
+      "status": "IN_REVIEW",
+      "priority": "HIGH",
+      "assignee_id": "11",
+      "epic_id": null,
+      "ticket_number": 5,
+      "created_by": "11",
+      "created_at": "2026-01-17T08:00:00.000Z"
+    },
+    {
+      "id": "39",
+      "projectId": "5",
+      "type": "BUG",
+      "title": "Auth token refresh returns 401 instead of new token",
+      "description": "The refresh endpoint rejects valid refresh tokens after server restart",
+      "status": "TO_DO",
+      "priority": "HIGH",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 6,
+      "created_by": "system",
+      "created_at": "2026-01-21T11:00:00.000Z"
+    },
+    {
+      "id": "40",
+      "projectId": "5",
+      "type": "TASK",
+      "title": "Migrate database schema to v2",
+      "description": "Run migration scripts to update the schema for the new membership model",
+      "status": "IN_PROGRESS",
+      "priority": "MEDIUM",
+      "assignee_id": "22",
+      "epic_id": null,
+      "ticket_number": 7,
+      "created_by": "22",
+      "created_at": "2026-01-24T09:30:00.000Z"
+    },
+    {
+      "id": "41",
+      "projectId": "5",
+      "type": "STORY",
+      "title": "Implement webhook delivery system",
+      "description": "Allow projects to register webhook URLs and receive event notifications",
+      "status": "TO_DO",
+      "priority": "LOW",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 8,
+      "created_by": "system",
+      "created_at": "2026-01-27T13:00:00.000Z"
+    },
+    {
+      "id": "42",
+      "projectId": "5",
+      "type": "EPIC",
+      "title": "API v2 Redesign",
+      "description": "Epic for the complete API v2 overhaul including breaking changes",
+      "status": "TO_DO",
+      "priority": null,
+      "assignee_id": "15",
+      "epic_id": null,
+      "ticket_number": 9,
+      "created_by": "15",
+      "created_at": "2026-01-30T10:00:00.000Z"
+    },
+    {
+      "id": "43",
+      "projectId": "5",
+      "type": "BUG",
+      "title": "CORS headers missing on OPTIONS preflight",
+      "description": "Browser preflight requests fail because OPTIONS responses lack CORS headers",
+      "status": "DONE",
+      "priority": "HIGH",
+      "assignee_id": "11",
+      "epic_id": null,
+      "ticket_number": 10,
+      "created_by": "11",
+      "created_at": "2026-02-03T08:00:00.000Z"
+    },
+    {
+      "id": "44",
+      "projectId": "21",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "priority": null,
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 1,
+      "created_by": "system",
+      "created_at": "2026-02-27T14:19:34.731Z"
+    },
+    {
+      "id": "45",
+      "projectId": "22",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "priority": null,
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 1,
+      "created_by": "system",
+      "created_at": "2026-02-27T14:19:34.748Z"
+    },
+    {
+      "id": "46",
+      "projectId": "23",
+      "type": "EPIC",
+      "title": "Maintenance",
+      "description": "Default epic for maintenance and operational tasks",
+      "status": "TO_DO",
+      "priority": null,
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 1,
+      "created_by": "system",
+      "created_at": "2026-02-27T14:19:34.759Z"
+    },
+    {
+      "id": "47",
+      "projectId": "1",
+      "type": "STORY",
+      "title": "My first story",
+      "description": "Story description",
+      "status": "TO_DO",
+      "priority": "HIGH",
+      "assignee_id": "2",
+      "epic_id": "1",
+      "ticket_number": 11,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:35.738Z"
+    },
+    {
+      "id": "48",
+      "projectId": "1",
+      "type": "BUG",
+      "title": "A bug report",
+      "description": "",
+      "status": "TO_DO",
+      "priority": "LOW",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 12,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:35.750Z"
+    },
+    {
+      "id": "49",
+      "projectId": "1",
+      "type": "TASK",
+      "title": "Critical task",
+      "description": "",
+      "status": "TO_DO",
+      "priority": "CRITICAL",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 13,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:35.759Z"
+    },
+    {
+      "id": "50",
+      "projectId": "2",
+      "type": "STORY",
+      "title": "First in project 2",
+      "description": "",
+      "status": "TO_DO",
+      "priority": "LOW",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 11,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:36.103Z"
+    },
+    {
+      "id": "51",
+      "projectId": "2",
+      "type": "BUG",
+      "title": "Second in project 2",
+      "description": "",
+      "status": "TO_DO",
+      "priority": "HIGH",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 12,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:36.110Z"
+    },
+    {
+      "id": "52",
+      "projectId": "1",
+      "type": "STORY",
+      "title": "Test ticket",
+      "description": "A test description",
+      "status": "TO_DO",
+      "priority": "MEDIUM",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 14,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:36.117Z"
+    },
+    {
+      "id": "53",
+      "projectId": "4",
+      "type": "STORY",
+      "title": "Test ticket",
+      "description": "A test description",
+      "status": "TO_DO",
+      "priority": "MEDIUM",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 2,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:36.162Z"
+    },
+    {
+      "id": "54",
+      "projectId": "1",
+      "type": "STORY",
+      "title": "My first story",
+      "description": "Story description",
+      "status": "TO_DO",
+      "priority": "HIGH",
+      "assignee_id": "2",
+      "epic_id": "1",
+      "ticket_number": 15,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:51.213Z"
+    },
+    {
+      "id": "55",
+      "projectId": "1",
+      "type": "BUG",
+      "title": "A bug report",
+      "description": "",
+      "status": "TO_DO",
+      "priority": "LOW",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 16,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:51.276Z"
+    },
+    {
+      "id": "56",
+      "projectId": "1",
+      "type": "TASK",
+      "title": "Critical task",
+      "description": "",
+      "status": "TO_DO",
+      "priority": "CRITICAL",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 17,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:51.283Z"
+    },
+    {
+      "id": "57",
+      "projectId": "2",
+      "type": "STORY",
+      "title": "First in project 2",
+      "description": "",
+      "status": "TO_DO",
+      "priority": "LOW",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 13,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:51.406Z"
+    },
+    {
+      "id": "58",
+      "projectId": "2",
+      "type": "BUG",
+      "title": "Second in project 2",
+      "description": "",
+      "status": "TO_DO",
+      "priority": "HIGH",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 14,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:51.408Z"
+    },
+    {
+      "id": "59",
+      "projectId": "1",
+      "type": "STORY",
+      "title": "Test ticket",
+      "description": "A test description",
+      "status": "TO_DO",
+      "priority": "MEDIUM",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 18,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:51.414Z"
+    },
+    {
+      "id": "60",
+      "projectId": "4",
+      "type": "STORY",
+      "title": "Test ticket",
+      "description": "A test description",
+      "status": "TO_DO",
+      "priority": "MEDIUM",
+      "assignee_id": null,
+      "epic_id": null,
+      "ticket_number": 3,
+      "created_by": "1",
+      "created_at": "2026-02-27T14:19:51.604Z"
     }
   ]
 }
