@@ -25,7 +25,7 @@ describe('bootstrapProject', () => {
         expect(workflows).toHaveLength(4);
     });
 
-    it('creates 1 maintenance epic in backlog-items', () => {
+    it('creates 1 maintenance epic in backlog-items with extended fields', () => {
         const db = createDb();
         const result = bootstrapProject(db, '99');
 
@@ -37,6 +37,10 @@ describe('bootstrapProject', () => {
         expect(items[0].title).toBe('Maintenance');
         expect(items[0].status).toBe('TO_DO');
         expect(items[0].created_by).toBe('system');
+        expect(items[0].priority).toBeNull();
+        expect(items[0].assignee_id).toBeNull();
+        expect(items[0].epic_id).toBeNull();
+        expect(items[0].ticket_number).toBe(1);
     });
 
     it('STORY workflow has 4 statuses with IN_REVIEW', () => {

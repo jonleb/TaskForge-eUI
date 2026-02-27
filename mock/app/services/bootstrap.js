@@ -82,6 +82,10 @@ function bootstrapProject(db, projectId) {
         title: 'Maintenance',
         description: 'Default epic for maintenance and operational tasks',
         status: 'TO_DO',
+        priority: null,
+        assignee_id: null,
+        epic_id: null,
+        ticket_number: 1,
         created_by: 'system',
         created_at: now,
     }).write();
