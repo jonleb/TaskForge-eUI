@@ -1983,3 +1983,319 @@ describe('GET /api/projects/:projectId/backlog/:ticketNumber/activity', () => {
         expect(res.status).toBe(401);
     });
 });
+
+// --- PUT /api/projects/:projectId/workflows/:workflowId ---
+
+describe('PUT /api/projects/:projectId/workflows/:workflowId', () => {
+    const VALID_PAYLOAD = {
+        statuses: ['TO_DO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE'],
+        transitions: {
+            TO_DO: ['IN_PROGRESS'],
+            IN_PROGRESS: ['IN_REVIEW', 'TO_DO'],
+            IN_REVIEW: ['DONE', 'IN_PROGRESS'],
+            DONE: [],
+        },
+    };
+
+    it('should return 200 and update statuses + transitions', async () => {
+        const token = await getTokenFor('superadmin');
+        const payload = {
+            statuses: ['TO_DO', 'IN_PROGRESS', 'DONE'],
+            transitions: {
+                TO_DO: ['IN_PROGRESS'],
+                IN_PROGRESS: ['DONE', 'TO_DO'],
+                DONE: [],
+            },
+        };
+        // Use EPIC workflow (id=4) for project 1 — only TO_DO tickets exist
+        const res = await request(app)
+            .put('/api/projects/1/workflows/4')
+            .set('Authorization', `Bearer ${token}`)
+            .send(payload);
+
+        expect(res.status).toBe(200);
+        expect(res.body.statuses).toEqual(payload.statuses);
+        expect(res.body.transitions).toEqual(payload.transitions);
+        expect(res.body.updated_at).toBeDefined();
+
+        // Restore original EPIC workflow
+        await request(app)
+            .put('/api/projects/1/workflows/4')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO', 'IN_PROGRESS', 'DONE'],
+                transitions: { TO_DO: ['IN_PROGRESS'], IN_PROGRESS: ['DONE', 'TO_DO'], DONE: [] },
+            });
+    });
+
+    it('should return updated workflow with new statuses', async () => {
+        const token = await getTokenFor('superadmin');
+        const payload = {
+            statuses: ['TO_DO', 'IN_PROGRESS', 'TESTING', 'DONE'],
+            transitions: {
+                TO_DO: ['IN_PROGRESS'],
+                IN_PROGRESS: ['TESTING'],
+                TESTING: ['DONE', 'IN_PROGRESS'],
+                DONE: [],
+            },
+        };
+        const res = await request(app)
+            .put('/api/projects/1/workflows/4')
+            .set('Authorization', `Bearer ${token}`)
+            .send(payload);
+
+        expect(res.status).toBe(200);
+        expect(res.body.statuses).toContain('TESTING');
+        expect(res.body.ticketType).toBe('EPIC');
+        expect(res.body.projectId).toBe('1');
+
+        // Restore
+        await request(app)
+            .put('/api/projects/1/workflows/4')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO', 'IN_PROGRESS', 'DONE'],
+                transitions: { TO_DO: ['IN_PROGRESS'], IN_PROGRESS: ['DONE', 'TO_DO'], DONE: [] },
+            });
+    });
+
+    it('should return 404 for non-existent workflow ID', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/workflows/9999')
+            .set('Authorization', `Bearer ${token}`)
+            .send(VALID_PAYLOAD);
+
+        expect(res.status).toBe(404);
+        expect(res.body.message).toBe('Workflow not found');
+    });
+
+    it('should return 404 for workflow belonging to different project', async () => {
+        const token = await getTokenFor('superadmin');
+        // Workflow 5 belongs to project 2, not project 1
+        const res = await request(app)
+            .put('/api/projects/1/workflows/5')
+            .set('Authorization', `Bearer ${token}`)
+            .send(VALID_PAYLOAD);
+
+        expect(res.status).toBe(404);
+        expect(res.body.message).toBe('Workflow not found');
+    });
+
+    it('should return 400 when statuses is missing', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/workflows/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ transitions: { TO_DO: [] } });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toBe('statuses must be a non-empty array');
+    });
+
+    it('should return 400 when statuses is empty array', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/workflows/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ statuses: [], transitions: {} });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toBe('statuses must be a non-empty array');
+    });
+
+    it('should return 400 for duplicate status', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/workflows/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO', 'TO_DO'],
+                transitions: { TO_DO: [] },
+            });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain('Duplicate status');
+    });
+
+    it('should return 400 for invalid status format (lowercase)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/workflows/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['to_do'],
+                transitions: { to_do: [] },
+            });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain('Invalid status format');
+    });
+
+    it('should return 400 when transitions is missing', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/workflows/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ statuses: ['TO_DO'] });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toBe('transitions must be an object');
+    });
+
+    it('should return 400 for transition key not in statuses', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/workflows/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO'],
+                transitions: { TO_DO: [], UNKNOWN: [] },
+            });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain("Transition key 'UNKNOWN' is not a defined status");
+    });
+
+    it('should return 400 for transition target not in statuses', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/workflows/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO', 'DONE'],
+                transitions: { TO_DO: ['UNKNOWN'], DONE: [] },
+            });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain("Transition target 'UNKNOWN' from 'TO_DO' is not a defined status");
+    });
+
+    it('should return 400 for self-transition', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/workflows/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO', 'DONE'],
+                transitions: { TO_DO: ['TO_DO'], DONE: [] },
+            });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain("Self-transition not allowed: 'TO_DO'");
+    });
+
+    it('should return 400 for missing transition key for a status', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/workflows/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO', 'DONE'],
+                transitions: { TO_DO: ['DONE'] },
+            });
+
+        expect(res.status).toBe(400);
+        expect(res.body.message).toContain("Missing transitions for status: 'DONE'");
+    });
+
+    it('should return 409 when removing a status used by existing tickets', async () => {
+        const token = await getTokenFor('superadmin');
+        // STORY workflow (id=1) for project 1 has tickets in IN_PROGRESS and TO_DO
+        const res = await request(app)
+            .put('/api/projects/1/workflows/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO', 'DONE'],
+                transitions: { TO_DO: ['DONE'], DONE: [] },
+            });
+
+        expect(res.status).toBe(409);
+        expect(res.body.message).toContain('Cannot remove statuses currently in use');
+        expect(res.body.message).toContain('IN_PROGRESS');
+    });
+
+    it('should allow removing unused statuses', async () => {
+        const token = await getTokenFor('superadmin');
+        // EPIC workflow (id=4) — only TO_DO tickets exist, so IN_PROGRESS is removable
+        const res = await request(app)
+            .put('/api/projects/1/workflows/4')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO', 'DONE'],
+                transitions: { TO_DO: ['DONE'], DONE: [] },
+            });
+
+        expect(res.status).toBe(200);
+        expect(res.body.statuses).toEqual(['TO_DO', 'DONE']);
+
+        // Restore
+        await request(app)
+            .put('/api/projects/1/workflows/4')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO', 'IN_PROGRESS', 'DONE'],
+                transitions: { TO_DO: ['IN_PROGRESS'], IN_PROGRESS: ['DONE', 'TO_DO'], DONE: [] },
+            });
+    });
+
+    it('should allow adding new statuses', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/workflows/4')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO', 'IN_PROGRESS', 'TESTING', 'DONE'],
+                transitions: {
+                    TO_DO: ['IN_PROGRESS'],
+                    IN_PROGRESS: ['TESTING'],
+                    TESTING: ['DONE', 'IN_PROGRESS'],
+                    DONE: [],
+                },
+            });
+
+        expect(res.status).toBe(200);
+        expect(res.body.statuses).toContain('TESTING');
+
+        // Restore
+        await request(app)
+            .put('/api/projects/1/workflows/4')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO', 'IN_PROGRESS', 'DONE'],
+                transitions: { TO_DO: ['IN_PROGRESS'], IN_PROGRESS: ['DONE', 'TO_DO'], DONE: [] },
+            });
+    });
+
+    it('should return 403 for DEVELOPER role', async () => {
+        const token = await getTokenFor('developer');
+        const res = await request(app)
+            .put('/api/projects/1/workflows/1')
+            .set('Authorization', `Bearer ${token}`)
+            .send(VALID_PAYLOAD);
+
+        expect(res.status).toBe(403);
+    });
+
+    it('should return 200 for PROJECT_ADMIN role', async () => {
+        const token = await getTokenFor('projectadmin');
+        // Use EPIC workflow to avoid conflict issues
+        const res = await request(app)
+            .put('/api/projects/1/workflows/4')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                statuses: ['TO_DO', 'IN_PROGRESS', 'DONE'],
+                transitions: { TO_DO: ['IN_PROGRESS'], IN_PROGRESS: ['DONE', 'TO_DO'], DONE: [] },
+            });
+
+        expect(res.status).toBe(200);
+    });
+
+    it('should return 401 without token', async () => {
+        const res = await request(app)
+            .put('/api/projects/1/workflows/1')
+            .send(VALID_PAYLOAD);
+
+        expect(res.status).toBe(401);
+    });
+});

@@ -234,6 +234,94 @@ module.exports = function (app, db) {
         );
 
         /**
+         * PUT /api/projects/:projectId/workflows/:workflowId
+         * Update a workflow's statuses and transitions.
+         * Validates status format, transition integrity, and prevents removal of statuses in use.
+         * Protected — requires PROJECT_ADMIN role. SUPER_ADMIN bypasses.
+         */
+        app.put(
+            '/api/projects/:projectId/workflows/:workflowId',
+            authMiddleware,
+            requireProjectRole(db, 'PROJECT_ADMIN'),
+            (req, res) => {
+                const { projectId, workflowId } = req.params;
+                const workflow = db.get('workflows').find({ id: workflowId }).value();
+                if (!workflow || workflow.projectId !== projectId) {
+                    return res.status(404).json({ message: 'Workflow not found' });
+                }
+
+                const { statuses, transitions } = req.body;
+
+                // Validate statuses
+                if (!Array.isArray(statuses) || statuses.length === 0) {
+                    return res.status(400).json({ message: 'statuses must be a non-empty array' });
+                }
+                const STATUS_RE = /^[A-Z][A-Z0-9_]{0,29}$/;
+                for (const s of statuses) {
+                    if (typeof s !== 'string' || !STATUS_RE.test(s)) {
+                        return res.status(400).json({ message: `Invalid status format: ${s}. Use uppercase letters, digits, and underscores (max 30 chars)` });
+                    }
+                }
+                const seen = new Set();
+                for (const s of statuses) {
+                    if (seen.has(s)) {
+                        return res.status(400).json({ message: `Duplicate status: ${s}` });
+                    }
+                    seen.add(s);
+                }
+
+                // Validate transitions
+                if (!transitions || typeof transitions !== 'object' || Array.isArray(transitions)) {
+                    return res.status(400).json({ message: 'transitions must be an object' });
+                }
+                const statusSet = new Set(statuses);
+                for (const s of statuses) {
+                    if (!(s in transitions)) {
+                        return res.status(400).json({ message: `Missing transitions for status: '${s}'` });
+                    }
+                }
+                for (const [key, targets] of Object.entries(transitions)) {
+                    if (!statusSet.has(key)) {
+                        return res.status(400).json({ message: `Transition key '${key}' is not a defined status` });
+                    }
+                    if (!Array.isArray(targets)) {
+                        return res.status(400).json({ message: `transitions must be an object` });
+                    }
+                    for (const t of targets) {
+                        if (!statusSet.has(t)) {
+                            return res.status(400).json({ message: `Transition target '${t}' from '${key}' is not a defined status` });
+                        }
+                        if (t === key) {
+                            return res.status(400).json({ message: `Self-transition not allowed: '${key}'` });
+                        }
+                    }
+                }
+
+                // Safety check: statuses in use by existing tickets
+                const removedStatuses = workflow.statuses.filter(s => !statusSet.has(s));
+                if (removedStatuses.length > 0) {
+                    const tickets = db.get('backlog-items')
+                        .filter({ projectId, type: workflow.ticketType })
+                        .value();
+                    const usedStatuses = [...new Set(tickets.map(t => t.status))];
+                    const blocked = removedStatuses.filter(s => usedStatuses.includes(s));
+                    if (blocked.length > 0) {
+                        return res.status(409).json({ message: `Cannot remove statuses currently in use: ${blocked.join(', ')}` });
+                    }
+                }
+
+                // Update
+                db.get('workflows')
+                    .find({ id: workflowId })
+                    .assign({ statuses, transitions, updated_at: new Date().toISOString() })
+                    .write();
+
+                const updated = db.get('workflows').find({ id: workflowId }).value();
+                return res.json(updated);
+            }
+        );
+
+        /**
          * GET /api/projects/:projectId/backlog
          * Returns paginated backlog items for the project.
          * Query params:
