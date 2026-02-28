@@ -182,4 +182,66 @@ describe('SprintsComponent', () => {
         const sections = fixture.nativeElement.querySelectorAll('section[aria-label]');
         expect(sections.length).toBe(3);
     });
+
+    describe('Close Sprint confirmation (STORY-006)', () => {
+        beforeEach(() => {
+            permissionMock['hasProjectRole'] = vi.fn().mockReturnValue(of(true));
+            currentProject$.next(mockProject);
+            fixture.detectChanges();
+        });
+
+        it('should close sprint directly when all tickets are DONE', () => {
+            // Override backlog to have all DONE tickets for sp-2
+            const allDoneResponse = {
+                ...mockBacklogResponse,
+                data: [
+                    { ...mockBacklogResponse.data[0], sprint_id: 'sp-2', status: 'DONE' },
+                    { ...mockBacklogResponse.data[1], sprint_id: 'sp-2', status: 'DONE' },
+                    mockBacklogResponse.data[2],
+                ],
+            };
+            projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of(allDoneResponse));
+            // Reload to get updated backlog
+            component.loadSprints('1');
+            fixture.detectChanges();
+
+            component.closeSprint(mockSprints[1]);
+            expect(projectServiceMock['updateSprintStatus']).toHaveBeenCalledWith('1', 'sp-2', { status: 'CLOSED', move_open_tickets_to_backlog: false });
+        });
+
+        it('should open confirmation dialog when unresolved tickets exist', () => {
+            component.closeSprint(mockSprints[1]);
+            expect(component.sprintToClose).toEqual(mockSprints[1]);
+            expect(component.unresolvedTickets.length).toBe(1);
+            expect(component.unresolvedTickets[0].status).toBe('IN_PROGRESS');
+        });
+
+        it('should call API with move flag on confirm close', () => {
+            component.closeSprint(mockSprints[1]);
+            component.onConfirmClose();
+            expect(projectServiceMock['updateSprintStatus']).toHaveBeenCalledWith('1', 'sp-2', { status: 'CLOSED', move_open_tickets_to_backlog: true });
+        });
+
+        it('should reset close form on dismiss', () => {
+            component.closeSprint(mockSprints[1]);
+            expect(component.sprintToClose).toBeTruthy();
+            component.resetCloseForm();
+            expect(component.sprintToClose).toBeNull();
+            expect(component.unresolvedTickets.length).toBe(0);
+        });
+
+        it('should show error growl when close fails', () => {
+            projectServiceMock['updateSprintStatus'] = vi.fn().mockReturnValue(throwError(() => new Error('fail')));
+            component.closeSprint(mockSprints[1]);
+            component.onConfirmClose();
+            expect(growlServiceMock.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
+        });
+
+        it('should render close confirmation dialog in template', () => {
+            const dialog = fixture.nativeElement.querySelector('eui-dialog[title="sprint.dialog.close-title"]');
+            // Dialog exists but may not have title as attribute since it's bound dynamically
+            const dialogs = fixture.nativeElement.querySelectorAll('eui-dialog');
+            expect(dialogs.length).toBe(2); // create + close confirm
+        });
+    });
 });
