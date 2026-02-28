@@ -1,0 +1,44 @@
+.planning-columns {
+    display: flex;
+    gap: 1.5rem;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+}
+
+.planning-column {
+    flex: 1;
+    min-width: 0;
+}
+
+.column-heading {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.ticket-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ticket-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ticket-number {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.ticket-badges {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
