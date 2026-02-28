@@ -43,7 +43,8 @@
         } @else {
             <!-- Ticket type selector -->
             <h2>{{ 'settings.workflows-heading' | translate }}</h2>
-            <div class="toggle-group-wrapper" role="group" [attr.aria-label]="'workflow-mgmt.select-type' | translate">
+            <fieldset class="toggle-group-wrapper" [attr.aria-label]="'workflow-mgmt.select-type' | translate">
+                <legend class="eui-u-sr-only">{{ 'workflow-mgmt.select-type' | translate }}</legend>
                 <eui-toggle-group (itemClick)="selectWorkflow($event)">
                     @for (workflow of workflows; track workflow.id) {
                         <eui-toggle-group-item
@@ -53,7 +54,7 @@
                         </eui-toggle-group-item>
                     }
                 </eui-toggle-group>
-            </div>
+            </fieldset>
 
             @if (selectedWorkflow) {
                 <section class="workflow-section" [attr.aria-label]="'workflow.ticket-type.' + selectedWorkflow.ticketType | translate">
@@ -162,11 +163,10 @@
                                             @for (toStatus of editStatuses; track toStatus) {
                                                 <td [attr.data-col-label]="toStatus">
                                                     @if (fromStatus === toStatus) {
-                                                        <input type="checkbox" disabled
-                                                            [attr.aria-label]="'workflow-mgmt.transition-self' | translate"
-                                                            aria-hidden="true" />
+                                                        <!-- Self-transition not allowed — empty cell -->
+                                                        <span class="self-transition" aria-hidden="true">—</span>
                                                     } @else {
-                                                        <input type="checkbox"
+                                                        <input euiInputCheckBox type="checkbox"
                                                             [checked]="hasTransition(fromStatus, toStatus)"
                                                             (change)="toggleTransition(fromStatus, toStatus)"
                                                             [attr.aria-label]="'workflow-mgmt.transition-label' | translate:{ from: fromStatus, to: toStatus }" />

@@ -10,6 +10,7 @@ import { EUI_ICON } from '@eui/components/eui-icon';
 import { EUI_TOGGLE_GROUP, EuiToggleGroupItemComponent } from '@eui/components/eui-toggle-group';
 import { EuiIconButtonComponent } from '@eui/components/eui-icon-button';
 import { EuiInputTextComponent } from '@eui/components/eui-input-text';
+import { EUI_INPUT_CHECKBOX } from '@eui/components/eui-input-checkbox';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -24,7 +25,7 @@ import { PermissionService } from '../../../core/auth';
     imports: [
         ...EUI_PAGE, ...EUI_STATUS_BADGE, ...EUI_FEEDBACK_MESSAGE,
         ...EUI_BUTTON, ...EUI_ICON, ...EUI_TOGGLE_GROUP,
-        EuiIconButtonComponent, EuiInputTextComponent, EuiDialogComponent,
+        EuiIconButtonComponent, EuiInputTextComponent, ...EUI_INPUT_CHECKBOX, EuiDialogComponent,
         FormsModule, TranslateModule,
     ],
 })
