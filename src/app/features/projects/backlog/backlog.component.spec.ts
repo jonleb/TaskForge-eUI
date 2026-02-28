@@ -40,16 +40,16 @@ const mockEpics: BacklogItem[] = [{
     created_by: 'system', created_at: '2025-01-20T09:00:00.000Z',
 }];
 const mockItems: BacklogItem[] = [
-    ...mockEpics,
+    { ...mockEpics[0], position: 1 },
     { id: '17', projectId: '1', type: 'STORY', title: 'Login page',
       description: 'Implement login', status: 'TO_DO', priority: 'HIGH',
       assignee_id: '2', epic_id: '1', ticket_number: 2,
-      created_by: '1', created_at: '2026-02-27T10:00:00.000Z' },
+      created_by: '1', created_at: '2026-02-27T10:00:00.000Z', position: 2 },
     { id: '18', projectId: '1', type: 'BUG', title: 'Fix crash',
       description: 'App crashes on startup when user opens settings',
       status: 'IN_PROGRESS', priority: 'CRITICAL',
       assignee_id: '3', epic_id: null, ticket_number: 3,
-      created_by: '1', created_at: '2026-02-27T11:00:00.000Z' },
+      created_by: '1', created_at: '2026-02-27T11:00:00.000Z', position: 3 },
 ];
 const mockResp: BacklogListResponse = { data: mockItems, total: 3, page: 1, limit: 10 };
 const emptyResp: BacklogListResponse = { data: [], total: 0, page: 1, limit: 10 };
@@ -65,7 +65,7 @@ describe('BacklogComponent', () => {
     beforeEach(async () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
         svc = {
-            getBacklog: vi.fn().mockReturnValue(of(mockResp)),
+            getBacklog: vi.fn().mockImplementation(() => of({ ...mockResp, data: mockItems.map(i => ({ ...i })) })),
             getProjectMembers: vi.fn().mockReturnValue(of(mockMembers)),
             getProjects: vi.fn(), getProject: vi.fn(), getUser: vi.fn(),
             createProject: vi.fn(), updateProject: vi.fn(),
@@ -73,6 +73,7 @@ describe('BacklogComponent', () => {
             searchCandidates: vi.fn(), getWorkflows: vi.fn(),
             createTicket: vi.fn(),
             getEpics: vi.fn().mockReturnValue(of(mockEpics)),
+            reorderBacklog: vi.fn().mockReturnValue(of({ updated: 3 })),
         };
         perm = {
             isSuperAdmin: vi.fn().mockReturnValue(true),
@@ -121,7 +122,7 @@ describe('BacklogComponent', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         expect(svc['getBacklog']).toHaveBeenCalledWith('1', {
-            _page: 1, _limit: 10, _sort: 'ticket_number', _order: 'desc',
+            _page: 1, _limit: 10, _sort: 'position', _order: 'asc',
         });
     });
 
@@ -249,7 +250,7 @@ describe('BacklogComponent', () => {
     it('should change sort params on select change', () => {
         currentProject$.next(mockProject); fixture.detectChanges();
         svc['getBacklog'].mockClear();
-        component.selectedSortIndex = 2; // title-asc
+        component.selectedSortIndex = 3; // title-asc (shifted by 1 due to new position option)
         component.onSortSelectChange();
         expect(component.params._sort).toBe('title');
         expect(component.params._order).toBe('asc');
@@ -457,5 +458,157 @@ describe('BacklogComponent', () => {
         component.newTicketTitle = 'New ticket';
         component.onCreateTicket();
         expect(component.createError).toBe('Duplicate title');
+    });
+
+    // --- STORY-003: Reorder UI ---
+    it('should default sort to position asc', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        expect(component.params._sort).toBe('position');
+        expect(component.params._order).toBe('asc');
+        expect(component.selectedSortIndex).toBe(0);
+    });
+    it('should have Priority order as first sort option', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        expect(component.sortOptions[0].sort).toBe('position');
+    });
+    it('should set isReorderMode true when sort=position, canReorder, no filters', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        component.canReorder = true;
+        expect(component.isReorderMode).toBe(true);
+    });
+    it('should set isReorderMode false when filters active', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        component.canReorder = true;
+        component.statusChecks['TO_DO'] = true;
+        component.onStatusCheckChange();
+        expect(component.isReorderMode).toBe(false);
+    });
+    it('should set isReorderMode false when sort is not position', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        component.canReorder = true;
+        component.selectedSortIndex = 1;
+        component.onSortSelectChange();
+        expect(component.isReorderMode).toBe(false);
+    });
+    it('should set isReorderMode false when canReorder is false', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['hasProjectRole'].mockReturnValue(of(false));
+        currentProject$.next(mockProject); fixture.detectChanges();
+        expect(component.isReorderMode).toBe(false);
+    });
+    it('should swap items on moveUp', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        const firstTitle = component.items[0].title;
+        const secondTitle = component.items[1].title;
+        component.moveUp(1);
+        expect(component.items[0].title).toBe(secondTitle);
+        expect(component.items[1].title).toBe(firstTitle);
+    });
+    it('should swap items on moveDown', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        const firstTitle = component.items[0].title;
+        const secondTitle = component.items[1].title;
+        component.moveDown(0);
+        expect(component.items[0].title).toBe(secondTitle);
+        expect(component.items[1].title).toBe(firstTitle);
+    });
+    it('should not moveUp first item', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        const firstTitle = component.items[0].title;
+        component.moveUp(0);
+        expect(component.items[0].title).toBe(firstTitle);
+    });
+    it('should not moveDown last item', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        const lastTitle = component.items[component.items.length - 1].title;
+        component.moveDown(component.items.length - 1);
+        expect(component.items[component.items.length - 1].title).toBe(lastTitle);
+    });
+    it('should show move buttons in reorder mode', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        component.canReorder = true; fixture.detectChanges();
+        expect(fixture.nativeElement.querySelectorAll('eui-icon-button').length).toBeGreaterThan(0);
+    });
+    it('should hide move buttons when not in reorder mode', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['hasProjectRole'].mockReturnValue(of(false));
+        currentProject$.next(mockProject); fixture.detectChanges();
+        expect(fixture.nativeElement.querySelectorAll('.reorder-controls').length).toBe(0);
+    });
+    it('should show position badge in reorder mode', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        component.canReorder = true; fixture.detectChanges();
+        expect(fixture.nativeElement.querySelectorAll('.position-badge').length).toBe(3);
+    });
+
+    // --- STORY-004: Save/Discard & Role Gating ---
+    it('should have hasReorderChanges false initially', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        expect(component.hasReorderChanges).toBe(false);
+    });
+    it('should have hasReorderChanges true after move', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        component.moveDown(0);
+        expect(component.hasReorderChanges).toBe(true);
+    });
+    it('should restore original order on discard', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        // Verify original positions are stored
+        expect(component.originalPositions.size).toBe(3);
+        const originalOrder = component.items.map(i => i.ticket_number);
+        component.moveDown(0);
+        const afterMove = component.items.map(i => i.ticket_number);
+        expect(afterMove).not.toEqual(originalOrder);
+        expect(component.hasReorderChanges).toBe(true);
+        component.discardReorder();
+        expect(component.items.map(i => i.ticket_number)).toEqual(originalOrder);
+    });
+    it('should call reorderBacklog on save', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        component.moveDown(0);
+        component.saveReorder();
+        expect(svc['reorderBacklog']).toHaveBeenCalledWith('1', expect.objectContaining({
+            items: expect.arrayContaining([
+                expect.objectContaining({ position: expect.any(Number) }),
+            ]),
+        }));
+    });
+    it('should show success growl on save', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        component.moveDown(0);
+        growl.growl.mockClear();
+        component.saveReorder();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+    });
+    it('should show error growl on save failure', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        svc['reorderBacklog'].mockReturnValue(throwError(() => new Error('fail')));
+        component.moveDown(0);
+        growl.growl.mockClear();
+        component.saveReorder();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
+    });
+    it('should set canReorder true for SUPER_ADMIN', () => {
+        perm['isSuperAdmin'].mockReturnValue(true);
+        currentProject$.next(mockProject); fixture.detectChanges();
+        expect(component.canReorder).toBe(true);
+    });
+    it('should set canReorder false for DEVELOPER', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['hasProjectRole'].mockReturnValue(of(false));
+        currentProject$.next(mockProject); fixture.detectChanges();
+        expect(component.canReorder).toBe(false);
+    });
+    it('should show save/discard bar when changes exist', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        component.canReorder = true;
+        component.moveDown(0);
+        fixture.detectChanges();
+        expect(component.hasReorderChanges).toBe(true);
+        expect(fixture.nativeElement.querySelector('.reorder-bar')).toBeTruthy();
+    });
+    it('should hide save/discard bar when no changes', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('.reorder-bar')).toBeFalsy();
     });
 });

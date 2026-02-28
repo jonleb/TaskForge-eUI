@@ -17,13 +17,14 @@ import { EUI_CONTENT_CARD } from '@eui/components/eui-content-card';
 import { EUI_CARD } from '@eui/components/eui-card';
 import { EUI_INPUT_CHECKBOX } from '@eui/components/eui-input-checkbox';
 import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
+import { EUI_ICON_BUTTON } from '@eui/components/eui-icon-button';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
     ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember,
     TicketType, TicketPriority, WorkflowStatus,
     CREATABLE_TICKET_TYPES, TICKET_PRIORITIES, TICKET_TYPES, WORKFLOW_STATUSES,
-    BacklogListParams,
+    BacklogListParams, ReorderPayload,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
@@ -44,7 +45,8 @@ interface FilterChip {
         ...EUI_FEEDBACK_MESSAGE, ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT,
         ...EUI_TEXTAREA, EuiDialogComponent, EuiPaginatorComponent,
         ...EUI_CONTENT_CARD, ...EUI_CARD, ...EUI_INPUT_CHECKBOX,
-        ...EUI_PROGRESS_BAR, FormsModule, TranslateModule, RouterLink,
+        ...EUI_PROGRESS_BAR, ...EUI_ICON_BUTTON,
+        FormsModule, TranslateModule, RouterLink,
     ],
 })
 export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -71,8 +73,8 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
     params: BacklogListParams = {
         _page: 1,
         _limit: 10,
-        _sort: 'ticket_number',
-        _order: 'desc',
+        _sort: 'position',
+        _order: 'asc',
     };
 
     // Filter column state
@@ -99,6 +101,7 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Sort dropdown
     readonly sortOptions = [
+        { label: 'backlog.sort.position', sort: 'position', order: 'asc' as const },
         { label: 'backlog.sort.ticket-desc', sort: 'ticket_number', order: 'desc' as const },
         { label: 'backlog.sort.ticket-asc', sort: 'ticket_number', order: 'asc' as const },
         { label: 'backlog.sort.title-asc', sort: 'title', order: 'asc' as const },
@@ -124,6 +127,11 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private readonly assigneeMap = new Map<string, string>();
 
+    // Reorder state (STORY-003 / STORY-004)
+    canReorder = false;
+    originalPositions = new Map<number, number>();
+    isSaving = false;
+
     ngOnInit(): void {
         this.searchSubject.pipe(
             debounceTime(300),
@@ -142,6 +150,7 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
             this.projectKey = project.key;
             this.cdr.markForCheck();
             this.determineCanCreate(project.id);
+            this.determineCanReorder(project.id);
             this.loadBacklog(project.id);
         });
     }
@@ -167,6 +176,7 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.items = res.data;
                 this.total = res.total;
                 this.isLoading = false;
+                this.storeOriginalPositions();
                 this.cdr.markForCheck();
                 this.loadAssignees(projectId);
             },
@@ -319,7 +329,7 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedPriorities.clear();
         this.params = { ...this.params, status: undefined, type: undefined, priority: undefined };
         this.selectedSortIndex = 0;
-        this.params = { ...this.params, _sort: 'ticket_number', _order: 'desc' };
+        this.params = { ...this.params, _sort: 'position', _order: 'asc' };
         if (this.project) this.loadBacklog(this.project.id);
     }
 
@@ -342,6 +352,90 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
     retry(): void {
         this.hasError = false;
         if (this.project) this.loadBacklog(this.project.id);
+    }
+
+    // --- Reorder ---
+
+    get isReorderMode(): boolean {
+        return this.canReorder
+            && this.params._sort === 'position'
+            && !this.hasActiveFilters;
+    }
+
+    get hasReorderChanges(): boolean {
+        return this.items.some(item =>
+            item.position !== this.originalPositions.get(item.ticket_number),
+        );
+    }
+
+    moveUp(index: number): void {
+        if (index <= 0) return;
+        const temp = this.items[index];
+        this.items[index] = this.items[index - 1];
+        this.items[index - 1] = temp;
+        this.updateLocalPositions();
+    }
+
+    moveDown(index: number): void {
+        if (index >= this.items.length - 1) return;
+        const temp = this.items[index];
+        this.items[index] = this.items[index + 1];
+        this.items[index + 1] = temp;
+        this.updateLocalPositions();
+    }
+
+    discardReorder(): void {
+        this.items = this.items
+            .map(item => ({ ...item, position: this.originalPositions.get(item.ticket_number) ?? item.position }))
+            .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+        this.cdr.markForCheck();
+    }
+
+    saveReorder(): void {
+        if (!this.project || this.isSaving) return;
+        this.isSaving = true;
+        this.cdr.markForCheck();
+
+        const payload: ReorderPayload = {
+            items: this.items.map((item, i) => ({
+                ticket_number: item.ticket_number,
+                position: i + 1,
+            })),
+        };
+
+        this.projectService.reorderBacklog(this.project.id, payload).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe({
+            next: () => {
+                this.isSaving = false;
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: this.translate.instant('backlog.reorder.growl.saved'),
+                });
+                this.storeOriginalPositions();
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.isSaving = false;
+                this.growlService.growl({
+                    severity: 'error',
+                    summary: this.translate.instant('backlog.reorder.growl.save-failed'),
+                });
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    private updateLocalPositions(): void {
+        this.items = this.items.map((item, i) => ({ ...item, position: i + 1 }));
+        this.cdr.markForCheck();
+    }
+
+    private storeOriginalPositions(): void {
+        this.originalPositions.clear();
+        this.items.forEach(item => {
+            this.originalPositions.set(item.ticket_number, item.position ?? 0);
+        });
     }
 
     // --- Helpers ---
@@ -450,6 +544,20 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
             takeUntil(this.destroy$),
         ).subscribe(can => {
             this.canCreate = can;
+            this.cdr.markForCheck();
+        });
+    }
+
+    private determineCanReorder(projectId: string): void {
+        if (this.permissionService.isSuperAdmin()) {
+            this.canReorder = true;
+            this.cdr.markForCheck();
+            return;
+        }
+        this.permissionService.hasProjectRole(projectId, 'PROJECT_ADMIN').pipe(
+            takeUntil(this.destroy$),
+        ).subscribe(can => {
+            this.canReorder = can;
             this.cdr.markForCheck();
         });
     }
