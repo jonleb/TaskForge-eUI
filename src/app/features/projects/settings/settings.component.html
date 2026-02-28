@@ -90,7 +90,7 @@
                             <div class="add-status-row">
                                 <label euiLabel for="new-status-input">{{ 'workflow-mgmt.add-status' | translate }}</label>
                                 <div class="add-status-controls">
-                                    <input id="new-status-input"
+                                    <input id="new-status-input" euiInputText
                                         [(ngModel)]="newStatusName"
                                         [placeholder]="'workflow-mgmt.add-status-placeholder' | translate"
                                         (keydown.enter)="addStatus()"
