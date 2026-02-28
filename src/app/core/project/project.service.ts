@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListParams, BacklogListResponse, UpdateTicketPayload, TicketComment, ActivityEntry, UpdateWorkflowPayload } from './project.models';
+import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListParams, BacklogListResponse, UpdateTicketPayload, TicketComment, ActivityEntry, UpdateWorkflowPayload, LinkType, TicketLink, CreateTicketLinkPayload } from './project.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
@@ -101,5 +101,21 @@ export class ProjectService {
 
     getActivity(projectId: string, ticketNumber: number): Observable<ActivityEntry[]> {
         return this.http.get<ActivityEntry[]>(`/api/projects/${projectId}/backlog/${ticketNumber}/activity`);
+    }
+
+    getLinkTypes(): Observable<LinkType[]> {
+        return this.http.get<LinkType[]>('/api/link-types');
+    }
+
+    getTicketLinks(projectId: string, ticketNumber: number): Observable<TicketLink[]> {
+        return this.http.get<TicketLink[]>(`/api/projects/${projectId}/backlog/${ticketNumber}/links`);
+    }
+
+    createTicketLink(projectId: string, ticketNumber: number, payload: CreateTicketLinkPayload): Observable<TicketLink> {
+        return this.http.post<TicketLink>(`/api/projects/${projectId}/backlog/${ticketNumber}/links`, payload);
+    }
+
+    deleteTicketLink(projectId: string, ticketNumber: number, linkId: string): Observable<void> {
+        return this.http.delete<void>(`/api/projects/${projectId}/backlog/${ticketNumber}/links/${linkId}`);
     }
 }

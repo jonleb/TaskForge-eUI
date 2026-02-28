@@ -628,4 +628,54 @@ describe('ProjectService', () => {
             req.flush([]);
         });
     });
+
+    describe('getLinkTypes()', () => {
+        it('should GET /api/link-types', () => {
+            service.getLinkTypes().subscribe(types => {
+                expect(types.length).toBe(1);
+                expect(types[0].name).toBe('BLOCKS');
+            });
+
+            const req = httpMock.expectOne('/api/link-types');
+            expect(req.request.method).toBe('GET');
+            req.flush([{ id: '1', name: 'BLOCKS', inward: 'is blocked by', outward: 'blocks', scope: 'GLOBAL', created_at: '2025-01-01T00:00:00.000Z' }]);
+        });
+    });
+
+    describe('getTicketLinks()', () => {
+        it('should GET /api/projects/:id/backlog/:num/links', () => {
+            service.getTicketLinks('1', 2).subscribe(links => {
+                expect(links).toEqual([]);
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/backlog/2/links');
+            expect(req.request.method).toBe('GET');
+            req.flush([]);
+        });
+    });
+
+    describe('createTicketLink()', () => {
+        it('should POST /api/projects/:id/backlog/:num/links with payload', () => {
+            const payload = { linkTypeId: '1', targetTicketNumber: 3 };
+
+            service.createTicketLink('1', 2, payload).subscribe(link => {
+                expect(link.linkTypeId).toBe('1');
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/backlog/2/links');
+            expect(req.request.method).toBe('POST');
+            expect(req.request.body).toEqual(payload);
+            req.flush({ id: '1', projectId: '1', linkTypeId: '1', sourceTicketNumber: 2, targetTicketNumber: 3, targetProjectId: '1', created_by: '1', created_at: '2026-02-28T10:00:00.000Z' });
+        });
+    });
+
+    describe('deleteTicketLink()', () => {
+        it('should DELETE /api/projects/:id/backlog/:num/links/:linkId', () => {
+            service.deleteTicketLink('1', 2, '5').subscribe();
+
+            const req = httpMock.expectOne('/api/projects/1/backlog/2/links/5');
+            expect(req.request.method).toBe('DELETE');
+            req.flush(null, { status: 204, statusText: 'No Content' });
+        });
+    });
 });

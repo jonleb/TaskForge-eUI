@@ -176,3 +176,31 @@ export interface UpdateWorkflowPayload {
     statuses: string[];
     transitions: Record<string, string[]>;
 }
+
+export interface LinkType {
+    id: string;
+    name: string;
+    inward: string;
+    outward: string;
+    scope: string;
+    created_at: string;
+}
+
+export interface TicketLink {
+    id: string;
+    projectId: string;
+    linkTypeId: string;
+    sourceTicketNumber: number;
+    targetTicketNumber: number;
+    targetProjectId: string;
+    created_by: string;
+    created_at: string;
+    linkTypeName?: string;
+    linkLabel?: string;
+}
+
+export interface CreateTicketLinkPayload {
+    linkTypeId: string;
+    targetTicketNumber: number;
+    targetProjectId?: string;
+}
