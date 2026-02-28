@@ -224,5 +224,101 @@ module.exports = function (app, db) {
             }
         );
 
+        /**
+         * PUT /api/projects/:projectId/sprints/:sprintId/items
+         * Assign tickets to a sprint.
+         * Body: { ticket_numbers: number[] }
+         * Auth: PROJECT_ADMIN, PRODUCT_OWNER. SUPER_ADMIN bypasses.
+         */
+        app.put(
+            '/api/projects/:projectId/sprints/:sprintId/items',
+            authMiddleware,
+            requireProjectRole(db, ...MANAGE_ROLES),
+            (req, res) => {
+                const { projectId, sprintId } = req.params;
+                const sprint = db.get('sprints').find({ id: sprintId }).value();
+
+                if (!sprint || sprint.projectId !== projectId) {
+                    return res.status(404).json({ message: 'Sprint not found' });
+                }
+
+                if (sprint.status === 'CLOSED') {
+                    return res.status(400).json({ message: 'Cannot add tickets to a closed sprint' });
+                }
+
+                const { ticket_numbers } = req.body || {};
+                if (!Array.isArray(ticket_numbers) || ticket_numbers.length === 0) {
+                    return res.status(400).json({ message: 'ticket_numbers must be a non-empty array' });
+                }
+
+                const projectItems = db.get('backlog-items').filter({ projectId }).value();
+                const projectTicketNumbers = new Set(projectItems.map(i => i.ticket_number));
+
+                for (const tn of ticket_numbers) {
+                    if (!projectTicketNumbers.has(tn)) {
+                        return res.status(400).json({ message: `Ticket number ${tn} not found in project` });
+                    }
+                    const item = projectItems.find(i => i.ticket_number === tn);
+                    if (item.sprint_id && item.sprint_id !== sprintId) {
+                        return res.status(400).json({ message: `Ticket ${tn} is already in another sprint` });
+                    }
+                }
+
+                let assigned = 0;
+                for (const tn of ticket_numbers) {
+                    db.get('backlog-items')
+                        .find(i => i.projectId === projectId && i.ticket_number === tn)
+                        .assign({ sprint_id: sprintId })
+                        .write();
+                    assigned++;
+                }
+
+                return res.json({ assigned });
+            }
+        );
+
+        /**
+         * DELETE /api/projects/:projectId/sprints/:sprintId/items/:ticketNumber
+         * Remove a ticket from a sprint.
+         * Auth: PROJECT_ADMIN, PRODUCT_OWNER. SUPER_ADMIN bypasses.
+         */
+        app.delete(
+            '/api/projects/:projectId/sprints/:sprintId/items/:ticketNumber',
+            authMiddleware,
+            requireProjectRole(db, ...MANAGE_ROLES),
+            (req, res) => {
+                const { projectId, sprintId, ticketNumber } = req.params;
+                const sprint = db.get('sprints').find({ id: sprintId }).value();
+
+                if (!sprint || sprint.projectId !== projectId) {
+                    return res.status(404).json({ message: 'Sprint not found' });
+                }
+
+                if (sprint.status === 'CLOSED') {
+                    return res.status(400).json({ message: 'Cannot remove tickets from a closed sprint' });
+                }
+
+                const tn = parseInt(ticketNumber, 10);
+                const item = db.get('backlog-items')
+                    .find(i => i.projectId === projectId && i.ticket_number === tn)
+                    .value();
+
+                if (!item) {
+                    return res.status(404).json({ message: 'Ticket not found' });
+                }
+
+                if (item.sprint_id !== sprintId) {
+                    return res.status(400).json({ message: 'Ticket is not in this sprint' });
+                }
+
+                db.get('backlog-items')
+                    .find(i => i.projectId === projectId && i.ticket_number === tn)
+                    .assign({ sprint_id: null })
+                    .write();
+
+                return res.json({ removed: true });
+            }
+        );
+
     });
 };

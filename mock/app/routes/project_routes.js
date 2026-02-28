@@ -382,6 +382,16 @@ module.exports = function (app, db) {
                     }
                 }
 
+                // Sprint filter
+                if (req.query.sprint_id !== undefined) {
+                    const sprintId = req.query.sprint_id;
+                    if (sprintId === 'null') {
+                        items = items.filter(i => !i.sprint_id);
+                    } else {
+                        items = items.filter(i => i.sprint_id === sprintId);
+                    }
+                }
+
                 // Sort
                 const sortField = req.query._sort || 'created_at';
                 const sortOrder = req.query._order || 'desc';

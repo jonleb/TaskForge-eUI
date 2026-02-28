@@ -3001,7 +3001,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-01-20T09:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "2",
@@ -3016,7 +3017,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-03-01T14:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "3",
@@ -3031,7 +3033,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-02-10T08:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "4",
@@ -3046,7 +3049,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-04-01T09:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "5",
@@ -3061,7 +3065,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-04-15T10:00:00.000Z",
-      "position": 2
+      "position": 2,
+      "sprint_id": null
     },
     {
       "id": "6",
@@ -3076,7 +3081,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-05-01T08:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "7",
@@ -3091,7 +3097,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-05-20T11:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "8",
@@ -3106,7 +3113,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-06-01T09:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "9",
@@ -3121,7 +3129,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-06-15T14:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "10",
@@ -3136,7 +3145,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-07-01T08:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "11",
@@ -3151,7 +3161,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-07-15T10:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "12",
@@ -3166,7 +3177,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-08-01T09:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "13",
@@ -3181,7 +3193,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-08-15T11:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "14",
@@ -3196,7 +3209,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-09-01T08:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "15",
@@ -3211,7 +3225,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-03-01T10:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "16",
@@ -3226,7 +3241,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2026-02-26T11:15:09.535Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "17",
@@ -3241,7 +3257,8 @@
       "ticket_number": 2,
       "created_by": "11",
       "created_at": "2026-01-05T09:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": "sp-2"
     },
     {
       "id": "18",
@@ -3256,7 +3273,8 @@
       "ticket_number": 3,
       "created_by": "system",
       "created_at": "2026-01-08T10:30:00.000Z",
-      "position": 2
+      "position": 2,
+      "sprint_id": "sp-2"
     },
     {
       "id": "19",
@@ -3271,7 +3289,8 @@
       "ticket_number": 4,
       "created_by": "4",
       "created_at": "2026-01-10T14:00:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": "sp-2"
     },
     {
       "id": "20",
@@ -3286,7 +3305,8 @@
       "ticket_number": 5,
       "created_by": "3",
       "created_at": "2026-01-15T08:00:00.000Z",
-      "position": 5
+      "position": 5,
+      "sprint_id": "sp-3"
     },
     {
       "id": "21",
@@ -3301,7 +3321,8 @@
       "ticket_number": 6,
       "created_by": "11",
       "created_at": "2026-01-18T11:00:00.000Z",
-      "position": 6
+      "position": 6,
+      "sprint_id": "sp-3"
     },
     {
       "id": "22",
@@ -3316,7 +3337,8 @@
       "ticket_number": 7,
       "created_by": "5",
       "created_at": "2026-01-22T09:30:00.000Z",
-      "position": 7
+      "position": 7,
+      "sprint_id": null
     },
     {
       "id": "23",
@@ -3331,7 +3353,8 @@
       "ticket_number": 8,
       "created_by": "system",
       "created_at": "2026-01-25T13:00:00.000Z",
-      "position": 8
+      "position": 8,
+      "sprint_id": null
     },
     {
       "id": "24",
@@ -3346,7 +3369,8 @@
       "ticket_number": 9,
       "created_by": "2",
       "created_at": "2026-01-28T10:00:00.000Z",
-      "position": 9
+      "position": 9,
+      "sprint_id": null
     },
     {
       "id": "25",
@@ -3361,7 +3385,8 @@
       "ticket_number": 10,
       "created_by": "15",
       "created_at": "2026-02-01T08:00:00.000Z",
-      "position": 10
+      "position": 10,
+      "sprint_id": null
     },
     {
       "id": "26",
@@ -3376,7 +3401,8 @@
       "ticket_number": 2,
       "created_by": "17",
       "created_at": "2026-01-06T09:00:00.000Z",
-      "position": 2
+      "position": 2,
+      "sprint_id": null
     },
     {
       "id": "27",
@@ -3391,7 +3417,8 @@
       "ticket_number": 3,
       "created_by": "system",
       "created_at": "2026-01-09T10:00:00.000Z",
-      "position": 3
+      "position": 3,
+      "sprint_id": null
     },
     {
       "id": "28",
@@ -3406,7 +3433,8 @@
       "ticket_number": 4,
       "created_by": "12",
       "created_at": "2026-01-12T14:00:00.000Z",
-      "position": 4
+      "position": 4,
+      "sprint_id": null
     },
     {
       "id": "29",
@@ -3421,7 +3449,8 @@
       "ticket_number": 5,
       "created_by": "10",
       "created_at": "2026-01-16T08:00:00.000Z",
-      "position": 5
+      "position": 5,
+      "sprint_id": null
     },
     {
       "id": "30",
@@ -3436,7 +3465,8 @@
       "ticket_number": 6,
       "created_by": "17",
       "created_at": "2026-01-20T11:00:00.000Z",
-      "position": 6
+      "position": 6,
+      "sprint_id": null
     },
     {
       "id": "31",
@@ -3451,7 +3481,8 @@
       "ticket_number": 7,
       "created_by": "4",
       "created_at": "2026-01-23T09:30:00.000Z",
-      "position": 7
+      "position": 7,
+      "sprint_id": null
     },
     {
       "id": "32",
@@ -3466,7 +3497,8 @@
       "ticket_number": 8,
       "created_by": "2",
       "created_at": "2026-01-26T13:00:00.000Z",
-      "position": 8
+      "position": 8,
+      "sprint_id": null
     },
     {
       "id": "33",
@@ -3481,7 +3513,8 @@
       "ticket_number": 9,
       "created_by": "system",
       "created_at": "2026-01-29T10:00:00.000Z",
-      "position": 9
+      "position": 9,
+      "sprint_id": null
     },
     {
       "id": "34",
@@ -3496,7 +3529,8 @@
       "ticket_number": 10,
       "created_by": "10",
       "created_at": "2026-02-02T08:00:00.000Z",
-      "position": 10
+      "position": 10,
+      "sprint_id": null
     },
     {
       "id": "35",
@@ -3511,7 +3545,8 @@
       "ticket_number": 2,
       "created_by": "11",
       "created_at": "2026-01-07T09:00:00.000Z",
-      "position": 3
+      "position": 3,
+      "sprint_id": null
     },
     {
       "id": "36",
@@ -3526,7 +3561,8 @@
       "ticket_number": 3,
       "created_by": "22",
       "created_at": "2026-01-11T10:30:00.000Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "37",
@@ -3541,7 +3577,8 @@
       "ticket_number": 4,
       "created_by": "5",
       "created_at": "2026-01-14T14:00:00.000Z",
-      "position": 6
+      "position": 6,
+      "sprint_id": null
     },
     {
       "id": "38",
@@ -3556,7 +3593,8 @@
       "ticket_number": 5,
       "created_by": "11",
       "created_at": "2026-01-17T08:00:00.000Z",
-      "position": 4
+      "position": 4,
+      "sprint_id": null
     },
     {
       "id": "39",
@@ -3571,7 +3609,8 @@
       "ticket_number": 6,
       "created_by": "system",
       "created_at": "2026-01-21T11:00:00.000Z",
-      "position": 5
+      "position": 5,
+      "sprint_id": null
     },
     {
       "id": "40",
@@ -3586,7 +3625,8 @@
       "ticket_number": 7,
       "created_by": "22",
       "created_at": "2026-01-24T09:30:00.000Z",
-      "position": 7
+      "position": 7,
+      "sprint_id": null
     },
     {
       "id": "41",
@@ -3601,7 +3641,8 @@
       "ticket_number": 8,
       "created_by": "system",
       "created_at": "2026-01-27T13:00:00.000Z",
-      "position": 8
+      "position": 8,
+      "sprint_id": null
     },
     {
       "id": "42",
@@ -3616,7 +3657,8 @@
       "ticket_number": 9,
       "created_by": "15",
       "created_at": "2026-01-30T10:00:00.000Z",
-      "position": 9
+      "position": 9,
+      "sprint_id": null
     },
     {
       "id": "43",
@@ -3631,7 +3673,8 @@
       "ticket_number": 10,
       "created_by": "11",
       "created_at": "2026-02-03T08:00:00.000Z",
-      "position": 10
+      "position": 10,
+      "sprint_id": null
     },
     {
       "id": "89",
@@ -3646,7 +3689,8 @@
       "ticket_number": 11,
       "created_by": "15",
       "created_at": "2026-02-15T08:30:00.000Z",
-      "position": 11
+      "position": 11,
+      "sprint_id": null
     },
     {
       "id": "90",
@@ -3661,7 +3705,8 @@
       "ticket_number": 12,
       "created_by": "5",
       "created_at": "2026-02-18T11:45:00.000Z",
-      "position": 12
+      "position": 12,
+      "sprint_id": null
     },
     {
       "id": "91",
@@ -3676,7 +3721,8 @@
       "ticket_number": 13,
       "created_by": "15",
       "created_at": "2026-02-20T09:00:00.000Z",
-      "position": 13
+      "position": 13,
+      "sprint_id": null
     },
     {
       "id": "92",
@@ -3691,7 +3737,8 @@
       "ticket_number": 14,
       "created_by": "15",
       "created_at": "2026-02-22T14:20:00.000Z",
-      "position": 14
+      "position": 14,
+      "sprint_id": null
     },
     {
       "id": "93",
@@ -3706,7 +3753,8 @@
       "ticket_number": 15,
       "created_by": "22",
       "created_at": "2026-02-10T16:10:00.000Z",
-      "position": 15
+      "position": 15,
+      "sprint_id": null
     },
     {
       "id": "44",
@@ -3721,7 +3769,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2026-02-27T14:19:34.731Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "45",
@@ -3736,7 +3785,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2026-02-27T14:19:34.748Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "46",
@@ -3751,7 +3801,8 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2026-02-27T14:19:34.759Z",
-      "position": 1
+      "position": 1,
+      "sprint_id": null
     },
     {
       "id": "47",
@@ -3766,7 +3817,8 @@
       "ticket_number": 11,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:35.738Z",
-      "position": 11
+      "position": 11,
+      "sprint_id": null
     },
     {
       "id": "48",
@@ -3781,7 +3833,8 @@
       "ticket_number": 12,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:35.750Z",
-      "position": 12
+      "position": 12,
+      "sprint_id": null
     },
     {
       "id": "49",
@@ -3796,7 +3849,8 @@
       "ticket_number": 13,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:35.759Z",
-      "position": 13
+      "position": 13,
+      "sprint_id": null
     },
     {
       "id": "50",
@@ -3811,7 +3865,8 @@
       "ticket_number": 11,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:36.103Z",
-      "position": 11
+      "position": 11,
+      "sprint_id": null
     },
     {
       "id": "51",
@@ -3826,7 +3881,8 @@
       "ticket_number": 12,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:36.110Z",
-      "position": 12
+      "position": 12,
+      "sprint_id": null
     },
     {
       "id": "52",
@@ -3841,7 +3897,8 @@
       "ticket_number": 14,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:36.117Z",
-      "position": 14
+      "position": 14,
+      "sprint_id": null
     },
     {
       "id": "53",
@@ -3856,7 +3913,8 @@
       "ticket_number": 2,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:36.162Z",
-      "position": 2
+      "position": 2,
+      "sprint_id": null
     },
     {
       "id": "54",
@@ -3871,7 +3929,8 @@
       "ticket_number": 15,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:51.213Z",
-      "position": 15
+      "position": 15,
+      "sprint_id": null
     },
     {
       "id": "55",
@@ -3886,7 +3945,8 @@
       "ticket_number": 16,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:51.276Z",
-      "position": 16
+      "position": 16,
+      "sprint_id": null
     },
     {
       "id": "56",
@@ -3901,7 +3961,8 @@
       "ticket_number": 17,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:51.283Z",
-      "position": 17
+      "position": 17,
+      "sprint_id": null
     },
     {
       "id": "57",
@@ -3916,7 +3977,8 @@
       "ticket_number": 13,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:51.406Z",
-      "position": 13
+      "position": 13,
+      "sprint_id": null
     },
     {
       "id": "58",
@@ -3931,7 +3993,8 @@
       "ticket_number": 14,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:51.408Z",
-      "position": 14
+      "position": 14,
+      "sprint_id": null
     },
     {
       "id": "59",
@@ -3946,7 +4009,8 @@
       "ticket_number": 18,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:51.414Z",
-      "position": 18
+      "position": 18,
+      "sprint_id": null
     },
     {
       "id": "60",
@@ -3961,7 +4025,8 @@
       "ticket_number": 3,
       "created_by": "1",
       "created_at": "2026-02-27T14:19:51.604Z",
-      "position": 3
+      "position": 3,
+      "sprint_id": null
     },
     {
       "id": "61",
@@ -3976,7 +4041,8 @@
       "ticket_number": 19,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:19.857Z",
-      "position": 19
+      "position": 19,
+      "sprint_id": null
     },
     {
       "id": "62",
@@ -3991,7 +4057,8 @@
       "ticket_number": 20,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:19.941Z",
-      "position": 20
+      "position": 20,
+      "sprint_id": null
     },
     {
       "id": "63",
@@ -4006,7 +4073,8 @@
       "ticket_number": 21,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:19.961Z",
-      "position": 21
+      "position": 21,
+      "sprint_id": null
     },
     {
       "id": "64",
@@ -4021,7 +4089,8 @@
       "ticket_number": 15,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:20.033Z",
-      "position": 15
+      "position": 15,
+      "sprint_id": null
     },
     {
       "id": "65",
@@ -4036,7 +4105,8 @@
       "ticket_number": 16,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:20.037Z",
-      "position": 16
+      "position": 16,
+      "sprint_id": null
     },
     {
       "id": "66",
@@ -4051,7 +4121,8 @@
       "ticket_number": 22,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:20.042Z",
-      "position": 22
+      "position": 22,
+      "sprint_id": null
     },
     {
       "id": "67",
@@ -4066,7 +4137,8 @@
       "ticket_number": 4,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:20.057Z",
-      "position": 4
+      "position": 4,
+      "sprint_id": null
     },
     {
       "id": "68",
@@ -4081,7 +4153,8 @@
       "ticket_number": 23,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:33.306Z",
-      "position": 23
+      "position": 23,
+      "sprint_id": null
     },
     {
       "id": "69",
@@ -4096,7 +4169,8 @@
       "ticket_number": 24,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:33.317Z",
-      "position": 24
+      "position": 24,
+      "sprint_id": null
     },
     {
       "id": "70",
@@ -4111,7 +4185,8 @@
       "ticket_number": 25,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:33.327Z",
-      "position": 25
+      "position": 25,
+      "sprint_id": null
     },
     {
       "id": "71",
@@ -4126,7 +4201,8 @@
       "ticket_number": 17,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:33.386Z",
-      "position": 17
+      "position": 17,
+      "sprint_id": null
     },
     {
       "id": "72",
@@ -4141,7 +4217,8 @@
       "ticket_number": 18,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:33.390Z",
-      "position": 18
+      "position": 18,
+      "sprint_id": null
     },
     {
       "id": "73",
@@ -4156,7 +4233,8 @@
       "ticket_number": 26,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:33.396Z",
-      "position": 26
+      "position": 26,
+      "sprint_id": null
     },
     {
       "id": "74",
@@ -4171,7 +4249,8 @@
       "ticket_number": 5,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:33.407Z",
-      "position": 5
+      "position": 5,
+      "sprint_id": null
     },
     {
       "id": "75",
@@ -4186,7 +4265,8 @@
       "ticket_number": 27,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:59.638Z",
-      "position": 27
+      "position": 27,
+      "sprint_id": null
     },
     {
       "id": "76",
@@ -4201,7 +4281,8 @@
       "ticket_number": 28,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:59.649Z",
-      "position": 28
+      "position": 28,
+      "sprint_id": null
     },
     {
       "id": "77",
@@ -4216,7 +4297,8 @@
       "ticket_number": 29,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:59.661Z",
-      "position": 29
+      "position": 29,
+      "sprint_id": null
     },
     {
       "id": "78",
@@ -4231,7 +4313,8 @@
       "ticket_number": 19,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:59.729Z",
-      "position": 19
+      "position": 19,
+      "sprint_id": null
     },
     {
       "id": "79",
@@ -4246,7 +4329,8 @@
       "ticket_number": 20,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:59.733Z",
-      "position": 20
+      "position": 20,
+      "sprint_id": null
     },
     {
       "id": "80",
@@ -4261,7 +4345,8 @@
       "ticket_number": 30,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:59.739Z",
-      "position": 30
+      "position": 30,
+      "sprint_id": null
     },
     {
       "id": "81",
@@ -4276,7 +4361,8 @@
       "ticket_number": 6,
       "created_by": "1",
       "created_at": "2026-02-27T14:21:59.822Z",
-      "position": 6
+      "position": 6,
+      "sprint_id": null
     },
     {
       "id": "82",
@@ -4291,7 +4377,8 @@
       "ticket_number": 31,
       "created_by": "1",
       "created_at": "2026-02-27T14:22:22.722Z",
-      "position": 31
+      "position": 31,
+      "sprint_id": null
     },
     {
       "id": "83",
@@ -4306,7 +4393,8 @@
       "ticket_number": 32,
       "created_by": "1",
       "created_at": "2026-02-27T14:22:22.732Z",
-      "position": 32
+      "position": 32,
+      "sprint_id": null
     },
     {
       "id": "84",
@@ -4321,7 +4409,8 @@
       "ticket_number": 33,
       "created_by": "1",
       "created_at": "2026-02-27T14:22:22.739Z",
-      "position": 33
+      "position": 33,
+      "sprint_id": null
     },
     {
       "id": "85",
@@ -4336,7 +4425,8 @@
       "ticket_number": 21,
       "created_by": "1",
       "created_at": "2026-02-27T14:22:22.809Z",
-      "position": 21
+      "position": 21,
+      "sprint_id": null
     },
     {
       "id": "86",
@@ -4351,7 +4441,8 @@
       "ticket_number": 22,
       "created_by": "1",
       "created_at": "2026-02-27T14:22:22.816Z",
-      "position": 22
+      "position": 22,
+      "sprint_id": null
     },
     {
       "id": "87",
@@ -4366,7 +4457,8 @@
       "ticket_number": 34,
       "created_by": "1",
       "created_at": "2026-02-27T14:22:22.933Z",
-      "position": 34
+      "position": 34,
+      "sprint_id": null
     },
     {
       "id": "88",
@@ -4381,7 +4473,8 @@
       "ticket_number": 7,
       "created_by": "1",
       "created_at": "2026-02-27T14:22:22.968Z",
-      "position": 7
+      "position": 7,
+      "sprint_id": null
     },
     {
       "id": "94",
@@ -4396,7 +4489,8 @@
       "ticket_number": 35,
       "created_by": "1",
       "created_at": "2026-02-27T15:26:07.574Z",
-      "position": 35
+      "position": 35,
+      "sprint_id": null
     },
     {
       "id": "95",
@@ -4411,7 +4505,8 @@
       "ticket_number": 36,
       "created_by": "1",
       "created_at": "2026-02-27T15:26:07.587Z",
-      "position": 36
+      "position": 36,
+      "sprint_id": null
     },
     {
       "id": "96",
@@ -4426,7 +4521,8 @@
       "ticket_number": 37,
       "created_by": "1",
       "created_at": "2026-02-27T15:26:07.595Z",
-      "position": 37
+      "position": 37,
+      "sprint_id": null
     },
     {
       "id": "97",
@@ -4441,7 +4537,8 @@
       "ticket_number": 23,
       "created_by": "1",
       "created_at": "2026-02-27T15:26:07.660Z",
-      "position": 23
+      "position": 23,
+      "sprint_id": null
     },
     {
       "id": "98",
@@ -4456,7 +4553,8 @@
       "ticket_number": 24,
       "created_by": "1",
       "created_at": "2026-02-27T15:26:07.663Z",
-      "position": 24
+      "position": 24,
+      "sprint_id": null
     },
     {
       "id": "99",
@@ -4471,7 +4569,8 @@
       "ticket_number": 38,
       "created_by": "1",
       "created_at": "2026-02-27T15:26:07.729Z",
-      "position": 38
+      "position": 38,
+      "sprint_id": null
     },
     {
       "id": "100",
@@ -4486,7 +4585,8 @@
       "ticket_number": 8,
       "created_by": "1",
       "created_at": "2026-02-27T15:26:07.773Z",
-      "position": 8
+      "position": 8,
+      "sprint_id": null
     },
     {
       "id": "101",
@@ -4501,7 +4601,8 @@
       "ticket_number": 39,
       "created_by": "1",
       "created_at": "2026-02-27T15:27:28.229Z",
-      "position": 39
+      "position": 39,
+      "sprint_id": null
     },
     {
       "id": "102",
@@ -4516,7 +4617,8 @@
       "ticket_number": 40,
       "created_by": "1",
       "created_at": "2026-02-27T15:27:28.239Z",
-      "position": 40
+      "position": 40,
+      "sprint_id": null
     },
     {
       "id": "103",
@@ -4531,7 +4633,8 @@
       "ticket_number": 41,
       "created_by": "1",
       "created_at": "2026-02-27T15:27:28.248Z",
-      "position": 41
+      "position": 41,
+      "sprint_id": null
     },
     {
       "id": "104",
@@ -4546,7 +4649,8 @@
       "ticket_number": 25,
       "created_by": "1",
       "created_at": "2026-02-27T15:27:28.405Z",
-      "position": 25
+      "position": 25,
+      "sprint_id": null
     },
     {
       "id": "105",
@@ -4561,7 +4665,8 @@
       "ticket_number": 26,
       "created_by": "1",
       "created_at": "2026-02-27T15:27:28.409Z",
-      "position": 26
+      "position": 26,
+      "sprint_id": null
     },
     {
       "id": "106",
@@ -4576,7 +4681,8 @@
       "ticket_number": 42,
       "created_by": "1",
       "created_at": "2026-02-27T15:27:28.415Z",
-      "position": 42
+      "position": 42,
+      "sprint_id": null
     },
     {
       "id": "107",
@@ -4591,7 +4697,8 @@
       "ticket_number": 9,
       "created_by": "1",
       "created_at": "2026-02-27T15:27:28.427Z",
-      "position": 9
+      "position": 9,
+      "sprint_id": null
     },
     {
       "id": "108",
@@ -4606,7 +4713,8 @@
       "ticket_number": 43,
       "position": 43,
       "created_by": "1",
-      "created_at": "2026-02-28T09:54:36.198Z"
+      "created_at": "2026-02-28T09:54:36.198Z",
+      "sprint_id": null
     },
     {
       "id": "109",
@@ -4621,7 +4729,8 @@
       "ticket_number": 44,
       "position": 44,
       "created_by": "1",
-      "created_at": "2026-02-28T09:54:36.211Z"
+      "created_at": "2026-02-28T09:54:36.211Z",
+      "sprint_id": null
     },
     {
       "id": "110",
@@ -4636,7 +4745,8 @@
       "ticket_number": 45,
       "position": 45,
       "created_by": "1",
-      "created_at": "2026-02-28T09:54:36.221Z"
+      "created_at": "2026-02-28T09:54:36.221Z",
+      "sprint_id": null
     },
     {
       "id": "111",
@@ -4651,7 +4761,8 @@
       "ticket_number": 27,
       "position": 27,
       "created_by": "1",
-      "created_at": "2026-02-28T09:54:36.287Z"
+      "created_at": "2026-02-28T09:54:36.287Z",
+      "sprint_id": null
     },
     {
       "id": "112",
@@ -4666,7 +4777,8 @@
       "ticket_number": 28,
       "position": 28,
       "created_by": "1",
-      "created_at": "2026-02-28T09:54:36.301Z"
+      "created_at": "2026-02-28T09:54:36.301Z",
+      "sprint_id": null
     },
     {
       "id": "113",
@@ -4681,7 +4793,8 @@
       "ticket_number": 46,
       "position": 46,
       "created_by": "1",
-      "created_at": "2026-02-28T09:54:36.334Z"
+      "created_at": "2026-02-28T09:54:36.334Z",
+      "sprint_id": null
     },
     {
       "id": "114",
@@ -4696,7 +4809,8 @@
       "ticket_number": 10,
       "position": 10,
       "created_by": "1",
-      "created_at": "2026-02-28T09:54:36.372Z"
+      "created_at": "2026-02-28T09:54:36.372Z",
+      "sprint_id": null
     },
     {
       "id": "115",
@@ -4711,7 +4825,8 @@
       "ticket_number": 47,
       "position": 47,
       "created_by": "1",
-      "created_at": "2026-02-28T09:54:37.230Z"
+      "created_at": "2026-02-28T09:54:37.230Z",
+      "sprint_id": null
     }
   ],
   "ticket-activity": [
