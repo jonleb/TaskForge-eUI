@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,12 +14,14 @@ import { EUI_INPUT_TEXT } from '@eui/components/eui-input-text';
 import { EUI_TEXTAREA } from '@eui/components/eui-textarea';
 import { EUI_FEEDBACK_MESSAGE } from '@eui/components/eui-feedback-message';
 import { EuiIconButtonComponent } from '@eui/components/eui-icon-button';
+import { EuiDialogComponent, EUI_DIALOG } from '@eui/components/eui-dialog';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
     ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember,
     Workflow, WorkflowStatus, TicketPriority, UpdateTicketPayload,
-    TICKET_PRIORITIES, TicketComment, ActivityEntry,
+    TICKET_PRIORITIES, TicketComment, ActivityEntry, LinkType, TicketLink,
+    CreateTicketLinkPayload,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
@@ -33,7 +35,7 @@ type EditableField = 'title' | 'description' | 'status' | 'priority' | 'assignee
     imports: [
         ...EUI_PAGE, ...EUI_CHIP, ...EUI_BUTTON, ...EUI_PROGRESS_BAR,
         ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT, ...EUI_TEXTAREA,
-        ...EUI_FEEDBACK_MESSAGE,
+        ...EUI_FEEDBACK_MESSAGE, ...EUI_DIALOG,
         EuiIconButtonComponent, DatePipe, TranslateModule, FormsModule,
     ],
 })
@@ -80,6 +82,16 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     // Activity
     activity: ActivityEntry[] = [];
 
+    // Links
+    ticketLinks: TicketLink[] = [];
+    linkTypes: LinkType[] = [];
+    newLinkTypeId = '';
+    newLinkTargetNumber: number | null = null;
+    linkToDelete: TicketLink | null = null;
+
+    @ViewChild('addLinkDialog') addLinkDialog!: EuiDialogComponent;
+    @ViewChild('confirmDeleteLinkDialog') confirmDeleteLinkDialog!: EuiDialogComponent;
+
     ngOnInit(): void {
         combineLatest([
             this.projectContext.currentProject$.pipe(filter((p): p is Project => p !== null)),
@@ -106,6 +118,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
                 this.syncEditFields();
                 this.loadComments();
                 this.loadActivity();
+                this.loadTicketLinks();
                 this.cdr.markForCheck();
             },
             error: (err) => {
@@ -312,6 +325,104 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         });
     }
 
+    // --- Links ---
+
+    loadTicketLinks(): void {
+        if (!this.project || !this.ticket) return;
+        this.projectService.getTicketLinks(this.project.id, this.ticket.ticket_number).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe(links => {
+            this.ticketLinks = links;
+            this.cdr.markForCheck();
+        });
+    }
+
+    getLinkedTicketKey(link: TicketLink): string {
+        if (!this.project) return `#${link.targetTicketNumber}`;
+        return `${this.project.key}-${link.targetTicketNumber}`;
+    }
+
+    canDeleteLink(link: TicketLink): boolean {
+        if (this.permissionService.isSuperAdmin()) return true;
+        // canEdit already covers PROJECT_ADMIN, PRODUCT_OWNER, DEVELOPER
+        if (this.canEdit) return true;
+        return false;
+    }
+
+    openAddLinkDialog(): void {
+        this.newLinkTypeId = this.linkTypes.length > 0 ? this.linkTypes[0].id : '';
+        this.newLinkTargetNumber = null;
+        this.cdr.detectChanges();
+        this.addLinkDialog.openDialog();
+    }
+
+    submitAddLink(): void {
+        if (!this.project || !this.ticket || !this.newLinkTypeId || !this.newLinkTargetNumber) return;
+        this.addLinkDialog.closeDialog();
+
+        const payload: CreateTicketLinkPayload = {
+            linkTypeId: this.newLinkTypeId,
+            targetTicketNumber: this.newLinkTargetNumber,
+        };
+
+        this.projectService.createTicketLink(this.project.id, this.ticket.ticket_number, payload).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe({
+            next: () => {
+                this.loadTicketLinks();
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: this.translate.instant('ticket-detail.links.growl.created'),
+                    detail: this.translate.instant('ticket-detail.links.growl.created'),
+                });
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.growlService.growl({
+                    severity: 'error',
+                    summary: this.translate.instant('ticket-detail.links.growl.create-failed'),
+                    detail: this.translate.instant('ticket-detail.links.growl.create-failed'),
+                });
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    confirmRemoveLink(link: TicketLink): void {
+        this.linkToDelete = link;
+        this.cdr.detectChanges();
+        this.confirmDeleteLinkDialog.openDialog();
+    }
+
+    removeLink(): void {
+        if (!this.project || !this.ticket || !this.linkToDelete) return;
+        this.confirmDeleteLinkDialog.closeDialog();
+
+        this.projectService.deleteTicketLink(this.project.id, this.ticket.ticket_number, this.linkToDelete.id).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe({
+            next: () => {
+                this.linkToDelete = null;
+                this.loadTicketLinks();
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: this.translate.instant('ticket-detail.links.growl.deleted'),
+                    detail: this.translate.instant('ticket-detail.links.growl.deleted'),
+                });
+                this.cdr.markForCheck();
+            },
+            error: () => {
+                this.linkToDelete = null;
+                this.growlService.growl({
+                    severity: 'error',
+                    summary: this.translate.instant('ticket-detail.links.growl.delete-failed'),
+                    detail: this.translate.instant('ticket-detail.links.growl.delete-failed'),
+                });
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
     // --- Private ---
 
     private syncEditFields(): void {
@@ -343,6 +454,13 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
             takeUntil(this.destroy$),
         ).subscribe(epics => {
             this.epics = epics;
+            this.cdr.markForCheck();
+        });
+
+        this.projectService.getLinkTypes().pipe(
+            takeUntil(this.destroy$),
+        ).subscribe(types => {
+            this.linkTypes = types;
             this.cdr.markForCheck();
         });
     }

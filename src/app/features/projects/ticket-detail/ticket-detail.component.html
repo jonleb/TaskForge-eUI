@@ -226,6 +226,73 @@
                 </div>
             }
 
+            <!-- Linked Tickets section -->
+            <section class="links-section eui-u-mt-l" aria-label="Linked Tickets">
+                <div class="section-header eui-u-d-flex eui-u-align-items-center eui-u-gap-s eui-u-mb-m">
+                    <h3 class="eui-u-f-l">{{ 'ticket-detail.links.title' | translate }}</h3>
+                    @if (canEdit) {
+                        <button euiButton euiSecondary euiSizeS (click)="openAddLinkDialog()">
+                            {{ 'ticket-detail.links.add' | translate }}
+                        </button>
+                    }
+                </div>
+
+                @if (ticketLinks.length === 0) {
+                    <p class="eui-u-f-m eui-u-c-text-secondary">{{ 'ticket-detail.links.empty' | translate }}</p>
+                } @else {
+                    <ul class="link-list">
+                        @for (link of ticketLinks; track link.id) {
+                            <li class="link-item eui-u-d-flex eui-u-align-items-center eui-u-gap-s eui-u-mb-xs">
+                                <span class="link-label eui-u-f-s">{{ link.linkLabel || link.linkTypeName || link.linkTypeId }}</span>
+                                <span class="link-target eui-u-f-s eui-u-fw-bold">{{ getLinkedTicketKey(link) }}</span>
+                                @if (canDeleteLink(link)) {
+                                    <eui-icon-button icon="eui-trash" size="s"
+                                                     [ariaLabel]="'ticket-detail.links.remove' | translate"
+                                                     (buttonClick)="confirmRemoveLink(link)">
+                                    </eui-icon-button>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+            </section>
+
+            <!-- Add Link Dialog -->
+            <eui-dialog #addLinkDialog
+                        [title]="'ticket-detail.links.dialog.title' | translate"
+                        [acceptLabel]="'ticket-detail.links.dialog.accept' | translate"
+                        [dismissLabel]="'ticket-detail.links.dialog.cancel' | translate"
+                        (accept)="submitAddLink()">
+                <fieldset class="eui-u-p-none eui-u-border-none">
+                    <legend class="eui-u-sr-only">{{ 'ticket-detail.links.dialog.title' | translate }}</legend>
+                    <div class="eui-u-mb-m">
+                        <label euiLabel for="link-type">{{ 'ticket-detail.links.dialog.link-type' | translate }}</label>
+                        <select euiSelect id="link-type" [(ngModel)]="newLinkTypeId" aria-required="true">
+                            @for (lt of linkTypes; track lt.id) {
+                                <option [ngValue]="lt.id">{{ lt.name }} ({{ lt.outward }})</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="eui-u-mb-m">
+                        <label euiLabel for="link-target">{{ 'ticket-detail.links.dialog.target-ticket' | translate }}</label>
+                        <input euiInputText id="link-target"
+                               type="number"
+                               [(ngModel)]="newLinkTargetNumber"
+                               aria-required="true"
+                               min="1" />
+                    </div>
+                </fieldset>
+            </eui-dialog>
+
+            <!-- Confirm Delete Link Dialog -->
+            <eui-dialog #confirmDeleteLinkDialog
+                        [title]="'ticket-detail.links.confirm-delete-title' | translate"
+                        [acceptLabel]="'ticket-detail.links.confirm-delete-accept' | translate"
+                        [dismissLabel]="'ticket-detail.links.dialog.cancel' | translate"
+                        (accept)="removeLink()">
+                <p>{{ 'ticket-detail.links.confirm-delete-message' | translate }}</p>
+            </eui-dialog>
+
             <!-- Comments section -->
             <section class="comments-section eui-u-mt-l" aria-label="Comments">
                 <h3 class="eui-u-f-l eui-u-mb-m">{{ 'ticket-detail.comments.title' | translate }}</h3>

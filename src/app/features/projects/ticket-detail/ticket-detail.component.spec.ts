@@ -9,6 +9,7 @@ import {
 import { TicketDetailComponent } from './ticket-detail.component';
 import {
     ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember, Workflow,
+    LinkType, TicketLink,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
@@ -57,6 +58,16 @@ const mockEpics: BacklogItem[] = [{
     created_by: 'system', created_at: '2025-01-20T09:00:00.000Z',
 }];
 
+const mockLinkTypes: LinkType[] = [
+    { id: 'lt1', name: 'Blocks', inward: 'is blocked by', outward: 'blocks', scope: 'global', created_at: '2025-01-01T00:00:00.000Z' },
+    { id: 'lt2', name: 'Relates to', inward: 'relates to', outward: 'relates to', scope: 'global', created_at: '2025-01-01T00:00:00.000Z' },
+];
+
+const mockTicketLinks: TicketLink[] = [
+    { id: 'tl1', projectId: '1', linkTypeId: 'lt1', sourceTicketNumber: 5, targetTicketNumber: 3, targetProjectId: '1', created_by: '2', created_at: '2026-02-20T10:00:00.000Z', linkTypeName: 'Blocks', linkLabel: 'blocks' },
+    { id: 'tl2', projectId: '1', linkTypeId: 'lt2', sourceTicketNumber: 5, targetTicketNumber: 7, targetProjectId: '1', created_by: '3', created_at: '2026-02-21T10:00:00.000Z', linkTypeName: 'Relates to', linkLabel: 'relates to' },
+];
+
 describe('TicketDetailComponent', () => {
     let fixture: ComponentFixture<TicketDetailComponent>;
     let component: TicketDetailComponent;
@@ -85,6 +96,10 @@ describe('TicketDetailComponent', () => {
             addComment: vi.fn(),
             getActivity: vi.fn().mockReturnValue(of([])),
             getProjects: vi.fn(),
+            getLinkTypes: vi.fn().mockReturnValue(of(mockLinkTypes)),
+            getTicketLinks: vi.fn().mockReturnValue(of(mockTicketLinks)),
+            createTicketLink: vi.fn().mockReturnValue(of(mockTicketLinks[0])),
+            deleteTicketLink: vi.fn().mockReturnValue(of(undefined)),
         };
 
         perm = {
@@ -510,5 +525,149 @@ describe('TicketDetailComponent', () => {
         const dateEl = fixture.nativeElement.querySelector('.activity-date');
         expect(dateEl).toBeTruthy();
         expect(dateEl.textContent.trim()).toBeTruthy();
+    });
+
+    // --- STORY-016-004: Linked Tickets Section ---
+
+    it('should load ticket links after ticket loads', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(svc['getTicketLinks']).toHaveBeenCalledWith('1', 5);
+    });
+
+    it('should load link types on init', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(svc['getLinkTypes']).toHaveBeenCalled();
+    });
+
+    it('should display linked tickets list', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const items = fixture.nativeElement.querySelectorAll('.link-item');
+        expect(items.length).toBe(2);
+    });
+
+    it('should display link label and ticket key', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const firstItem = fixture.nativeElement.querySelector('.link-item');
+        expect(firstItem.textContent).toContain('blocks');
+        expect(firstItem.textContent).toContain('TF-3');
+    });
+
+    it('should show empty state when no links', () => {
+        svc['getTicketLinks'].mockReturnValue(of([]));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(fixture.nativeElement.textContent).toContain('ticket-detail.links.empty');
+    });
+
+    it('should show linked tickets section heading', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const headings = fixture.nativeElement.querySelectorAll('h3');
+        const texts = Array.from(headings).map((h: Element) => h.textContent?.trim());
+        expect(texts).toContain('ticket-detail.links.title');
+    });
+
+    // --- STORY-016-005: Add Link Dialog ---
+
+    it('should show add link button when canEdit', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const btn = fixture.nativeElement.querySelector('.section-header button');
+        expect(btn).toBeTruthy();
+        expect(btn.textContent).toContain('ticket-detail.links.add');
+    });
+
+    it('should hide add link button when cannot edit', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['hasProjectRole'].mockReturnValue(of(false));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const sectionHeaders = fixture.nativeElement.querySelectorAll('.section-header button');
+        expect(sectionHeaders.length).toBe(0);
+    });
+
+    it('should call createTicketLink on submitAddLink', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.newLinkTypeId = 'lt1';
+        component.newLinkTargetNumber = 10;
+        // Mock the dialog ViewChild
+        component.addLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as any;
+        component.submitAddLink();
+        expect(svc['createTicketLink']).toHaveBeenCalledWith('1', 5, {
+            linkTypeId: 'lt1',
+            targetTicketNumber: 10,
+        });
+    });
+
+    it('should show growl on link creation success', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.newLinkTypeId = 'lt1';
+        component.newLinkTargetNumber = 10;
+        component.addLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as any;
+        component.submitAddLink();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+    });
+
+    it('should show growl on link creation failure', () => {
+        svc['createTicketLink'].mockReturnValue(throwError(() => new Error('fail')));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.newLinkTypeId = 'lt1';
+        component.newLinkTargetNumber = 10;
+        component.addLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as any;
+        component.submitAddLink();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
+    });
+
+    // --- STORY-016-006: Remove Link & Role Gating ---
+
+    it('should show delete button for each link when canEdit', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const trashBtns = fixture.nativeElement.querySelectorAll('.link-item eui-icon-button[icon="eui-trash"]');
+        expect(trashBtns.length).toBe(2);
+    });
+
+    it('should hide delete buttons when cannot edit', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['hasProjectRole'].mockReturnValue(of(false));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const trashBtns = fixture.nativeElement.querySelectorAll('.link-item eui-icon-button[icon="eui-trash"]');
+        expect(trashBtns.length).toBe(0);
+    });
+
+    it('should call deleteTicketLink on removeLink', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.linkToDelete = mockTicketLinks[0];
+        component.confirmDeleteLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as any;
+        component.removeLink();
+        expect(svc['deleteTicketLink']).toHaveBeenCalledWith('1', 5, 'tl1');
+    });
+
+    it('should show growl on link deletion success', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.linkToDelete = mockTicketLinks[0];
+        component.confirmDeleteLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as any;
+        component.removeLink();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+    });
+
+    it('should show growl on link deletion failure', () => {
+        svc['deleteTicketLink'].mockReturnValue(throwError(() => new Error('fail')));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.linkToDelete = mockTicketLinks[0];
+        component.confirmDeleteLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as any;
+        component.removeLink();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
     });
 });
