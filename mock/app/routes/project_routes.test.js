@@ -2454,3 +2454,134 @@ describe('DELETE /api/projects/:projectId/backlog/:ticketNumber/links/:linkId', 
         expect(res.status).toBe(204);
     });
 });
+
+// --- PUT /api/projects/:projectId/backlog/reorder ---
+
+describe('PUT /api/projects/:projectId/backlog/reorder', () => {
+
+    it('should update positions for valid items (SUPER_ADMIN)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/backlog/reorder')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ items: [
+                { ticket_number: 2, position: 3 },
+                { ticket_number: 3, position: 2 },
+                { ticket_number: 4, position: 1 },
+            ]});
+        expect(res.status).toBe(200);
+        expect(res.body.updated).toBe(3);
+    });
+
+    it('should update positions for PROJECT_ADMIN', async () => {
+        const token = await getTokenFor('projectadmin');
+        const res = await request(app)
+            .put('/api/projects/1/backlog/reorder')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ items: [
+                { ticket_number: 2, position: 1 },
+                { ticket_number: 3, position: 2 },
+            ]});
+        expect(res.status).toBe(200);
+        expect(res.body.updated).toBe(2);
+    });
+
+    it('should return 400 for empty items array', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/backlog/reorder')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ items: [] });
+        expect(res.status).toBe(400);
+    });
+
+    it('should return 400 for missing ticket_number', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/backlog/reorder')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ items: [{ position: 1 }] });
+        expect(res.status).toBe(400);
+    });
+
+    it('should return 400 for non-positive position', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/backlog/reorder')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ items: [{ ticket_number: 2, position: 0 }] });
+        expect(res.status).toBe(400);
+    });
+
+    it('should return 400 for duplicate positions', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/backlog/reorder')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ items: [
+                { ticket_number: 2, position: 1 },
+                { ticket_number: 3, position: 1 },
+            ]});
+        expect(res.status).toBe(400);
+    });
+
+    it('should return 400 for duplicate ticket_numbers', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/backlog/reorder')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ items: [
+                { ticket_number: 2, position: 1 },
+                { ticket_number: 2, position: 2 },
+            ]});
+        expect(res.status).toBe(400);
+    });
+
+    it('should return 400 for ticket not in project', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .put('/api/projects/1/backlog/reorder')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ items: [{ ticket_number: 99999, position: 1 }] });
+        expect(res.status).toBe(400);
+    });
+
+    it('should return 403 for VIEWER', async () => {
+        const token = await getTokenFor('viewer');
+        const res = await request(app)
+            .put('/api/projects/1/backlog/reorder')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ items: [{ ticket_number: 2, position: 1 }] });
+        expect(res.status).toBe(403);
+    });
+
+    it('should return 403 for REPORTER', async () => {
+        const token = await getTokenFor('reporter');
+        const res = await request(app)
+            .put('/api/projects/1/backlog/reorder')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ items: [{ ticket_number: 2, position: 1 }] });
+        expect(res.status).toBe(403);
+    });
+});
+
+// --- POST /api/projects/:projectId/backlog — position auto-assignment ---
+
+describe('POST /api/projects/:projectId/backlog — position field', () => {
+
+    it('should auto-assign position to new ticket', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                type: 'TASK',
+                title: 'Position test ticket',
+                priority: 'LOW',
+            });
+        expect(res.status).toBe(201);
+        expect(res.body.position).toBeDefined();
+        expect(typeof res.body.position).toBe('number');
+        expect(res.body.position).toBeGreaterThan(0);
+    });
+});

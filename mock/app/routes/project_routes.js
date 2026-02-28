@@ -497,6 +497,7 @@ module.exports = function (app, db) {
                 // Auto-increment ticket_number per project
                 const projectItems = db.get('backlog-items').filter({ projectId }).value();
                 const maxNumber = projectItems.reduce((max, item) => Math.max(max, item.ticket_number || 0), 0);
+                const maxPosition = projectItems.reduce((max, item) => Math.max(max, item.position || 0), 0);
 
                 // Auto-increment ID
                 const allItems = db.get('backlog-items').value();
@@ -514,12 +515,75 @@ module.exports = function (app, db) {
                     assignee_id: resolvedAssignee,
                     epic_id: resolvedEpic,
                     ticket_number: maxNumber + 1,
+                    position: maxPosition + 1,
                     created_by: String(req.user.userId),
                     created_at: now,
                 };
 
                 db.get('backlog-items').push(newItem).write();
                 return res.status(201).json(newItem);
+            }
+        );
+
+        /**
+         * PUT /api/projects/:projectId/backlog/reorder
+         * Persists new positions for a batch of tickets.
+         * Body: { items: [{ ticket_number: number, position: number }] }
+         * Auth: SUPER_ADMIN, PROJECT_ADMIN, PRODUCT_OWNER.
+         */
+        app.put(
+            '/api/projects/:projectId/backlog/reorder',
+            authMiddleware,
+            requireProjectRole(db, 'PROJECT_ADMIN', 'PRODUCT_OWNER'),
+            (req, res) => {
+                const projectId = req.params.projectId;
+                const { items } = req.body || {};
+
+                if (!Array.isArray(items) || items.length === 0) {
+                    return res.status(400).json({ message: 'items must be a non-empty array' });
+                }
+
+                const ticketNumbers = new Set();
+                const positions = new Set();
+
+                for (const entry of items) {
+                    if (entry.ticket_number === undefined || entry.ticket_number === null) {
+                        return res.status(400).json({ message: 'Each item must have a ticket_number' });
+                    }
+                    if (!Number.isInteger(entry.position) || entry.position < 1) {
+                        return res.status(400).json({ message: 'Each item must have a positive integer position' });
+                    }
+                    if (ticketNumbers.has(entry.ticket_number)) {
+                        return res.status(400).json({ message: 'Duplicate ticket_number in items' });
+                    }
+                    if (positions.has(entry.position)) {
+                        return res.status(400).json({ message: 'Duplicate position in items' });
+                    }
+                    ticketNumbers.add(entry.ticket_number);
+                    positions.add(entry.position);
+                }
+
+                // Verify all tickets belong to the project
+                const projectItems = db.get('backlog-items').filter({ projectId }).value();
+                const projectTicketNumbers = new Set(projectItems.map(i => i.ticket_number));
+
+                for (const tn of ticketNumbers) {
+                    if (!projectTicketNumbers.has(tn)) {
+                        return res.status(400).json({ message: `Ticket number ${tn} not found in project` });
+                    }
+                }
+
+                // Apply updates
+                let updated = 0;
+                for (const entry of items) {
+                    db.get('backlog-items')
+                        .find(i => i.projectId === projectId && i.ticket_number === entry.ticket_number)
+                        .assign({ position: entry.position })
+                        .write();
+                    updated++;
+                }
+
+                return res.json({ updated });
             }
         );
 
