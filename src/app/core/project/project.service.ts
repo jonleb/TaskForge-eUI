@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListParams, BacklogListResponse, UpdateTicketPayload, TicketComment, ActivityEntry } from './project.models';
+import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListParams, BacklogListResponse, UpdateTicketPayload, TicketComment, ActivityEntry, UpdateWorkflowPayload } from './project.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
@@ -55,6 +55,10 @@ export class ProjectService {
 
     getWorkflows(projectId: string): Observable<Workflow[]> {
         return this.http.get<Workflow[]>(`/api/projects/${projectId}/workflows`);
+    }
+
+    updateWorkflow(projectId: string, workflowId: string, payload: UpdateWorkflowPayload): Observable<Workflow> {
+        return this.http.put<Workflow>(`/api/projects/${projectId}/workflows/${workflowId}`, payload);
     }
 
     getBacklog(projectId: string, params?: BacklogListParams): Observable<BacklogListResponse> {

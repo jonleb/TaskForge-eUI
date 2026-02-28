@@ -376,6 +376,45 @@ describe('ProjectService', () => {
         });
     });
 
+    describe('updateWorkflow()', () => {
+        it('should PUT /api/projects/:id/workflows/:workflowId with payload', () => {
+            const payload = {
+                statuses: ['TO_DO', 'IN_PROGRESS', 'DONE'],
+                transitions: { TO_DO: ['IN_PROGRESS'], IN_PROGRESS: ['DONE', 'TO_DO'], DONE: [] as string[] },
+            };
+
+            service.updateWorkflow('1', '4', payload).subscribe(workflow => {
+                expect(workflow.statuses).toEqual(payload.statuses);
+                expect(workflow.updated_at).toBeDefined();
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/workflows/4');
+            expect(req.request.method).toBe('PUT');
+            expect(req.request.body).toEqual(payload);
+            req.flush({
+                id: '4', projectId: '1', ticketType: 'EPIC',
+                statuses: payload.statuses, transitions: payload.transitions,
+                created_at: '2025-01-20T09:00:00.000Z', updated_at: '2026-02-28T10:00:00.000Z',
+            });
+        });
+
+        it('should propagate 409 conflict errors', () => {
+            const payload = {
+                statuses: ['TO_DO', 'DONE'],
+                transitions: { TO_DO: ['DONE'], DONE: [] as string[] },
+            };
+
+            service.updateWorkflow('1', '1', payload).subscribe({
+                error: err => {
+                    expect(err.status).toBe(409);
+                },
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/workflows/1');
+            req.flush({ message: 'Cannot remove statuses currently in use' }, { status: 409, statusText: 'Conflict' });
+        });
+    });
+
     describe('getBacklog()', () => {
         const mockBacklogItem: BacklogItem = {
             id: '1',

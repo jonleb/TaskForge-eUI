@@ -86,6 +86,7 @@ export interface Workflow {
     statuses: WorkflowStatus[];
     transitions: Record<WorkflowStatus, WorkflowStatus[]>;
     created_at: string;
+    updated_at?: string;
 }
 
 export interface BacklogItem {
@@ -169,4 +170,9 @@ export interface ActivityEntry {
     newValue: string;
     changedBy: string;
     created_at: string;
+}
+
+export interface UpdateWorkflowPayload {
+    statuses: string[];
+    transitions: Record<string, string[]>;
 }
