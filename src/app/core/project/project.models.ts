@@ -102,6 +102,11 @@ export interface BacklogItem {
     ticket_number: number;
     created_by: string;
     created_at: string;
+    position?: number;
+}
+
+export interface ReorderPayload {
+    items: { ticket_number: number; position: number }[];
 }
 
 export type TicketPriority = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';

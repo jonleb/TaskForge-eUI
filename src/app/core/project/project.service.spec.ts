@@ -678,4 +678,32 @@ describe('ProjectService', () => {
             req.flush(null, { status: 204, statusText: 'No Content' });
         });
     });
+
+    describe('reorderBacklog()', () => {
+        it('should PUT /api/projects/:id/backlog/reorder with correct payload', () => {
+            const payload = { items: [{ ticket_number: 1, position: 2 }, { ticket_number: 2, position: 1 }] };
+
+            service.reorderBacklog('1', payload).subscribe(res => {
+                expect(res.updated).toBe(2);
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/backlog/reorder');
+            expect(req.request.method).toBe('PUT');
+            expect(req.request.body).toEqual(payload);
+            req.flush({ updated: 2 });
+        });
+
+        it('should propagate error on reorder failure', () => {
+            const payload = { items: [] };
+
+            service.reorderBacklog('1', payload).subscribe({
+                error: err => {
+                    expect(err.status).toBe(400);
+                },
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/backlog/reorder');
+            req.flush({ message: 'items array is empty' }, { status: 400, statusText: 'Bad Request' });
+        });
+    });
 });

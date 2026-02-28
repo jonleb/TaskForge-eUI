@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListParams, BacklogListResponse, UpdateTicketPayload, TicketComment, ActivityEntry, UpdateWorkflowPayload, LinkType, TicketLink, CreateTicketLinkPayload } from './project.models';
+import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListParams, BacklogListResponse, UpdateTicketPayload, TicketComment, ActivityEntry, UpdateWorkflowPayload, LinkType, TicketLink, CreateTicketLinkPayload, ReorderPayload } from './project.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
@@ -117,5 +117,9 @@ export class ProjectService {
 
     deleteTicketLink(projectId: string, ticketNumber: number, linkId: string): Observable<void> {
         return this.http.delete<void>(`/api/projects/${projectId}/backlog/${ticketNumber}/links/${linkId}`);
+    }
+
+    reorderBacklog(projectId: string, payload: ReorderPayload): Observable<{ updated: number }> {
+        return this.http.put<{ updated: number }>(`/api/projects/${projectId}/backlog/reorder`, payload);
     }
 }
