@@ -159,6 +159,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     saveWorkflow(): void {
         if (!this.selectedWorkflow) return;
+        this.confirmDialog.closeDialog();
         this.isSaving = true;
         this.cdr.markForCheck();
 

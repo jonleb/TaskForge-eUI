@@ -189,8 +189,6 @@
 <eui-dialog #confirmDialog
     [title]="'workflow-mgmt.confirm-save-title' | translate"
     [acceptLabel]="'workflow-mgmt.confirm-save-accept' | translate"
-    [isHandleCloseOnAccept]="true"
-    (accept)="saveWorkflow()"
-    (dismiss)="null">
+    (accept)="saveWorkflow()">
     <p>{{ 'workflow-mgmt.confirm-save-message' | translate:{ type: selectedWorkflow?.ticketType ?? '' } }}</p>
 </eui-dialog>
