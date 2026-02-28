@@ -109,6 +109,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
                 { label: this.translate.instant('nav.dashboard'), url: base },
                 { label: this.translate.instant('nav.members'), url: `${base}/members` },
                 { label: this.translate.instant('nav.backlog'), url: `${base}/backlog` },
+                { label: this.translate.instant('nav.sprints'), url: `${base}/sprints` },
                 { label: this.translate.instant('nav.board'), url: `${base}/board` },
                 { label: this.translate.instant('nav.settings'), url: `${base}/settings` },
             ];
