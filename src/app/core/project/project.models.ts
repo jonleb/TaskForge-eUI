@@ -103,6 +103,7 @@ export interface BacklogItem {
     created_by: string;
     created_at: string;
     position?: number;
+    sprint_id?: string | null;
 }
 
 export interface ReorderPayload {
@@ -208,4 +209,40 @@ export interface CreateTicketLinkPayload {
     linkTypeId: string;
     targetTicketNumber: number;
     targetProjectId?: string;
+}
+
+export type SprintStatus = 'PLANNED' | 'ACTIVE' | 'CLOSED';
+
+export interface Sprint {
+    id: string;
+    projectId: string;
+    name: string;
+    goal: string;
+    status: SprintStatus;
+    start_date: string | null;
+    end_date: string | null;
+    created_by: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface CreateSprintPayload {
+    name: string;
+    goal?: string;
+}
+
+export interface UpdateSprintPayload {
+    name?: string;
+    goal?: string;
+    start_date?: string;
+    end_date?: string;
+}
+
+export interface SprintStatusPayload {
+    status: 'ACTIVE' | 'CLOSED';
+    move_open_tickets_to_backlog?: boolean;
+}
+
+export interface SprintItemsPayload {
+    ticket_numbers: number[];
 }

@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { describe, it, beforeEach, afterEach, expect } from 'vitest';
 import { ProjectService } from './project.service';
-import { Project, ProjectMember, ProjectListResponse, UserInfo, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListResponse, UpdateTicketPayload, TicketComment, ActivityEntry } from './project.models';
+import { Project, ProjectMember, ProjectListResponse, UserInfo, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListResponse, UpdateTicketPayload, TicketComment, ActivityEntry, Sprint, CreateSprintPayload, SprintStatusPayload, SprintItemsPayload } from './project.models';
 
 const mockProject: Project = {
     id: '1',
@@ -704,6 +704,119 @@ describe('ProjectService', () => {
 
             const req = httpMock.expectOne('/api/projects/1/backlog/reorder');
             req.flush({ message: 'items array is empty' }, { status: 400, statusText: 'Bad Request' });
+        });
+    });
+
+    describe('getSprints()', () => {
+        const mockSprint: Sprint = {
+            id: 'sp-1', projectId: '1', name: 'Sprint 1', goal: 'Goal',
+            status: 'PLANNED', start_date: null, end_date: null,
+            created_by: '1', created_at: '2026-02-01T00:00:00.000Z', updated_at: '2026-02-01T00:00:00.000Z',
+        };
+
+        it('should GET /api/projects/:id/sprints and return Sprint[]', () => {
+            service.getSprints('1').subscribe(sprints => {
+                expect(sprints).toEqual([mockSprint]);
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/sprints');
+            expect(req.request.method).toBe('GET');
+            req.flush([mockSprint]);
+        });
+
+        it('should pass status query param when provided', () => {
+            service.getSprints('1', 'ACTIVE').subscribe();
+
+            const req = httpMock.expectOne(r => r.url === '/api/projects/1/sprints');
+            expect(req.request.params.get('status')).toBe('ACTIVE');
+            req.flush([]);
+        });
+    });
+
+    describe('createSprint()', () => {
+        it('should POST /api/projects/:id/sprints with payload', () => {
+            const payload: CreateSprintPayload = { name: 'Sprint 2', goal: 'Ship it' };
+
+            service.createSprint('1', payload).subscribe(sprint => {
+                expect(sprint.name).toBe('Sprint 2');
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/sprints');
+            expect(req.request.method).toBe('POST');
+            expect(req.request.body).toEqual(payload);
+            req.flush({ id: 'sp-new', projectId: '1', name: 'Sprint 2', goal: 'Ship it',
+                status: 'PLANNED', start_date: null, end_date: null,
+                created_by: '1', created_at: '2026-02-28T00:00:00.000Z', updated_at: '2026-02-28T00:00:00.000Z' });
+        });
+
+        it('should propagate 400 errors', () => {
+            service.createSprint('1', { name: '' }).subscribe({
+                error: err => expect(err.status).toBe(400),
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/sprints');
+            req.flush({ message: 'name is required' }, { status: 400, statusText: 'Bad Request' });
+        });
+    });
+
+    describe('updateSprint()', () => {
+        it('should PATCH /api/projects/:id/sprints/:sprintId with payload', () => {
+            const payload = { name: 'Renamed Sprint' };
+
+            service.updateSprint('1', 'sp-1', payload).subscribe(sprint => {
+                expect(sprint.name).toBe('Renamed Sprint');
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/sprints/sp-1');
+            expect(req.request.method).toBe('PATCH');
+            expect(req.request.body).toEqual(payload);
+            req.flush({ id: 'sp-1', projectId: '1', name: 'Renamed Sprint', goal: '',
+                status: 'PLANNED', start_date: null, end_date: null,
+                created_by: '1', created_at: '2026-02-01T00:00:00.000Z', updated_at: '2026-02-28T00:00:00.000Z' });
+        });
+    });
+
+    describe('updateSprintStatus()', () => {
+        it('should PATCH /api/projects/:id/sprints/:sprintId/status with payload', () => {
+            const payload: SprintStatusPayload = { status: 'ACTIVE' };
+
+            service.updateSprintStatus('1', 'sp-1', payload).subscribe(sprint => {
+                expect(sprint.status).toBe('ACTIVE');
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/sprints/sp-1/status');
+            expect(req.request.method).toBe('PATCH');
+            expect(req.request.body).toEqual(payload);
+            req.flush({ id: 'sp-1', projectId: '1', name: 'Sprint 1', goal: '',
+                status: 'ACTIVE', start_date: '2026-02-28T00:00:00.000Z', end_date: null,
+                created_by: '1', created_at: '2026-02-01T00:00:00.000Z', updated_at: '2026-02-28T00:00:00.000Z' });
+        });
+    });
+
+    describe('assignSprintItems()', () => {
+        it('should PUT /api/projects/:id/sprints/:sprintId/items with payload', () => {
+            const payload: SprintItemsPayload = { ticket_numbers: [3, 5] };
+
+            service.assignSprintItems('1', 'sp-1', payload).subscribe(res => {
+                expect(res.assigned).toBe(2);
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/sprints/sp-1/items');
+            expect(req.request.method).toBe('PUT');
+            expect(req.request.body).toEqual(payload);
+            req.flush({ assigned: 2 });
+        });
+    });
+
+    describe('removeSprintItem()', () => {
+        it('should DELETE /api/projects/:id/sprints/:sprintId/items/:ticketNumber', () => {
+            service.removeSprintItem('1', 'sp-1', 3).subscribe(res => {
+                expect(res.removed).toBe(true);
+            });
+
+            const req = httpMock.expectOne('/api/projects/1/sprints/sp-1/items/3');
+            expect(req.request.method).toBe('DELETE');
+            req.flush({ removed: true });
         });
     });
 });

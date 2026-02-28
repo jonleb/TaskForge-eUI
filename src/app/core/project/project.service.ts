@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListParams, BacklogListResponse, UpdateTicketPayload, TicketComment, ActivityEntry, UpdateWorkflowPayload, LinkType, TicketLink, CreateTicketLinkPayload, ReorderPayload } from './project.models';
+import { Project, ProjectMember, CreateProjectPayload, UpdateProjectPayload, UserInfo, ProjectListParams, ProjectListResponse, UpsertMemberPayload, MemberCandidate, Workflow, BacklogItem, CreateTicketPayload, BacklogListParams, BacklogListResponse, UpdateTicketPayload, TicketComment, ActivityEntry, UpdateWorkflowPayload, LinkType, TicketLink, CreateTicketLinkPayload, ReorderPayload, Sprint, CreateSprintPayload, UpdateSprintPayload, SprintStatusPayload, SprintItemsPayload } from './project.models';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectService {
@@ -122,4 +122,34 @@ export class ProjectService {
     reorderBacklog(projectId: string, payload: ReorderPayload): Observable<{ updated: number }> {
         return this.http.put<{ updated: number }>(`/api/projects/${projectId}/backlog/reorder`, payload);
     }
+
+
+    getSprints(projectId: string, status?: string): Observable<Sprint[]> {
+        let params = new HttpParams();
+        if (status) {
+            params = params.set('status', status);
+        }
+        return this.http.get<Sprint[]>(`/api/projects/${projectId}/sprints`, { params });
+    }
+
+    createSprint(projectId: string, payload: CreateSprintPayload): Observable<Sprint> {
+        return this.http.post<Sprint>(`/api/projects/${projectId}/sprints`, payload);
+    }
+
+    updateSprint(projectId: string, sprintId: string, payload: UpdateSprintPayload): Observable<Sprint> {
+        return this.http.patch<Sprint>(`/api/projects/${projectId}/sprints/${sprintId}`, payload);
+    }
+
+    updateSprintStatus(projectId: string, sprintId: string, payload: SprintStatusPayload): Observable<Sprint> {
+        return this.http.patch<Sprint>(`/api/projects/${projectId}/sprints/${sprintId}/status`, payload);
+    }
+
+    assignSprintItems(projectId: string, sprintId: string, payload: SprintItemsPayload): Observable<{ assigned: number }> {
+        return this.http.put<{ assigned: number }>(`/api/projects/${projectId}/sprints/${sprintId}/items`, payload);
+    }
+
+    removeSprintItem(projectId: string, sprintId: string, ticketNumber: number): Observable<{ removed: boolean }> {
+        return this.http.delete<{ removed: boolean }>(`/api/projects/${projectId}/sprints/${sprintId}/items/${ticketNumber}`);
+    }
+
 }
