@@ -1071,5 +1071,176 @@ module.exports = function (app, db) {
             return res.status(200).json(updated);
         });
 
+        // ─── Ticket Links ───────────────────────────────────────────────
+
+        /**
+         * GET /api/projects/:projectId/backlog/:ticketNumber/links
+         * Returns all links where the ticket is source or target (within this project).
+         * Auth: any project member.
+         */
+        app.get('/api/projects/:projectId/backlog/:ticketNumber/links',
+            authMiddleware,
+            requireProjectRole(db, ...ALL_PROJECT_ROLES),
+            (req, res) => {
+                const { projectId, ticketNumber } = req.params;
+                const num = parseInt(ticketNumber, 10);
+
+                // Verify ticket exists
+                const ticket = db.get('backlog-items')
+                    .find(t => t.projectId === projectId && t.ticket_number === num)
+                    .value();
+                if (!ticket) {
+                    return res.status(404).json({ error: 'Ticket not found.' });
+                }
+
+                const allLinks = db.get('ticket_links').value() || [];
+                const linkTypes = db.get('link_types').value() || [];
+
+                // Links where this ticket is source or target in this project
+                const relevant = allLinks.filter(l =>
+                    (l.projectId === projectId && l.sourceTicketNumber === num) ||
+                    (l.targetProjectId === projectId && l.targetTicketNumber === num),
+                );
+
+                // Enrich with link type labels and direction
+                const enriched = relevant.map(l => {
+                    const lt = linkTypes.find(t => t.id === l.linkTypeId);
+                    const isSource = l.projectId === projectId && l.sourceTicketNumber === num;
+                    return {
+                        ...l,
+                        linkTypeName: lt ? lt.name : 'UNKNOWN',
+                        linkLabel: lt ? (isSource ? lt.outward : lt.inward) : 'unknown',
+                    };
+                });
+
+                res.json(enriched);
+            },
+        );
+
+        /**
+         * POST /api/projects/:projectId/backlog/:ticketNumber/links
+         * Creates a new link from this ticket to a target ticket.
+         * Body: { linkTypeId, targetTicketNumber, targetProjectId? }
+         * Auth: SUPER_ADMIN, PROJECT_ADMIN, PRODUCT_OWNER, DEVELOPER, REPORTER (own tickets).
+         */
+        app.post('/api/projects/:projectId/backlog/:ticketNumber/links',
+            authMiddleware,
+            requireProjectRole(db, 'PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER', 'REPORTER'),
+            (req, res) => {
+                const { projectId, ticketNumber } = req.params;
+                const num = parseInt(ticketNumber, 10);
+                const { linkTypeId, targetTicketNumber, targetProjectId } = req.body;
+                const tgtProjectId = targetProjectId || projectId;
+
+                // Verify source ticket exists
+                const sourceTicket = db.get('backlog-items')
+                    .find(t => t.projectId === projectId && t.ticket_number === num)
+                    .value();
+                if (!sourceTicket) {
+                    return res.status(404).json({ error: 'Source ticket not found.' });
+                }
+
+                // REPORTER can only link own tickets
+                if (req.projectRole === 'REPORTER' && sourceTicket.created_by !== String(req.user.userId)) {
+                    return res.status(403).json({ error: 'Reporters can only link their own tickets.' });
+                }
+
+                // Validate required fields
+                if (!linkTypeId) {
+                    return res.status(400).json({ error: 'linkTypeId is required.' });
+                }
+                if (targetTicketNumber === undefined || targetTicketNumber === null) {
+                    return res.status(400).json({ error: 'targetTicketNumber is required.' });
+                }
+
+                // Validate link type exists
+                const linkType = db.get('link_types').find({ id: String(linkTypeId) }).value();
+                if (!linkType) {
+                    return res.status(400).json({ error: 'Invalid linkTypeId.' });
+                }
+
+                // Prevent self-link
+                const tgtNum = parseInt(targetTicketNumber, 10);
+                if (projectId === tgtProjectId && num === tgtNum) {
+                    return res.status(400).json({ error: 'Cannot link a ticket to itself.' });
+                }
+
+                // Validate target ticket exists
+                const targetTicket = db.get('backlog-items')
+                    .find(t => t.projectId === tgtProjectId && t.ticket_number === tgtNum)
+                    .value();
+                if (!targetTicket) {
+                    return res.status(400).json({ error: 'Target ticket not found.' });
+                }
+
+                // Check for duplicate (same type, same source→target)
+                const existing = db.get('ticket_links').find(l =>
+                    l.projectId === projectId &&
+                    l.sourceTicketNumber === num &&
+                    l.targetTicketNumber === tgtNum &&
+                    l.targetProjectId === tgtProjectId &&
+                    l.linkTypeId === String(linkTypeId),
+                ).value();
+                if (existing) {
+                    return res.status(409).json({ error: 'Duplicate link.' });
+                }
+
+                const allLinks = db.get('ticket_links').value() || [];
+                const maxId = allLinks.reduce((max, l) => Math.max(max, parseInt(l.id, 10) || 0), 0);
+
+                const newLink = {
+                    id: String(maxId + 1),
+                    projectId,
+                    linkTypeId: String(linkTypeId),
+                    sourceTicketNumber: num,
+                    targetTicketNumber: tgtNum,
+                    targetProjectId: tgtProjectId,
+                    created_by: String(req.user.userId),
+                    created_at: new Date().toISOString(),
+                };
+
+                db.get('ticket_links').push(newLink).write();
+                res.status(201).json(newLink);
+            },
+        );
+
+        /**
+         * DELETE /api/projects/:projectId/backlog/:ticketNumber/links/:linkId
+         * Deletes a link.
+         * Auth: SUPER_ADMIN, PROJECT_ADMIN, or link creator.
+         */
+        app.delete('/api/projects/:projectId/backlog/:ticketNumber/links/:linkId',
+            authMiddleware,
+            requireProjectRole(db, ...ALL_PROJECT_ROLES),
+            (req, res) => {
+                const { projectId, ticketNumber, linkId } = req.params;
+                const num = parseInt(ticketNumber, 10);
+
+                const link = db.get('ticket_links').find({ id: linkId }).value();
+                if (!link) {
+                    return res.status(404).json({ error: 'Link not found.' });
+                }
+
+                // Verify link belongs to this ticket context
+                const belongsToTicket =
+                    (link.projectId === projectId && link.sourceTicketNumber === num) ||
+                    (link.targetProjectId === projectId && link.targetTicketNumber === num);
+                if (!belongsToTicket) {
+                    return res.status(404).json({ error: 'Link not found.' });
+                }
+
+                // Authorization: SUPER_ADMIN, PROJECT_ADMIN, or link creator
+                const isSuperAdmin = req.user.role === 'SUPER_ADMIN';
+                const isProjectAdmin = req.projectRole === 'PROJECT_ADMIN';
+                const isCreator = link.created_by === String(req.user.userId);
+                if (!isSuperAdmin && !isProjectAdmin && !isCreator) {
+                    return res.status(403).json({ error: 'Only admins or the link creator can delete links.' });
+                }
+
+                db.get('ticket_links').remove({ id: linkId }).write();
+                res.status(204).send();
+            },
+        );
+
     });
 };

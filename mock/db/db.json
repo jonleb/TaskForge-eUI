@@ -4600,6 +4600,41 @@
     }
   ],
   "ticket_links": [],
+  "link_types": [
+    {
+      "id": "1",
+      "name": "BLOCKS",
+      "inward": "is blocked by",
+      "outward": "blocks",
+      "scope": "GLOBAL",
+      "created_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "name": "RELATES_TO",
+      "inward": "relates to",
+      "outward": "relates to",
+      "scope": "GLOBAL",
+      "created_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "name": "DUPLICATES",
+      "inward": "is duplicated by",
+      "outward": "duplicates",
+      "scope": "GLOBAL",
+      "created_at": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "4",
+      "name": "PARENT_OF",
+      "inward": "is child of",
+      "outward": "is parent of",
+      "scope": "GLOBAL",
+      "created_at": "2025-01-01T00:00:00.000Z"
+    }
+  ],
+  "ticket_links": [],
   "ticket-comments": [
     {
       "id": "1",

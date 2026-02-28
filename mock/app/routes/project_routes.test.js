@@ -2299,3 +2299,158 @@ describe('PUT /api/projects/:projectId/workflows/:workflowId', () => {
         expect(res.status).toBe(401);
     });
 });
+
+
+// --- Ticket Links CRUD ---
+
+describe('GET /api/projects/:projectId/backlog/:ticketNumber/links', () => {
+
+    it('should return 401 without token', async () => {
+        const res = await request(app).get('/api/projects/1/backlog/1/links');
+        expect(res.status).toBe(401);
+    });
+
+    it('should return empty array when no links exist', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog/1/links')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+    });
+
+    it('should return 404 for non-existent ticket', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog/99999/links')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(404);
+    });
+});
+
+describe('POST /api/projects/:projectId/backlog/:ticketNumber/links', () => {
+
+    it('should create a link (SUPER_ADMIN)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog/1/links')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ linkTypeId: '1', targetTicketNumber: 3 });
+
+        expect(res.status).toBe(201);
+        expect(res.body.linkTypeId).toBe('1');
+        expect(res.body.sourceTicketNumber).toBe(1);
+        expect(res.body.targetTicketNumber).toBe(3);
+        expect(res.body.projectId).toBe('1');
+        expect(res.body.created_by).toBeDefined();
+    });
+
+    it('should create a link (DEVELOPER)', async () => {
+        const token = await getTokenFor('diana.brown');
+        const res = await request(app)
+            .post('/api/projects/1/backlog/1/links')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ linkTypeId: '2', targetTicketNumber: 2 });
+
+        expect(res.status).toBe(201);
+        expect(res.body.linkTypeId).toBe('2');
+    });
+
+    it('should reject self-link (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog/1/links')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ linkTypeId: '1', targetTicketNumber: 1 });
+
+        expect(res.status).toBe(400);
+    });
+
+    it('should reject missing linkTypeId (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog/1/links')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ targetTicketNumber: 2 });
+
+        expect(res.status).toBe(400);
+    });
+
+    it('should reject invalid target ticket (400)', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .post('/api/projects/1/backlog/1/links')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ linkTypeId: '1', targetTicketNumber: 99999 });
+
+        expect(res.status).toBe(400);
+    });
+
+    it('should reject duplicate link (409)', async () => {
+        const token = await getTokenFor('superadmin');
+        // First link was already created above (linkTypeId 1, ticket 1→3)
+        const res = await request(app)
+            .post('/api/projects/1/backlog/1/links')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ linkTypeId: '1', targetTicketNumber: 3 });
+
+        expect(res.status).toBe(409);
+    });
+
+    it('should reject VIEWER (403)', async () => {
+        const token = await getTokenFor('viewer');
+        const res = await request(app)
+            .post('/api/projects/1/backlog/1/links')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ linkTypeId: '1', targetTicketNumber: 2 });
+
+        expect(res.status).toBe(403);
+    });
+});
+
+describe('GET /api/projects/:projectId/backlog/:ticketNumber/links (with data)', () => {
+
+    it('should return enriched links for a ticket', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .get('/api/projects/1/backlog/1/links')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.length).toBeGreaterThanOrEqual(1);
+        expect(res.body[0].linkTypeName).toBeDefined();
+        expect(res.body[0].linkLabel).toBeDefined();
+    });
+});
+
+describe('DELETE /api/projects/:projectId/backlog/:ticketNumber/links/:linkId', () => {
+
+    it('should return 404 for unknown link', async () => {
+        const token = await getTokenFor('superadmin');
+        const res = await request(app)
+            .delete('/api/projects/1/backlog/1/links/99999')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(404);
+    });
+
+    it('should delete a link (SUPER_ADMIN)', async () => {
+        const token = await getTokenFor('superadmin');
+
+        // Get existing links to find one to delete
+        const linksRes = await request(app)
+            .get('/api/projects/1/backlog/1/links')
+            .set('Authorization', `Bearer ${token}`);
+
+        const linkToDelete = linksRes.body[0];
+        expect(linkToDelete).toBeDefined();
+
+        const res = await request(app)
+            .delete(`/api/projects/1/backlog/1/links/${linkToDelete.id}`)
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(204);
+    });
+});
