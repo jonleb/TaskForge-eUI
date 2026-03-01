@@ -370,5 +370,7 @@
   "sprint.planning.assigned": "Tickets du sprint",
   "sprint.planning.assign": "Ajouter au sprint",
   "sprint.planning.remove": "Retirer du sprint",
+  "sprint.issue-list-label": "Tickets dans {{name}}",
+  "sprint.no-issues": "Aucun ticket dans ce sprint.",
   "sprint.load-error": "Impossible de charger les sprints."
 }

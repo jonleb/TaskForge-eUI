@@ -267,7 +267,13 @@ export class SprintsComponent implements OnInit, OnDestroy {
         });
     }
 
-    private allBacklogItems: BacklogItem[] = [];
+    allBacklogItems: BacklogItem[] = [];
+
+    getSprintItems(sprintId: string): BacklogItem[] {
+        return this.allBacklogItems
+            .filter(item => item.sprint_id === sprintId)
+            .sort((a, b) => (a.position ?? a.ticket_number) - (b.position ?? b.ticket_number));
+    }
 
     private getSprintTickets(sprintId: string): BacklogItem[] {
         return this.allBacklogItems.filter(item => item.sprint_id === sprintId);

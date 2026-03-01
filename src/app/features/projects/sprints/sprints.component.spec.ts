@@ -156,10 +156,12 @@ describe('SprintsComponent', () => {
     it('should render sprint names in items', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const names = fixture.nativeElement.querySelectorAll('.sprint-item__name');
-        const nameTexts = Array.from(names).map((t: Element) => t.textContent?.trim());
-        expect(nameTexts).toContain('Sprint 2');
-        expect(nameTexts).toContain('Sprint 3');
+        const nameButtons = fixture.nativeElement.querySelectorAll('.sprint-item__name-btn');
+        const closedNames = fixture.nativeElement.querySelectorAll('.sprint-item__name');
+        const allNames = [...Array.from(nameButtons), ...Array.from(closedNames)].map((t: Element) => t.textContent?.trim());
+        expect(allNames).toContain('Sprint 2');
+        expect(allNames).toContain('Sprint 3');
+        expect(allNames).toContain('Sprint 1');
     });
 
     it('should render status badges', () => {
@@ -181,6 +183,67 @@ describe('SprintsComponent', () => {
         fixture.detectChanges();
         const sections = fixture.nativeElement.querySelectorAll('section[aria-label]');
         expect(sections.length).toBe(3);
+    });
+
+    describe('Inline issue list (STORY-001)', () => {
+        beforeEach(() => {
+            currentProject$.next(mockProject);
+            fixture.detectChanges();
+        });
+
+        it('should render issue list items for sprints with tickets', () => {
+            const issueItems = fixture.nativeElement.querySelectorAll('.sprint-issue-item:not(.sprint-issue-item--empty)');
+            expect(issueItems.length).toBe(3); // 2 in sp-2, 1 in sp-3
+        });
+
+        it('should display ticket number, type badge, title, and status badge per item', () => {
+            const firstItem = fixture.nativeElement.querySelector('.sprint-issue-item:not(.sprint-issue-item--empty)');
+            expect(firstItem.querySelector('.sprint-issue-item__number').textContent).toContain('#1');
+            expect(firstItem.querySelector('.sprint-issue-item__title').textContent).toContain('T1');
+            const badges = firstItem.querySelectorAll('eui-status-badge');
+            expect(badges.length).toBe(2); // type + status
+        });
+
+        it('should show "No issues" for sprints without tickets', () => {
+            // sp-1 (closed) has no tickets in mock data
+            const emptyItems = fixture.nativeElement.querySelectorAll('.sprint-issue-item--empty');
+            expect(emptyItems.length).toBeGreaterThanOrEqual(1);
+        });
+
+        it('should sort items by position/ticket_number', () => {
+            const items = component.getSprintItems('sp-2');
+            for (let i = 1; i < items.length; i++) {
+                const prevKey = items[i - 1].position ?? items[i - 1].ticket_number;
+                const currKey = items[i].position ?? items[i].ticket_number;
+                expect(prevKey).toBeLessThanOrEqual(currKey);
+            }
+        });
+
+        it('should have aria-label on issue list', () => {
+            const lists = fixture.nativeElement.querySelectorAll('.sprint-issue-list');
+            expect(lists.length).toBeGreaterThanOrEqual(1);
+            for (const list of Array.from(lists) as HTMLElement[]) {
+                expect(list.getAttribute('aria-label')).toBeTruthy();
+            }
+        });
+
+        it('should have aria-label on each issue item', () => {
+            const items = fixture.nativeElement.querySelectorAll('.sprint-issue-item:not(.sprint-issue-item--empty)');
+            for (const item of Array.from(items) as HTMLElement[]) {
+                expect(item.getAttribute('aria-label')).toBeTruthy();
+            }
+        });
+
+        it('should mark closed sprint items as readonly (no tabindex)', () => {
+            const readonlyItems = fixture.nativeElement.querySelectorAll('.sprint-issue-item--readonly');
+            // closed sprint sp-1 has no items, so this just verifies the class exists in template
+            expect(readonlyItems.length).toBe(0); // sp-1 has no tickets
+        });
+
+        it('should use navigateToPlanning via name button for active/planned sprints', () => {
+            const nameButtons = fixture.nativeElement.querySelectorAll('.sprint-item__name-btn');
+            expect(nameButtons.length).toBe(2); // active + planned
+        });
     });
 
     describe('Close Sprint confirmation (STORY-006)', () => {

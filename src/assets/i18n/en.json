@@ -370,5 +370,7 @@
   "sprint.planning.assigned": "Sprint tickets",
   "sprint.planning.assign": "Add to sprint",
   "sprint.planning.remove": "Remove from sprint",
+  "sprint.issue-list-label": "Issues in {{name}}",
+  "sprint.no-issues": "No issues in this sprint.",
   "sprint.load-error": "Could not load sprints."
 }
