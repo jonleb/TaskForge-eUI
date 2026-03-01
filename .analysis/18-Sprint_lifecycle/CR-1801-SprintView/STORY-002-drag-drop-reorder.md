@@ -15,7 +15,17 @@ Allow users with `canManage` permission to reorder issues within a sprint using 
 npm install @angular/cdk
 ```
 
-No eUI drag & drop component exists — Angular CDK `DragDropModule` is the standard approach.
+## eUI Reference Pattern
+
+eUI does not have a native drag & drop component for lists. The official eUI showcase uses Angular CDK `DragDropModule` for table row reordering (`eui-table/re-order-rows-drag-n-drop`). Key patterns from the showcase:
+
+- Import `DragDropModule` (the full module, not individual exports)
+- Use `cdkDropList` on the container, `cdkDrag` on each item
+- Drag handle: `<button cdkDragHandle euiButton euiRounded euiIconButton euiSizeS euiBasicButton>` with `dots-six-vertical:regular` icon
+- Preview class: `cdkDragPreviewClass="eui-table__orderable-rows-preview"` (for tables; we'll use custom styles for list items)
+- `moveItemInArray` from `@angular/cdk/drag-drop` for local reorder
+
+Since this is a list (not a table), we adapt the pattern to `<ul>/<li>` elements. Comment in code: "No eUI drag & drop component for lists — using CDK DragDropModule per eUI showcase pattern."
 
 ## Changes
 
@@ -24,21 +34,28 @@ No eUI drag & drop component exists — Angular CDK `DragDropModule` is the stan
 Wrap the issue `<ul>` with CDK drop list directives when `canManage` is true and sprint is not CLOSED:
 
 ```html
+<!-- No eUI drag & drop component for lists — using CDK DragDropModule per eUI showcase pattern -->
 <ul class="sprint-issue-list"
     [attr.aria-label]="'sprint.issue-list-label' | translate:{ name: sprint.name }"
-    [cdkDropList]="canManage && sprint.status !== 'CLOSED'"
+    cdkDropList
     [cdkDropListData]="getSprintItems(sprint.id)"
+    [cdkDropListDisabled]="!canManage || sprint.status === 'CLOSED'"
     (cdkDropListDropped)="onIssueDrop($event, sprint)">
     @for (item of getSprintItems(sprint.id); track item.id) {
         <li class="sprint-issue-item"
-            [cdkDrag]="canManage && sprint.status !== 'CLOSED'"
+            cdkDrag
             [cdkDragData]="item"
-            [attr.aria-roledescription]="canManage && sprint.status !== 'CLOSED' ? ('sprint.sortable-item' | translate) : null"
+            [cdkDragDisabled]="!canManage || sprint.status === 'CLOSED'"
             [attr.aria-label]="'#' + item.ticket_number + ' — ' + item.title"
             tabindex="0">
-            <!-- drag handle icon visible only when reorder is allowed -->
+            <!-- Drag handle — visible only when reorder is allowed -->
             @if (canManage && sprint.status !== 'CLOSED') {
-                <eui-icon-svg icon="eui-drag-handle" aria-hidden="true" class="sprint-issue-item__drag-handle" cdkDragHandle></eui-icon-svg>
+                <button cdkDragHandle
+                        euiButton euiRounded euiIconButton euiSizeS euiBasicButton
+                        [attr.aria-label]="'sprint.drag-handle' | translate"
+                        euiTooltip="sprint.drag-handle-tooltip">
+                    <eui-icon-svg icon="dots-six-vertical:regular" aria-hidden="true"></eui-icon-svg>
+                </button>
             }
             <!-- ... existing item content from STORY-001 ... -->
         </li>
@@ -55,10 +72,11 @@ Wrap the issue `<ul>` with CDK drop list directives when `canManage` is true and
 
 Add imports:
 ```typescript
-import { CdkDropList, CdkDrag, CdkDragDrop, CdkDragHandle, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { EuiTooltipDirective } from '@eui/components/directives';
 ```
 
-Add to `imports` array: `CdkDropList, CdkDrag, CdkDragHandle`.
+Add to component `imports` array: `DragDropModule, EuiTooltipDirective`.
 
 Add reorder handler:
 ```typescript
@@ -70,7 +88,7 @@ onIssueDrop(event: CdkDragDrop<BacklogItem[]>, sprint: Sprint): void {
     const items = [...this.getSprintItems(sprint.id)];
     moveItemInArray(items, event.previousIndex, event.currentIndex);
 
-    // Update local positions
+    // Build reorder payload
     const reorderPayload = items.map((item, index) => ({
         ticket_number: item.ticket_number,
         position: index,
@@ -115,8 +133,8 @@ onIssueDrop(event: CdkDragDrop<BacklogItem[]>, sprint: Sprint): void {
 ### Styles (`sprints.component.scss`)
 
 ```scss
-// CDK drag & drop styles
-.cdk-drag-preview {
+// CDK drag & drop styles (adapted from eUI table showcase pattern)
+.sprint-issue-item.cdk-drag-preview {
     background: white;
     border: 1px solid var(--eui-color-primary, #004494);
     border-radius: 4px;
@@ -127,24 +145,16 @@ onIssueDrop(event: CdkDragDrop<BacklogItem[]>, sprint: Sprint): void {
     gap: 0.5rem;
 }
 
-.cdk-drag-placeholder {
+.sprint-issue-item.cdk-drag-placeholder {
     background: var(--eui-color-grey-5, #f5f5f5);
     border: 2px dashed var(--eui-color-grey-25, #e0e0e0);
     border-radius: 4px;
     min-height: 2rem;
+    opacity: 0.5;
 }
 
-.cdk-drag-animating {
+.cdk-drop-list-dragging .sprint-issue-item:not(.cdk-drag-placeholder) {
     transition: transform 200ms ease;
-}
-
-.sprint-issue-item__drag-handle {
-    cursor: grab;
-    color: var(--eui-color-grey-50, #999);
-
-    &:active {
-        cursor: grabbing;
-    }
 }
 ```
 
@@ -152,7 +162,8 @@ onIssueDrop(event: CdkDragDrop<BacklogItem[]>, sprint: Sprint): void {
 
 **en.json**:
 ```json
-"sprint.sortable-item": "Sortable item",
+"sprint.drag-handle": "Drag to reorder",
+"sprint.drag-handle-tooltip": "Drag to reorder",
 "sprint.reorder-announcement": "{{ticket}} moved to position {{position}} of {{total}}",
 "sprint.growl.reorder-success": "Issue order updated",
 "sprint.growl.reorder-error": "Failed to save new order"
@@ -160,7 +171,8 @@ onIssueDrop(event: CdkDragDrop<BacklogItem[]>, sprint: Sprint): void {
 
 **fr.json**:
 ```json
-"sprint.sortable-item": "Élément triable",
+"sprint.drag-handle": "Glisser pour réordonner",
+"sprint.drag-handle-tooltip": "Glisser pour réordonner",
 "sprint.reorder-announcement": "{{ticket}} déplacé en position {{position}} sur {{total}}",
 "sprint.growl.reorder-success": "Ordre des tickets mis à jour",
 "sprint.growl.reorder-error": "Échec de la sauvegarde du nouvel ordre"
@@ -169,16 +181,18 @@ onIssueDrop(event: CdkDragDrop<BacklogItem[]>, sprint: Sprint): void {
 ## Accessibility
 
 - CDK drag & drop provides keyboard support: Space/Enter to pick up, arrow keys to move, Space/Enter to drop.
-- `aria-roledescription="sortable item"` on each draggable `<li>`.
+- Drag handle is a proper `<button>` element (not a div) with `aria-label` and tooltip — matches eUI showcase pattern.
 - `aria-live="assertive"` region announces reorder result (e.g. "#3 moved to position 2 of 5").
-- Drag handle icon is `aria-hidden="true"` (decorative).
-- When drag is disabled (no permission or CLOSED sprint), CDK directives are conditionally removed — no hidden interactive elements.
+- Drag handle icon `dots-six-vertical:regular` is `aria-hidden="true"` (decorative — the button has its own label).
+- When drag is disabled (no permission or CLOSED sprint), `cdkDragDisabled` and `cdkDropListDisabled` prevent interaction — the handle button is not rendered at all via `@if`.
 
 ## Unit Tests
 
-- Drag handle visible only when `canManage` is true and sprint is not CLOSED.
+- Drag handle button visible only when `canManage` is true and sprint is not CLOSED.
+- Drag handle button not rendered for CLOSED sprints.
 - `onIssueDrop` calls `reorderBacklog` with correct payload.
 - No-op when `previousIndex === currentIndex`.
 - Error growl shown on reorder failure.
 - Success growl shown on reorder success.
 - `reorderAnnouncement` updated after drop.
+- `cdkDropList` disabled when `canManage` is false.
