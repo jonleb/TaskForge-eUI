@@ -3065,7 +3065,7 @@
       "ticket_number": 1,
       "created_by": "system",
       "created_at": "2025-04-15T10:00:00.000Z",
-      "position": 2,
+      "position": 1,
       "sprint_id": null
     },
     {
@@ -3545,7 +3545,7 @@
       "ticket_number": 2,
       "created_by": "11",
       "created_at": "2026-01-07T09:00:00.000Z",
-      "position": 3,
+      "position": 5,
       "sprint_id": null
     },
     {
@@ -3561,7 +3561,7 @@
       "ticket_number": 3,
       "created_by": "22",
       "created_at": "2026-01-11T10:30:00.000Z",
-      "position": 1,
+      "position": 2,
       "sprint_id": null
     },
     {
@@ -3577,7 +3577,7 @@
       "ticket_number": 4,
       "created_by": "5",
       "created_at": "2026-01-14T14:00:00.000Z",
-      "position": 6,
+      "position": 9,
       "sprint_id": null
     },
     {
@@ -3587,13 +3587,13 @@
       "title": "Add request/response logging",
       "description": "Log all incoming requests and outgoing responses with correlation IDs",
       "status": "IN_REVIEW",
-      "priority": "HIGH",
+      "priority": "MEDIUM",
       "assignee_id": "11",
       "epic_id": null,
       "ticket_number": 5,
       "created_by": "11",
       "created_at": "2026-01-17T08:00:00.000Z",
-      "position": 4,
+      "position": 7,
       "sprint_id": null
     },
     {
@@ -3609,7 +3609,7 @@
       "ticket_number": 6,
       "created_by": "system",
       "created_at": "2026-01-21T11:00:00.000Z",
-      "position": 5,
+      "position": 8,
       "sprint_id": null
     },
     {
@@ -3625,7 +3625,7 @@
       "ticket_number": 7,
       "created_by": "22",
       "created_at": "2026-01-24T09:30:00.000Z",
-      "position": 7,
+      "position": 10,
       "sprint_id": null
     },
     {
@@ -3721,7 +3721,7 @@
       "ticket_number": 13,
       "created_by": "15",
       "created_at": "2026-02-20T09:00:00.000Z",
-      "position": 3,
+      "position": 1,
       "sprint_id": "sp-5"
     },
     {
@@ -3737,7 +3737,7 @@
       "ticket_number": 14,
       "created_by": "15",
       "created_at": "2026-02-22T14:20:00.000Z",
-      "position": 1,
+      "position": 3,
       "sprint_id": "sp-5"
     },
     {
@@ -4917,6 +4917,17 @@
       "newValue": "DONE",
       "changedBy": "15",
       "created_at": "2026-03-01T09:29:34.358Z"
+    },
+    {
+      "id": "9",
+      "projectId": "5",
+      "ticketId": "38",
+      "ticketNumber": 5,
+      "field": "priority",
+      "oldValue": "HIGH",
+      "newValue": "MEDIUM",
+      "changedBy": "1",
+      "created_at": "2026-03-01T10:10:44.046Z"
     }
   ],
   "link_types": [
