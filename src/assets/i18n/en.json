@@ -377,5 +377,9 @@
   "sprint.reorder-announcement": "{{ticket}} moved to position {{position}} of {{total}}",
   "sprint.growl.reorder-success": "Issue order updated",
   "sprint.growl.reorder-error": "Failed to save new order",
+  "sprint.dialog.edit-title": "Edit {{ticket}} — {{title}}",
+  "sprint.growl.edit-success": "Ticket updated",
+  "sprint.growl.edit-detail": "{{ticket}} saved successfully",
+  "sprint.growl.edit-error": "Failed to save changes",
   "sprint.load-error": "Could not load sprints."
 }

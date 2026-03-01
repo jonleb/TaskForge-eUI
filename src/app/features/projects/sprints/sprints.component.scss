@@ -92,6 +92,14 @@
         font-style: italic;
     }
 
+    &--clickable {
+        cursor: pointer;
+
+        &:hover {
+            background-color: var(--eui-color-grey-5, #f5f5f5);
+        }
+    }
+
     &--readonly {
         cursor: default;
         opacity: 0.85;

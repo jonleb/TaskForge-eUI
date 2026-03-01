@@ -377,5 +377,9 @@
   "sprint.reorder-announcement": "{{ticket}} déplacé en position {{position}} sur {{total}}",
   "sprint.growl.reorder-success": "Ordre des tickets mis à jour",
   "sprint.growl.reorder-error": "Échec de la sauvegarde du nouvel ordre",
+  "sprint.dialog.edit-title": "Modifier {{ticket}} — {{title}}",
+  "sprint.growl.edit-success": "Ticket mis à jour",
+  "sprint.growl.edit-detail": "{{ticket}} enregistré avec succès",
+  "sprint.growl.edit-error": "Échec de la sauvegarde",
   "sprint.load-error": "Impossible de charger les sprints."
 }

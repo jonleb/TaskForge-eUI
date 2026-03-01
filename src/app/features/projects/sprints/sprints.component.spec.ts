@@ -45,6 +45,7 @@ describe('SprintsComponent', () => {
             getBacklog: vi.fn().mockReturnValue(of(mockBacklogResponse)),
             getProjectMembers: vi.fn().mockReturnValue(of([])),
             reorderBacklog: vi.fn().mockReturnValue(of({ updated: 2 })),
+            updateTicket: vi.fn().mockReturnValue(of(mockBacklogResponse.data[0])),
         };
         permissionMock = {
             isSuperAdmin: vi.fn().mockReturnValue(false),
@@ -392,10 +393,104 @@ describe('SprintsComponent', () => {
         });
 
         it('should render close confirmation dialog in template', () => {
-            const dialog = fixture.nativeElement.querySelector('eui-dialog[title="sprint.dialog.close-title"]');
             // Dialog exists but may not have title as attribute since it's bound dynamically
             const dialogs = fixture.nativeElement.querySelectorAll('eui-dialog');
-            expect(dialogs.length).toBe(2); // create + close confirm
+            expect(dialogs.length).toBe(3); // create + close confirm + edit
+        });
+    });
+
+    describe('Quick-edit modal (STORY-003)', () => {
+        const mockMembers = [
+            { id: 'm1', userId: 'u1', role: 'DEVELOPER', joined_at: '2026-01-01', firstName: 'Alice', lastName: 'Smith', email: 'alice@test.com' },
+            { id: 'm2', userId: 'u2', role: 'PRODUCT_OWNER', joined_at: '2026-01-01', firstName: 'Bob', lastName: 'Jones', email: 'bob@test.com' },
+        ];
+
+        beforeEach(() => {
+            permissionMock['hasProjectRole'] = vi.fn().mockReturnValue(of(true));
+            projectServiceMock['getProjectMembers'] = vi.fn().mockReturnValue(of(mockMembers));
+            currentProject$.next(mockProject);
+            fixture.detectChanges();
+        });
+
+        it('should load project members on project init', () => {
+            expect(projectServiceMock['getProjectMembers']).toHaveBeenCalledWith('1');
+            expect(component.projectMembers).toEqual(mockMembers);
+        });
+
+        it('should populate editForm when openEditDialog is called', () => {
+            const item = mockBacklogResponse.data[0];
+            component.openEditDialog(item as any, mockSprints[1]);
+            expect(component.editForm.title).toBe('T1');
+            expect(component.editForm.status).toBe('IN_PROGRESS');
+            expect(component.editForm.priority).toBe('HIGH');
+            expect(component.editingItem).toBe(item);
+        });
+
+        it('should set dialog title with ticket number and title', () => {
+            const item = mockBacklogResponse.data[0];
+            component.openEditDialog(item as any, mockSprints[1]);
+            // TranslateTestingModule returns the key; verify the method was called with correct params
+            expect(component.editDialogTitle).toBe('sprint.dialog.edit-title');
+        });
+
+        it('should call updateTicket with correct payload on save', () => {
+            const item = mockBacklogResponse.data[0];
+            component.openEditDialog(item as any, mockSprints[1]);
+            component.editForm.title = 'Updated Title';
+            component.editForm.status = 'DONE';
+            component.onSaveEdit();
+            expect(projectServiceMock['updateTicket']).toHaveBeenCalledWith('1', 1, expect.objectContaining({
+                title: 'Updated Title',
+                status: 'DONE',
+            }));
+        });
+
+        it('should show success growl on save', () => {
+            const item = mockBacklogResponse.data[0];
+            component.openEditDialog(item as any, mockSprints[1]);
+            component.onSaveEdit();
+            expect(growlServiceMock.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+        });
+
+        it('should set editError on save failure', () => {
+            projectServiceMock['updateTicket'] = vi.fn().mockReturnValue(throwError(() => new Error('fail')));
+            const item = mockBacklogResponse.data[0];
+            component.openEditDialog(item as any, mockSprints[1]);
+            component.onSaveEdit();
+            expect(component.editError).toBeTruthy();
+        });
+
+        it('should clear state on resetEditForm', () => {
+            const item = mockBacklogResponse.data[0];
+            component.openEditDialog(item as any, mockSprints[1]);
+            expect(component.editingItem).toBeTruthy();
+            component.resetEditForm();
+            expect(component.editingItem).toBeNull();
+            expect(component.editDialogTitle).toBe('');
+            expect(component.editError).toBe('');
+        });
+
+        it('should not call updateTicket when title is empty', () => {
+            const item = mockBacklogResponse.data[0];
+            component.openEditDialog(item as any, mockSprints[1]);
+            component.editForm.title = '   ';
+            component.onSaveEdit();
+            expect(projectServiceMock['updateTicket']).not.toHaveBeenCalled();
+        });
+
+        it('should render edit dialog element in template', () => {
+            fixture.detectChanges();
+            const dialogs = fixture.nativeElement.querySelectorAll('eui-dialog');
+            expect(dialogs.length).toBe(3); // create + close confirm + edit
+        });
+
+        it('should make clickable issue items keyboard accessible', () => {
+            const clickableItems = fixture.nativeElement.querySelectorAll('.sprint-issue-item--clickable');
+            expect(clickableItems.length).toBeGreaterThanOrEqual(1);
+            for (const item of Array.from(clickableItems) as HTMLElement[]) {
+                expect(item.getAttribute('tabindex')).toBe('0');
+                expect(item.getAttribute('role')).toBe('button');
+            }
         });
     });
 });

@@ -58,13 +58,18 @@
                                     [cdkDropListDisabled]="!canManage"
                                     (cdkDropListDropped)="onIssueDrop($event, sprint)">
                                     @for (item of getSprintItems(sprint.id); track item.id) {
-                                        <li class="sprint-issue-item"
+                                        <li class="sprint-issue-item sprint-issue-item--clickable"
                                             cdkDrag [cdkDragData]="item" [cdkDragDisabled]="!canManage"
-                                            [attr.aria-label]="'#' + item.ticket_number + ' — ' + item.title">
+                                            tabindex="0"
+                                            role="button"
+                                            [attr.aria-label]="'#' + item.ticket_number + ' — ' + item.title"
+                                            (click)="openEditDialog(item, sprint)"
+                                            (keydown.enter)="openEditDialog(item, sprint)">
                                             @if (canManage) {
                                                 <button cdkDragHandle class="drag-handle"
                                                     [attr.aria-label]="'sprint.drag-handle' | translate"
-                                                    [euiTooltip]="'sprint.drag-handle-tooltip' | translate">
+                                                    [euiTooltip]="'sprint.drag-handle-tooltip' | translate"
+                                                    (click)="$event.stopPropagation()">
                                                     <eui-icon-svg icon="dots-six-vertical:regular" aria-hidden="true"></eui-icon-svg>
                                                 </button>
                                             }
@@ -133,13 +138,18 @@
                                     [cdkDropListDisabled]="!canManage"
                                     (cdkDropListDropped)="onIssueDrop($event, sprint)">
                                     @for (item of getSprintItems(sprint.id); track item.id) {
-                                        <li class="sprint-issue-item"
+                                        <li class="sprint-issue-item sprint-issue-item--clickable"
                                             cdkDrag [cdkDragData]="item" [cdkDragDisabled]="!canManage"
-                                            [attr.aria-label]="'#' + item.ticket_number + ' — ' + item.title">
+                                            tabindex="0"
+                                            role="button"
+                                            [attr.aria-label]="'#' + item.ticket_number + ' — ' + item.title"
+                                            (click)="openEditDialog(item, sprint)"
+                                            (keydown.enter)="openEditDialog(item, sprint)">
                                             @if (canManage) {
                                                 <button cdkDragHandle class="drag-handle"
                                                     [attr.aria-label]="'sprint.drag-handle' | translate"
-                                                    [euiTooltip]="'sprint.drag-handle-tooltip' | translate">
+                                                    [euiTooltip]="'sprint.drag-handle-tooltip' | translate"
+                                                    (click)="$event.stopPropagation()">
                                                     <eui-icon-svg icon="dots-six-vertical:regular" aria-hidden="true"></eui-icon-svg>
                                                 </button>
                                             }
@@ -283,5 +293,61 @@
                 </li>
             }
         </ul>
+    }
+</eui-dialog>
+
+<!-- Quick-edit dialog -->
+<eui-dialog #editDialog
+    [title]="editDialogTitle"
+    [acceptLabel]="'common.save' | translate"
+    [dismissLabel]="'common.cancel' | translate"
+    (accept)="onSaveEdit()"
+    (dismiss)="resetEditForm()">
+    <div euiInputGroup>
+        <label euiLabel for="editTitleInput" euiRequired>{{ 'ticket.field.title' | translate }}</label>
+        <input euiInputText id="editTitleInput" name="editTitle"
+            [(ngModel)]="editForm.title"
+            aria-required="true"
+            maxlength="200" />
+    </div>
+    <div euiInputGroup>
+        <label euiLabel for="editDescriptionInput">{{ 'ticket.field.description' | translate }}</label>
+        <textarea euiTextArea id="editDescriptionInput" name="editDescription"
+            [(ngModel)]="editForm.description"
+            maxlength="2000"
+            rows="4"></textarea>
+    </div>
+    <div euiInputGroup>
+        <label euiLabel for="editStatusSelect" euiRequired>{{ 'common.field.status' | translate }}</label>
+        <select euiSelect id="editStatusSelect" name="editStatus"
+            [(ngModel)]="editForm.status"
+            aria-required="true">
+            @for (s of workflowStatuses; track s) {
+                <option [value]="s">{{ s }}</option>
+            }
+        </select>
+    </div>
+    <div euiInputGroup>
+        <label euiLabel for="editPrioritySelect">{{ 'ticket.priority.label' | translate }}</label>
+        <select euiSelect id="editPrioritySelect" name="editPriority"
+            [(ngModel)]="editForm.priority">
+            <option [ngValue]="null">—</option>
+            @for (p of priorities; track p) {
+                <option [value]="p">{{ p }}</option>
+            }
+        </select>
+    </div>
+    <div euiInputGroup>
+        <label euiLabel for="editAssigneeSelect">{{ 'ticket.field.assignee' | translate }}</label>
+        <select euiSelect id="editAssigneeSelect" name="editAssignee"
+            [(ngModel)]="editForm.assignee_id">
+            <option [ngValue]="null">—</option>
+            @for (member of projectMembers; track member.userId) {
+                <option [value]="member.userId">{{ member.firstName }} {{ member.lastName }}</option>
+            }
+        </select>
+    </div>
+    @if (editError) {
+        <eui-feedback-message euiDanger aria-live="assertive">{{ editError }}</eui-feedback-message>
     }
 </eui-dialog>

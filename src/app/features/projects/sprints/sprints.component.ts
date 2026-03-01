@@ -16,6 +16,7 @@ import { EUI_LABEL } from '@eui/components/eui-label';
 import { EUI_INPUT_GROUP } from '@eui/components/eui-input-group';
 import { EUI_STATUS_BADGE } from '@eui/components/eui-status-badge';
 import { EUI_ICON } from '@eui/components/eui-icon';
+import { EUI_SELECT } from '@eui/components/eui-select';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiTooltipDirective } from '@eui/components/directives';
 import { EuiGrowlService } from '@eui/core';
@@ -23,6 +24,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
     ProjectContextService, ProjectService, Project,
     Sprint, SprintStatus, BacklogItem,
+    UpdateTicketPayload, WorkflowStatus, TicketPriority,
+    WORKFLOW_STATUSES, TICKET_PRIORITIES, ProjectMember,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
@@ -35,7 +38,7 @@ import { PermissionService } from '../../../core/auth';
         ...EUI_PAGE, ...EUI_BUTTON, ...EUI_CARD,
         ...EUI_FEEDBACK_MESSAGE, ...EUI_PROGRESS_BAR,
         ...EUI_INPUT_TEXT, ...EUI_TEXTAREA, ...EUI_LABEL, ...EUI_INPUT_GROUP,
-        ...EUI_STATUS_BADGE, ...EUI_ICON,
+        ...EUI_STATUS_BADGE, ...EUI_ICON, ...EUI_SELECT,
         EuiDialogComponent, EuiTooltipDirective, DragDropModule,
         FormsModule, TranslateModule, DatePipe,
     ],
@@ -65,6 +68,22 @@ export class SprintsComponent implements OnInit, OnDestroy {
     newSprintGoal = '';
     createError = '';
 
+    // Edit dialog state
+    @ViewChild('editDialog') editDialog!: EuiDialogComponent;
+    editingItem: BacklogItem | null = null;
+    editDialogTitle = '';
+    editError = '';
+    projectMembers: ProjectMember[] = [];
+    workflowStatuses = WORKFLOW_STATUSES;
+    priorities = TICKET_PRIORITIES;
+    editForm = {
+        title: '',
+        description: '',
+        status: '' as WorkflowStatus,
+        priority: null as TicketPriority | null,
+        assignee_id: null as string | null,
+    };
+
     get activeSprints(): Sprint[] {
         return this.sprints.filter(s => s.status === 'ACTIVE');
     }
@@ -88,6 +107,7 @@ export class SprintsComponent implements OnInit, OnDestroy {
             this.cdr.markForCheck();
             this.determineCanManage(project.id);
             this.loadSprints(project.id);
+            this.loadProjectMembers(project.id);
         });
     }
 
@@ -244,6 +264,63 @@ export class SprintsComponent implements OnInit, OnDestroy {
         }
     }
 
+    openEditDialog(item: BacklogItem, sprint: Sprint): void {
+        this.editingItem = item;
+        this.editDialogTitle = this.translate.instant('sprint.dialog.edit-title', {
+            ticket: '#' + item.ticket_number,
+            title: item.title,
+        });
+        this.editForm = {
+            title: item.title,
+            description: item.description,
+            status: item.status,
+            priority: item.priority,
+            assignee_id: item.assignee_id,
+        };
+        this.editError = '';
+        this.cdr.detectChanges();
+        this.editDialog.openDialog();
+    }
+
+    onSaveEdit(): void {
+        if (!this.project || !this.editingItem || !this.editForm.title.trim()) return;
+
+        const payload: UpdateTicketPayload = {
+            title: this.editForm.title.trim(),
+            description: this.editForm.description,
+            status: this.editForm.status,
+            priority: this.editForm.priority,
+            assignee_id: this.editForm.assignee_id,
+        };
+
+        this.projectService.updateTicket(this.project.id, this.editingItem.ticket_number, payload).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe({
+            next: () => {
+                this.editDialog.closeDialog();
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: this.translate.instant('sprint.growl.edit-success'),
+                    detail: this.translate.instant('sprint.growl.edit-detail', {
+                        ticket: '#' + this.editingItem!.ticket_number,
+                    }),
+                });
+                this.resetEditForm();
+                this.loadSprints(this.project!.id);
+            },
+            error: () => {
+                this.editError = this.translate.instant('sprint.growl.edit-error');
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    resetEditForm(): void {
+        this.editingItem = null;
+        this.editDialogTitle = '';
+        this.editError = '';
+    }
+
     private doCloseSprint(projectId: string, sprint: Sprint, moveTickets: boolean): void {
         this.projectService.updateSprintStatus(projectId, sprint.id, {
             status: 'CLOSED',
@@ -354,6 +431,15 @@ export class SprintsComponent implements OnInit, OnDestroy {
             takeUntil(this.destroy$),
         ).subscribe(can => {
             this.canManage = can;
+            this.cdr.markForCheck();
+        });
+    }
+
+    private loadProjectMembers(projectId: string): void {
+        this.projectService.getProjectMembers(projectId).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe(members => {
+            this.projectMembers = members;
             this.cdr.markForCheck();
         });
     }
