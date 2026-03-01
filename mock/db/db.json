@@ -3714,7 +3714,7 @@
       "type": "TASK",
       "title": "Add OpenAPI spec validation on ingress",
       "description": "Validate incoming requests against the registered OpenAPI spec before forwarding to upstream. Return 400 with detailed validation errors.",
-      "status": "IN_REVIEW",
+      "status": "DONE",
       "priority": "MEDIUM",
       "assignee_id": "11",
       "epic_id": "42",
@@ -4906,6 +4906,17 @@
       "newValue": "Updated by developer",
       "changedBy": "11",
       "created_at": "2026-02-27T15:26:07.913Z"
+    },
+    {
+      "id": "8",
+      "projectId": "5",
+      "ticketId": "91",
+      "ticketNumber": 13,
+      "field": "status",
+      "oldValue": "IN_REVIEW",
+      "newValue": "DONE",
+      "changedBy": "15",
+      "created_at": "2026-03-01T09:29:34.358Z"
     }
   ],
   "link_types": [
