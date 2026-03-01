@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, 
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { EUI_PAGE } from '@eui/components/eui-page';
 import { EUI_BUTTON } from '@eui/components/eui-button';
 import { EUI_CARD } from '@eui/components/eui-card';
@@ -11,6 +12,8 @@ import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
 import { EUI_ICON_BUTTON } from '@eui/components/eui-icon-button';
 import { EUI_INPUT_CHECKBOX } from '@eui/components/eui-input-checkbox';
 import { EUI_STATUS_BADGE } from '@eui/components/eui-status-badge';
+import { EUI_ICON } from '@eui/components/eui-icon';
+import { EuiTooltipDirective } from '@eui/components/directives';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
@@ -28,6 +31,7 @@ import { PermissionService } from '../../../../core/auth';
         ...EUI_PAGE, ...EUI_BUTTON, ...EUI_CARD, ...EUI_CHIP,
         ...EUI_FEEDBACK_MESSAGE, ...EUI_PROGRESS_BAR,
         ...EUI_ICON_BUTTON, ...EUI_INPUT_CHECKBOX, ...EUI_STATUS_BADGE,
+        ...EUI_ICON, EuiTooltipDirective, DragDropModule,
         TranslateModule,
     ],
 })
@@ -50,6 +54,7 @@ export class SprintPlanningComponent implements OnInit, OnDestroy {
     isLoading = true;
     hasError = false;
     canManage = false;
+    reorderAnnouncement = '';
 
     get isReadOnly(): boolean {
         return !this.canManage || this.sprint?.status === 'CLOSED';
@@ -154,6 +159,47 @@ export class SprintPlanningComponent implements OnInit, OnDestroy {
                     summary: this.translate.instant('sprint.growl.error-summary'),
                     detail: this.translate.instant('sprint.growl.error-detail'),
                 });
+            },
+        });
+    }
+
+    onSprintTicketDrop(event: CdkDragDrop<BacklogItem[]>): void {
+        if (event.previousIndex === event.currentIndex || !this.project) return;
+
+        moveItemInArray(this.sprintTickets, event.previousIndex, event.currentIndex);
+
+        const reorderPayload = this.sprintTickets.map((item, index) => ({
+            ticket_number: item.ticket_number,
+            position: index,
+        }));
+
+        const movedItem = this.sprintTickets[event.currentIndex];
+        this.reorderAnnouncement = this.translate.instant('sprint.planning.reorder-announcement', {
+            ticket: '#' + movedItem.ticket_number,
+            position: event.currentIndex + 1,
+            total: this.sprintTickets.length,
+        });
+
+        const projectId = this.project.id;
+        this.projectService.reorderBacklog(projectId, { items: reorderPayload }).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe({
+            next: () => {
+                this.cdr.markForCheck();
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: this.translate.instant('sprint.growl.reorder-success'),
+                });
+            },
+            error: () => {
+                this.growlService.growl({
+                    severity: 'error',
+                    summary: this.translate.instant('sprint.growl.error-summary'),
+                    detail: this.translate.instant('sprint.growl.reorder-error'),
+                });
+                if (this.project && this.sprint) {
+                    this.loadData(this.project.id, this.sprint.id);
+                }
             },
         });
     }
