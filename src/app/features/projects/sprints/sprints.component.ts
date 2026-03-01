@@ -365,7 +365,7 @@ export class SprintsComponent implements OnInit, OnDestroy {
 
         const reorderPayload = items.map((item, index) => ({
             ticket_number: item.ticket_number,
-            position: index,
+            position: index + 1,
         }));
 
         // Screen reader announcement

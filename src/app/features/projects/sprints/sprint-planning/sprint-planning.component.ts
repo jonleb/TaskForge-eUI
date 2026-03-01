@@ -170,7 +170,7 @@ export class SprintPlanningComponent implements OnInit, OnDestroy {
 
         const reorderPayload = this.sprintTickets.map((item, index) => ({
             ticket_number: item.ticket_number,
-            position: index,
+            position: index + 1,
         }));
 
         const movedItem = this.sprintTickets[event.currentIndex];
