@@ -611,4 +611,59 @@ describe('BacklogComponent', () => {
         currentProject$.next(mockProject); fixture.detectChanges();
         expect(fixture.nativeElement.querySelector('.reorder-bar')).toBeFalsy();
     });
+
+    // --- STORY-003 (CR-1802): Drag & drop reorder in Backlog ---
+    it('should show drag handle in reorder mode', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        component.canReorder = true; fixture.detectChanges();
+        expect(fixture.nativeElement.querySelectorAll('.drag-handle').length).toBe(3);
+    });
+    it('should hide drag handle when not in reorder mode', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['hasProjectRole'].mockReturnValue(of(false));
+        currentProject$.next(mockProject); fixture.detectChanges();
+        expect(fixture.nativeElement.querySelectorAll('.drag-handle').length).toBe(0);
+    });
+    it('should update positions on onBacklogDrop', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        const originalFirst = component.items[0].title;
+        const originalSecond = component.items[1].title;
+        component.onBacklogDrop({ previousIndex: 0, currentIndex: 1, container: {}, previousContainer: {}, isPointerOverContainer: true, item: {} } as any);
+        expect(component.items[0].title).toBe(originalSecond);
+        expect(component.items[1].title).toBe(originalFirst);
+        expect(component.items[0].position).toBe(1);
+        expect(component.items[1].position).toBe(2);
+    });
+    it('should no-op when previousIndex === currentIndex', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        const orderBefore = component.items.map(i => i.title);
+        component.onBacklogDrop({ previousIndex: 1, currentIndex: 1, container: {}, previousContainer: {}, isPointerOverContainer: true, item: {} } as any);
+        expect(component.items.map(i => i.title)).toEqual(orderBefore);
+    });
+    it('should set hasReorderChanges true after drag reorder', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        expect(component.hasReorderChanges).toBe(false);
+        component.onBacklogDrop({ previousIndex: 0, currentIndex: 2, container: {}, previousContainer: {}, isPointerOverContainer: true, item: {} } as any);
+        expect(component.hasReorderChanges).toBe(true);
+    });
+    it('should update reorderAnnouncement after drop', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        expect(component.reorderAnnouncement).toBe('');
+        component.onBacklogDrop({ previousIndex: 0, currentIndex: 1, container: {}, previousContainer: {}, isPointerOverContainer: true, item: {} } as any);
+        expect(component.reorderAnnouncement).toContain('backlog.reorder.announcement');
+    });
+    it('should render aria-live assertive region', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        const output = fixture.nativeElement.querySelector('output[aria-live="assertive"]');
+        expect(output).toBeTruthy();
+    });
+    it('should still support arrow button reorder alongside drag', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        const firstTitle = component.items[0].title;
+        const secondTitle = component.items[1].title;
+        component.moveDown(0);
+        expect(component.items[0].title).toBe(secondTitle);
+        expect(component.items[1].title).toBe(firstTitle);
+        expect(component.hasReorderChanges).toBe(true);
+    });
 });

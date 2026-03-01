@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { EUI_PAGE } from '@eui/components/eui-page';
 import { EUI_CHIP } from '@eui/components/eui-chip';
 import { EUI_BUTTON } from '@eui/components/eui-button';
@@ -18,6 +19,8 @@ import { EUI_CARD } from '@eui/components/eui-card';
 import { EUI_INPUT_CHECKBOX } from '@eui/components/eui-input-checkbox';
 import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
 import { EUI_ICON_BUTTON } from '@eui/components/eui-icon-button';
+import { EUI_ICON } from '@eui/components/eui-icon';
+import { EuiTooltipDirective } from '@eui/components/directives';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
@@ -45,7 +48,8 @@ interface FilterChip {
         ...EUI_FEEDBACK_MESSAGE, ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT,
         ...EUI_TEXTAREA, EuiDialogComponent, EuiPaginatorComponent,
         ...EUI_CONTENT_CARD, ...EUI_CARD, ...EUI_INPUT_CHECKBOX,
-        ...EUI_PROGRESS_BAR, ...EUI_ICON_BUTTON,
+        ...EUI_PROGRESS_BAR, ...EUI_ICON_BUTTON, ...EUI_ICON,
+        EuiTooltipDirective, DragDropModule,
         FormsModule, TranslateModule, RouterLink,
     ],
 })
@@ -131,6 +135,7 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
     canReorder = false;
     originalPositions = new Map<number, number>();
     isSaving = false;
+    reorderAnnouncement = '';
 
     ngOnInit(): void {
         this.searchSubject.pipe(
@@ -382,6 +387,20 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
         this.items[index] = this.items[index + 1];
         this.items[index + 1] = temp;
         this.updateLocalPositions();
+    }
+
+    onBacklogDrop(event: CdkDragDrop<BacklogItem[]>): void {
+        if (event.previousIndex === event.currentIndex) return;
+        moveItemInArray(this.items, event.previousIndex, event.currentIndex);
+        this.updateLocalPositions();
+
+        const movedItem = this.items[event.currentIndex];
+        this.reorderAnnouncement = this.translate.instant('backlog.reorder.announcement', {
+            ticket: '#' + movedItem.ticket_number,
+            position: event.currentIndex + 1,
+            total: this.items.length,
+        });
+        this.cdr.markForCheck();
     }
 
     discardReorder(): void {

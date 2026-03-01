@@ -191,10 +191,22 @@
                                     }
 
                                     <!-- Card list -->
+                                    <!-- No eUI drag & drop component for lists — using CDK DragDropModule per eUI showcase pattern -->
+                                    <div cdkDropList
+                                         [cdkDropListData]="items"
+                                         [cdkDropListDisabled]="!isReorderMode"
+                                         (cdkDropListDropped)="onBacklogDrop($event)"
+                                         class="backlog-card-list">
                                     @for (item of items; track item.id; let i = $index; let first = $first; let last = $last) {
-                                        <div class="card-row">
+                                        <div class="card-row" cdkDrag [cdkDragData]="item" [cdkDragDisabled]="!isReorderMode">
                                             @if (isReorderMode) {
                                                 <div class="reorder-controls">
+                                                    <button cdkDragHandle class="drag-handle"
+                                                        [attr.aria-label]="'backlog.reorder.drag-handle' | translate"
+                                                        [euiTooltip]="'backlog.reorder.drag-handle-tooltip' | translate"
+                                                        (click)="$event.stopPropagation()">
+                                                        <eui-icon-svg icon="dots-six-vertical:regular" aria-hidden="true"></eui-icon-svg>
+                                                    </button>
                                                     <span class="position-badge eui-u-f-s">{{ item.position }}</span>
                                                     <eui-icon-button icon="arrow-up:regular"
                                                         size="s"
@@ -260,6 +272,10 @@
                                             </a>
                                         </div>
                                     }
+                                    </div>
+
+                                    <!-- Screen reader announcement for drag & drop -->
+                                    <output class="eui-u-sr-only" aria-live="assertive">{{ reorderAnnouncement }}</output>
                                 }
 
                                 <!-- Paginator -->
