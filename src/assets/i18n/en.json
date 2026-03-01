@@ -387,5 +387,14 @@
   "sprint.growl.edit-success": "Ticket updated",
   "sprint.growl.edit-detail": "{{ticket}} saved successfully",
   "sprint.growl.edit-error": "Failed to save changes",
-  "sprint.load-error": "Could not load sprints."
+  "sprint.load-error": "Could not load sprints.",
+
+  "board.title": "Board",
+  "board.sprint-filter": "Sprint",
+  "board.all-sprints": "All sprints",
+  "board.error-loading": "Could not load board data.",
+  "board.no-tickets": "No tickets",
+  "board.tickets": "tickets",
+  "board.card-label": "Ticket #{{number}}: {{title}}",
+  "board.filter-announcement": "{{count}} tickets displayed"
 }

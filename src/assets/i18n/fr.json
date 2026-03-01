@@ -387,5 +387,14 @@
   "sprint.growl.edit-success": "Ticket mis à jour",
   "sprint.growl.edit-detail": "{{ticket}} enregistré avec succès",
   "sprint.growl.edit-error": "Échec de la sauvegarde",
-  "sprint.load-error": "Impossible de charger les sprints."
+  "sprint.load-error": "Impossible de charger les sprints.",
+
+  "board.title": "Tableau",
+  "board.sprint-filter": "Sprint",
+  "board.all-sprints": "Tous les sprints",
+  "board.error-loading": "Impossible de charger les données du tableau.",
+  "board.no-tickets": "Aucun ticket",
+  "board.tickets": "tickets",
+  "board.card-label": "Ticket #{{number}} : {{title}}",
+  "board.filter-announcement": "{{count}} tickets affichés"
 }
