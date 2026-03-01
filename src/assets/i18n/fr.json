@@ -372,5 +372,10 @@
   "sprint.planning.remove": "Retirer du sprint",
   "sprint.issue-list-label": "Tickets dans {{name}}",
   "sprint.no-issues": "Aucun ticket dans ce sprint.",
+  "sprint.drag-handle": "Glisser pour réordonner",
+  "sprint.drag-handle-tooltip": "Glisser pour réordonner",
+  "sprint.reorder-announcement": "{{ticket}} déplacé en position {{position}} sur {{total}}",
+  "sprint.growl.reorder-success": "Ordre des tickets mis à jour",
+  "sprint.growl.reorder-error": "Échec de la sauvegarde du nouvel ordre",
   "sprint.load-error": "Impossible de charger les sprints."
 }

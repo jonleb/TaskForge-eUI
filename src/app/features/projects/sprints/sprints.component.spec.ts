@@ -44,6 +44,7 @@ describe('SprintsComponent', () => {
             updateSprintStatus: vi.fn().mockReturnValue(of(mockSprints[1])),
             getBacklog: vi.fn().mockReturnValue(of(mockBacklogResponse)),
             getProjectMembers: vi.fn().mockReturnValue(of([])),
+            reorderBacklog: vi.fn().mockReturnValue(of({ updated: 2 })),
         };
         permissionMock = {
             isSuperAdmin: vi.fn().mockReturnValue(false),
@@ -243,6 +244,96 @@ describe('SprintsComponent', () => {
         it('should use navigateToPlanning via name button for active/planned sprints', () => {
             const nameButtons = fixture.nativeElement.querySelectorAll('.sprint-item__name-btn');
             expect(nameButtons.length).toBe(2); // active + planned
+        });
+    });
+
+    describe('Drag & drop reorder (STORY-002)', () => {
+        beforeEach(() => {
+            permissionMock['hasProjectRole'] = vi.fn().mockReturnValue(of(true));
+            currentProject$.next(mockProject);
+            fixture.detectChanges();
+        });
+
+        it('should show drag handle when canManage is true', () => {
+            const handles = fixture.nativeElement.querySelectorAll('.drag-handle');
+            expect(handles.length).toBeGreaterThanOrEqual(1);
+        });
+
+        it('should not show drag handle when canManage is false', () => {
+            permissionMock['hasProjectRole'] = vi.fn().mockReturnValue(of(false));
+            currentProject$.next(mockProject);
+            fixture.detectChanges();
+            const handles = fixture.nativeElement.querySelectorAll('.drag-handle');
+            expect(handles.length).toBe(0);
+        });
+
+        it('should not show drag handle for closed sprints', () => {
+            const closedSection = fixture.nativeElement.querySelector('section[aria-label="Closed Sprints"]');
+            const handles = closedSection?.querySelectorAll('.drag-handle') ?? [];
+            expect(handles.length).toBe(0);
+        });
+
+        it('should call reorderBacklog on drop with correct payload', () => {
+            const items = component.getSprintItems('sp-2');
+            const dropEvent = {
+                previousIndex: 0,
+                currentIndex: 1,
+                container: { data: items },
+                previousContainer: { data: items },
+                item: {},
+                isPointerOverContainer: true,
+                distance: { x: 0, y: 0 },
+                dropPoint: { x: 0, y: 0 },
+                event: new MouseEvent('drop'),
+            } as any;
+
+            component.onIssueDrop(dropEvent, mockSprints[1]);
+            expect(projectServiceMock['reorderBacklog']).toHaveBeenCalledWith('1', {
+                items: expect.arrayContaining([
+                    expect.objectContaining({ position: expect.any(Number) }),
+                ]),
+            });
+        });
+
+        it('should not call reorderBacklog when same index', () => {
+            const dropEvent = {
+                previousIndex: 0,
+                currentIndex: 0,
+                container: { data: [] },
+                previousContainer: { data: [] },
+                item: {},
+            } as any;
+
+            component.onIssueDrop(dropEvent, mockSprints[1]);
+            expect(projectServiceMock['reorderBacklog']).not.toHaveBeenCalled();
+        });
+
+        it('should show success growl on reorder success', () => {
+            const items = component.getSprintItems('sp-2');
+            const dropEvent = { previousIndex: 0, currentIndex: 1, container: { data: items }, previousContainer: { data: items }, item: {} } as any;
+            component.onIssueDrop(dropEvent, mockSprints[1]);
+            expect(growlServiceMock.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+        });
+
+        it('should show error growl on reorder failure', () => {
+            projectServiceMock['reorderBacklog'] = vi.fn().mockReturnValue(throwError(() => new Error('fail')));
+            const items = component.getSprintItems('sp-2');
+            const dropEvent = { previousIndex: 0, currentIndex: 1, container: { data: items }, previousContainer: { data: items }, item: {} } as any;
+            component.onIssueDrop(dropEvent, mockSprints[1]);
+            expect(growlServiceMock.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
+        });
+
+        it('should update reorderAnnouncement after drop', () => {
+            const items = component.getSprintItems('sp-2');
+            const dropEvent = { previousIndex: 0, currentIndex: 1, container: { data: items }, previousContainer: { data: items }, item: {} } as any;
+            component.onIssueDrop(dropEvent, mockSprints[1]);
+            expect(component.reorderAnnouncement).toBeTruthy();
+            expect(component.reorderAnnouncement.length).toBeGreaterThan(0);
+        });
+
+        it('should have aria-live assertive region for announcements', () => {
+            const liveRegion = fixture.nativeElement.querySelector('output[aria-live="assertive"]');
+            expect(liveRegion).toBeTruthy();
         });
     });
 

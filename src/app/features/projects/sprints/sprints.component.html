@@ -49,11 +49,25 @@
                                         }
                                     }
                                 </p>
-                                <!-- Inline issue list -->
-                                <ul class="sprint-issue-list" [attr.aria-label]="'sprint.issue-list-label' | translate:{ name: sprint.name }" aria-live="polite">
+                                <!-- No eUI drag & drop component for lists — using CDK DragDropModule per eUI showcase pattern -->
+                                <ul class="sprint-issue-list"
+                                    [attr.aria-label]="'sprint.issue-list-label' | translate:{ name: sprint.name }"
+                                    aria-live="polite"
+                                    cdkDropList
+                                    [cdkDropListData]="getSprintItems(sprint.id)"
+                                    [cdkDropListDisabled]="!canManage"
+                                    (cdkDropListDropped)="onIssueDrop($event, sprint)">
                                     @for (item of getSprintItems(sprint.id); track item.id) {
                                         <li class="sprint-issue-item"
+                                            cdkDrag [cdkDragData]="item" [cdkDragDisabled]="!canManage"
                                             [attr.aria-label]="'#' + item.ticket_number + ' — ' + item.title">
+                                            @if (canManage) {
+                                                <button cdkDragHandle class="drag-handle"
+                                                    [attr.aria-label]="'sprint.drag-handle' | translate"
+                                                    [euiTooltip]="'sprint.drag-handle-tooltip' | translate">
+                                                    <eui-icon-svg icon="dots-six-vertical:regular" aria-hidden="true"></eui-icon-svg>
+                                                </button>
+                                            }
                                             <span class="sprint-issue-item__number">#{{ item.ticket_number }}</span>
                                             <eui-status-badge euiSizeS [ariaLabel]="item.type">{{ item.type }}</eui-status-badge>
                                             <span class="sprint-issue-item__title">{{ item.title }}</span>
@@ -110,11 +124,25 @@
                                 <p class="eui-u-c-text-muted eui-u-mb-xs">
                                     {{ 'sprint.tickets-count' | translate:{ count: getTicketCount(sprint.id) } }}
                                 </p>
-                                <!-- Inline issue list -->
-                                <ul class="sprint-issue-list" [attr.aria-label]="'sprint.issue-list-label' | translate:{ name: sprint.name }" aria-live="polite">
+                                <!-- No eUI drag & drop component for lists — using CDK DragDropModule per eUI showcase pattern -->
+                                <ul class="sprint-issue-list"
+                                    [attr.aria-label]="'sprint.issue-list-label' | translate:{ name: sprint.name }"
+                                    aria-live="polite"
+                                    cdkDropList
+                                    [cdkDropListData]="getSprintItems(sprint.id)"
+                                    [cdkDropListDisabled]="!canManage"
+                                    (cdkDropListDropped)="onIssueDrop($event, sprint)">
                                     @for (item of getSprintItems(sprint.id); track item.id) {
                                         <li class="sprint-issue-item"
+                                            cdkDrag [cdkDragData]="item" [cdkDragDisabled]="!canManage"
                                             [attr.aria-label]="'#' + item.ticket_number + ' — ' + item.title">
+                                            @if (canManage) {
+                                                <button cdkDragHandle class="drag-handle"
+                                                    [attr.aria-label]="'sprint.drag-handle' | translate"
+                                                    [euiTooltip]="'sprint.drag-handle-tooltip' | translate">
+                                                    <eui-icon-svg icon="dots-six-vertical:regular" aria-hidden="true"></eui-icon-svg>
+                                                </button>
+                                            }
                                             <span class="sprint-issue-item__number">#{{ item.ticket_number }}</span>
                                             <eui-status-badge euiSizeS [ariaLabel]="item.type">{{ item.type }}</eui-status-badge>
                                             <span class="sprint-issue-item__title">{{ item.title }}</span>
@@ -175,7 +203,7 @@
                                         }
                                     }
                                 </p>
-                                <!-- Inline issue list (read-only for closed sprints) -->
+                                <!-- Inline issue list (read-only for closed sprints, no drag & drop) -->
                                 <ul class="sprint-issue-list" [attr.aria-label]="'sprint.issue-list-label' | translate:{ name: sprint.name }">
                                     @for (item of getSprintItems(sprint.id); track item.id) {
                                         <li class="sprint-issue-item sprint-issue-item--readonly"
@@ -205,6 +233,11 @@
         }
     </eui-page-content>
 </eui-page>
+
+<!-- Screen reader announcement for drag & drop reorder -->
+<output class="eui-u-sr-only" aria-live="assertive">
+    {{ reorderAnnouncement }}
+</output>
 
 <!-- Create Sprint dialog -->
 <eui-dialog #createDialog

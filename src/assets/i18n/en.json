@@ -372,5 +372,10 @@
   "sprint.planning.remove": "Remove from sprint",
   "sprint.issue-list-label": "Issues in {{name}}",
   "sprint.no-issues": "No issues in this sprint.",
+  "sprint.drag-handle": "Drag to reorder",
+  "sprint.drag-handle-tooltip": "Drag to reorder",
+  "sprint.reorder-announcement": "{{ticket}} moved to position {{position}} of {{total}}",
+  "sprint.growl.reorder-success": "Issue order updated",
+  "sprint.growl.reorder-error": "Failed to save new order",
   "sprint.load-error": "Could not load sprints."
 }

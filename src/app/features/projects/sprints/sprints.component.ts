@@ -4,6 +4,7 @@ import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { EUI_PAGE } from '@eui/components/eui-page';
 import { EUI_BUTTON } from '@eui/components/eui-button';
 import { EUI_CARD } from '@eui/components/eui-card';
@@ -14,7 +15,9 @@ import { EUI_TEXTAREA } from '@eui/components/eui-textarea';
 import { EUI_LABEL } from '@eui/components/eui-label';
 import { EUI_INPUT_GROUP } from '@eui/components/eui-input-group';
 import { EUI_STATUS_BADGE } from '@eui/components/eui-status-badge';
+import { EUI_ICON } from '@eui/components/eui-icon';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
+import { EuiTooltipDirective } from '@eui/components/directives';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
@@ -32,8 +35,9 @@ import { PermissionService } from '../../../core/auth';
         ...EUI_PAGE, ...EUI_BUTTON, ...EUI_CARD,
         ...EUI_FEEDBACK_MESSAGE, ...EUI_PROGRESS_BAR,
         ...EUI_INPUT_TEXT, ...EUI_TEXTAREA, ...EUI_LABEL, ...EUI_INPUT_GROUP,
-        ...EUI_STATUS_BADGE,
-        EuiDialogComponent, FormsModule, TranslateModule, DatePipe,
+        ...EUI_STATUS_BADGE, ...EUI_ICON,
+        EuiDialogComponent, EuiTooltipDirective, DragDropModule,
+        FormsModule, TranslateModule, DatePipe,
     ],
 })
 export class SprintsComponent implements OnInit, OnDestroy {
@@ -268,11 +272,57 @@ export class SprintsComponent implements OnInit, OnDestroy {
     }
 
     allBacklogItems: BacklogItem[] = [];
+    reorderAnnouncement = '';
 
     getSprintItems(sprintId: string): BacklogItem[] {
         return this.allBacklogItems
             .filter(item => item.sprint_id === sprintId)
             .sort((a, b) => (a.position ?? a.ticket_number) - (b.position ?? b.ticket_number));
+    }
+
+    onIssueDrop(event: CdkDragDrop<BacklogItem[]>, sprint: Sprint): void {
+        if (event.previousIndex === event.currentIndex || !this.project) return;
+
+        const items = [...this.getSprintItems(sprint.id)];
+        moveItemInArray(items, event.previousIndex, event.currentIndex);
+
+        const reorderPayload = items.map((item, index) => ({
+            ticket_number: item.ticket_number,
+            position: index,
+        }));
+
+        // Screen reader announcement
+        const movedItem = items[event.currentIndex];
+        this.reorderAnnouncement = this.translate.instant('sprint.reorder-announcement', {
+            ticket: '#' + movedItem.ticket_number,
+            position: event.currentIndex + 1,
+            total: items.length,
+        });
+
+        const projectId = this.project.id;
+        this.projectService.reorderBacklog(projectId, { items: reorderPayload }).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe({
+            next: () => {
+                reorderPayload.forEach(rp => {
+                    const item = this.allBacklogItems.find(i => i.ticket_number === rp.ticket_number);
+                    if (item) item.position = rp.position;
+                });
+                this.cdr.markForCheck();
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: this.translate.instant('sprint.growl.reorder-success'),
+                });
+            },
+            error: () => {
+                this.growlService.growl({
+                    severity: 'error',
+                    summary: this.translate.instant('sprint.growl.error-summary'),
+                    detail: this.translate.instant('sprint.growl.reorder-error'),
+                });
+                this.loadSprints(projectId);
+            },
+        });
     }
 
     private getSprintTickets(sprintId: string): BacklogItem[] {
