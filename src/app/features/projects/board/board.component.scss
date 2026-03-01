@@ -106,3 +106,55 @@
         margin-left: auto;
     }
 }
+
+/* CDK Drag & Drop styles — eUI has no native DnD component */
+.board-card__drag-handle {
+    all: unset;
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    padding: 0.125rem;
+    border-radius: 3px;
+    position: absolute;
+    top: 0.375rem;
+    right: 0.375rem;
+    color: var(--eui-color-grey-50, #999);
+
+    &:hover {
+        color: var(--eui-color-grey-80, #555);
+    }
+
+    &:focus {
+        outline: 2px solid var(--eui-color-primary, #004494);
+        outline-offset: 1px;
+    }
+}
+
+.board-card {
+    position: relative;
+}
+
+.cdk-drag-preview {
+    background: #fff;
+    border: 2px solid var(--eui-color-primary, #004494);
+    border-radius: 4px;
+    padding: 0.625rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+}
+
+.cdk-drag-placeholder {
+    background: var(--eui-color-grey-10, #eee);
+    border: 2px dashed var(--eui-color-grey-30, #ccc);
+    border-radius: 4px;
+    opacity: 0.5;
+    min-height: 60px;
+}
+
+.cdk-drop-list-dragging .board-card:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drag-animating {
+    transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}

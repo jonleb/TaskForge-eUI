@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock } from '../../../testing/test-providers';
 import { BoardComponent } from './board.component';
 import {
     ProjectContextService, ProjectService, Project,
-    Workflow, BacklogListResponse, Sprint, ProjectMember,
+    Workflow, BacklogListResponse, Sprint, ProjectMember, BacklogItem,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
@@ -211,5 +212,160 @@ describe('BoardComponent', () => {
 
         expect(component.canManage).toBe(true);
         expect(permissionMock.hasProjectRole).toHaveBeenCalledWith('1', 'PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER');
+    });
+
+    // --- STORY-002: Drag & Drop status transitions ---
+
+    it('should call updateTicket on card drop to different column', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        const ticket = mockBacklogResponse.data[0]; // TO_DO ticket
+        const fromContainer = { data: [ticket] };
+        const toContainer = { data: [] as BacklogItem[] };
+        const event = {
+            previousContainer: fromContainer,
+            container: toContainer,
+            previousIndex: 0,
+            currentIndex: 0,
+            item: { data: ticket },
+        } as unknown as CdkDragDrop<BacklogItem[]>;
+
+        component.onCardDrop(event, 'IN_PROGRESS');
+
+        expect(projectServiceMock.updateTicket).toHaveBeenCalledWith('1', 1, { status: 'IN_PROGRESS' });
+    });
+
+    it('should not call updateTicket when dropped in same column', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        const ticket = mockBacklogResponse.data[0];
+        const sameContainer = { data: [ticket] };
+        const event = {
+            previousContainer: sameContainer,
+            container: sameContainer,
+            previousIndex: 0,
+            currentIndex: 0,
+            item: { data: ticket },
+        } as unknown as CdkDragDrop<BacklogItem[]>;
+
+        component.onCardDrop(event, 'TO_DO');
+
+        expect(projectServiceMock.updateTicket).not.toHaveBeenCalled();
+    });
+
+    it('should show success growl and reload on successful transition', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        projectServiceMock.getWorkflows.mockClear();
+
+        const ticket = mockBacklogResponse.data[0];
+        const fromContainer = { data: [ticket] };
+        const toContainer = { data: [] as BacklogItem[] };
+        const event = {
+            previousContainer: fromContainer,
+            container: toContainer,
+            previousIndex: 0,
+            currentIndex: 0,
+            item: { data: ticket },
+        } as unknown as CdkDragDrop<BacklogItem[]>;
+
+        component.onCardDrop(event, 'IN_PROGRESS');
+
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(
+            expect.objectContaining({ severity: 'success' }),
+        );
+        // Should reload board data
+        expect(projectServiceMock.getWorkflows).toHaveBeenCalledWith('1');
+    });
+
+    it('should show error growl and reload on failed transition (400)', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        projectServiceMock.updateTicket.mockReturnValue(throwError(() => ({ status: 400 })));
+        projectServiceMock.getWorkflows.mockClear();
+
+        const ticket = mockBacklogResponse.data[0];
+        const fromContainer = { data: [ticket] };
+        const toContainer = { data: [] as BacklogItem[] };
+        const event = {
+            previousContainer: fromContainer,
+            container: toContainer,
+            previousIndex: 0,
+            currentIndex: 0,
+            item: { data: ticket },
+        } as unknown as CdkDragDrop<BacklogItem[]>;
+
+        component.onCardDrop(event, 'DONE');
+
+        expect(growlServiceMock.growl).toHaveBeenCalledWith(
+            expect.objectContaining({ severity: 'error' }),
+        );
+        // Should reload to revert optimistic update
+        expect(projectServiceMock.getWorkflows).toHaveBeenCalledWith('1');
+    });
+
+    it('should show forbidden message on 403 error', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        projectServiceMock.updateTicket.mockReturnValue(throwError(() => ({ status: 403 })));
+
+        const ticket = mockBacklogResponse.data[0];
+        const fromContainer = { data: [ticket] };
+        const toContainer = { data: [] as BacklogItem[] };
+        const event = {
+            previousContainer: fromContainer,
+            container: toContainer,
+            previousIndex: 0,
+            currentIndex: 0,
+            item: { data: ticket },
+        } as unknown as CdkDragDrop<BacklogItem[]>;
+
+        component.onCardDrop(event, 'IN_PROGRESS');
+
+        expect(component.dndAnnouncement).toBe('board.growl.transition-forbidden');
+    });
+
+    it('should set dndAnnouncement on successful drop', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        const ticket = mockBacklogResponse.data[0];
+        const fromContainer = { data: [ticket] };
+        const toContainer = { data: [] as BacklogItem[] };
+        const event = {
+            previousContainer: fromContainer,
+            container: toContainer,
+            previousIndex: 0,
+            currentIndex: 0,
+            item: { data: ticket },
+        } as unknown as CdkDragDrop<BacklogItem[]>;
+
+        component.onCardDrop(event, 'IN_PROGRESS');
+
+        expect(component.dndAnnouncement).toBeTruthy();
+    });
+
+    it('should not show drag handle when canManage is false', () => {
+        permissionMock.hasProjectRole.mockReturnValue(of(false));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        expect(component.canManage).toBe(false);
+        const handles = fixture.nativeElement.querySelectorAll('.board-card__drag-handle');
+        expect(handles.length).toBe(0);
+    });
+
+    it('should show drag handles when canManage is true', () => {
+        permissionMock.hasProjectRole.mockReturnValue(of(true));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        expect(component.canManage).toBe(true);
+        const handles = fixture.nativeElement.querySelectorAll('.board-card__drag-handle');
+        expect(handles.length).toBeGreaterThan(0);
     });
 });

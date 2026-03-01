@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
+import { CdkDragDrop, DragDropModule, transferArrayItem } from '@angular/cdk/drag-drop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { EUI_PAGE } from '@eui/components/eui-page';
 import { EUI_CHIP } from '@eui/components/eui-chip';
@@ -12,6 +13,7 @@ import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
 import { EUI_STATUS_BADGE } from '@eui/components/eui-status-badge';
 import { EUI_SELECT } from '@eui/components/eui-select';
 import { EUI_LABEL } from '@eui/components/eui-label';
+import { EUI_ICON } from '@eui/components/eui-icon';
 import { EuiGrowlService } from '@eui/core';
 import {
     ProjectService, ProjectContextService, Project,
@@ -25,10 +27,11 @@ import { PermissionService } from '../../../core/auth';
     styleUrls: ['./board.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        FormsModule, TranslateModule,
+        FormsModule, TranslateModule, DragDropModule,
         ...EUI_PAGE, ...EUI_CHIP, ...EUI_BUTTON,
         ...EUI_FEEDBACK_MESSAGE, ...EUI_PROGRESS_BAR,
         ...EUI_STATUS_BADGE, ...EUI_SELECT, ...EUI_LABEL,
+        ...EUI_ICON,
     ],
 })
 export class BoardComponent implements OnInit, OnDestroy {
@@ -60,6 +63,13 @@ export class BoardComponent implements OnInit, OnDestroy {
     selectedSprintId = '';
     /** Announcement for screen readers */
     filterAnnouncement = '';
+    /** DnD transition announcement for screen readers */
+    dndAnnouncement = '';
+
+    /** CDK drop list IDs for connecting all columns */
+    get columnDropListIds(): string[] {
+        return this.columns.map((_, i) => 'board-col-' + i);
+    }
 
     ngOnInit(): void {
         this.projectContext.currentProject$.pipe(
@@ -115,6 +125,71 @@ export class BoardComponent implements OnInit, OnDestroy {
         const total = this.getFilteredTicketCount();
         this.filterAnnouncement = this.translate.instant('board.filter-announcement', { count: total });
         this.cdr.markForCheck();
+    }
+
+    /**
+     * Handle card drop between columns — CDK DragDropModule.
+     * eUI has no native drag & drop component; CDK is the standard approach.
+     */
+    onCardDrop(event: CdkDragDrop<BacklogItem[]>, targetStatus: string): void {
+        if (!this.project) return;
+
+        const ticket: BacklogItem = event.item.data;
+
+        // Same column drop — no status change needed
+        if (event.previousContainer === event.container) return;
+
+        const fromStatus = ticket.status;
+        const projectId = this.project.id;
+
+        // Optimistic UI: move card to target column
+        transferArrayItem(
+            event.previousContainer.data,
+            event.container.data,
+            event.previousIndex,
+            event.currentIndex,
+        );
+        this.cdr.markForCheck();
+
+        // Call API to change status
+        this.projectService.updateTicket(projectId, ticket.ticket_number, { status: targetStatus as any }).pipe(
+            takeUntil(this.destroy$),
+        ).subscribe({
+            next: () => {
+                this.dndAnnouncement = this.translate.instant('board.dnd-success', {
+                    ticket: '#' + ticket.ticket_number,
+                    from: this.formatStatus(fromStatus),
+                    to: this.formatStatus(targetStatus),
+                });
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: this.translate.instant('board.growl.transition-success'),
+                    detail: this.translate.instant('board.dnd-success', {
+                        ticket: '#' + ticket.ticket_number,
+                        from: this.formatStatus(fromStatus),
+                        to: this.formatStatus(targetStatus),
+                    }),
+                });
+                // Reload to ensure consistency
+                this.loadBoardData(projectId);
+            },
+            error: (err) => {
+                const message = err.status === 403
+                    ? this.translate.instant('board.growl.transition-forbidden')
+                    : this.translate.instant('board.growl.transition-invalid', {
+                        from: this.formatStatus(fromStatus),
+                        to: this.formatStatus(targetStatus),
+                    });
+                this.dndAnnouncement = message;
+                this.growlService.growl({
+                    severity: 'error',
+                    summary: this.translate.instant('board.growl.transition-error'),
+                    detail: message,
+                });
+                // Reload to revert optimistic update
+                this.loadBoardData(projectId);
+            },
+        });
     }
 
     retry(): void {

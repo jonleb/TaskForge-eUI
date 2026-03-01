@@ -28,8 +28,9 @@
             </button>
         } @else {
             <output class="eui-u-sr-only" aria-live="polite">{{ filterAnnouncement }}</output>
+            <output class="eui-u-sr-only" aria-live="assertive">{{ dndAnnouncement }}</output>
             <div class="board-columns" [attr.aria-label]="'board.title' | translate">
-                @for (status of columns; track status) {
+                @for (status of columns; track status; let colIdx = $index) {
                     <section class="board-column"
                              [attr.aria-label]="formatStatus(status)">
                         <h2 class="board-column__header">
@@ -39,12 +40,28 @@
                                 {{ getColumnTickets(status).length }}
                             </eui-chip>
                         </h2>
-                        <div class="board-column__cards">
+                        <!-- CDK drop list per column — eUI has no native DnD component -->
+                        <div class="board-column__cards"
+                             cdkDropList
+                             [id]="'board-col-' + colIdx"
+                             [cdkDropListData]="getColumnTickets(status)"
+                             [cdkDropListConnectedTo]="columnDropListIds"
+                             [cdkDropListDisabled]="!canManage"
+                             (cdkDropListDropped)="onCardDrop($event, status)">
                             @for (ticket of getColumnTickets(status); track ticket.id) {
                                 <article class="board-card"
+                                         cdkDrag
+                                         [cdkDragData]="ticket"
+                                         [cdkDragDisabled]="!canManage"
                                          [attr.aria-label]="'board.card-label' | translate:{ number: ticket.ticket_number, title: ticket.title }"
                                          (click)="navigateToTicket(ticket)"
                                          (keydown.enter)="navigateToTicket(ticket)">
+                                    @if (canManage) {
+                                        <button cdkDragHandle class="board-card__drag-handle"
+                                                [attr.aria-label]="'board.drag-handle' | translate">
+                                            <eui-icon-svg icon="dots-six-vertical:regular" aria-hidden="true"></eui-icon-svg>
+                                        </button>
+                                    }
                                     <div class="board-card__header">
                                         <span class="board-card__number">#{{ ticket.ticket_number }}</span>
                                         <eui-status-badge euiSizeS euiInfo

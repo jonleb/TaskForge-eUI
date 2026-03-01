@@ -396,5 +396,11 @@
   "board.no-tickets": "Aucun ticket",
   "board.tickets": "tickets",
   "board.card-label": "Ticket #{{number}} : {{title}}",
-  "board.filter-announcement": "{{count}} tickets affichés"
+  "board.filter-announcement": "{{count}} tickets affichés",
+  "board.drag-handle": "Glisser pour changer le statut",
+  "board.dnd-success": "{{ticket}} déplacé de {{from}} à {{to}}",
+  "board.growl.transition-success": "Statut mis à jour",
+  "board.growl.transition-error": "Échec de la transition",
+  "board.growl.transition-invalid": "La transition de {{from}} à {{to}} n'est pas autorisée",
+  "board.growl.transition-forbidden": "Vous n'avez pas la permission de modifier le statut de ce ticket"
 }

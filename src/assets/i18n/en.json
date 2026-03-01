@@ -396,5 +396,11 @@
   "board.no-tickets": "No tickets",
   "board.tickets": "tickets",
   "board.card-label": "Ticket #{{number}}: {{title}}",
-  "board.filter-announcement": "{{count}} tickets displayed"
+  "board.filter-announcement": "{{count}} tickets displayed",
+  "board.drag-handle": "Drag to change status",
+  "board.dnd-success": "{{ticket}} moved from {{from}} to {{to}}",
+  "board.growl.transition-success": "Status updated",
+  "board.growl.transition-error": "Transition failed",
+  "board.growl.transition-invalid": "Transition from {{from}} to {{to}} is not allowed",
+  "board.growl.transition-forbidden": "You do not have permission to change this ticket's status"
 }

@@ -4939,6 +4939,17 @@
       "newValue": "IN_REVIEW",
       "changedBy": "1",
       "created_at": "2026-03-01T10:38:18.471Z"
+    },
+    {
+      "id": "11",
+      "projectId": "5",
+      "ticketId": "35",
+      "ticketNumber": 2,
+      "field": "status",
+      "oldValue": "IN_REVIEW",
+      "newValue": "IN_PROGRESS",
+      "changedBy": "1",
+      "created_at": "2026-03-01T10:38:20.914Z"
     }
   ],
   "link_types": [
