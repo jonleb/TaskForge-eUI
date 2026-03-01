@@ -1,5 +1,45 @@
-.sprint-card {
-    margin-bottom: 0.5rem;
+.sprint-item {
+    border: 1px solid var(--eui-color-grey-25, #e0e0e0);
+    border-radius: 4px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+        background-color: var(--eui-color-grey-5, #f5f5f5);
+        outline: 2px solid var(--eui-color-primary, #004494);
+        outline-offset: -2px;
+    }
+
+    &--closed {
+        cursor: default;
+        opacity: 0.8;
+
+        &:hover,
+        &:focus-visible {
+            background-color: transparent;
+            outline: none;
+        }
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.25rem;
+    }
+
+    &__name {
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 0.5rem;
+    }
 }
 
 .unresolved-list {

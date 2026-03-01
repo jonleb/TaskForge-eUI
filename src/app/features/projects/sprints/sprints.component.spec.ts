@@ -153,13 +153,13 @@ describe('SprintsComponent', () => {
         expect(component.getTicketCount('sp-3')).toBe(1);
     });
 
-    it('should render sprint names in cards', () => {
+    it('should render sprint names in items', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const titles = fixture.nativeElement.querySelectorAll('eui-card-header-title');
-        const titleTexts = Array.from(titles).map((t: Element) => t.textContent?.trim());
-        expect(titleTexts).toContain('Sprint 2');
-        expect(titleTexts).toContain('Sprint 3');
+        const names = fixture.nativeElement.querySelectorAll('.sprint-item__name');
+        const nameTexts = Array.from(names).map((t: Element) => t.textContent?.trim());
+        expect(nameTexts).toContain('Sprint 2');
+        expect(nameTexts).toContain('Sprint 3');
     });
 
     it('should render status badges', () => {

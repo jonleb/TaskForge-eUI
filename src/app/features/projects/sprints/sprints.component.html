@@ -28,42 +28,38 @@
                             <p class="eui-u-text-center eui-u-c-text-muted">{{ 'sprint.no-sprints' | translate }}</p>
                         }
                         @for (sprint of activeSprints; track sprint.id) {
-                            <eui-card class="sprint-card eui-u-mb-s" euiHoverable
-                                       tabindex="0"
-                                       (click)="navigateToPlanning(sprint)"
-                                       (keydown.enter)="navigateToPlanning(sprint)">
-                                <eui-card-header>
-                                    <eui-card-header-title>
-                                        {{ sprint.name }}
-                                    </eui-card-header-title>
-                                    <eui-card-header-right-content>
-                                        <eui-status-badge euiSuccess [ariaLabel]="'sprint.status.ACTIVE' | translate">
-                                            {{ 'sprint.status.ACTIVE' | translate }}
-                                        </eui-status-badge>
-                                    </eui-card-header-right-content>
-                                </eui-card-header>
-                                <eui-card-content>
-                                    @if (sprint.goal) {
-                                        <p class="eui-u-mb-xs">{{ sprint.goal }}</p>
-                                    }
-                                    <p class="eui-u-c-text-muted eui-u-mb-xs" aria-live="polite">
-                                        {{ 'sprint.tickets-count' | translate:{ count: getTicketCount(sprint.id) } }}
-                                        @if (sprint.start_date) {
-                                            &nbsp;·&nbsp;{{ sprint.start_date | date:'mediumDate' }}
-                                            @if (sprint.end_date) {
-                                                – {{ sprint.end_date | date:'mediumDate' }}
-                                            }
+                            <div class="sprint-item eui-u-mb-s"
+                                 role="button"
+                                 tabindex="0"
+                                 [attr.aria-label]="sprint.name"
+                                 (click)="navigateToPlanning(sprint)"
+                                 (keydown.enter)="navigateToPlanning(sprint)">
+                                <div class="sprint-item__header">
+                                    <span class="sprint-item__name">{{ sprint.name }}</span>
+                                    <eui-status-badge euiSuccess [ariaLabel]="'sprint.status.ACTIVE' | translate">
+                                        {{ 'sprint.status.ACTIVE' | translate }}
+                                    </eui-status-badge>
+                                </div>
+                                @if (sprint.goal) {
+                                    <p class="eui-u-mb-xs">{{ sprint.goal }}</p>
+                                }
+                                <p class="eui-u-c-text-muted eui-u-mb-xs" aria-live="polite">
+                                    {{ 'sprint.tickets-count' | translate:{ count: getTicketCount(sprint.id) } }}
+                                    @if (sprint.start_date) {
+                                        &nbsp;·&nbsp;{{ sprint.start_date | date:'mediumDate' }}
+                                        @if (sprint.end_date) {
+                                            – {{ sprint.end_date | date:'mediumDate' }}
                                         }
-                                    </p>
-                                </eui-card-content>
+                                    }
+                                </p>
                                 @if (canManage) {
-                                    <eui-card-footer>
+                                    <div class="sprint-item__actions">
                                         <button euiButton euiDanger (click)="closeSprint(sprint); $event.stopPropagation()">
                                             {{ 'sprint.action.close' | translate }}
                                         </button>
-                                    </eui-card-footer>
+                                    </div>
                                 }
-                            </eui-card>
+                            </div>
                         }
                     </eui-card-content>
                 </eui-card>
@@ -80,36 +76,32 @@
                             <p class="eui-u-text-center eui-u-c-text-muted">{{ 'sprint.no-sprints' | translate }}</p>
                         }
                         @for (sprint of plannedSprints; track sprint.id) {
-                            <eui-card class="sprint-card eui-u-mb-s" euiHoverable
-                                       tabindex="0"
-                                       (click)="navigateToPlanning(sprint)"
-                                       (keydown.enter)="navigateToPlanning(sprint)">
-                                <eui-card-header>
-                                    <eui-card-header-title>
-                                        {{ sprint.name }}
-                                    </eui-card-header-title>
-                                    <eui-card-header-right-content>
-                                        <eui-status-badge euiInfo [ariaLabel]="'sprint.status.PLANNED' | translate">
-                                            {{ 'sprint.status.PLANNED' | translate }}
-                                        </eui-status-badge>
-                                    </eui-card-header-right-content>
-                                </eui-card-header>
-                                <eui-card-content>
-                                    @if (sprint.goal) {
-                                        <p class="eui-u-mb-xs">{{ sprint.goal }}</p>
-                                    }
-                                    <p class="eui-u-c-text-muted eui-u-mb-xs" aria-live="polite">
-                                        {{ 'sprint.tickets-count' | translate:{ count: getTicketCount(sprint.id) } }}
-                                    </p>
-                                </eui-card-content>
+                            <div class="sprint-item eui-u-mb-s"
+                                 role="button"
+                                 tabindex="0"
+                                 [attr.aria-label]="sprint.name"
+                                 (click)="navigateToPlanning(sprint)"
+                                 (keydown.enter)="navigateToPlanning(sprint)">
+                                <div class="sprint-item__header">
+                                    <span class="sprint-item__name">{{ sprint.name }}</span>
+                                    <eui-status-badge euiInfo [ariaLabel]="'sprint.status.PLANNED' | translate">
+                                        {{ 'sprint.status.PLANNED' | translate }}
+                                    </eui-status-badge>
+                                </div>
+                                @if (sprint.goal) {
+                                    <p class="eui-u-mb-xs">{{ sprint.goal }}</p>
+                                }
+                                <p class="eui-u-c-text-muted eui-u-mb-xs" aria-live="polite">
+                                    {{ 'sprint.tickets-count' | translate:{ count: getTicketCount(sprint.id) } }}
+                                </p>
                                 @if (canManage) {
-                                    <eui-card-footer>
+                                    <div class="sprint-item__actions">
                                         <button euiButton euiPrimary (click)="startSprint(sprint); $event.stopPropagation()">
                                             {{ 'sprint.action.start' | translate }}
                                         </button>
-                                    </eui-card-footer>
+                                    </div>
                                 }
-                            </eui-card>
+                            </div>
                         }
                     </eui-card-content>
                 </eui-card>
@@ -126,32 +118,26 @@
                             <p class="eui-u-text-center eui-u-c-text-muted">{{ 'sprint.no-sprints' | translate }}</p>
                         }
                         @for (sprint of closedSprints; track sprint.id) {
-                            <eui-card class="sprint-card eui-u-mb-s">
-                                <eui-card-header>
-                                    <eui-card-header-title>
-                                        {{ sprint.name }}
-                                    </eui-card-header-title>
-                                    <eui-card-header-right-content>
-                                        <eui-status-badge [ariaLabel]="'sprint.status.CLOSED' | translate">
-                                            {{ 'sprint.status.CLOSED' | translate }}
-                                        </eui-status-badge>
-                                    </eui-card-header-right-content>
-                                </eui-card-header>
-                                <eui-card-content>
-                                    @if (sprint.goal) {
-                                        <p class="eui-u-mb-xs">{{ sprint.goal }}</p>
-                                    }
-                                    <p class="eui-u-c-text-muted eui-u-mb-xs">
-                                        {{ 'sprint.tickets-count' | translate:{ count: getTicketCount(sprint.id) } }}
-                                        @if (sprint.start_date) {
-                                            &nbsp;·&nbsp;{{ sprint.start_date | date:'mediumDate' }}
-                                            @if (sprint.end_date) {
-                                                – {{ sprint.end_date | date:'mediumDate' }}
-                                            }
+                            <div class="sprint-item sprint-item--closed eui-u-mb-s">
+                                <div class="sprint-item__header">
+                                    <span class="sprint-item__name">{{ sprint.name }}</span>
+                                    <eui-status-badge [ariaLabel]="'sprint.status.CLOSED' | translate">
+                                        {{ 'sprint.status.CLOSED' | translate }}
+                                    </eui-status-badge>
+                                </div>
+                                @if (sprint.goal) {
+                                    <p class="eui-u-mb-xs">{{ sprint.goal }}</p>
+                                }
+                                <p class="eui-u-c-text-muted eui-u-mb-xs">
+                                    {{ 'sprint.tickets-count' | translate:{ count: getTicketCount(sprint.id) } }}
+                                    @if (sprint.start_date) {
+                                        &nbsp;·&nbsp;{{ sprint.start_date | date:'mediumDate' }}
+                                        @if (sprint.end_date) {
+                                            – {{ sprint.end_date | date:'mediumDate' }}
                                         }
-                                    </p>
-                                </eui-card-content>
-                            </eui-card>
+                                    }
+                                </p>
+                            </div>
                         }
                     </eui-card-content>
                 </eui-card>
