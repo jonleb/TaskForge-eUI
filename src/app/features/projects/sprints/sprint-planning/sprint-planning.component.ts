@@ -90,8 +90,10 @@ export class SprintPlanningComponent implements OnInit, OnDestroy {
         }).pipe(takeUntil(this.destroy$)).subscribe({
             next: ({ sprints, backlog }) => {
                 this.sprint = sprints.find(s => s.id === sprintId) ?? null;
-                this.availableTickets = backlog.data.filter(item => !item.sprint_id);
-                this.sprintTickets = backlog.data.filter(item => item.sprint_id === sprintId);
+                const sortByPosition = (a: BacklogItem, b: BacklogItem) =>
+                    (a.position ?? a.ticket_number) - (b.position ?? b.ticket_number);
+                this.availableTickets = backlog.data.filter(item => !item.sprint_id).sort(sortByPosition);
+                this.sprintTickets = backlog.data.filter(item => item.sprint_id === sprintId).sort(sortByPosition);
                 this.isLoading = false;
                 this.cdr.markForCheck();
             },

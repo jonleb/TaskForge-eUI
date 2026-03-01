@@ -154,4 +154,49 @@ describe('SprintPlanningComponent', () => {
         fixture.detectChanges();
         expect(component.hasError).toBe(true);
     });
+
+    describe('Ordering consistency (STORY-001)', () => {
+        it('should sort sprintTickets by position ascending', () => {
+            const unorderedResponse: BacklogListResponse = {
+                data: [
+                    { id: '3', projectId: '1', type: 'TASK', title: 'C', description: '', status: 'TO_DO', priority: 'LOW', assignee_id: null, epic_id: null, ticket_number: 30, created_by: '1', created_at: '', sprint_id: 'sp-2', position: 3 },
+                    { id: '1', projectId: '1', type: 'STORY', title: 'A', description: '', status: 'TO_DO', priority: 'HIGH', assignee_id: null, epic_id: null, ticket_number: 10, created_by: '1', created_at: '', sprint_id: 'sp-2', position: 1 },
+                    { id: '2', projectId: '1', type: 'BUG', title: 'B', description: '', status: 'IN_PROGRESS', priority: 'MEDIUM', assignee_id: null, epic_id: null, ticket_number: 20, created_by: '1', created_at: '', sprint_id: 'sp-2', position: 2 },
+                ],
+                total: 3, page: 1, limit: 1000,
+            };
+            projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of(unorderedResponse));
+            currentProject$.next(mockProject);
+            fixture.detectChanges();
+            expect(component.sprintTickets.map(t => t.ticket_number)).toEqual([10, 20, 30]);
+        });
+
+        it('should sort availableTickets by position ascending', () => {
+            const unorderedResponse: BacklogListResponse = {
+                data: [
+                    { id: '2', projectId: '1', type: 'BUG', title: 'B', description: '', status: 'TO_DO', priority: 'LOW', assignee_id: null, epic_id: null, ticket_number: 20, created_by: '1', created_at: '', sprint_id: null, position: 5 },
+                    { id: '1', projectId: '1', type: 'STORY', title: 'A', description: '', status: 'TO_DO', priority: 'HIGH', assignee_id: null, epic_id: null, ticket_number: 10, created_by: '1', created_at: '', sprint_id: null, position: 2 },
+                ],
+                total: 2, page: 1, limit: 1000,
+            };
+            projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of(unorderedResponse));
+            currentProject$.next(mockProject);
+            fixture.detectChanges();
+            expect(component.availableTickets.map(t => t.ticket_number)).toEqual([10, 20]);
+        });
+
+        it('should fall back to ticket_number when position is undefined', () => {
+            const noPositionResponse: BacklogListResponse = {
+                data: [
+                    { id: '2', projectId: '1', type: 'BUG', title: 'B', description: '', status: 'TO_DO', priority: 'LOW', assignee_id: null, epic_id: null, ticket_number: 20, created_by: '1', created_at: '', sprint_id: 'sp-2' },
+                    { id: '1', projectId: '1', type: 'STORY', title: 'A', description: '', status: 'TO_DO', priority: 'HIGH', assignee_id: null, epic_id: null, ticket_number: 5, created_by: '1', created_at: '', sprint_id: 'sp-2' },
+                ],
+                total: 2, page: 1, limit: 1000,
+            };
+            projectServiceMock['getBacklog'] = vi.fn().mockReturnValue(of(noPositionResponse));
+            currentProject$.next(mockProject);
+            fixture.detectChanges();
+            expect(component.sprintTickets.map(t => t.ticket_number)).toEqual([5, 20]);
+        });
+    });
 });
