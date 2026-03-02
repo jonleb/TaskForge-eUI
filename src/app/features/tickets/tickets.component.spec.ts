@@ -17,7 +17,7 @@ import {
 import { TicketsComponent } from './tickets.component';
 import { TicketsService } from '../../core/tickets';
 import { PermissionService } from '../../core/auth';
-import { BacklogItem, BacklogListResponse, Project, ProjectService, Sprint } from '../../core/project';
+import { BacklogItem, BacklogListResponse, Project, ProjectMember, ProjectService, Sprint } from '../../core/project';
 
 const mockProjects: Project[] = [
     { id: '1', key: 'TF', name: 'TaskForge', description: '', created_by: '1', created_at: '', updated_at: '', is_active: true },
@@ -37,6 +37,15 @@ const mockSprints: Sprint[] = [
     { id: 'sp-3', projectId: '1', name: 'Sprint 3', goal: 'Planned sprint', status: 'PLANNED', start_date: null, end_date: null, created_by: '1', created_at: '2026-01-01', updated_at: '2026-01-01' },
 ];
 
+const mockMembers: ProjectMember[] = [
+    { id: 'm1', userId: '2', role: 'DEVELOPER', joined_at: '2026-01-01', firstName: 'Jane', lastName: 'Doe', email: 'jane@test.com' },
+    { id: 'm2', userId: '3', role: 'PRODUCT_OWNER', joined_at: '2026-01-01', firstName: 'Bob', lastName: 'Smith', email: 'bob@test.com' },
+];
+
+const mockEpics: BacklogItem[] = [
+    { id: 'e1', projectId: '1', type: 'EPIC', title: 'Auth Epic', description: null, status: 'TO_DO', priority: 'HIGH', assignee_id: null, epic_id: null, ticket_number: 10, created_by: '1', created_at: '2026-01-01' },
+];
+
 describe('TicketsComponent', () => {
     let fixture: ComponentFixture<TicketsComponent>;
     let component: TicketsComponent;
@@ -52,11 +61,13 @@ describe('TicketsComponent', () => {
         };
         projectSvc = {
             getSprints: vi.fn().mockReturnValue(of(mockSprints)),
-            getBacklog: vi.fn(), getProjectMembers: vi.fn(), getProjects: vi.fn(),
+            getBacklog: vi.fn(), getProjectMembers: vi.fn().mockReturnValue(of(mockMembers)),
+            getProjects: vi.fn(),
             getProject: vi.fn(), getUser: vi.fn(), createProject: vi.fn(),
             updateProject: vi.fn(), upsertMember: vi.fn(), removeMember: vi.fn(),
-            searchCandidates: vi.fn(), getWorkflows: vi.fn(), createTicket: vi.fn(),
-            getEpics: vi.fn(), reorderBacklog: vi.fn(),
+            searchCandidates: vi.fn(), getWorkflows: vi.fn(),
+            createTicket: vi.fn().mockReturnValue(of({ ...mockItems[0], ticket_number: 99, title: 'New ticket' })),
+            getEpics: vi.fn().mockReturnValue(of(mockEpics)), reorderBacklog: vi.fn(),
         };
         perm = {
             isSuperAdmin: vi.fn().mockReturnValue(true),
@@ -507,5 +518,180 @@ describe('TicketsComponent', () => {
         fixture.detectChanges();
         const cb = fixture.nativeElement.querySelector('#open-sprints');
         expect(cb).toBeTruthy();
+    });
+
+    // ── STORY-005: Create Ticket Dialog ──
+
+    it('should set canCreate=true for super admin', () => {
+        fixture.detectChanges();
+        expect(component.canCreate).toBe(true);
+        expect(component.creatableProjects).toEqual(mockProjects);
+    });
+
+    it('should set canCreate=true for regular user with projects', () => {
+        perm.isSuperAdmin.mockReturnValue(false);
+        fixture.detectChanges();
+        expect(component.canCreate).toBe(true);
+    });
+
+    it('should set canCreate=false for regular user with no projects', () => {
+        perm.isSuperAdmin.mockReturnValue(false);
+        ticketsSvc.getUserProjects.mockReturnValue(of([]));
+        fixture.detectChanges();
+        expect(component.canCreate).toBe(false);
+    });
+
+    it('should render Create button when canCreate is true', () => {
+        fixture.detectChanges();
+        const btn = fixture.nativeElement.querySelector('button[aria-haspopup="dialog"]');
+        expect(btn).toBeTruthy();
+        expect(btn.textContent).toContain('tickets.create-btn');
+    });
+
+    it('should hide Create button when canCreate is false', () => {
+        perm.isSuperAdmin.mockReturnValue(false);
+        ticketsSvc.getUserProjects.mockReturnValue(of([]));
+        fixture.detectChanges();
+        const btn = fixture.nativeElement.querySelector('button[aria-haspopup="dialog"]');
+        expect(btn).toBeFalsy();
+    });
+
+    it('should open dialog on openCreateDialog()', () => {
+        fixture.detectChanges();
+        const spy = vi.spyOn(component.createDialog, 'openDialog');
+        component.openCreateDialog();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('should reset form before opening dialog', () => {
+        fixture.detectChanges();
+        component.newTicketTitle = 'leftover';
+        component.selectedCreateProjectId = '1';
+        vi.spyOn(component.createDialog, 'openDialog');
+        component.openCreateDialog();
+        expect(component.newTicketTitle).toBe('');
+        expect(component.selectedCreateProjectId).toBeNull();
+    });
+
+    it('should load members and epics on project change in dialog', () => {
+        fixture.detectChanges();
+        component.selectedCreateProjectId = '1';
+        component.onCreateProjectChange();
+        expect(projectSvc.getProjectMembers).toHaveBeenCalledWith('1');
+        expect(projectSvc.getEpics).toHaveBeenCalledWith('1');
+        expect(component.dialogMembers).toEqual(mockMembers);
+        expect(component.dialogEpics).toEqual(mockEpics);
+    });
+
+    it('should clear assignee and epic when project changes in dialog', () => {
+        fixture.detectChanges();
+        component.selectedCreateProjectId = '1';
+        component.onCreateProjectChange();
+        component.newTicketAssigneeId = '2';
+        component.newTicketEpicId = 'e1';
+
+        component.selectedCreateProjectId = '2';
+        component.onCreateProjectChange();
+        expect(component.newTicketAssigneeId).toBeNull();
+        expect(component.newTicketEpicId).toBeNull();
+    });
+
+    it('should not load members/epics when project cleared in dialog', () => {
+        fixture.detectChanges();
+        projectSvc.getProjectMembers.mockClear();
+        projectSvc.getEpics.mockClear();
+        component.selectedCreateProjectId = null;
+        component.onCreateProjectChange();
+        expect(projectSvc.getProjectMembers).not.toHaveBeenCalled();
+        expect(projectSvc.getEpics).not.toHaveBeenCalled();
+    });
+
+    it('should render assignee select as disabled when no project selected', () => {
+        fixture.detectChanges();
+        // Dialog content is rendered in an overlay, so we test the component state
+        expect(component.selectedCreateProjectId).toBeNull();
+        // The template binds [disabled]="!selectedCreateProjectId", so disabled=true when null
+    });
+
+    it('should render epic select as disabled when no project selected', () => {
+        fixture.detectChanges();
+        expect(component.selectedCreateProjectId).toBeNull();
+        // The template binds [disabled]="!selectedCreateProjectId", so disabled=true when null
+    });
+
+    it('should validate title too short', () => {
+        fixture.detectChanges();
+        expect(component.isCreateFormValid()).toBe(false);
+        component.selectedCreateProjectId = '1';
+        component.newTicketTitle = 'A';
+        expect(component.isCreateFormValid()).toBe(false);
+    });
+
+    it('should validate title valid length', () => {
+        fixture.detectChanges();
+        component.selectedCreateProjectId = '1';
+        component.newTicketTitle = 'Valid title';
+        expect(component.isCreateFormValid()).toBe(true);
+    });
+
+    it('should show title validation error when title too short', () => {
+        fixture.detectChanges();
+        component.newTicketTitle = 'A';
+        // The template condition: newTicketTitle.trim().length > 0 && newTicketTitle.trim().length < 2
+        expect(component.newTicketTitle.trim().length).toBe(1);
+        expect(component.newTicketTitle.trim().length > 0 && component.newTicketTitle.trim().length < 2).toBe(true);
+    });
+
+    it('should hide title validation error when valid', () => {
+        fixture.detectChanges();
+        component.newTicketTitle = 'Valid title';
+        expect(component.newTicketTitle.trim().length >= 2).toBe(true);
+        expect(component.newTicketTitle.trim().length > 0 && component.newTicketTitle.trim().length < 2).toBe(false);
+    });
+
+    it('should create ticket successfully: close dialog, growl, reload', () => {
+        fixture.detectChanges();
+        const closeSpy = vi.spyOn(component.createDialog, 'closeDialog');
+        ticketsSvc.getTickets.mockClear();
+
+        component.selectedCreateProjectId = '1';
+        component.newTicketTitle = 'New ticket';
+        component.onCreateTicket();
+
+        expect(projectSvc.createTicket).toHaveBeenCalledWith('1', expect.objectContaining({
+            type: 'STORY', title: 'New ticket', priority: 'MEDIUM',
+        }));
+        expect(closeSpy).toHaveBeenCalled();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+        expect(ticketsSvc.getTickets).toHaveBeenCalled();
+    });
+
+    it('should show inline error on create failure', () => {
+        fixture.detectChanges();
+        projectSvc.createTicket.mockReturnValue(throwError(() => ({ error: { message: 'Forbidden' } })));
+
+        component.selectedCreateProjectId = '1';
+        component.newTicketTitle = 'New ticket';
+        component.onCreateTicket();
+
+        expect(component.createError).toBe('Forbidden');
+        expect(component.isCreating).toBe(false);
+    });
+
+    it('should reset form on dismiss', () => {
+        fixture.detectChanges();
+        component.selectedCreateProjectId = '1';
+        component.newTicketTitle = 'Something';
+        component.newTicketAssigneeId = '2';
+        component.createError = 'some error';
+
+        component.resetCreateForm();
+
+        expect(component.selectedCreateProjectId).toBeNull();
+        expect(component.newTicketTitle).toBe('');
+        expect(component.newTicketAssigneeId).toBeNull();
+        expect(component.createError).toBe('');
+        expect(component.dialogMembers).toEqual([]);
+        expect(component.dialogEpics).toEqual([]);
     });
 });

@@ -4,7 +4,15 @@
             <eui-page-column hasSubColumns>
                 <eui-page-column-header-body>
                     <eui-page-header [label]="'tickets.page-title' | translate">
-                        <!-- Create button added in STORY-005 -->
+                        @if (canCreate) {
+                            <eui-page-header-action-items>
+                                <button euiButton euiPrimary
+                                        (click)="openCreateDialog()"
+                                        aria-haspopup="dialog">
+                                    {{ 'tickets.create-btn' | translate }}
+                                </button>
+                            </eui-page-header-action-items>
+                        }
                     </eui-page-header>
                 </eui-page-column-header-body>
 
@@ -277,3 +285,82 @@
         </eui-page-columns>
     </eui-page-content>
 </eui-page>
+
+<eui-dialog #createDialog
+    [title]="'tickets.dialog.create-title' | translate"
+    [acceptLabel]="'common.create' | translate"
+    [dismissLabel]="'common.cancel' | translate"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onCreateTicket()"
+    (dismiss)="resetCreateForm()">
+
+    @if (createError) {
+        <eui-feedback-message euiDanger aria-live="polite">{{ createError }}</eui-feedback-message>
+    }
+
+    <div class="dialog-form">
+        <!-- Project (required) -->
+        <label euiLabel for="create-project" euiRequired>{{ 'tickets.dialog.project' | translate }}</label>
+        <select euiSelect id="create-project"
+                [(ngModel)]="selectedCreateProjectId"
+                (change)="onCreateProjectChange()"
+                aria-required="true">
+            <option [ngValue]="null" disabled>{{ 'tickets.dialog.select-project' | translate }}</option>
+            @for (p of creatableProjects; track p.id) {
+                <option [ngValue]="p.id">{{ p.name }}</option>
+            }
+        </select>
+
+        <!-- Type (required) -->
+        <label euiLabel for="create-type" euiRequired>{{ 'ticket.field.type' | translate }}</label>
+        <select euiSelect id="create-type" [(ngModel)]="newTicketType" aria-required="true">
+            @for (t of creatableTypes; track t) {
+                <option [ngValue]="t">{{ 'workflow.ticket-type.' + t | translate }}</option>
+            }
+        </select>
+
+        <!-- Title (required, 2-200 chars) -->
+        <label euiLabel for="create-title" euiRequired>{{ 'ticket.field.title' | translate }}</label>
+        <input euiInputText id="create-title" [(ngModel)]="newTicketTitle"
+               aria-required="true"
+               [attr.aria-describedby]="newTicketTitle.trim().length > 0 && newTicketTitle.trim().length < 2 ? 'create-title-error' : null"
+               maxlength="200" />
+        @if (newTicketTitle.trim().length > 0 && newTicketTitle.trim().length < 2) {
+            <span id="create-title-error" class="eui-u-c-danger">
+                {{ 'common.validation.min-length' | translate:{ field: ('ticket.field.title' | translate), min: 2 } }}
+            </span>
+        }
+
+        <!-- Description (optional) -->
+        <label euiLabel for="create-description">{{ 'ticket.field.description' | translate }}</label>
+        <textarea euiTextArea id="create-description" [(ngModel)]="newTicketDescription" maxlength="2000"></textarea>
+
+        <!-- Priority (required) -->
+        <label euiLabel for="create-priority" euiRequired>{{ 'ticket.priority.label' | translate }}</label>
+        <select euiSelect id="create-priority" [(ngModel)]="newTicketPriority" aria-required="true">
+            @for (p of priorities; track p) {
+                <option [ngValue]="p">{{ 'ticket.priority.' + p | translate }}</option>
+            }
+        </select>
+
+        <!-- Assignee (optional, loaded per project) -->
+        <label euiLabel for="create-assignee">{{ 'ticket.field.assignee' | translate }}</label>
+        <select euiSelect id="create-assignee" [(ngModel)]="newTicketAssigneeId"
+                [disabled]="!selectedCreateProjectId">
+            <option [ngValue]="null">—</option>
+            @for (m of dialogMembers; track m.userId) {
+                <option [ngValue]="m.userId">{{ m.firstName }} {{ m.lastName }}</option>
+            }
+        </select>
+
+        <!-- Epic (optional, loaded per project) -->
+        <label euiLabel for="create-epic">{{ 'ticket.field.epic' | translate }}</label>
+        <select euiSelect id="create-epic" [(ngModel)]="newTicketEpicId"
+                [disabled]="!selectedCreateProjectId">
+            <option [ngValue]="null">—</option>
+            @for (e of dialogEpics; track e.id) {
+                <option [ngValue]="e.id">{{ e.title }}</option>
+            }
+        </select>
+    </div>
+</eui-dialog>

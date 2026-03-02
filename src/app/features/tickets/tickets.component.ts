@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -6,9 +6,12 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { EUI_PAGE } from '@eui/components/eui-page';
 import { EUI_CHIP } from '@eui/components/eui-chip';
 import { EUI_BUTTON } from '@eui/components/eui-button';
+import { EUI_FEEDBACK_MESSAGE } from '@eui/components/eui-feedback-message';
 import { EUI_SELECT } from '@eui/components/eui-select';
 import { EUI_LABEL } from '@eui/components/eui-label';
 import { EUI_INPUT_TEXT } from '@eui/components/eui-input-text';
+import { EUI_TEXTAREA } from '@eui/components/eui-textarea';
+import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiPaginatorComponent } from '@eui/components/eui-paginator';
 import { EUI_CONTENT_CARD } from '@eui/components/eui-content-card';
 import { EUI_CARD } from '@eui/components/eui-card';
@@ -17,7 +20,7 @@ import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
 import { EUI_ICON } from '@eui/components/eui-icon';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { BacklogItem, Project, ProjectService, Sprint, WORKFLOW_STATUSES, TICKET_TYPES, TICKET_PRIORITIES, WorkflowStatus, TicketType, TicketPriority } from '../../core/project';
+import { BacklogItem, Project, ProjectMember, ProjectService, Sprint, WORKFLOW_STATUSES, TICKET_TYPES, TICKET_PRIORITIES, CREATABLE_TICKET_TYPES, WorkflowStatus, TicketType, TicketPriority } from '../../core/project';
 import { TicketsService, TicketsListParams } from '../../core/tickets';
 import { PermissionService } from '../../core/auth';
 
@@ -34,8 +37,9 @@ export interface FilterChip {
     styleUrls: ['./tickets.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        ...EUI_PAGE, ...EUI_CHIP, ...EUI_BUTTON, ...EUI_SELECT, ...EUI_LABEL,
-        ...EUI_INPUT_TEXT, EuiPaginatorComponent, ...EUI_CONTENT_CARD, ...EUI_CARD,
+        ...EUI_PAGE, ...EUI_CHIP, ...EUI_BUTTON, ...EUI_FEEDBACK_MESSAGE,
+        ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT, ...EUI_TEXTAREA,
+        EuiDialogComponent, EuiPaginatorComponent, ...EUI_CONTENT_CARD, ...EUI_CARD,
         ...EUI_INPUT_CHECKBOX, ...EUI_PROGRESS_BAR, ...EUI_ICON,
         FormsModule, TranslateModule, RouterLink,
     ],
@@ -50,6 +54,8 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly destroy$ = new Subject<void>();
     private readonly searchSubject = new Subject<string>();
     private paginatorReady = false;
+
+    @ViewChild('createDialog') createDialog!: EuiDialogComponent;
 
     items: BacklogItem[] = [];
     total = 0;
@@ -93,6 +99,22 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     selectedTypes = new Set<TicketType>();
     selectedPriorities = new Set<TicketPriority>();
 
+    // Create dialog state
+    canCreate = false;
+    creatableProjects: Project[] = [];
+    selectedCreateProjectId: string | null = null;
+    newTicketType: TicketType = 'STORY';
+    newTicketTitle = '';
+    newTicketDescription = '';
+    newTicketPriority: TicketPriority = 'MEDIUM';
+    newTicketAssigneeId: string | null = null;
+    newTicketEpicId: string | null = null;
+    creatableTypes = CREATABLE_TICKET_TYPES;
+    dialogMembers: ProjectMember[] = [];
+    dialogEpics: BacklogItem[] = [];
+    createError = '';
+    isCreating = false;
+
     ngOnInit(): void {
         this.searchSubject.pipe(
             debounceTime(300),
@@ -107,6 +129,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
             next: projects => {
                 this.userProjects = projects;
                 projects.forEach(p => this.projectMap.set(p.id, p));
+                this.determineCanCreate(projects);
                 this.cdr.markForCheck();
             },
         });
@@ -352,5 +375,100 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     truncateDescription(desc: string | null | undefined, max = 120): string {
         if (!desc) return '';
         return desc.length > max ? desc.substring(0, max) + '…' : desc;
+    }
+
+    // ── Create Dialog ──
+
+    determineCanCreate(projects: Project[]): void {
+        if (this.permissionService.isSuperAdmin()) {
+            this.canCreate = true;
+            this.creatableProjects = projects;
+        } else {
+            // All member projects allow creation (backend enforces role check)
+            this.creatableProjects = projects;
+            this.canCreate = projects.length > 0;
+        }
+    }
+
+    openCreateDialog(): void {
+        this.resetCreateForm();
+        this.cdr.detectChanges();
+        this.createDialog.openDialog();
+    }
+
+    onCreateProjectChange(): void {
+        this.newTicketAssigneeId = null;
+        this.newTicketEpicId = null;
+        this.dialogMembers = [];
+        this.dialogEpics = [];
+        if (!this.selectedCreateProjectId) return;
+
+        this.projectService.getProjectMembers(this.selectedCreateProjectId).pipe(takeUntil(this.destroy$)).subscribe({
+            next: members => {
+                this.dialogMembers = members;
+                this.cdr.markForCheck();
+            },
+        });
+        this.projectService.getEpics(this.selectedCreateProjectId).pipe(takeUntil(this.destroy$)).subscribe({
+            next: epics => {
+                this.dialogEpics = epics;
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    onCreateTicket(): void {
+        if (!this.selectedCreateProjectId || !this.isCreateFormValid()) return;
+        const projectId = this.selectedCreateProjectId;
+        this.isCreating = true;
+        this.createError = '';
+        this.cdr.markForCheck();
+
+        this.projectService.createTicket(projectId, {
+            type: this.newTicketType,
+            title: this.newTicketTitle.trim(),
+            description: this.newTicketDescription.trim() || undefined,
+            priority: this.newTicketPriority,
+            assignee_id: this.newTicketAssigneeId,
+            epic_id: this.newTicketEpicId,
+        }).pipe(takeUntil(this.destroy$)).subscribe({
+            next: created => {
+                this.createDialog.closeDialog();
+                const proj = this.projectMap.get(projectId);
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: this.translate.instant('tickets.growl.created-summary'),
+                    detail: this.translate.instant('tickets.growl.created-detail', {
+                        key: proj?.key ?? '', number: created.ticket_number, title: created.title,
+                    }),
+                });
+                this.resetCreateForm();
+                this.loadTickets();
+            },
+            error: err => {
+                this.createError = err.error?.message || this.translate.instant('tickets.error.create-default');
+                this.isCreating = false;
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    resetCreateForm(): void {
+        this.selectedCreateProjectId = null;
+        this.newTicketType = 'STORY';
+        this.newTicketTitle = '';
+        this.newTicketDescription = '';
+        this.newTicketPriority = 'MEDIUM';
+        this.newTicketAssigneeId = null;
+        this.newTicketEpicId = null;
+        this.dialogMembers = [];
+        this.dialogEpics = [];
+        this.createError = '';
+        this.isCreating = false;
+    }
+
+    isCreateFormValid(): boolean {
+        const len = this.newTicketTitle.trim().length;
+        return !!this.selectedCreateProjectId && len >= 2 && len <= 200;
     }
 }
