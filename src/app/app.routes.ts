@@ -12,6 +12,7 @@ export const routes: Routes = [
             { path: '', redirectTo: 'screen/home', pathMatch: 'full' },
             { path: 'index.jsp', redirectTo: 'screen/home' },
             { path: 'screen/home', loadChildren: () => import('./features/home/home.routes').then(m => m.HOME_ROUTES) },
+            { path: 'screen/tickets', loadChildren: () => import('./features/tickets/tickets.routes').then(m => m.TICKETS_ROUTES) },
             { path: 'screen/projects', loadChildren: () => import('./features/projects/projects.routes').then(m => m.PROJECTS_ROUTES) },
             {
                 path: 'screen/admin/users',

@@ -89,6 +89,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private filterSidebarItems(): void {
         const allItems: EuiMenuItem<SidebarItemMetadata>[] = [
             { label: this.translate.instant('nav.home'), url: 'screen/home' },
+            { label: this.translate.instant('nav.tickets'), url: 'screen/tickets' },
             { label: this.translate.instant('nav.projects'), url: 'screen/projects' },
             { label: this.translate.instant('nav.users'), url: 'screen/admin/users', metadata: { roles: ['SUPER_ADMIN'] } },
         ];
