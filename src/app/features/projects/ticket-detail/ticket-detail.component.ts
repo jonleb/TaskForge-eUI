@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DatePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, switchMap, combineLatest } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -42,6 +42,7 @@ type EditableField = 'title' | 'description' | 'status' | 'priority' | 'assignee
 export class TicketDetailComponent implements OnInit, OnDestroy {
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
+    private readonly location = inject(Location);
     private readonly projectContext = inject(ProjectContextService);
     private readonly projectService = inject(ProjectService);
     private readonly permissionService = inject(PermissionService);
@@ -144,7 +145,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     }
 
     goBack(): void {
-        this.router.navigate(['../'], { relativeTo: this.route });
+        this.location.back();
     }
 
     // --- Edit mode ---

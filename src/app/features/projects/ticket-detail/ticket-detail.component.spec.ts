@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { Location } from '@angular/common';
 import { EuiGrowlService } from '@eui/core';
 import {
     TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock,
@@ -77,6 +78,7 @@ describe('TicketDetailComponent', () => {
     let perm: Record<string, ReturnType<typeof vi.fn>>;
     let growl: ReturnType<typeof createGrowlServiceMock>;
     let router: { navigate: ReturnType<typeof vi.fn> };
+    let locationMock: { back: ReturnType<typeof vi.fn> };
 
     beforeEach(async () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
@@ -114,6 +116,7 @@ describe('TicketDetailComponent', () => {
 
         growl = createGrowlServiceMock();
         router = { navigate: vi.fn() };
+        locationMock = { back: vi.fn() };
 
         await TestBed.configureTestingModule({
             imports: [TicketDetailComponent, TranslateTestingModule],
@@ -125,6 +128,7 @@ describe('TicketDetailComponent', () => {
                 { provide: EuiGrowlService, useValue: growl },
                 { provide: ActivatedRoute, useValue: { paramMap: paramMap$ } },
                 { provide: Router, useValue: router },
+                { provide: Location, useValue: locationMock },
             ],
         }).compileComponents();
 
@@ -211,7 +215,7 @@ describe('TicketDetailComponent', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         component.goBack();
-        expect(router.navigate).toHaveBeenCalledWith(['../'], { relativeTo: expect.anything() });
+        expect(locationMock.back).toHaveBeenCalled();
     });
 
     it('should show unassigned when no assignee', () => {
