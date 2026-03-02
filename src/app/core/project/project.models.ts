@@ -137,6 +137,7 @@ export interface BacklogListParams {
     type?: string;
     status?: string;
     priority?: string;
+    sprint_id?: string;
 }
 
 export interface BacklogListResponse {
