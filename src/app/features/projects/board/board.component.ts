@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject, forkJoin } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { Subject, forkJoin, of } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, transferArrayItem } from '@angular/cdk/drag-drop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -48,6 +48,8 @@ export class BoardComponent implements OnInit, OnDestroy {
     isLoading = true;
     hasError = false;
     canManage = false;
+    canChangeStatus = false;
+    private isDeveloper = false;
 
     /** Ordered unique statuses derived from all project workflows */
     columns: string[] = [];
@@ -81,6 +83,7 @@ export class BoardComponent implements OnInit, OnDestroy {
             this.hasError = false;
             this.cdr.markForCheck();
             this.determineCanManage(project.id);
+            this.determineCanChangeStatus(project.id);
             this.loadBoardData(project.id);
         });
     }
@@ -111,6 +114,14 @@ export class BoardComponent implements OnInit, OnDestroy {
     getAssigneeName(assigneeId: string | null): string {
         if (!assigneeId) return '';
         return this.memberMap.get(assigneeId) ?? '';
+    }
+    /** Check if a specific ticket can be dragged (status change) by the current user */
+    canDragTicket(ticket: BacklogItem): boolean {
+        if (this.canChangeStatus) return true;
+        if (this.isDeveloper) {
+            return ticket.assignee_id === this.permissionService.getUserId();
+        }
+        return false;
     }
 
     /** Navigate to ticket detail */
@@ -255,6 +266,31 @@ export class BoardComponent implements OnInit, OnDestroy {
             takeUntil(this.destroy$),
         ).subscribe(can => {
             this.canManage = can;
+            this.cdr.markForCheck();
+        });
+    }
+    private determineCanChangeStatus(projectId: string): void {
+        this.isDeveloper = false;
+        this.canChangeStatus = false;
+
+        if (this.permissionService.isSuperAdmin()) {
+            this.canChangeStatus = true;
+            this.cdr.markForCheck();
+            return;
+        }
+
+        this.permissionService.hasProjectRole(projectId, 'PROJECT_ADMIN', 'PRODUCT_OWNER').pipe(
+            switchMap(can => {
+                if (can) {
+                    this.canChangeStatus = true;
+                    return of(false); // no need to check DEVELOPER
+                }
+                // Not PROJECT_ADMIN/PRODUCT_OWNER — check if DEVELOPER
+                return this.permissionService.hasProjectRole(projectId, 'DEVELOPER');
+            }),
+            takeUntil(this.destroy$),
+        ).subscribe(isDev => {
+            this.isDeveloper = isDev;
             this.cdr.markForCheck();
         });
     }

@@ -366,6 +366,77 @@ describe('TicketDetailComponent', () => {
         expect(banner).toBeFalsy();
     });
 
+    // --- CR-19-1: DEVELOPER cannot edit status ---
+
+    it('should hide status edit button for DEVELOPER on unassigned ticket', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['getUserId'].mockReturnValue('99'); // not the assignee (ticket.assignee_id = '2')
+        perm['hasProjectRole'].mockImplementation((_projectId: string, ...roles: string[]) => {
+            // PROJECT_ADMIN, PRODUCT_OWNER (2 roles) → false for DEVELOPER
+            if (roles.length === 2 && roles.includes('PROJECT_ADMIN') && roles.includes('PRODUCT_OWNER')) {
+                return of(false);
+            }
+            // DEVELOPER alone (1 role) → true
+            if (roles.length === 1 && roles.includes('DEVELOPER')) {
+                return of(true);
+            }
+            // PROJECT_ADMIN, PRODUCT_OWNER, DEVELOPER (3 roles) → true
+            if (roles.includes('DEVELOPER')) {
+                return of(true);
+            }
+            return of(false);
+        });
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        expect(component.canEdit).toBe(true);
+        expect(component.canEditStatus).toBe(false);
+
+        const allEditBtns = fixture.nativeElement.querySelectorAll('eui-icon-button[icon="eui-edit"]');
+        // title(1) + priority(1) + description(1) + assignee(1) + epic(1) = 5 — no status
+        expect(allEditBtns.length).toBe(5);
+    });
+
+    it('should show status edit button for DEVELOPER on assigned ticket', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['getUserId'].mockReturnValue('2'); // matches ticket.assignee_id = '2'
+        perm['hasProjectRole'].mockImplementation((_projectId: string, ...roles: string[]) => {
+            if (roles.length === 2 && roles.includes('PROJECT_ADMIN') && roles.includes('PRODUCT_OWNER')) {
+                return of(false);
+            }
+            if (roles.length === 1 && roles.includes('DEVELOPER')) {
+                return of(true);
+            }
+            if (roles.includes('DEVELOPER')) {
+                return of(true);
+            }
+            return of(false);
+        });
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        expect(component.canEdit).toBe(true);
+        expect(component.canEditStatus).toBe(true);
+
+        const allEditBtns = fixture.nativeElement.querySelectorAll('eui-icon-button[icon="eui-edit"]');
+        // All 6 edit buttons present including status
+        expect(allEditBtns.length).toBe(6);
+    });
+
+    it('should show status edit button for PROJECT_ADMIN', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['hasProjectRole'].mockReturnValue(of(true));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        expect(component.canEdit).toBe(true);
+        expect(component.canEditStatus).toBe(true);
+
+        // All 6 edit buttons should be present (title, status, priority, description, assignee, epic)
+        const allEditBtns = fixture.nativeElement.querySelectorAll('eui-icon-button[icon="eui-edit"]');
+        expect(allEditBtns.length).toBe(6);
+    });
+
     it('should show save bar when editing', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();

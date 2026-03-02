@@ -1758,7 +1758,8 @@ describe('PATCH /api/projects/:projectId/backlog/:ticketNumber', () => {
     });
 
     it('should allow REPORTER to update own ticket', async () => {
-        // User 4 (developer username, REPORTER role in project 1) created ticket_number=4
+        // User 4 (developer username) was changed to REPORTER by the "update role" test above.
+        // Ticket 4 in project 1 was created by user 4.
         const token = await getTokenFor('developer');
         const res = await request(app)
             .patch('/api/projects/1/backlog/4')
@@ -1770,7 +1771,8 @@ describe('PATCH /api/projects/:projectId/backlog/:ticketNumber', () => {
     });
 
     it('should reject REPORTER updating others ticket', async () => {
-        // User 4 (developer username, REPORTER role in project 1) did NOT create ticket_number=2
+        // User 4 (developer username) was changed to REPORTER by the "update role" test above.
+        // Ticket 2 in project 1 was NOT created by user 4.
         const token = await getTokenFor('developer');
         const res = await request(app)
             .patch('/api/projects/1/backlog/2')
@@ -1827,6 +1829,43 @@ describe('PATCH /api/projects/:projectId/backlog/:ticketNumber', () => {
             .patch('/api/projects/1/backlog/5')
             .set('Authorization', `Bearer ${token}`)
             .send({ description: 'Updated by developer' });
+
+        expect(res.status).toBe(200);
+    });
+
+    it('should reject DEVELOPER updating status on unassigned ticket', async () => {
+        // diana.brown (id=11) is DEVELOPER in project 1
+        // ticket 5 is assigned to user 3, not diana.brown
+        const token = await getTokenFor('diana.brown');
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/5')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ status: 'IN_REVIEW' });
+
+        expect(res.status).toBe(403);
+        expect(res.body.message).toContain('only change status on tickets assigned to them');
+    });
+
+    it('should allow DEVELOPER to update status on assigned ticket', async () => {
+        // diana.brown (id=11) is DEVELOPER in project 1
+        // ticket 6 is assigned to diana.brown (assignee_id=11), status=IN_REVIEW
+        const token = await getTokenFor('diana.brown');
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/6')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ status: 'DONE' });
+
+        expect(res.status).toBe(200);
+        expect(res.body.status).toBe('DONE');
+    });
+
+    it('should allow DEVELOPER to update non-status fields', async () => {
+        // diana.brown (id=11) is DEVELOPER in project 1
+        const token = await getTokenFor('diana.brown');
+        const res = await request(app)
+            .patch('/api/projects/1/backlog/5')
+            .set('Authorization', `Bearer ${token}`)
+            .send({ priority: 'LOW' });
 
         expect(res.status).toBe(200);
     });

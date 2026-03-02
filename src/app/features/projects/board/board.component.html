@@ -52,11 +52,11 @@
                                 <article class="board-card"
                                          cdkDrag
                                          [cdkDragData]="ticket"
-                                         [cdkDragDisabled]="!canManage"
+                                         [cdkDragDisabled]="!canDragTicket(ticket)"
                                          [attr.aria-label]="'board.card-label' | translate:{ number: ticket.ticket_number, title: ticket.title }"
                                          (click)="navigateToTicket(ticket)"
                                          (keydown.enter)="navigateToTicket(ticket)">
-                                    @if (canManage) {
+                                    @if (canDragTicket(ticket)) {
                                         <button cdkDragHandle class="board-card__drag-handle"
                                                 [attr.aria-label]="'board.drag-handle' | translate">
                                             <eui-icon-svg icon="dots-six-vertical:regular" aria-hidden="true"></eui-icon-svg>

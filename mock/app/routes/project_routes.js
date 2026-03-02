@@ -634,6 +634,7 @@ module.exports = function (app, db) {
          * Update a single backlog item. Allowed fields: title, description, status, priority, assignee_id, epic_id.
          * Status changes are validated against workflow transitions.
          * REPORTER can only update tickets they created.
+         * DEVELOPER can only change status on tickets assigned to them.
          * Protected — requires non-VIEWER project role.
          * SUPER_ADMIN bypasses membership check.
          * Generates activity entries for each changed field.
@@ -661,6 +662,13 @@ module.exports = function (app, db) {
                 // REPORTER can only update own tickets
                 if (req.projectRole === 'REPORTER' && item.created_by !== String(req.user.userId)) {
                     return res.status(403).json({ message: 'Reporters can only edit their own tickets' });
+                }
+
+                // DEVELOPER cannot change ticket status unless assigned to the ticket
+                if (req.projectRole === 'DEVELOPER' && req.body.status !== undefined) {
+                    if (item.assignee_id !== String(req.user.userId)) {
+                        return res.status(403).json({ message: 'Developers can only change status on tickets assigned to them' });
+                    }
                 }
 
                 const { title, description, status, priority, assignee_id, epic_id } = req.body;

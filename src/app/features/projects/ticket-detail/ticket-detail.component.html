@@ -80,7 +80,7 @@
                     <eui-chip euiSizeS [ariaLabel]="'workflow.status.' + ticket.status | translate">
                         {{ 'workflow.status.' + ticket.status | translate }}
                     </eui-chip>
-                    @if (canEdit) {
+                    @if (canEditStatus) {
                         <eui-icon-button icon="eui-edit" size="s"
                                          [ariaLabel]="'ticket-detail.edit' | translate"
                                          (buttonClick)="startEdit('status')">

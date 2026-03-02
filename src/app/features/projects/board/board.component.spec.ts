@@ -214,6 +214,15 @@ describe('BoardComponent', () => {
         expect(permissionMock.hasProjectRole).toHaveBeenCalledWith('1', 'PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER');
     });
 
+    it('should determine canChangeStatus from permission service', () => {
+        permissionMock.hasProjectRole.mockReturnValue(of(true));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        expect(component.canChangeStatus).toBe(true);
+        expect(permissionMock.hasProjectRole).toHaveBeenCalledWith('1', 'PROJECT_ADMIN', 'PRODUCT_OWNER');
+    });
+
     // --- STORY-002: Drag & Drop status transitions ---
 
     it('should call updateTicket on card drop to different column', () => {
@@ -349,23 +358,51 @@ describe('BoardComponent', () => {
         expect(component.dndAnnouncement).toBeTruthy();
     });
 
-    it('should not show drag handle when canManage is false', () => {
+    it('should not show drag handle when no drag permission', () => {
         permissionMock.hasProjectRole.mockReturnValue(of(false));
         currentProject$.next(mockProject);
         fixture.detectChanges();
 
-        expect(component.canManage).toBe(false);
+        expect(component.canChangeStatus).toBe(false);
         const handles = fixture.nativeElement.querySelectorAll('.board-card__drag-handle');
         expect(handles.length).toBe(0);
     });
 
-    it('should show drag handles when canManage is true', () => {
+    it('should show drag handles when canChangeStatus is true', () => {
         permissionMock.hasProjectRole.mockReturnValue(of(true));
         currentProject$.next(mockProject);
         fixture.detectChanges();
 
-        expect(component.canManage).toBe(true);
+        expect(component.canChangeStatus).toBe(true);
         const handles = fixture.nativeElement.querySelectorAll('.board-card__drag-handle');
         expect(handles.length).toBeGreaterThan(0);
+    });
+
+    it('should show drag handle only for assigned tickets when DEVELOPER', () => {
+        permissionMock.getUserId.mockReturnValue('u1'); // matches ticket 1 and 4 (assignee_id: 'u1')
+        permissionMock.hasProjectRole.mockImplementation((_projectId: string, ...roles: string[]) => {
+            // canManage: PROJECT_ADMIN, PRODUCT_OWNER, DEVELOPER → true
+            if (roles.length === 3 && roles.includes('DEVELOPER')) {
+                return of(true);
+            }
+            // canChangeStatus: PROJECT_ADMIN, PRODUCT_OWNER → false
+            if (roles.length === 2 && roles.includes('PROJECT_ADMIN') && roles.includes('PRODUCT_OWNER')) {
+                return of(false);
+            }
+            // isDeveloper check: DEVELOPER alone → true
+            if (roles.length === 1 && roles.includes('DEVELOPER')) {
+                return of(true);
+            }
+            return of(false);
+        });
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+
+        expect(component.canManage).toBe(true);
+        expect(component.canChangeStatus).toBe(false);
+        // Tickets assigned to u1: ticket 1 (TO_DO) and ticket 4 (TO_DO) → 2 drag handles
+        // Ticket 2 (assignee u2) and ticket 3 (assignee null) → no drag handle
+        const handles = fixture.nativeElement.querySelectorAll('.board-card__drag-handle');
+        expect(handles.length).toBe(2);
     });
 });

@@ -778,7 +778,7 @@
       "id": "3",
       "projectId": "1",
       "userId": "4",
-      "role": "REPORTER",
+      "role": "DEVELOPER",
       "joined_at": "2025-01-21T10:00:00.000Z"
     },
     {
@@ -848,7 +848,7 @@
       "id": "13",
       "projectId": "2",
       "userId": "4",
-      "role": "REPORTER",
+      "role": "DEVELOPER",
       "joined_at": "2025-03-10T09:00:00.000Z"
     },
     {
@@ -3402,7 +3402,7 @@
       "created_by": "17",
       "created_at": "2026-01-06T09:00:00.000Z",
       "position": 2,
-      "sprint_id": null
+      "sprint_id": "sp-4"
     },
     {
       "id": "27",
@@ -3449,8 +3449,8 @@
       "ticket_number": 5,
       "created_by": "10",
       "created_at": "2026-01-16T08:00:00.000Z",
-      "position": 5,
-      "sprint_id": null
+      "position": 1,
+      "sprint_id": "sp-4"
     },
     {
       "id": "30",

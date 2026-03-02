@@ -10,9 +10,9 @@ Each project currently has only 1 item: the auto-seeded "Maintenance" EPIC (tick
 
 ### Project members (for assignee_id)
 
-**TF (projectId=1):** userId 2 (PROJECT_ADMIN), 3 (PRODUCT_OWNER), 4 (REPORTER), 5 (REPORTER), 6 (VIEWER), 11 (DEVELOPER), 15 (PROJECT_ADMIN)
+**TF (projectId=1):** userId 2 (PROJECT_ADMIN), 3 (PRODUCT_OWNER), 4 (DEVELOPER), 5 (REPORTER), 6 (VIEWER), 11 (DEVELOPER), 15 (PROJECT_ADMIN)
 
-**DEMO (projectId=2):** userId 2 (PROJECT_ADMIN), 10 (PRODUCT_OWNER), 17 (DEVELOPER), 12 (REPORTER), 13 (VIEWER), 4 (REPORTER)
+**DEMO (projectId=2):** userId 2 (PROJECT_ADMIN), 10 (PRODUCT_OWNER), 17 (DEVELOPER), 12 (REPORTER), 13 (VIEWER), 4 (DEVELOPER)
 
 **API (projectId=5):** userId 15 (PROJECT_ADMIN), 11 (DEVELOPER), 22 (DEVELOPER), 5 (REPORTER)
 

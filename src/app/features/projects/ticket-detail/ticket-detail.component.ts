@@ -62,6 +62,8 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
     // Role-based permissions
     canEdit = false;
+    canEditStatus = false;
+    private isDeveloper = false;
 
     // Edit state
     editingFields = new Set<EditableField>();
@@ -116,6 +118,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
                 this.ticket = ticket;
                 this.isLoading = false;
                 this.syncEditFields();
+                this.updateCanEditStatus();
                 this.loadComments();
                 this.loadActivity();
                 this.loadTicketLinks();
@@ -466,30 +469,60 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     }
 
     private determineCanEdit(projectId: string): void {
-        if (this.permissionService.isSuperAdmin()) {
-            this.canEdit = true;
-            this.cdr.markForCheck();
-            return;
-        }
-        this.permissionService.hasProjectRole(
-            projectId, 'PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER',
-        ).pipe(takeUntil(this.destroy$)).subscribe(can => {
-            if (can) {
+            this.isDeveloper = false;
+
+            if (this.permissionService.isSuperAdmin()) {
                 this.canEdit = true;
-            } else {
-                // REPORTER can only edit own tickets — check after ticket loads
-                this.permissionService.hasProjectRole(projectId, 'REPORTER').pipe(
-                    takeUntil(this.destroy$),
-                ).subscribe(isReporter => {
-                    if (isReporter && this.ticket) {
-                        this.canEdit = this.ticket.created_by === this.permissionService.getUserId();
-                    } else {
-                        this.canEdit = false;
-                    }
-                    this.cdr.markForCheck();
-                });
+                this.canEditStatus = true;
+                this.cdr.markForCheck();
+                return;
             }
+
+            // canEditStatus: PROJECT_ADMIN and PRODUCT_OWNER always; DEVELOPER only if assigned (checked after ticket loads)
+            this.permissionService.hasProjectRole(projectId, 'PROJECT_ADMIN', 'PRODUCT_OWNER').pipe(
+                takeUntil(this.destroy$),
+            ).subscribe(can => {
+                if (can) {
+                    this.canEditStatus = true;
+                }
+                this.cdr.markForCheck();
+            });
+
+            this.permissionService.hasProjectRole(
+                projectId, 'PROJECT_ADMIN', 'PRODUCT_OWNER', 'DEVELOPER',
+            ).pipe(takeUntil(this.destroy$)).subscribe(can => {
+                if (can) {
+                    this.canEdit = true;
+                    // Check if specifically DEVELOPER (not PROJECT_ADMIN/PRODUCT_OWNER)
+                    this.permissionService.hasProjectRole(projectId, 'PROJECT_ADMIN', 'PRODUCT_OWNER').pipe(
+                        takeUntil(this.destroy$),
+                    ).subscribe(isManager => {
+                        if (!isManager) {
+                            this.isDeveloper = true;
+                            // canEditStatus will be resolved in updateCanEditStatus() after ticket loads
+                        }
+                        this.cdr.markForCheck();
+                    });
+                } else {
+                    // REPORTER can only edit own tickets — check after ticket loads
+                    this.permissionService.hasProjectRole(projectId, 'REPORTER').pipe(
+                        takeUntil(this.destroy$),
+                    ).subscribe(isReporter => {
+                        if (isReporter && this.ticket) {
+                            this.canEdit = this.ticket.created_by === this.permissionService.getUserId();
+                        } else {
+                            this.canEdit = false;
+                        }
+                        this.cdr.markForCheck();
+                    });
+                }
+                this.cdr.markForCheck();
+            });
+        }
+    private updateCanEditStatus(): void {
+        if (this.isDeveloper && this.ticket) {
+            this.canEditStatus = this.ticket.assignee_id === this.permissionService.getUserId();
             this.cdr.markForCheck();
-        });
+        }
     }
 }
