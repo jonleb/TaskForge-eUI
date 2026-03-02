@@ -54,6 +54,7 @@ projectMap = new Map<string, Project>();
 - `ngOnInit()` — load user projects (to build `projectMap`), then load tickets.
 - `loadTickets()` — calls `ticketsService.getTickets(params)`, updates `items`, `total`, handles errors.
 - `onFilterChange(value)` — debounced text search (300ms via `Subject` + `debounceTime`).
+- `onSearchSubmit()` — immediate search trigger (bypasses debounce), called by search button click and Enter key.
 - `onPageChange(event)` — guarded by `paginatorReady` flag (AfterViewInit pattern).
 - `onFilterColumnCollapse(collapsed)` — toggle filter panel.
 - `getProjectKey(item)` — resolves `item.projectId` to project key via `projectMap`.
@@ -68,7 +69,7 @@ projectMap = new Map<string, Project>();
 
 ### 2. Create `src/app/features/tickets/tickets.component.html`
 
-Replicates the backlog template structure, minus reorder/drag-drop:
+Follows the eUI "Search filter" pattern (see template). Two-column layout, minus reorder/drag-drop:
 
 ```html
 <eui-page>
@@ -83,21 +84,40 @@ Replicates the backlog template structure, minus reorder/drag-drop:
 
                 <eui-page-column-body>
                     <eui-page-columns>
-                        <!-- Left: filter column -->
+                        <!-- Left: filter column ("Search filter" pattern) -->
                         <eui-page-column
                             [label]="'tickets.filter.column-label' | translate"
                             euiSize2XL
                             [isCollapsible]="true"
                             [isCollapsed]="isFilterCollapsed"
                             [isAutocloseOnMobile]="true"
+                            [expandAriaLabel]="'tickets.filter.expand-label' | translate"
+                            [collapseAriaLabel]="'tickets.filter.collapse-label' | translate"
                             (collapse)="onFilterColumnCollapse($event)">
                             <eui-page-column-body>
-                                <!-- Text search -->
+
+                                <!-- Search (always visible, top of panel) -->
                                 <div class="eui-u-mb-m">
-                                    <label euiLabel for="tickets-search">...</label>
-                                    <input euiInputText id="tickets-search" ... />
+                                    <label euiLabel for="tickets-search">
+                                        {{ 'tickets.filter.search-label' | translate }}
+                                    </label>
+                                    <div class="search-input-group">
+                                        <input euiInputText id="tickets-search"
+                                               [value]="searchValue"
+                                               [placeholder]="'tickets.search-placeholder' | translate"
+                                               (input)="onFilterChange($any($event.target).value)"
+                                               (keydown.enter)="onSearchSubmit()" />
+                                        <button euiButton euiSecondary euiSizeS
+                                                type="button"
+                                                [attr.aria-label]="'tickets.filter.search-btn' | translate"
+                                                (click)="onSearchSubmit()">
+                                            <eui-icon-svg icon="magnifying-glass:regular" aria-hidden="true"></eui-icon-svg>
+                                        </button>
+                                    </div>
                                 </div>
-                                <!-- Additional filters added in STORY-004 -->
+
+                                <!-- Additional filter sections added in STORY-004 -->
+
                             </eui-page-column-body>
                         </eui-page-column>
 
@@ -105,6 +125,7 @@ Replicates the backlog template structure, minus reorder/drag-drop:
                         <eui-page-column>
                             <eui-page-column-body>
                                 <!-- Result count (aria-live) -->
+                                <!-- Filter chips -->
                                 <!-- Card list -->
                                 <!-- Paginator -->
                             </eui-page-column-body>
@@ -238,6 +259,7 @@ imports: [
     ...EUI_PAGE,
     ...EUI_CONTENT_CARD,
     ...EUI_CHIP,
+    ...EUI_ICON,
     EuiPaginatorComponent,
     EuiProgressBarComponent,
     EuiInputTextComponent,

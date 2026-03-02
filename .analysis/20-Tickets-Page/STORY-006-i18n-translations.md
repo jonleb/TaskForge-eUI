@@ -42,6 +42,8 @@ Add all translation keys required by the Tickets page feature to `en.json` and `
 | `tickets.filter.expand-label` | Expand search filter | Ouvrir le filtre de recherche |
 | `tickets.filter.collapse-label` | Collapse search filter | Fermer le filtre de recherche |
 | `tickets.filter.search-label` | Search | Recherche |
+| `tickets.filter.search-btn` | Search | Rechercher |
+| `tickets.filter.quick-filters` | Quick filters | Filtres rapides |
 | `tickets.filter.project-label` | Project | Projet |
 | `tickets.filter.select-project` | All projects | Tous les projets |
 | `tickets.filter.assigned-to-me` | Assigned to me | Assigné à moi |
@@ -51,6 +53,7 @@ Add all translation keys required by the Tickets page feature to `en.json` and `
 | `tickets.filter.status-legend` | Status | Statut |
 | `tickets.filter.type-legend` | Type | Type |
 | `tickets.filter.priority-legend` | Priority | Priorité |
+| `tickets.filter.advanced` | Advanced filter | Filtre avancé |
 
 ### Filter Chips
 

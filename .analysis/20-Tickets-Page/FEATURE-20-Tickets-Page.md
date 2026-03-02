@@ -21,18 +21,25 @@ Provide a global "Tickets" page accessible from the main sidebar (between Home a
 
 ### Left filter panel
 
-The filter panel contains the following controls, top to bottom:
+The filter panel follows the eUI "Search filter" pattern (see template). Controls are organized into collapsible `eui-card` sections, top to bottom:
 
-1. **Project** (`select`) — Dropdown listing all projects the user is a member of (or all active projects for SUPER_ADMIN). Selecting a project scopes all results to that project. Default: empty (all accessible projects).
-2. **Assigned to me** (`checkbox`) — When checked, filters tickets where `assignee_id` matches the current user's ID.
-3. **Open Sprints** (`checkbox`) — When checked, filters tickets that belong to any sprint with status `ACTIVE` across the selected project(s).
-4. **Sprint** (`select`) — Dropdown listing sprints from the selected project (disabled/hidden when no project is selected). Selecting a sprint filters tickets assigned to that sprint.
-5. **Text search** (`input`) — Free-text search on title/description (debounced, same as backlog).
-6. **Status checkboxes** — Same as backlog (TO_DO, IN_PROGRESS, IN_REVIEW, DONE).
-7. **Type checkboxes** — Same as backlog (STORY, BUG, TASK, EPIC).
-8. **Priority checkboxes** — Same as backlog (CRITICAL, HIGH, MEDIUM, LOW).
+#### Search (always visible, top of panel)
+- **Text search** (`input` + search icon button) — Free-text search on title/description. Debounced (300ms) on input, also triggerable via the search icon button. Placed at the very top of the filter column, outside any collapsible section.
 
-Filter interactions:
+#### Quick filters (collapsible `eui-card` section)
+- **Assigned to me** (`checkbox`) — When checked, filters tickets where `assignee_id` matches the current user's ID.
+- **Open Sprints** (`checkbox`) — When checked, filters tickets that belong to any sprint with status `ACTIVE` across the selected project(s).
+
+#### Criteria (collapsible `eui-card` sections)
+- **Status checkboxes** — Same as backlog (TO_DO, IN_PROGRESS, IN_REVIEW, DONE).
+- **Type checkboxes** — Same as backlog (STORY, BUG, TASK, EPIC).
+- **Priority checkboxes** — Same as backlog (CRITICAL, HIGH, MEDIUM, LOW).
+
+#### Advanced filter (collapsible `eui-card` section, collapsed by default)
+- **Project** (`select`) — Dropdown listing all projects the user is a member of (or all active projects for SUPER_ADMIN). Selecting a project scopes all results to that project. Default: empty (all accessible projects).
+- **Sprint** (`select`) — Dropdown listing sprints from the selected project (disabled when no project is selected). Selecting a sprint filters tickets assigned to that sprint.
+
+#### Filter interactions
 - When "Project" changes, the Sprint dropdown reloads with that project's sprints. If no project is selected, the Sprint dropdown is disabled.
 - "Open Sprints" and "Sprint" are mutually exclusive: checking "Open Sprints" clears the Sprint select, and selecting a specific Sprint unchecks "Open Sprints".
 - Active filter chips are displayed above the results (same chip pattern as backlog) with a "Clear all" button.

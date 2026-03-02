@@ -184,6 +184,7 @@ STORY-006 (i18n) — should be done first or in parallel with STORY-003
 - The `GET /api/user/projects` endpoint is lightweight (no pagination needed — project count is small) and reusable for both the filter dropdown and the create dialog.
 - Card layout reuses the same `eui-content-card` structure as the backlog, with the addition of a project key/name indicator on each card.
 - No reordering capability — no drag-and-drop, no position arrows, no CDK DragDropModule.
+- The left filter panel follows the eUI "Search filter" template pattern: search input with search icon button at the top, then collapsible `eui-card` sections for "Quick filters" (Assigned to me, Open Sprints), "Status", "Type", "Priority", and "Advanced filter" (Project select, Sprint select — collapsed by default).
 - `eui-paginator` fires `pageChange` during init — guard with `AfterViewInit` + `paginatorReady` flag.
 - "Create Ticket" button goes in `<eui-page-header-action-items>` (not in `<eui-page-content>`).
 - `eui-dialog` captures `[acceptLabel]` at overlay creation time — set properties before `openDialog()` and call `cdr.detectChanges()`.

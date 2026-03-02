@@ -78,62 +78,132 @@ Extends backlog pattern:
 
 ### 2. Update `src/app/features/tickets/tickets.component.html`
 
-Add filter controls to the left column, inside `<eui-page-column-body>`:
+The filter panel follows the eUI "Search filter" template pattern. Controls are organized into collapsible `eui-card` sections inside `<eui-page-column-body>`. The search input (from STORY-003) stays at the top, then the sections below:
 
 ```html
-<!-- Project select -->
-<div class="eui-u-mb-m">
-    <label euiLabel for="tickets-project">{{ 'tickets.filter.project' | translate }}</label>
-    <select euiSelect id="tickets-project"
-            [(ngModel)]="selectedProjectId"
-            (change)="onProjectChange()">
-        <option [ngValue]="null">{{ 'tickets.filter.all-projects' | translate }}</option>
-        @for (p of userProjects; track p.id) {
-            <option [ngValue]="p.id">{{ p.name }}</option>
-        }
-    </select>
-</div>
+<!-- ── Search input is already at the top (from STORY-003) ── -->
 
-<!-- Assigned to me checkbox -->
-<div class="filter-checkbox eui-u-mb-m">
-    <input euiInputCheckBox id="assigned-to-me"
-           [(ngModel)]="assignedToMe"
-           (change)="onAssignedToMeChange()" />
-    <label [for]="'assigned-to-me'">{{ 'tickets.filter.assigned-to-me' | translate }}</label>
-</div>
+<!-- Quick filters (collapsible eui-card section) -->
+<eui-card [euiCollapsible]="true" [euiCollapsed]="false" euiNoShadow class="eui-u-mb-s">
+    <eui-card-header>
+        <eui-card-header-title>{{ 'tickets.filter.quick-filters' | translate }}</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        <fieldset class="filter-fieldset">
+            <legend class="eui-u-sr-only">{{ 'tickets.filter.quick-filters' | translate }}</legend>
+            <div class="filter-checkbox eui-u-mb-2xs">
+                <input euiInputCheckBox id="assigned-to-me"
+                       [(ngModel)]="assignedToMe"
+                       (change)="onAssignedToMeChange()" />
+                <label for="assigned-to-me">{{ 'tickets.filter.assigned-to-me' | translate }}</label>
+            </div>
+            <div class="filter-checkbox eui-u-mb-2xs">
+                <input euiInputCheckBox id="open-sprints"
+                       [(ngModel)]="openSprintsChecked"
+                       (change)="onOpenSprintsChange()" />
+                <label for="open-sprints">{{ 'tickets.filter.open-sprints' | translate }}</label>
+            </div>
+        </fieldset>
+    </eui-card-content>
+</eui-card>
 
-<!-- Open Sprints checkbox -->
-<div class="filter-checkbox eui-u-mb-m">
-    <input euiInputCheckBox id="open-sprints"
-           [(ngModel)]="openSprintsChecked"
-           (change)="onOpenSprintsChange()" />
-    <label [for]="'open-sprints'">{{ 'tickets.filter.open-sprints' | translate }}</label>
-</div>
+<!-- Status filter (collapsible eui-card section) -->
+<eui-card [euiCollapsible]="true" [euiCollapsed]="false" euiNoShadow class="eui-u-mb-s">
+    <eui-card-header>
+        <eui-card-header-title>{{ 'tickets.filter.status-legend' | translate }}</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        <fieldset class="filter-fieldset">
+            <legend class="eui-u-sr-only">{{ 'tickets.filter.status-legend' | translate }}</legend>
+            @for (s of workflowStatuses; track s) {
+                <div class="filter-checkbox eui-u-mb-2xs">
+                    <input euiInputCheckBox [id]="'status-' + s"
+                           [(ngModel)]="statusChecks[s]"
+                           (change)="onStatusCheckChange()" />
+                    <label [for]="'status-' + s">{{ 'workflow.status.' + s | translate }}</label>
+                </div>
+            }
+        </fieldset>
+    </eui-card-content>
+</eui-card>
 
-<!-- Sprint select (disabled when no project selected) -->
-<div class="eui-u-mb-m">
-    <label euiLabel for="tickets-sprint">{{ 'tickets.filter.sprint' | translate }}</label>
-    <select euiSelect id="tickets-sprint"
-            [(ngModel)]="selectedSprintId"
-            [disabled]="!selectedProjectId"
-            (change)="onSprintChange()">
-        <option [ngValue]="null">{{ 'tickets.filter.all-sprints' | translate }}</option>
-        @for (s of availableSprints; track s.id) {
-            <option [ngValue]="s.id">{{ s.name }}</option>
-        }
-    </select>
-</div>
+<!-- Type filter (collapsible eui-card section) -->
+<eui-card [euiCollapsible]="true" [euiCollapsed]="false" euiNoShadow class="eui-u-mb-s">
+    <eui-card-header>
+        <eui-card-header-title>{{ 'tickets.filter.type-legend' | translate }}</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        <fieldset class="filter-fieldset">
+            <legend class="eui-u-sr-only">{{ 'tickets.filter.type-legend' | translate }}</legend>
+            @for (t of ticketTypes; track t) {
+                <div class="filter-checkbox eui-u-mb-2xs">
+                    <input euiInputCheckBox [id]="'type-' + t"
+                           [(ngModel)]="typeChecks[t]"
+                           (change)="onTypeCheckChange()" />
+                    <label [for]="'type-' + t">{{ 'workflow.ticket-type.' + t | translate }}</label>
+                </div>
+            }
+        </fieldset>
+    </eui-card-content>
+</eui-card>
 
-<!-- Text search (already from STORY-003) -->
+<!-- Priority filter (collapsible eui-card section) -->
+<eui-card [euiCollapsible]="true" [euiCollapsed]="false" euiNoShadow class="eui-u-mb-s">
+    <eui-card-header>
+        <eui-card-header-title>{{ 'tickets.filter.priority-legend' | translate }}</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        <fieldset class="filter-fieldset">
+            <legend class="eui-u-sr-only">{{ 'tickets.filter.priority-legend' | translate }}</legend>
+            @for (p of priorities; track p) {
+                <div class="filter-checkbox eui-u-mb-2xs">
+                    <input euiInputCheckBox [id]="'priority-' + p"
+                           [(ngModel)]="priorityChecks[p]"
+                           (change)="onPriorityCheckChange()" />
+                    <label [for]="'priority-' + p">{{ 'ticket.priority.' + p | translate }}</label>
+                </div>
+            }
+        </fieldset>
+    </eui-card-content>
+</eui-card>
 
-<!-- Status checkboxes (eui-card collapsible) -->
-<!-- Type checkboxes (eui-card collapsible) -->
-<!-- Priority checkboxes (eui-card collapsible) -->
+<!-- Advanced filter (collapsible eui-card section, collapsed by default) -->
+<eui-card [euiCollapsible]="true" [euiCollapsed]="true" euiNoShadow class="eui-u-mb-s">
+    <eui-card-header>
+        <eui-card-header-title>{{ 'tickets.filter.advanced' | translate }}</eui-card-header-title>
+    </eui-card-header>
+    <eui-card-content>
+        <!-- Project select -->
+        <div class="eui-u-mb-m">
+            <label euiLabel for="tickets-project">{{ 'tickets.filter.project-label' | translate }}</label>
+            <select euiSelect id="tickets-project"
+                    [(ngModel)]="selectedProjectId"
+                    (change)="onProjectChange()">
+                <option [ngValue]="null">{{ 'tickets.filter.select-project' | translate }}</option>
+                @for (p of userProjects; track p.id) {
+                    <option [ngValue]="p.id">{{ p.name }}</option>
+                }
+            </select>
+        </div>
+
+        <!-- Sprint select (disabled when no project selected) -->
+        <div class="eui-u-mb-m">
+            <label euiLabel for="tickets-sprint">{{ 'tickets.filter.sprint-label' | translate }}</label>
+            <select euiSelect id="tickets-sprint"
+                    [(ngModel)]="selectedSprintId"
+                    [disabled]="!selectedProjectId"
+                    (change)="onSprintChange()">
+                <option [ngValue]="null">{{ 'tickets.filter.select-sprint' | translate }}</option>
+                @for (s of availableSprints; track s.id) {
+                    <option [ngValue]="s.id">{{ s.name }}</option>
+                }
+            </select>
+        </div>
+    </eui-card-content>
+</eui-card>
 ```
 
-Status/Type/Priority sections use the same `eui-card` collapsible pattern as the backlog.
-
-Add active filter chips section above results (same pattern as backlog):
+Add active filter chips section above results in the right column (same pattern as backlog):
 ```html
 @if (hasActiveFilters) {
     <section class="eui-u-d-flex eui-u-align-items-center eui-u-flex-wrap eui-u-gap-xs eui-u-mb-m"
