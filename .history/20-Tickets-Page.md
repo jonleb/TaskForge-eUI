@@ -46,6 +46,20 @@ Files: `src/app/features/tickets/tickets.component.ts`, `.html`, `.scss`, `.spec
 
 Files: `src/app/features/tickets/tickets.component.ts`, `.html`, `.spec.ts`, `src/assets/i18n/en.json`, `src/assets/i18n/fr.json`
 
+### 5. Create Ticket dialog (STORY-005)
+
+- Added "Create Ticket" button in `eui-page-header-action-items` (visible only when `canCreate` is true).
+- `canCreate` determined after `getUserProjects()` resolves: SUPER_ADMIN always true, regular users true if they have at least one project.
+- `eui-dialog` with mandatory Project select that drives Assignee and Epic dropdowns (loaded via `getProjectMembers` / `getEpics` on project change).
+- Form fields: Project (required), Type (STORY/BUG/TASK), Title (2-200 chars with inline validation), Description (textarea), Priority, Assignee (disabled until project selected), Epic (disabled until project selected).
+- Successful create: closes dialog, success growl with project key + ticket number, reloads ticket list.
+- Error handling: inline `eui-feedback-message` with `aria-live="polite"`.
+- Form resets on dismiss.
+- `cdr.detectChanges()` before `openDialog()` per eUI dialog accept label timing pitfall.
+- 19 new unit tests (67 total for tickets component).
+
+Files: `src/app/features/tickets/tickets.component.ts`, `.html`, `.scss`, `.spec.ts`
+
 ## Working method
 
 Each story followed the same pattern:
@@ -69,6 +83,8 @@ Each story followed the same pattern:
 ## Git history
 
 ```
+09c8b30 feat(STORY-005): add Create Ticket dialog with project-driven form
+0c11eea docs(020): add history file for Tickets Page feature
 31b2841 feat(STORY-004): add filter panel with project, assigned-to-me, sprints, and advanced filters
 099c0bc feat(STORY-003): add Tickets page with route, sidebar, card list, filters, and i18n
 ba6fcbb feat(STORY-002): add TicketsService, TicketsListParams model, and barrel export
@@ -79,6 +95,6 @@ d200a56 docs: add FEATURE-020 Tickets Page analysis — feature doc, 6 stories, 
 
 ## Test summary
 
-- Frontend: 674 unit tests (vitest) — all passing
+- Frontend: 693 unit tests (vitest) — all passing
 - Backend: 20 integration tests (Jest + supertest) — all passing
 - Build: `npx ng build --configuration=development` — passes
