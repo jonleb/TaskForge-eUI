@@ -7,9 +7,10 @@ import {
     EuiServiceStatus,
 } from '@eui/core';
 import { catchError, map, Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { AuthService, PermissionService } from './core/auth';
 import { ProjectContextService } from './core/project';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
     providedIn: 'root',
@@ -21,10 +22,17 @@ export class AppStarterService {
     private readonly authService = inject(AuthService);
     private readonly permissionService = inject(PermissionService);
     private readonly projectContext = inject(ProjectContextService);
+    private readonly translate = inject(TranslateService);
 
     start(): Observable<EuiServiceStatus> {
         return this.initUserService().pipe(
             switchMap(() => this.i18nService.init()),
+            tap(() => {
+                const savedLang = localStorage.getItem('preferred_language');
+                if (savedLang && savedLang !== this.translate.currentLang) {
+                    this.translate.use(savedLang);
+                }
+            }),
             switchMap(status => this.projectContext.restoreProject().pipe(map(() => status))),
         );
     }

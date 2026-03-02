@@ -8,8 +8,9 @@ import { EuiServiceStatus } from '@eui/base';
 import { AuthService, PermissionService } from './core/auth';
 import { ProjectContextService } from './core/project';
 import { UserProfile } from './core/auth/auth.models';
-import { describe, it, beforeEach, expect, vi } from 'vitest';
+import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import { createI18nServiceMock, TEST_CONFIG, TranslateTestingModule } from './testing/test-providers';
+import { TranslateService } from '@ngx-translate/core';
 
 // eslint-disable-next-line
 type SpyObj<T> = { [K in keyof T]: T[K] extends (...args: any[]) => any ? ReturnType<typeof vi.fn> : T[K] };
@@ -39,6 +40,7 @@ describe('AppStarterService', () => {
     };
 
     beforeEach(() => {
+        localStorage.removeItem('preferred_language');
         userServiceMock = { init: vi.fn() } as SpyObj<UserService>;
         i18nServiceMock = createI18nServiceMock();
         authServiceMock = {
@@ -69,6 +71,10 @@ describe('AppStarterService', () => {
         });
 
         service = TestBed.inject(AppStarterService);
+    });
+
+    afterEach(() => {
+        localStorage.removeItem('preferred_language');
     });
 
     it('should be created', () => {
@@ -182,5 +188,32 @@ describe('AppStarterService', () => {
         service.start().subscribe(status => { result = status; });
 
         expect(result).toBe(mockStatus);
+    });
+
+    // ─── Language persistence ────────────────────────────────────────
+
+    it('should restore saved language from localStorage after i18n init', () => {
+        localStorage.setItem('preferred_language', 'fr');
+        vi.mocked(userServiceMock.init).mockReturnValue(of({} as EuiServiceStatus));
+        vi.mocked(i18nServiceMock.init).mockReturnValue(of({} as EuiServiceStatus));
+
+        const translate = TestBed.inject(TranslateService);
+        const useSpy = vi.spyOn(translate, 'use');
+
+        service.start().subscribe();
+
+        expect(useSpy).toHaveBeenCalledWith('fr');
+    });
+
+    it('should not call translate.use() when no saved language exists', () => {
+        vi.mocked(userServiceMock.init).mockReturnValue(of({} as EuiServiceStatus));
+        vi.mocked(i18nServiceMock.init).mockReturnValue(of({} as EuiServiceStatus));
+
+        const translate = TestBed.inject(TranslateService);
+        const useSpy = vi.spyOn(translate, 'use');
+
+        service.start().subscribe();
+
+        expect(useSpy).not.toHaveBeenCalled();
     });
 });

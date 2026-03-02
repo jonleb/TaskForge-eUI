@@ -6,6 +6,7 @@ import { TranslateTestingModule, provideEuiCoreMocks } from '../testing/test-pro
 import { LayoutComponent } from './layout.component';
 import { AuthService, PermissionService } from '../core/auth';
 import { ProjectContextService, Project } from '../core/project';
+import { TranslateService } from '@ngx-translate/core';
 
 describe('LayoutComponent', () => {
     let component: LayoutComponent;
@@ -16,6 +17,7 @@ describe('LayoutComponent', () => {
     let router: Router;
 
     beforeEach(async () => {
+        localStorage.removeItem('preferred_language');
         authServiceMock = {
             logout: vi.fn(),
         };
@@ -186,5 +188,14 @@ describe('LayoutComponent', () => {
         expect(urls).toContain('screen/projects/42/backlog');
         expect(urls).toContain('screen/projects/42/board');
         expect(urls).toContain('screen/projects/42/settings');
+    });
+
+    it('should save selected language to localStorage on language change', () => {
+        component.ngOnInit();
+
+        const translate = TestBed.inject(TranslateService);
+        translate.use('fr');
+
+        expect(localStorage.getItem('preferred_language')).toBe('fr');
     });
 });

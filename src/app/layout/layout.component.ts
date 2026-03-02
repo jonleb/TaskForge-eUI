@@ -65,10 +65,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this.cdr.markForCheck();
         });
 
-        // Rebuild sidebar labels when language changes
+        // Rebuild sidebar labels when language changes and persist choice
         this.translate.onLangChange.pipe(
             takeUntil(this.destroy$),
-        ).subscribe(() => {
+        ).subscribe(event => {
+            localStorage.setItem('preferred_language', event.lang);
             this.buildSidebar(this.currentProject);
             this.cdr.markForCheck();
         });
