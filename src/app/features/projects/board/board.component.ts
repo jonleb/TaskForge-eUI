@@ -127,7 +127,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     /** Navigate to ticket detail */
     navigateToTicket(ticket: BacklogItem): void {
         if (this.project) {
-            this.router.navigate(['/screen/projects', this.project.id, 'backlog', ticket.ticket_number]);
+            this.router.navigate(['/screen/projects', this.project.id, 'board', ticket.ticket_number]);
         }
     }
 
