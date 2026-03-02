@@ -17,7 +17,7 @@ import {
 import { TicketsComponent } from './tickets.component';
 import { TicketsService } from '../../core/tickets';
 import { PermissionService } from '../../core/auth';
-import { BacklogItem, BacklogListResponse, Project } from '../../core/project';
+import { BacklogItem, BacklogListResponse, Project, ProjectService, Sprint } from '../../core/project';
 
 const mockProjects: Project[] = [
     { id: '1', key: 'TF', name: 'TaskForge', description: '', created_by: '1', created_at: '', updated_at: '', is_active: true },
@@ -32,10 +32,16 @@ const mockItems: BacklogItem[] = [
 const mockResp: BacklogListResponse = { data: mockItems, total: 2, page: 1, limit: 10 };
 const emptyResp: BacklogListResponse = { data: [], total: 0, page: 1, limit: 10 };
 
+const mockSprints: Sprint[] = [
+    { id: 'sp-2', projectId: '1', name: 'Sprint 2', goal: 'Active sprint', status: 'ACTIVE', start_date: '2026-02-01', end_date: '2026-02-14', created_by: '1', created_at: '2026-01-01', updated_at: '2026-01-01' },
+    { id: 'sp-3', projectId: '1', name: 'Sprint 3', goal: 'Planned sprint', status: 'PLANNED', start_date: null, end_date: null, created_by: '1', created_at: '2026-01-01', updated_at: '2026-01-01' },
+];
+
 describe('TicketsComponent', () => {
     let fixture: ComponentFixture<TicketsComponent>;
     let component: TicketsComponent;
     let ticketsSvc: Record<string, ReturnType<typeof vi.fn>>;
+    let projectSvc: Record<string, ReturnType<typeof vi.fn>>;
     let perm: Record<string, ReturnType<typeof vi.fn>>;
     let growl: ReturnType<typeof createGrowlServiceMock>;
 
@@ -43,6 +49,14 @@ describe('TicketsComponent', () => {
         ticketsSvc = {
             getTickets: vi.fn().mockReturnValue(of({ ...mockResp })),
             getUserProjects: vi.fn().mockReturnValue(of(mockProjects)),
+        };
+        projectSvc = {
+            getSprints: vi.fn().mockReturnValue(of(mockSprints)),
+            getBacklog: vi.fn(), getProjectMembers: vi.fn(), getProjects: vi.fn(),
+            getProject: vi.fn(), getUser: vi.fn(), createProject: vi.fn(),
+            updateProject: vi.fn(), upsertMember: vi.fn(), removeMember: vi.fn(),
+            searchCandidates: vi.fn(), getWorkflows: vi.fn(), createTicket: vi.fn(),
+            getEpics: vi.fn(), reorderBacklog: vi.fn(),
         };
         perm = {
             isSuperAdmin: vi.fn().mockReturnValue(true),
@@ -60,6 +74,7 @@ describe('TicketsComponent', () => {
             providers: [
                 ...provideEuiCoreMocks(),
                 { provide: TicketsService, useValue: ticketsSvc },
+                { provide: ProjectService, useValue: projectSvc },
                 { provide: PermissionService, useValue: perm },
                 { provide: EuiGrowlService, useValue: growl },
             ],
@@ -297,5 +312,200 @@ describe('TicketsComponent', () => {
         fixture.detectChanges();
         expect(component.getProjectKey(mockItems[0])).toBe('TF');
         expect(component.getProjectKey(mockItems[1])).toBe('DEMO');
+    });
+
+    // ── STORY-004: Filter Panel ──
+
+    it('should populate userProjects on init', () => {
+        fixture.detectChanges();
+        expect(component.userProjects).toEqual(mockProjects);
+    });
+
+    it('should set project_id param on project change', () => {
+        fixture.detectChanges();
+        ticketsSvc.getTickets.mockClear();
+        component.selectedProjectId = '1';
+        component.onProjectChange();
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ project_id: '1', _page: 1 }));
+    });
+
+    it('should load sprints when project selected', () => {
+        fixture.detectChanges();
+        component.selectedProjectId = '1';
+        component.onProjectChange();
+        expect(projectSvc.getSprints).toHaveBeenCalledWith('1');
+        expect(component.availableSprints).toEqual(mockSprints);
+    });
+
+    it('should clear sprints when project cleared', () => {
+        fixture.detectChanges();
+        component.selectedProjectId = '1';
+        component.onProjectChange();
+        expect(component.availableSprints.length).toBe(2);
+
+        component.selectedProjectId = null;
+        component.onProjectChange();
+        expect(component.availableSprints).toEqual([]);
+        expect(component.selectedSprintId).toBeNull();
+    });
+
+    it('should set assignee_id param on assigned-to-me check', () => {
+        fixture.detectChanges();
+        ticketsSvc.getTickets.mockClear();
+        component.assignedToMe = true;
+        component.onAssignedToMeChange();
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ assignee_id: '1', _page: 1 }));
+    });
+
+    it('should clear assignee_id param on assigned-to-me uncheck', () => {
+        fixture.detectChanges();
+        component.assignedToMe = true;
+        component.onAssignedToMeChange();
+        ticketsSvc.getTickets.mockClear();
+
+        component.assignedToMe = false;
+        component.onAssignedToMeChange();
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ assignee_id: undefined }));
+    });
+
+    it('should set sprint_id=open on open-sprints check', () => {
+        fixture.detectChanges();
+        ticketsSvc.getTickets.mockClear();
+        component.openSprintsChecked = true;
+        component.onOpenSprintsChange();
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ sprint_id: 'open', _page: 1 }));
+    });
+
+    it('should clear specific sprint when open-sprints checked', () => {
+        fixture.detectChanges();
+        component.selectedSprintId = 'sp-2';
+        component.openSprintsChecked = true;
+        component.onOpenSprintsChange();
+        expect(component.selectedSprintId).toBeNull();
+    });
+
+    it('should uncheck open-sprints when specific sprint selected', () => {
+        fixture.detectChanges();
+        component.openSprintsChecked = true;
+        component.selectedSprintId = 'sp-2';
+        component.onSprintChange();
+        expect(component.openSprintsChecked).toBe(false);
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ sprint_id: 'sp-2' }));
+    });
+
+    it('should generate project chip when project selected', () => {
+        fixture.detectChanges();
+        component.selectedProjectId = '1';
+        component.onProjectChange();
+        const chips = component.activeFilterChips;
+        expect(chips.some(c => c.dimension === 'project' && c.value === '1')).toBe(true);
+    });
+
+    it('should generate assigned-to-me chip', () => {
+        fixture.detectChanges();
+        component.assignedToMe = true;
+        component.onAssignedToMeChange();
+        const chips = component.activeFilterChips;
+        expect(chips.some(c => c.dimension === 'assignee' && c.value === 'me')).toBe(true);
+    });
+
+    it('should generate open-sprints chip', () => {
+        fixture.detectChanges();
+        component.openSprintsChecked = true;
+        component.onOpenSprintsChange();
+        const chips = component.activeFilterChips;
+        expect(chips.some(c => c.dimension === 'sprint' && c.value === 'open')).toBe(true);
+    });
+
+    it('should generate sprint chip when specific sprint selected', () => {
+        fixture.detectChanges();
+        component.selectedProjectId = '1';
+        component.onProjectChange();
+        component.selectedSprintId = 'sp-2';
+        component.onSprintChange();
+        const chips = component.activeFilterChips;
+        expect(chips.some(c => c.dimension === 'sprint' && c.value === 'sp-2')).toBe(true);
+    });
+
+    it('should remove project chip and clear project filter', () => {
+        fixture.detectChanges();
+        component.selectedProjectId = '1';
+        component.onProjectChange();
+        ticketsSvc.getTickets.mockClear();
+
+        const chip = component.activeFilterChips.find(c => c.dimension === 'project');
+        component.onChipRemove(chip!);
+        expect(component.selectedProjectId).toBeNull();
+        expect(component.availableSprints).toEqual([]);
+        expect(ticketsSvc.getTickets).toHaveBeenCalled();
+    });
+
+    it('should remove assignee chip and uncheck assigned-to-me', () => {
+        fixture.detectChanges();
+        component.assignedToMe = true;
+        component.onAssignedToMeChange();
+        ticketsSvc.getTickets.mockClear();
+
+        const chip = component.activeFilterChips.find(c => c.dimension === 'assignee');
+        component.onChipRemove(chip!);
+        expect(component.assignedToMe).toBe(false);
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ assignee_id: undefined }));
+    });
+
+    it('should remove open-sprints chip', () => {
+        fixture.detectChanges();
+        component.openSprintsChecked = true;
+        component.onOpenSprintsChange();
+        ticketsSvc.getTickets.mockClear();
+
+        const chip = component.activeFilterChips.find(c => c.value === 'open');
+        component.onChipRemove(chip!);
+        expect(component.openSprintsChecked).toBe(false);
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ sprint_id: undefined }));
+    });
+
+    it('should clear all filters including project and assignee', () => {
+        fixture.detectChanges();
+        component.selectedProjectId = '1';
+        component.onProjectChange();
+        component.assignedToMe = true;
+        component.onAssignedToMeChange();
+        component.openSprintsChecked = true;
+        component.onOpenSprintsChange();
+        component.statusChecks.TO_DO = true;
+        component.onStatusCheckChange();
+        ticketsSvc.getTickets.mockClear();
+
+        component.clearAllFilters();
+        expect(component.selectedProjectId).toBeNull();
+        expect(component.assignedToMe).toBe(false);
+        expect(component.openSprintsChecked).toBe(false);
+        expect(component.selectedSprintId).toBeNull();
+        expect(component.selectedStatuses.size).toBe(0);
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _page: 1 }));
+    });
+
+    it('should reset page to 1 on every filter change', () => {
+        fixture.detectChanges();
+        // Advance to page 2
+        component.ngAfterViewInit();
+        component.onPageChange({ page: 1, pageSize: 10 });
+        ticketsSvc.getTickets.mockClear();
+
+        component.assignedToMe = true;
+        component.onAssignedToMeChange();
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _page: 1 }));
+    });
+
+    it('should render assigned-to-me checkbox', () => {
+        fixture.detectChanges();
+        const cb = fixture.nativeElement.querySelector('#assigned-to-me');
+        expect(cb).toBeTruthy();
+    });
+
+    it('should render open-sprints checkbox', () => {
+        fixture.detectChanges();
+        const cb = fixture.nativeElement.querySelector('#open-sprints');
+        expect(cb).toBeTruthy();
     });
 });

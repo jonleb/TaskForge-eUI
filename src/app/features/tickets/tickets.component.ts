@@ -17,8 +17,9 @@ import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
 import { EUI_ICON } from '@eui/components/eui-icon';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { BacklogItem, Project, WORKFLOW_STATUSES, TICKET_TYPES, TICKET_PRIORITIES, WorkflowStatus, TicketType, TicketPriority } from '../../core/project';
+import { BacklogItem, Project, ProjectService, Sprint, WORKFLOW_STATUSES, TICKET_TYPES, TICKET_PRIORITIES, WorkflowStatus, TicketType, TicketPriority } from '../../core/project';
 import { TicketsService, TicketsListParams } from '../../core/tickets';
+import { PermissionService } from '../../core/auth';
 
 export interface FilterChip {
     key: string;
@@ -41,6 +42,8 @@ export interface FilterChip {
 })
 export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly ticketsService = inject(TicketsService);
+    private readonly projectService = inject(ProjectService);
+    private readonly permissionService = inject(PermissionService);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly growlService = inject(EuiGrowlService);
     private readonly translate = inject(TranslateService);
@@ -64,10 +67,20 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     isFilterCollapsed = false;
     searchValue = '';
 
-    // Project key map
+    // Project filter
+    userProjects: Project[] = [];
     projectMap = new Map<string, Project>();
+    selectedProjectId: string | null = null;
 
-    // Checkbox filter state (same pattern as backlog)
+    // Assigned to me
+    assignedToMe = false;
+
+    // Sprint filters
+    openSprintsChecked = false;
+    selectedSprintId: string | null = null;
+    availableSprints: Sprint[] = [];
+
+    // Checkbox filter state
     readonly workflowStatuses = WORKFLOW_STATUSES;
     readonly ticketTypes = TICKET_TYPES;
     readonly priorities = TICKET_PRIORITIES;
@@ -92,6 +105,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.ticketsService.getUserProjects().pipe(takeUntil(this.destroy$)).subscribe({
             next: projects => {
+                this.userProjects = projects;
                 projects.forEach(p => this.projectMap.set(p.id, p));
                 this.cdr.markForCheck();
             },
@@ -171,6 +185,50 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.loadTickets();
     }
 
+    onProjectChange(): void {
+        this.params = { ...this.params, project_id: this.selectedProjectId || undefined, _page: 1 };
+        // Clear sprint selection when project changes
+        this.selectedSprintId = null;
+        this.availableSprints = [];
+        this.params = { ...this.params, sprint_id: this.openSprintsChecked ? 'open' : undefined };
+        if (this.selectedProjectId) {
+            this.loadSprints(this.selectedProjectId);
+        }
+        this.loadTickets();
+    }
+
+    onAssignedToMeChange(): void {
+        this.params = { ...this.params, assignee_id: this.assignedToMe ? this.permissionService.getUserId() : undefined, _page: 1 };
+        this.loadTickets();
+    }
+
+    onOpenSprintsChange(): void {
+        if (this.openSprintsChecked) {
+            this.selectedSprintId = null;
+            this.params = { ...this.params, sprint_id: 'open', _page: 1 };
+        } else {
+            this.params = { ...this.params, sprint_id: undefined, _page: 1 };
+        }
+        this.loadTickets();
+    }
+
+    onSprintChange(): void {
+        if (this.selectedSprintId) {
+            this.openSprintsChecked = false;
+        }
+        this.params = { ...this.params, sprint_id: this.selectedSprintId || undefined, _page: 1 };
+        this.loadTickets();
+    }
+
+    loadSprints(projectId: string): void {
+        this.projectService.getSprints(projectId).pipe(takeUntil(this.destroy$)).subscribe({
+            next: sprints => {
+                this.availableSprints = sprints;
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
     onFilterColumnCollapse(collapsed: boolean): void {
         this.isFilterCollapsed = collapsed;
     }
@@ -185,6 +243,19 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         const chips: FilterChip[] = [];
         if (this.searchValue) {
             chips.push({ key: 'search', dimension: 'search', value: this.searchValue, label: this.translate.instant('tickets.chip.search', { term: this.searchValue }) });
+        }
+        if (this.selectedProjectId) {
+            const proj = this.projectMap.get(this.selectedProjectId);
+            chips.push({ key: 'project', dimension: 'project', value: this.selectedProjectId, label: this.translate.instant('tickets.chip.project', { name: proj?.name ?? this.selectedProjectId }) });
+        }
+        if (this.assignedToMe) {
+            chips.push({ key: 'assignee', dimension: 'assignee', value: 'me', label: this.translate.instant('tickets.chip.assigned-to-me') });
+        }
+        if (this.openSprintsChecked) {
+            chips.push({ key: 'open-sprints', dimension: 'sprint', value: 'open', label: this.translate.instant('tickets.chip.open-sprints') });
+        } else if (this.selectedSprintId) {
+            const sprint = this.availableSprints.find(s => s.id === this.selectedSprintId);
+            chips.push({ key: `sprint-${this.selectedSprintId}`, dimension: 'sprint', value: this.selectedSprintId, label: this.translate.instant('tickets.chip.sprint', { name: sprint?.name ?? this.selectedSprintId }) });
         }
         for (const s of this.selectedStatuses) {
             chips.push({ key: `status-${s}`, dimension: 'status', value: s, label: this.translate.instant('tickets.chip.status', { value: this.translate.instant('workflow.status.' + s) }) });
@@ -208,6 +279,24 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.searchValue = '';
                 this.params = { ...this.params, q: undefined, _page: 1 };
                 break;
+            case 'project':
+                this.selectedProjectId = null;
+                this.availableSprints = [];
+                this.selectedSprintId = null;
+                this.params = { ...this.params, project_id: undefined, sprint_id: this.openSprintsChecked ? 'open' : undefined, _page: 1 };
+                break;
+            case 'assignee':
+                this.assignedToMe = false;
+                this.params = { ...this.params, assignee_id: undefined, _page: 1 };
+                break;
+            case 'sprint':
+                if (chip.value === 'open') {
+                    this.openSprintsChecked = false;
+                } else {
+                    this.selectedSprintId = null;
+                }
+                this.params = { ...this.params, sprint_id: undefined, _page: 1 };
+                break;
             case 'status':
                 this.statusChecks[chip.value as WorkflowStatus] = false;
                 this.onStatusCheckChange();
@@ -226,6 +315,11 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     clearAllFilters(): void {
         this.searchValue = '';
+        this.selectedProjectId = null;
+        this.assignedToMe = false;
+        this.openSprintsChecked = false;
+        this.selectedSprintId = null;
+        this.availableSprints = [];
         for (const s of this.workflowStatuses) this.statusChecks[s] = false;
         for (const t of this.ticketTypes) this.typeChecks[t] = false;
         for (const p of this.priorities) this.priorityChecks[p] = false;
