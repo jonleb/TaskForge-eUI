@@ -3657,7 +3657,7 @@
       "ticket_number": 9,
       "created_by": "15",
       "created_at": "2026-01-30T10:00:00.000Z",
-      "position": 4,
+      "position": 1,
       "sprint_id": "sp-5"
     },
     {
@@ -3682,7 +3682,7 @@
       "type": "STORY",
       "title": "Implement rate limiting per API key",
       "description": "Add configurable rate limiting with sliding window algorithm. Support burst allowance and return X-RateLimit-Remaining headers.",
-      "status": "IN_PROGRESS",
+      "status": "IN_REVIEW",
       "priority": "HIGH",
       "assignee_id": "22",
       "epic_id": "5",
@@ -3721,7 +3721,7 @@
       "ticket_number": 13,
       "created_by": "15",
       "created_at": "2026-02-20T09:00:00.000Z",
-      "position": 1,
+      "position": 2,
       "sprint_id": "sp-5"
     },
     {
@@ -3737,7 +3737,7 @@
       "ticket_number": 14,
       "created_by": "15",
       "created_at": "2026-02-22T14:20:00.000Z",
-      "position": 5,
+      "position": 3,
       "sprint_id": "sp-5"
     },
     {
@@ -4939,6 +4939,39 @@
       "newValue": "IN_REVIEW",
       "changedBy": "1",
       "created_at": "2026-03-01T10:38:18.471Z"
+    },
+    {
+      "id": "11",
+      "projectId": "5",
+      "ticketId": "89",
+      "ticketNumber": 11,
+      "field": "status",
+      "oldValue": "IN_PROGRESS",
+      "newValue": "IN_REVIEW",
+      "changedBy": "1",
+      "created_at": "2026-03-01T10:42:02.208Z"
+    },
+    {
+      "id": "12",
+      "projectId": "5",
+      "ticketId": "42",
+      "ticketNumber": 9,
+      "field": "status",
+      "oldValue": "TO_DO",
+      "newValue": "IN_PROGRESS",
+      "changedBy": "1",
+      "created_at": "2026-03-02T07:24:32.081Z"
+    },
+    {
+      "id": "13",
+      "projectId": "5",
+      "ticketId": "42",
+      "ticketNumber": 9,
+      "field": "status",
+      "oldValue": "IN_PROGRESS",
+      "newValue": "TO_DO",
+      "changedBy": "1",
+      "created_at": "2026-03-02T07:24:38.842Z"
     }
   ],
   "link_types": [
