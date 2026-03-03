@@ -17,7 +17,7 @@ export const PROJECTS_ROUTES: Routes = [
             { path: 'backlog', component: BacklogComponent },
             { path: 'sprints', component: SprintsComponent },
             { path: 'sprints/:sprintId', loadComponent: () => import('./sprints/sprint-planning/sprint-planning.component').then(m => m.SprintPlanningComponent) },
-            { path: 'backlog/:ticketNumber', loadComponent: () => import('./ticket-detail/ticket-detail.component').then(m => m.TicketDetailComponent) },
+            { path: 'tickets/:ticketNumber', loadComponent: () => import('./ticket-detail/ticket-detail.component').then(m => m.TicketDetailComponent) },
             { path: 'board', loadComponent: () => import('./board/board.component').then(m => m.BoardComponent) },
             { path: 'settings', loadComponent: () => import('./settings/settings.component').then(m => m.SettingsComponent) },
         ],

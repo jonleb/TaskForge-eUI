@@ -166,8 +166,8 @@ describe('TicketsComponent', () => {
     it('should link cards to ticket detail', () => {
         fixture.detectChanges();
         const links = fixture.nativeElement.querySelectorAll('a.card-link');
-        expect(links[0].getAttribute('href')).toBe('/screen/projects/1/backlog/1');
-        expect(links[1].getAttribute('href')).toBe('/screen/projects/2/backlog/5');
+        expect(links[0].getAttribute('href')).toBe('/screen/projects/1/tickets/1');
+        expect(links[1].getAttribute('href')).toBe('/screen/projects/2/tickets/5');
     });
 
     it('should trigger debounced search on text input', () => {
