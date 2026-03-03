@@ -6,21 +6,8 @@
     width: auto;
 }
 
-.empty-state {
-    min-height: 200px;
-    text-align: center;
-}
-
-.card-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-
-    &:focus-visible {
-        outline: 2px solid var(--eui-c-primary, #004494);
-        outline-offset: 2px;
-        border-radius: 4px;
-    }
+.card-expanded {
+    border-left: 3px solid var(--eui-c-primary, #004494);
 }
 
 .dialog-form {

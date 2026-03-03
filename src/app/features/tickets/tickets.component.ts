@@ -13,7 +13,6 @@ import { EUI_INPUT_TEXT } from '@eui/components/eui-input-text';
 import { EUI_TEXTAREA } from '@eui/components/eui-textarea';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiPaginatorComponent } from '@eui/components/eui-paginator';
-import { EUI_CONTENT_CARD } from '@eui/components/eui-content-card';
 import { EUI_CARD } from '@eui/components/eui-card';
 import { EUI_INPUT_CHECKBOX } from '@eui/components/eui-input-checkbox';
 import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
@@ -22,6 +21,8 @@ import { EUI_BREADCRUMB } from '@eui/components/eui-breadcrumb';
 import { EUI_ICON_BUTTON } from '@eui/components/eui-icon-button';
 import { EUI_INPUT_RADIO } from '@eui/components/eui-input-radio';
 import { EUI_TOGGLE_GROUP } from '@eui/components/eui-toggle-group';
+import { EUI_POPOVER, EuiPopoverComponent } from '@eui/components/eui-popover';
+import { EUI_STATUS_BADGE } from '@eui/components/eui-status-badge';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BacklogItem, Project, ProjectMember, ProjectService, Sprint, WORKFLOW_STATUSES, TICKET_TYPES, TICKET_PRIORITIES, CREATABLE_TICKET_TYPES, WorkflowStatus, TicketType, TicketPriority } from '../../core/project';
@@ -43,10 +44,10 @@ export interface FilterChip {
     imports: [
         ...EUI_PAGE, ...EUI_CHIP, ...EUI_BUTTON, ...EUI_FEEDBACK_MESSAGE,
         ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT, ...EUI_TEXTAREA,
-        EuiDialogComponent, EuiPaginatorComponent, ...EUI_CONTENT_CARD, ...EUI_CARD,
+        EuiDialogComponent, EuiPaginatorComponent, ...EUI_CARD,
         ...EUI_INPUT_CHECKBOX, ...EUI_PROGRESS_BAR, ...EUI_ICON,
         ...EUI_BREADCRUMB, ...EUI_ICON_BUTTON, ...EUI_INPUT_RADIO,
-        ...EUI_TOGGLE_GROUP,
+        ...EUI_TOGGLE_GROUP, ...EUI_POPOVER, ...EUI_STATUS_BADGE,
         FormsModule, TranslateModule, RouterLink,
     ],
 })
@@ -62,6 +63,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     private paginatorReady = false;
 
     @ViewChild('createDialog') createDialog!: EuiDialogComponent;
+    @ViewChild('kebabPopover') kebabPopover!: EuiPopoverComponent;
 
     items: BacklogItem[] = [];
     total = 0;
@@ -88,6 +90,12 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Chip overflow
     readonly MAX_VISIBLE_CHIPS = 5;
+
+    // Card expand state
+    expandedCards = new Set<string>();
+
+    // Kebab menu
+    activeKebabItemIndex: number | null = null;
 
     // Dynamic filter builder
     visibleFilters = new Set<string>();
@@ -410,10 +418,6 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         return item.assignee_id;
     }
 
-    truncateDescription(desc: string | null | undefined, max = 120): string {
-        if (!desc) return '';
-        return desc.length > max ? desc.substring(0, max) + '…' : desc;
-    }
 
     // ── Create Dialog ──
 
@@ -509,4 +513,63 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         const len = this.newTicketTitle.trim().length;
         return !!this.selectedCreateProjectId && len >= 2 && len <= 200;
     }
+
+    // ── Card View (STORY-004) ──
+
+    toggleCardExpand(itemId: string): void {
+        if (this.expandedCards.has(itemId)) {
+            this.expandedCards.delete(itemId);
+        } else {
+            this.expandedCards.add(itemId);
+        }
+        this.cdr.markForCheck();
+    }
+
+    openKebabMenu(index: number, triggerRef: any): void {
+        this.activeKebabItemIndex = index;
+        this.kebabPopover.openPopover(triggerRef._elementRef || triggerRef);
+    }
+
+    onCardAction(action: 'edit' | 'delete' | 'assign' | 'change-status'): void {
+        if (this.activeKebabItemIndex === null) return;
+        const item = this.items[this.activeKebabItemIndex];
+        this.kebabPopover.closePopover();
+
+        switch (action) {
+            case 'edit':
+                break;
+            case 'delete':
+                this.growlService.growl({
+                    severity: 'info',
+                    summary: this.translate.instant('tickets.card.action.delete'),
+                    detail: `${this.getProjectKey(item)}-${item.ticket_number}`,
+                });
+                break;
+            case 'assign':
+                this.growlService.growl({
+                    severity: 'info',
+                    summary: this.translate.instant('tickets.card.action.assign'),
+                    detail: `${this.getProjectKey(item)}-${item.ticket_number}`,
+                });
+                break;
+            case 'change-status':
+                this.growlService.growl({
+                    severity: 'info',
+                    summary: this.translate.instant('tickets.card.action.change-status'),
+                    detail: `${this.getProjectKey(item)}-${item.ticket_number}`,
+                });
+                break;
+        }
+    }
+
+    getStatusBadgeVariant(status: string): string {
+        switch (status) {
+            case 'DONE': return 'success';
+            case 'IN_PROGRESS':
+            case 'IN_REVIEW': return 'info';
+            case 'TO_DO': return 'warning';
+            default: return '';
+        }
+    }
+
 }

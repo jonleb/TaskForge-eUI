@@ -120,57 +120,118 @@ describe('TicketsComponent', () => {
         expect(component.projectMap.size).toBe(2);
     });
 
-    // ── Card rendering ──
+    // ── Card rendering (STORY-004) ──
 
-    it('should display ticket cards', () => {
+    it('should display ticket cards with article role', () => {
         fixture.detectChanges();
-        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
         expect(cards.length).toBe(2);
     });
 
-    it('should show project key prefix in card subtitle', () => {
+    it('should render card title as a link', () => {
         fixture.detectChanges();
-        const subtitles = fixture.nativeElement.querySelectorAll('eui-content-card-header-subtitle');
-        expect(subtitles[0].textContent).toContain('TF-1');
-        expect(subtitles[1].textContent).toContain('DEMO-5');
-    });
-
-    it('should show type chip', () => {
-        fixture.detectChanges();
-        const starts = fixture.nativeElement.querySelectorAll('eui-content-card-header-start eui-chip');
-        expect(starts[0].textContent).toContain('workflow.ticket-type.STORY');
-    });
-
-    it('should show status chip', () => {
-        fixture.detectChanges();
-        const ends = fixture.nativeElement.querySelectorAll('eui-content-card-header-end eui-chip');
-        expect(ends[0].textContent).toContain('workflow.status.TO_DO');
-    });
-
-    it('should show priority chip when priority exists', () => {
-        fixture.detectChanges();
-        const metadata = fixture.nativeElement.querySelectorAll('eui-content-card-header-metadata');
-        expect(metadata[0].textContent).toContain('ticket.priority.HIGH');
-    });
-
-    it('should link cards to ticket detail', () => {
-        fixture.detectChanges();
-        const links = fixture.nativeElement.querySelectorAll('a.card-link');
+        const links = fixture.nativeElement.querySelectorAll('[role="article"] a');
         expect(links[0].getAttribute('href')).toBe('/screen/projects/1/tickets/1');
-        expect(links[1].getAttribute('href')).toBe('/screen/projects/2/tickets/5');
+        expect(links[0].textContent).toContain('Login page');
     });
 
-    it('should truncate long descriptions', () => {
+    it('should render card subtitle with project key and ticket number', () => {
         fixture.detectChanges();
-        const long = 'A'.repeat(200);
-        const result = component.truncateDescription(long);
-        expect(result.length).toBeLessThan(200);
-        expect(result).toContain('…');
+        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
+        expect(cards[0].textContent).toContain('TF-1');
+        expect(cards[1].textContent).toContain('DEMO-5');
     });
 
-    it('should return empty string for null description', () => {
+    it('should render metadata line with type, priority, assignee', () => {
         fixture.detectChanges();
-        expect(component.truncateDescription(null)).toBe('');
+        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
+        expect(cards[0].textContent).toContain('workflow.ticket-type.STORY');
+        expect(cards[0].textContent).toContain('ticket.priority.HIGH');
+    });
+
+    it('should render status badge', () => {
+        fixture.detectChanges();
+        const badges = fixture.nativeElement.querySelectorAll('[euistatusbadge]');
+        expect(badges.length).toBe(2);
+        expect(badges[0].textContent).toContain('workflow.status.TO_DO');
+    });
+
+    it('should return correct status badge variant', () => {
+        fixture.detectChanges();
+        expect(component.getStatusBadgeVariant('DONE')).toBe('success');
+        expect(component.getStatusBadgeVariant('IN_PROGRESS')).toBe('info');
+        expect(component.getStatusBadgeVariant('IN_REVIEW')).toBe('info');
+        expect(component.getStatusBadgeVariant('TO_DO')).toBe('warning');
+        expect(component.getStatusBadgeVariant('UNKNOWN')).toBe('');
+    });
+
+    it('should render kebab button on each card', () => {
+        fixture.detectChanges();
+        const kebabs = fixture.nativeElement.querySelectorAll('eui-icon-button[icon="dots-three-vertical:regular"]');
+        expect(kebabs.length).toBe(2);
+    });
+
+    it('should render expand button only for cards with description', () => {
+        fixture.detectChanges();
+        // mockItems[0] has description, mockItems[1] has null description
+        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
+        // Card with description should have 3 eui-icon-buttons (kebab + expand)
+        // Card without description should have 1 eui-icon-button (kebab only)
+        const btns0 = cards[0].querySelectorAll('eui-icon-button');
+        const btns1 = cards[1].querySelectorAll('eui-icon-button');
+        expect(btns0.length).toBe(2); // kebab + expand
+        expect(btns1.length).toBe(1); // kebab only
+    });
+
+    it('should toggle card expand and show description', () => {
+        fixture.detectChanges();
+        expect(component.expandedCards.has('b1')).toBe(false);
+        component.toggleCardExpand('b1');
+        fixture.detectChanges();
+        expect(component.expandedCards.has('b1')).toBe(true);
+        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
+        expect(cards[0].textContent).toContain('Implement login');
+    });
+
+    it('should apply card-expanded class when expanded', () => {
+        fixture.detectChanges();
+        component.toggleCardExpand('b1');
+        fixture.detectChanges();
+        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
+        expect(cards[0].classList.contains('card-expanded')).toBe(true);
+    });
+
+    it('should collapse card on second toggle', () => {
+        fixture.detectChanges();
+        component.toggleCardExpand('b1');
+        component.toggleCardExpand('b1');
+        fixture.detectChanges();
+        expect(component.expandedCards.has('b1')).toBe(false);
+    });
+
+    it('should set activeKebabItemIndex on openKebabMenu', () => {
+        fixture.detectChanges();
+        const mockTrigger = { _elementRef: { nativeElement: document.createElement('button') } };
+        vi.spyOn(component.kebabPopover, 'openPopover').mockImplementation(() => {});
+        component.openKebabMenu(1, mockTrigger);
+        expect(component.activeKebabItemIndex).toBe(1);
+    });
+
+    it('should close popover and show growl on card action', () => {
+        fixture.detectChanges();
+        component.activeKebabItemIndex = 0;
+        vi.spyOn(component.kebabPopover, 'closePopover').mockImplementation(() => {});
+        component.onCardAction('delete');
+        expect(component.kebabPopover.closePopover).toHaveBeenCalled();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'info' }));
+    });
+
+    it('should not act if activeKebabItemIndex is null', () => {
+        fixture.detectChanges();
+        component.activeKebabItemIndex = null;
+        vi.spyOn(component.kebabPopover, 'closePopover').mockImplementation(() => {});
+        component.onCardAction('edit');
+        expect(component.kebabPopover.closePopover).not.toHaveBeenCalled();
     });
 
     it('should resolve project key via getProjectKey', () => {
@@ -233,7 +294,7 @@ describe('TicketsComponent', () => {
     it('should show empty state when no results', () => {
         ticketsSvc.getTickets.mockReturnValue(of(emptyResp));
         fixture.detectChanges();
-        const output = fixture.nativeElement.querySelector('output.empty-state');
+        const output = fixture.nativeElement.querySelector('output');
         expect(output).toBeTruthy();
         expect(output.textContent).toContain('tickets.no-items');
     });
@@ -242,7 +303,7 @@ describe('TicketsComponent', () => {
         ticketsSvc.getTickets.mockReturnValue(throwError(() => ({ status: 500 })));
         fixture.detectChanges();
         expect(component.hasError).toBe(true);
-        const retryBtn = fixture.nativeElement.querySelector('output.empty-state button');
+        const retryBtn = fixture.nativeElement.querySelector('output button');
         expect(retryBtn).toBeTruthy();
     });
 
@@ -559,7 +620,7 @@ describe('TicketsComponent', () => {
     it('should default to card view', () => {
         fixture.detectChanges();
         expect(component.currentView).toBe('card');
-        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
         expect(cards.length).toBe(2);
     });
 
@@ -568,7 +629,7 @@ describe('TicketsComponent', () => {
         component.onViewChange('table');
         fixture.detectChanges();
         expect(component.currentView).toBe('table');
-        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
         expect(cards.length).toBe(0);
     });
 

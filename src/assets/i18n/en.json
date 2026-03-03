@@ -467,5 +467,12 @@
   "tickets.results.sort-status": "Status",
   "tickets.results.sort-direction": "Toggle sort direction",
   "tickets.view.card": "Card view",
-  "tickets.view.table": "Table view"
+  "tickets.view.table": "Table view",
+  "tickets.card.expand": "Expand description",
+  "tickets.card.collapse": "Collapse description",
+  "tickets.card.actions-menu": "Ticket actions",
+  "tickets.card.action.edit": "Edit",
+  "tickets.card.action.delete": "Delete",
+  "tickets.card.action.assign": "Assign",
+  "tickets.card.action.change-status": "Change status"
 }

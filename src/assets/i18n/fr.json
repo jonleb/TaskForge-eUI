@@ -467,5 +467,12 @@
   "tickets.results.sort-status": "Statut",
   "tickets.results.sort-direction": "Inverser le tri",
   "tickets.view.card": "Vue carte",
-  "tickets.view.table": "Vue tableau"
+  "tickets.view.table": "Vue tableau",
+  "tickets.card.expand": "Développer la description",
+  "tickets.card.collapse": "Réduire la description",
+  "tickets.card.actions-menu": "Actions du ticket",
+  "tickets.card.action.edit": "Modifier",
+  "tickets.card.action.delete": "Supprimer",
+  "tickets.card.action.assign": "Assigner",
+  "tickets.card.action.change-status": "Changer le statut"
 }
