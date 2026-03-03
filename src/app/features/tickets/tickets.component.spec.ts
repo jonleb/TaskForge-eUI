@@ -124,38 +124,39 @@ describe('TicketsComponent', () => {
 
     // ── Card rendering (STORY-004) ──
 
-    it('should display ticket cards with article role', () => {
+    it('should display ticket cards', () => {
         fixture.detectChanges();
-        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
+        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
         expect(cards.length).toBe(2);
     });
 
     it('should render card title as a link', () => {
         fixture.detectChanges();
-        const links = fixture.nativeElement.querySelectorAll('[role="article"] a');
+        const links = fixture.nativeElement.querySelectorAll('eui-content-card a');
         expect(links[0].getAttribute('href')).toBe('/screen/projects/1/tickets/1');
         expect(links[0].textContent).toContain('Login page');
     });
 
     it('should render card subtitle with project key and ticket number', () => {
         fixture.detectChanges();
-        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
+        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
         expect(cards[0].textContent).toContain('TF-1');
         expect(cards[1].textContent).toContain('DEMO-5');
     });
 
     it('should render metadata line with type, priority, assignee', () => {
         fixture.detectChanges();
-        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
+        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
         expect(cards[0].textContent).toContain('workflow.ticket-type.STORY');
         expect(cards[0].textContent).toContain('ticket.priority.HIGH');
     });
 
     it('should render status badge', () => {
         fixture.detectChanges();
-        const badges = fixture.nativeElement.querySelectorAll('[euistatusbadge]');
-        expect(badges.length).toBe(2);
-        expect(badges[0].textContent).toContain('workflow.status.TO_DO');
+        const headerEnds = fixture.nativeElement.querySelectorAll('eui-content-card-header-end');
+        expect(headerEnds.length).toBe(2);
+        expect(headerEnds[0].textContent).toContain('workflow.status.TO_DO');
+        expect(headerEnds[1].textContent).toContain('workflow.status.IN_PROGRESS');
     });
 
     it('should return correct status badge variant', () => {
@@ -169,38 +170,46 @@ describe('TicketsComponent', () => {
 
     it('should render kebab button on each card', () => {
         fixture.detectChanges();
-        const kebabs = fixture.nativeElement.querySelectorAll('eui-icon-button[icon="dots-three-vertical:regular"]');
-        expect(kebabs.length).toBe(2);
+        const headerEnds = fixture.nativeElement.querySelectorAll('eui-content-card-header-end');
+        expect(headerEnds.length).toBe(2);
+        headerEnds.forEach((el: Element) => {
+            const kebab = el.querySelector('eui-icon-button');
+            expect(kebab).toBeTruthy();
+        });
     });
 
-    it('should render expand button only for cards with description', () => {
+    it('should show expand button only for cards with description', () => {
         fixture.detectChanges();
-        // mockItems[0] has description, mockItems[1] has null description
-        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
-        // Card with description should have 3 eui-icon-buttons (kebab + expand)
-        // Card without description should have 1 eui-icon-button (kebab only)
-        const btns0 = cards[0].querySelectorAll('eui-icon-button');
-        const btns1 = cards[1].querySelectorAll('eui-icon-button');
-        expect(btns0.length).toBe(2); // kebab + expand
-        expect(btns1.length).toBe(1); // kebab only
+        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        // mockItems[0] has description → expand button present
+        const expandBtn0 = cards[0].querySelector('button[aria-expanded]');
+        expect(expandBtn0).toBeTruthy();
+        // mockItems[1] has null description → no expand button
+        const expandBtn1 = cards[1].querySelector('button[aria-expanded]');
+        expect(expandBtn1).toBeFalsy();
     });
 
     it('should toggle card expand and show description', () => {
         fixture.detectChanges();
         expect(component.expandedCards.has('b1')).toBe(false);
+        // Description not visible when collapsed
+        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        expect(cards[0].querySelector('eui-content-card-body')).toBeFalsy();
+        // Expand
         component.toggleCardExpand('b1');
         fixture.detectChanges();
         expect(component.expandedCards.has('b1')).toBe(true);
-        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
         expect(cards[0].textContent).toContain('Implement login');
     });
 
-    it('should apply card-expanded class when expanded', () => {
+    it('should update aria-expanded on expand button', () => {
         fixture.detectChanges();
+        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        const expandBtn = cards[0].querySelector('button[aria-expanded]');
+        expect(expandBtn.getAttribute('aria-expanded')).toBe('false');
         component.toggleCardExpand('b1');
         fixture.detectChanges();
-        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
-        expect(cards[0].classList.contains('card-expanded')).toBe(true);
+        expect(expandBtn.getAttribute('aria-expanded')).toBe('true');
     });
 
     it('should collapse card on second toggle', () => {
@@ -622,7 +631,7 @@ describe('TicketsComponent', () => {
     it('should default to card view', () => {
         fixture.detectChanges();
         expect(component.currentView).toBe('card');
-        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
+        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
         expect(cards.length).toBe(2);
     });
 
@@ -631,7 +640,7 @@ describe('TicketsComponent', () => {
         component.onViewChange('table');
         fixture.detectChanges();
         expect(component.currentView).toBe('table');
-        const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
+        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
         expect(cards.length).toBe(0);
     });
 

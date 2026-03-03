@@ -14,6 +14,7 @@ import { EUI_TEXTAREA } from '@eui/components/eui-textarea';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiPaginatorComponent } from '@eui/components/eui-paginator';
 import { EUI_CARD } from '@eui/components/eui-card';
+import { EUI_CONTENT_CARD } from '@eui/components/eui-content-card';
 import { EUI_INPUT_CHECKBOX } from '@eui/components/eui-input-checkbox';
 import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
 import { EUI_ICON } from '@eui/components/eui-icon';
@@ -46,7 +47,7 @@ export interface FilterChip {
     imports: [
         ...EUI_PAGE, ...EUI_CHIP, ...EUI_BUTTON, ...EUI_FEEDBACK_MESSAGE,
         ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT, ...EUI_TEXTAREA,
-        EuiDialogComponent, EuiPaginatorComponent, ...EUI_CARD,
+        EuiDialogComponent, EuiPaginatorComponent, ...EUI_CARD, ...EUI_CONTENT_CARD,
         ...EUI_INPUT_CHECKBOX, ...EUI_PROGRESS_BAR, ...EUI_ICON,
         ...EUI_BREADCRUMB, ...EUI_ICON_BUTTON, ...EUI_INPUT_RADIO,
         ...EUI_TOGGLE_GROUP, ...EUI_POPOVER, ...EUI_STATUS_BADGE,
@@ -542,6 +543,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.cdr.markForCheck();
     }
+
 
     openKebabMenu(index: number, triggerRef: any): void {
         this.activeKebabItemIndex = index;

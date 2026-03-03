@@ -290,37 +290,15 @@
                         @if (currentView === 'card') {
                             <!-- Card list -->
                             @for (item of items; track item.id; let i = $index) {
-                                <div class="eui-u-mb-s eui-u-p-m eui-u-border eui-u-border-radius-m eui-u-bg-white"
-                                     [class.card-expanded]="expandedCards.has(item.id)"
-                                     role="article"
-                                     [attr.aria-label]="getProjectKey(item) + '-' + item.ticket_number + ' ' + item.title">
+                                <eui-content-card
+                                    [attr.aria-label]="getProjectKey(item) + '-' + item.ticket_number + ' ' + item.title">
 
-                                    <!-- Card header row -->
-                                    <div class="eui-u-d-flex eui-u-align-items-start eui-u-flex-justify-content-between">
-                                        <!-- Left: title + subtitle + metadata -->
-                                        <div class="eui-u-flex-grow-1">
-                                            <a [routerLink]="['/screen/projects', item.projectId, 'tickets', item.ticket_number]"
-                                               class="eui-u-f-l eui-u-c-primary eui-u-text-decoration-none">
-                                                {{ item.title }}
-                                            </a>
-                                            <p class="eui-u-f-s eui-u-c-muted eui-u-mt-2xs">
-                                                {{ getProjectKey(item) }}-{{ item.ticket_number }}
-                                            </p>
-                                            <p class="eui-u-f-s eui-u-mt-2xs">
-                                                {{ 'workflow.ticket-type.' + item.type | translate }}
-                                                · {{ item.priority ? ('ticket.priority.' + item.priority | translate) : '' }}
-                                                · {{ getAssigneeName(item) }}
-                                            </p>
-                                        </div>
-
-                                        <!-- Right: status badge + kebab + expand -->
-                                        <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-xs eui-u-flex-shrink-0">
+                                    <eui-content-card-header>
+                                        <eui-content-card-header-end>
                                             <span euiStatusBadge
                                                   [colorPalette]="getStatusBadgeVariant(item.status)">
                                                 {{ 'workflow.status.' + item.status | translate }}
                                             </span>
-
-                                            <!-- Kebab menu trigger -->
                                             <eui-icon-button
                                                 #kebabTrigger
                                                 icon="dots-three-vertical:regular"
@@ -328,26 +306,39 @@
                                                 [ariaLabel]="'tickets.card.actions-menu' | translate"
                                                 (buttonClick)="openKebabMenu(i, kebabTrigger)">
                                             </eui-icon-button>
+                                        </eui-content-card-header-end>
 
-                                            <!-- Expand/collapse -->
+                                        <eui-content-card-header-title>
+                                            <a [routerLink]="['/screen/projects', item.projectId, 'tickets', item.ticket_number]"
+                                               class="eui-u-text-link">
+                                                {{ item.title }}
+                                            </a>
+                                        </eui-content-card-header-title>
+
+                                        <eui-content-card-header-subtitle>
+                                            {{ getProjectKey(item) }}-{{ item.ticket_number }}
+                                        </eui-content-card-header-subtitle>
+
+                                        <eui-content-card-header-metadata>
+                                            {{ 'workflow.ticket-type.' + item.type | translate }}
+                                            · {{ item.priority ? ('ticket.priority.' + item.priority | translate) : '' }}
+                                            · {{ getAssigneeName(item) }}
                                             @if (item.description) {
-                                                <eui-icon-button
-                                                    [icon]="expandedCards.has(item.id) ? 'caret-up:regular' : 'caret-down:regular'"
-                                                    size="s"
-                                                    [ariaLabel]="(expandedCards.has(item.id) ? 'tickets.card.collapse' : 'tickets.card.expand') | translate"
-                                                    (buttonClick)="toggleCardExpand(item.id)">
-                                                </eui-icon-button>
+                                                · <button euiButton euiBasicButton euiSizeS type="button"
+                                                          [attr.aria-expanded]="expandedCards.has(item.id)"
+                                                          (click)="toggleCardExpand(item.id)">
+                                                    {{ (expandedCards.has(item.id) ? 'tickets.card.collapse' : 'tickets.card.expand') | translate }}
+                                                </button>
                                             }
-                                        </div>
-                                    </div>
+                                        </eui-content-card-header-metadata>
+                                    </eui-content-card-header>
 
-                                    <!-- Expandable description -->
-                                    @if (expandedCards.has(item.id) && item.description) {
-                                        <div class="eui-u-mt-s eui-u-pt-s eui-u-border-top">
-                                            <p class="eui-u-f-s">{{ item.description }}</p>
-                                        </div>
+                                    @if (item.description && expandedCards.has(item.id)) {
+                                        <eui-content-card-body>
+                                            <p>{{ item.description }}</p>
+                                        </eui-content-card-body>
                                     }
-                                </div>
+                                </eui-content-card>
                             }
 
                             <!-- Shared kebab popover -->
