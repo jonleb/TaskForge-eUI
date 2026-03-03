@@ -474,5 +474,13 @@
   "tickets.card.action.edit": "Modifier",
   "tickets.card.action.delete": "Supprimer",
   "tickets.card.action.assign": "Assigner",
-  "tickets.card.action.change-status": "Changer le statut"
+  "tickets.card.action.change-status": "Changer le statut",
+  "tickets.table.caption": "Liste des tickets",
+  "tickets.table.col.key": "Clé",
+  "tickets.table.col.title": "Titre",
+  "tickets.table.col.type": "Type",
+  "tickets.table.col.status": "Statut",
+  "tickets.table.col.priority": "Priorité",
+  "tickets.table.col.assignee": "Assigné à",
+  "tickets.table.col.project": "Projet"
 }

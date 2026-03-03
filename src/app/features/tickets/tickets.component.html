@@ -384,8 +384,59 @@
                                 </div>
                             </eui-popover>
                         } @else {
-                            <!-- Table view placeholder (STORY-005) -->
-                            <p class="eui-u-f-m eui-u-pv-l eui-u-text-align-center">{{ 'tickets.view.table' | translate }}</p>
+                            <!-- Table view -->
+                            <table euiTable
+                                   [data]="items"
+                                   isAsync
+                                   isTableResponsive
+                                   [attr.aria-label]="'tickets.table.caption' | translate"
+                                   (sortChange)="onTableSort($event)">
+
+                                <ng-template euiTemplate="header">
+                                    <tr>
+                                        <th scope="col" isSortable sortOn="ticket_number">{{ 'tickets.table.col.key' | translate }}</th>
+                                        <th scope="col" isSortable sortOn="title">{{ 'tickets.table.col.title' | translate }}</th>
+                                        <th scope="col">{{ 'tickets.table.col.type' | translate }}</th>
+                                        <th scope="col" isSortable sortOn="status">{{ 'tickets.table.col.status' | translate }}</th>
+                                        <th scope="col" isSortable sortOn="priority">{{ 'tickets.table.col.priority' | translate }}</th>
+                                        <th scope="col">{{ 'tickets.table.col.assignee' | translate }}</th>
+                                        <th scope="col">{{ 'tickets.table.col.project' | translate }}</th>
+                                    </tr>
+                                </ng-template>
+
+                                <ng-template let-row euiTemplate="body">
+                                    <tr class="eui-u-cursor-pointer"
+                                        [routerLink]="['/screen/projects', row.projectId, 'tickets', row.ticket_number]"
+                                        [attr.aria-label]="getProjectKey(row) + '-' + row.ticket_number + ' ' + row.title"
+                                        tabindex="0"
+                                        (keydown.enter)="navigateToTicket(row)">
+                                        <td [attr.data-col-label]="'tickets.table.col.key' | translate">
+                                            {{ getProjectKey(row) }}-{{ row.ticket_number }}
+                                        </td>
+                                        <td [attr.data-col-label]="'tickets.table.col.title' | translate">
+                                            {{ row.title }}
+                                        </td>
+                                        <td [attr.data-col-label]="'tickets.table.col.type' | translate">
+                                            {{ 'workflow.ticket-type.' + row.type | translate }}
+                                        </td>
+                                        <td [attr.data-col-label]="'tickets.table.col.status' | translate">
+                                            <span euiStatusBadge
+                                                  [colorPalette]="getStatusBadgeVariant(row.status)">
+                                                {{ 'workflow.status.' + row.status | translate }}
+                                            </span>
+                                        </td>
+                                        <td [attr.data-col-label]="'tickets.table.col.priority' | translate">
+                                            {{ row.priority ? ('ticket.priority.' + row.priority | translate) : '—' }}
+                                        </td>
+                                        <td [attr.data-col-label]="'tickets.table.col.assignee' | translate">
+                                            {{ getAssigneeName(row) }}
+                                        </td>
+                                        <td [attr.data-col-label]="'tickets.table.col.project' | translate">
+                                            {{ getProjectKey(row) }}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </table>
                         }
                     }
 

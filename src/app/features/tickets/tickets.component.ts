@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -23,6 +23,8 @@ import { EUI_INPUT_RADIO } from '@eui/components/eui-input-radio';
 import { EUI_TOGGLE_GROUP } from '@eui/components/eui-toggle-group';
 import { EUI_POPOVER, EuiPopoverComponent } from '@eui/components/eui-popover';
 import { EUI_STATUS_BADGE } from '@eui/components/eui-status-badge';
+import { EUI_TABLE, Sort } from '@eui/components/eui-table';
+import { EuiTemplateDirective } from '@eui/components/directives';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BacklogItem, Project, ProjectMember, ProjectService, Sprint, WORKFLOW_STATUSES, TICKET_TYPES, TICKET_PRIORITIES, CREATABLE_TICKET_TYPES, WorkflowStatus, TicketType, TicketPriority } from '../../core/project';
@@ -48,6 +50,7 @@ export interface FilterChip {
         ...EUI_INPUT_CHECKBOX, ...EUI_PROGRESS_BAR, ...EUI_ICON,
         ...EUI_BREADCRUMB, ...EUI_ICON_BUTTON, ...EUI_INPUT_RADIO,
         ...EUI_TOGGLE_GROUP, ...EUI_POPOVER, ...EUI_STATUS_BADGE,
+        ...EUI_TABLE, EuiTemplateDirective,
         FormsModule, TranslateModule, RouterLink,
     ],
 })
@@ -58,6 +61,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly growlService = inject(EuiGrowlService);
     private readonly translate = inject(TranslateService);
+    private readonly router = inject(Router);
     private readonly destroy$ = new Subject<void>();
     private readonly searchSubject = new Subject<string>();
     private paginatorReady = false;
@@ -309,6 +313,20 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     onViewChange(view: 'card' | 'table'): void {
         this.currentView = view;
         this.cdr.markForCheck();
+    }
+
+    // Table sort
+    onTableSort(sort: Sort[]): void {
+        if (sort.length > 0) {
+            this.sortField = sort[0].sort;
+            this.sortOrder = sort[0].order.toLowerCase() as 'asc' | 'desc';
+            this.params = { ...this.params, _sort: this.sortField, _order: this.sortOrder, _page: 1 };
+            this.loadTickets();
+        }
+    }
+
+    navigateToTicket(item: BacklogItem): void {
+        this.router.navigate(['/screen/projects', item.projectId, 'tickets', item.ticket_number]);
     }
 
     // Chip overflow

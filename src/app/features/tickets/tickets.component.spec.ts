@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, beforeEach, afterEach, expect, vi, beforeAll } from 'vitest';
+import { Router } from '@angular/router';
 
 beforeAll(() => {
     globalThis.ResizeObserver ??= class {
@@ -18,6 +19,7 @@ import { TicketsComponent } from './tickets.component';
 import { TicketsService } from '../../core/tickets';
 import { PermissionService } from '../../core/auth';
 import { BacklogItem, BacklogListResponse, Project, ProjectMember, ProjectService, Sprint } from '../../core/project';
+import { Sort } from '@eui/components/eui-table';
 
 const mockProjects: Project[] = [
     { id: '1', key: 'TF', name: 'TaskForge', description: '', created_by: '1', created_at: '', updated_at: '', is_active: true },
@@ -631,6 +633,77 @@ describe('TicketsComponent', () => {
         expect(component.currentView).toBe('table');
         const cards = fixture.nativeElement.querySelectorAll('[role="article"]');
         expect(cards.length).toBe(0);
+    });
+
+    // ── STORY-005: Table View ──
+
+    it('should render table when currentView is table', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        const table = fixture.nativeElement.querySelector('table[euitable]');
+        expect(table).toBeTruthy();
+    });
+
+    it('should render table with aria-label', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        const table = fixture.nativeElement.querySelector('table[euitable]');
+        expect(table.getAttribute('aria-label')).toBe('tickets.table.caption');
+    });
+
+    it('should render 7 table columns with scope=col', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        const ths = fixture.nativeElement.querySelectorAll('th[scope="col"]');
+        expect(ths.length).toBe(7);
+    });
+
+    it('should render table rows with data-col-label on cells', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        const tds = fixture.nativeElement.querySelectorAll('td[data-col-label]');
+        // 2 items × 7 columns = 14
+        expect(tds.length).toBe(14);
+    });
+
+    it('should render ticket data in table cells', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        const rows = fixture.nativeElement.querySelectorAll('tbody tr');
+        expect(rows.length).toBe(2);
+        expect(rows[0].textContent).toContain('TF-1');
+        expect(rows[0].textContent).toContain('Login page');
+        expect(rows[1].textContent).toContain('DEMO-5');
+    });
+
+    it('should render status badge in table', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        const badges = fixture.nativeElement.querySelectorAll('tbody [euistatusbadge]');
+        expect(badges.length).toBe(2);
+    });
+
+    it('should handle table sort change', () => {
+        fixture.detectChanges();
+        ticketsSvc.getTickets.mockClear();
+        component.onTableSort([{ sort: 'title', order: 'ASC' }] as unknown as Sort[]);
+        expect(component.sortField).toBe('title');
+        expect(component.sortOrder).toBe('asc');
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _sort: 'title', _order: 'asc', _page: 1 }));
+    });
+
+    it('should navigate to ticket on navigateToTicket', () => {
+        fixture.detectChanges();
+        const router = TestBed.inject(Router);
+        const spy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+        component.navigateToTicket(mockItems[0]);
+        expect(spy).toHaveBeenCalledWith(['/screen/projects', '1', 'tickets', 1]);
     });
 
     it('should show chip overflow when more than 5 chips', () => {
