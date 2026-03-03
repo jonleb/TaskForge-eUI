@@ -454,5 +454,18 @@
   "tickets.filter.search-filter-placeholder": "Rechercher des tickets...",
   "tickets.filter.all-statuses": "Tous les statuts",
   "tickets.filter.priority-all": "Tous",
-  "tickets.filter.remove-filter": "Supprimer le filtre"
+  "tickets.filter.remove-filter": "Supprimer le filtre",
+  "tickets.results.heading": "Résultats",
+  "tickets.results.count": "{{total}} tickets trouvés",
+  "tickets.results.selected-criteria": "Critères sélectionnés",
+  "tickets.results.clear-all": "Tout effacer",
+  "tickets.results.more": "+{{count}} autres",
+  "tickets.results.sort-by": "Trier par",
+  "tickets.results.sort-creation-date": "Date de création",
+  "tickets.results.sort-title": "Titre",
+  "tickets.results.sort-priority": "Priorité",
+  "tickets.results.sort-status": "Statut",
+  "tickets.results.sort-direction": "Inverser le tri",
+  "tickets.view.card": "Vue carte",
+  "tickets.view.table": "Vue tableau"
 }

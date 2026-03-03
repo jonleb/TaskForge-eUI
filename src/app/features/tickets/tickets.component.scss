@@ -2,6 +2,10 @@
     display: block;
 }
 
+::ng-deep eui-toggle-group {
+    width: auto;
+}
+
 .empty-state {
     min-height: 200px;
     text-align: center;

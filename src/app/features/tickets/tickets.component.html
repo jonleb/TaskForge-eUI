@@ -199,19 +199,57 @@
             <eui-page-column>
                 <eui-page-column-body>
 
-                    <!-- Result count -->
+                    <!-- Results header bar -->
                     <div class="eui-u-d-flex eui-u-align-items-center eui-u-flex-justify-content-between eui-u-mb-s">
-                        <p aria-live="polite" class="eui-u-f-m">
-                            {{ 'tickets.results-found' | translate:{ total: total } }}
-                        </p>
+                        <div class="eui-u-d-flex eui-u-align-items-baseline eui-u-gap-s">
+                            <h2 class="eui-u-f-l eui-u-f-bold">{{ 'tickets.results.heading' | translate }}</h2>
+                            <p aria-live="polite" class="eui-u-f-s">
+                                {{ 'tickets.results.count' | translate:{ total: total } }}
+                            </p>
+                        </div>
+                        <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-s">
+                            <!-- Sort control -->
+                            <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-2xs">
+                                <label euiLabel for="sort-field" class="eui-u-sr-only">{{ 'tickets.results.sort-by' | translate }}</label>
+                                <select euiSelect id="sort-field"
+                                        [(ngModel)]="sortField"
+                                        (ngModelChange)="onSortFieldChange()">
+                                    <option value="created_at">{{ 'tickets.results.sort-creation-date' | translate }}</option>
+                                    <option value="title">{{ 'tickets.results.sort-title' | translate }}</option>
+                                    <option value="priority">{{ 'tickets.results.sort-priority' | translate }}</option>
+                                    <option value="status">{{ 'tickets.results.sort-status' | translate }}</option>
+                                </select>
+                                <eui-icon-button
+                                    [icon]="sortOrder === 'asc' ? 'arrow-up:regular' : 'arrow-down:regular'"
+                                    size="s"
+                                    [ariaLabel]="'tickets.results.sort-direction' | translate"
+                                    (buttonClick)="onToggleSortOrder()">
+                                </eui-icon-button>
+                            </div>
+                            <!-- View toggle -->
+                            <eui-toggle-group>
+                                <eui-toggle-group-item id="view-card"
+                                                       [isChecked]="currentView === 'card'"
+                                                       (itemClick)="onViewChange('card')">
+                                    <eui-icon-svg icon="squares-four:regular" aria-hidden="true"></eui-icon-svg>
+                                    <span class="eui-u-sr-only">{{ 'tickets.view.card' | translate }}</span>
+                                </eui-toggle-group-item>
+                                <eui-toggle-group-item id="view-table"
+                                                       [isChecked]="currentView === 'table'"
+                                                       (itemClick)="onViewChange('table')">
+                                    <eui-icon-svg icon="list:regular" aria-hidden="true"></eui-icon-svg>
+                                    <span class="eui-u-sr-only">{{ 'tickets.view.table' | translate }}</span>
+                                </eui-toggle-group-item>
+                            </eui-toggle-group>
+                        </div>
                     </div>
 
                     <!-- Selected criteria chips -->
                     @if (hasActiveFilters) {
                         <section class="eui-u-d-flex eui-u-align-items-center eui-u-flex-wrap eui-u-gap-xs eui-u-mb-m"
-                                 [attr.aria-label]="'tickets.selected-filters' | translate">
-                            <span class="eui-u-f-s">{{ 'tickets.selected-filters' | translate }}:</span>
-                            @for (chip of activeFilterChips; track chip.key) {
+                                 [attr.aria-label]="'tickets.results.selected-criteria' | translate">
+                            <span class="eui-u-f-s eui-u-f-bold">{{ 'tickets.results.selected-criteria' | translate }}:</span>
+                            @for (chip of visibleChips; track chip.key) {
                                 <eui-chip euiSizeS
                                           [isChipRemovable]="true"
                                           [ariaLabel]="chip.label"
@@ -219,10 +257,13 @@
                                     {{ chip.label }}
                                 </eui-chip>
                             }
-                            <button euiButton euiSecondary euiSizeS
+                            @if (hasOverflowChips) {
+                                <span class="eui-u-f-s">{{ 'tickets.results.more' | translate:{ count: overflowChipCount } }}</span>
+                            }
+                            <button euiButton euiBasicButton euiSizeS
                                     type="button"
                                     (click)="clearAllFilters()">
-                                {{ 'tickets.clear-all' | translate }}
+                                {{ 'tickets.results.clear-all' | translate }}
                             </button>
                         </section>
                     }
@@ -246,44 +287,49 @@
                             }
                         </output>
                     } @else {
-                        <!-- Card list -->
-                        @for (item of items; track item.id) {
-                            <a [routerLink]="['/screen/projects', item.projectId, 'tickets', item.ticket_number]"
-                               class="card-link"
-                               [attr.aria-label]="getProjectKey(item) + '-' + item.ticket_number + ' ' + item.title">
-                                <eui-content-card class="eui-u-mb-s">
-                                    <eui-content-card-header>
-                                        <eui-content-card-header-start>
-                                            <eui-chip euiSizeS [ariaLabel]="'workflow.ticket-type.' + item.type | translate">
-                                                {{ 'workflow.ticket-type.' + item.type | translate }}
-                                            </eui-chip>
-                                        </eui-content-card-header-start>
-                                        <eui-content-card-header-title>{{ item.title }}</eui-content-card-header-title>
-                                        <eui-content-card-header-subtitle>{{ getProjectKey(item) }}-{{ item.ticket_number }}</eui-content-card-header-subtitle>
-                                        <eui-content-card-header-end>
-                                            <eui-chip euiSizeS [ariaLabel]="'workflow.status.' + item.status | translate">
-                                                {{ 'workflow.status.' + item.status | translate }}
-                                            </eui-chip>
-                                        </eui-content-card-header-end>
-                                        <eui-content-card-header-metadata>
-                                            @if (item.priority) {
-                                                <eui-chip euiSizeS
-                                                          [class.eui-chip--danger]="item.priority === 'CRITICAL'"
-                                                          [class.eui-chip--warning]="item.priority === 'HIGH'"
-                                                          [class.eui-chip--info]="item.priority === 'MEDIUM'"
-                                                          [ariaLabel]="'ticket.priority.' + item.priority | translate">
-                                                    {{ 'ticket.priority.' + item.priority | translate }}
+                        @if (currentView === 'card') {
+                            <!-- Card list -->
+                            @for (item of items; track item.id) {
+                                <a [routerLink]="['/screen/projects', item.projectId, 'tickets', item.ticket_number]"
+                                   class="card-link"
+                                   [attr.aria-label]="getProjectKey(item) + '-' + item.ticket_number + ' ' + item.title">
+                                    <eui-content-card class="eui-u-mb-s">
+                                        <eui-content-card-header>
+                                            <eui-content-card-header-start>
+                                                <eui-chip euiSizeS [ariaLabel]="'workflow.ticket-type.' + item.type | translate">
+                                                    {{ 'workflow.ticket-type.' + item.type | translate }}
                                                 </eui-chip>
-                                            }
-                                            <span class="eui-u-ml-s">{{ getProjectKey(item) }}</span>
-                                            <span class="eui-u-ml-s">{{ getAssigneeName(item) }}</span>
-                                        </eui-content-card-header-metadata>
-                                    </eui-content-card-header>
-                                    @if (item.description) {
-                                        <eui-content-card-body>{{ truncateDescription(item.description) }}</eui-content-card-body>
-                                    }
-                                </eui-content-card>
-                            </a>
+                                            </eui-content-card-header-start>
+                                            <eui-content-card-header-title>{{ item.title }}</eui-content-card-header-title>
+                                            <eui-content-card-header-subtitle>{{ getProjectKey(item) }}-{{ item.ticket_number }}</eui-content-card-header-subtitle>
+                                            <eui-content-card-header-end>
+                                                <eui-chip euiSizeS [ariaLabel]="'workflow.status.' + item.status | translate">
+                                                    {{ 'workflow.status.' + item.status | translate }}
+                                                </eui-chip>
+                                            </eui-content-card-header-end>
+                                            <eui-content-card-header-metadata>
+                                                @if (item.priority) {
+                                                    <eui-chip euiSizeS
+                                                              [class.eui-chip--danger]="item.priority === 'CRITICAL'"
+                                                              [class.eui-chip--warning]="item.priority === 'HIGH'"
+                                                              [class.eui-chip--info]="item.priority === 'MEDIUM'"
+                                                              [ariaLabel]="'ticket.priority.' + item.priority | translate">
+                                                        {{ 'ticket.priority.' + item.priority | translate }}
+                                                    </eui-chip>
+                                                }
+                                                <span class="eui-u-ml-s">{{ getProjectKey(item) }}</span>
+                                                <span class="eui-u-ml-s">{{ getAssigneeName(item) }}</span>
+                                            </eui-content-card-header-metadata>
+                                        </eui-content-card-header>
+                                        @if (item.description) {
+                                            <eui-content-card-body>{{ truncateDescription(item.description) }}</eui-content-card-body>
+                                        }
+                                    </eui-content-card>
+                                </a>
+                            }
+                        } @else {
+                            <!-- Table view placeholder (STORY-005) -->
+                            <p class="eui-u-f-m eui-u-pv-l eui-u-text-align-center">{{ 'tickets.view.table' | translate }}</p>
                         }
                     }
 

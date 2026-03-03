@@ -21,6 +21,7 @@ import { EUI_ICON } from '@eui/components/eui-icon';
 import { EUI_BREADCRUMB } from '@eui/components/eui-breadcrumb';
 import { EUI_ICON_BUTTON } from '@eui/components/eui-icon-button';
 import { EUI_INPUT_RADIO } from '@eui/components/eui-input-radio';
+import { EUI_TOGGLE_GROUP } from '@eui/components/eui-toggle-group';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BacklogItem, Project, ProjectMember, ProjectService, Sprint, WORKFLOW_STATUSES, TICKET_TYPES, TICKET_PRIORITIES, CREATABLE_TICKET_TYPES, WorkflowStatus, TicketType, TicketPriority } from '../../core/project';
@@ -45,6 +46,7 @@ export interface FilterChip {
         EuiDialogComponent, EuiPaginatorComponent, ...EUI_CONTENT_CARD, ...EUI_CARD,
         ...EUI_INPUT_CHECKBOX, ...EUI_PROGRESS_BAR, ...EUI_ICON,
         ...EUI_BREADCRUMB, ...EUI_ICON_BUTTON, ...EUI_INPUT_RADIO,
+        ...EUI_TOGGLE_GROUP,
         FormsModule, TranslateModule, RouterLink,
     ],
 })
@@ -76,6 +78,16 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     // Filter state
     isFilterCollapsed = false;
     searchValue = '';
+
+    // Sort
+    sortField = 'created_at';
+    sortOrder: 'asc' | 'desc' = 'desc';
+
+    // View toggle
+    currentView: 'card' | 'table' = 'card';
+
+    // Chip overflow
+    readonly MAX_VISIBLE_CHIPS = 5;
 
     // Dynamic filter builder
     visibleFilters = new Set<string>();
@@ -271,6 +283,37 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!this.paginatorReady) return;
         this.params = { ...this.params, _page: event.page + 1, _limit: event.pageSize };
         this.loadTickets();
+    }
+
+    // Sort
+    onSortFieldChange(): void {
+        this.params = { ...this.params, _sort: this.sortField, _page: 1 };
+        this.loadTickets();
+    }
+
+    onToggleSortOrder(): void {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+        this.params = { ...this.params, _order: this.sortOrder, _page: 1 };
+        this.loadTickets();
+    }
+
+    // View toggle
+    onViewChange(view: 'card' | 'table'): void {
+        this.currentView = view;
+        this.cdr.markForCheck();
+    }
+
+    // Chip overflow
+    get visibleChips(): FilterChip[] {
+        return this.activeFilterChips.slice(0, this.MAX_VISIBLE_CHIPS);
+    }
+
+    get hasOverflowChips(): boolean {
+        return this.activeFilterChips.length > this.MAX_VISIBLE_CHIPS;
+    }
+
+    get overflowChipCount(): number {
+        return this.activeFilterChips.length - this.MAX_VISIBLE_CHIPS;
     }
 
     get activeFilterChips(): FilterChip[] {

@@ -454,5 +454,18 @@
   "tickets.filter.search-filter-placeholder": "Search tickets...",
   "tickets.filter.all-statuses": "All statuses",
   "tickets.filter.priority-all": "All",
-  "tickets.filter.remove-filter": "Remove filter"
+  "tickets.filter.remove-filter": "Remove filter",
+  "tickets.results.heading": "Results",
+  "tickets.results.count": "{{total}} tickets found",
+  "tickets.results.selected-criteria": "Selected criteria",
+  "tickets.results.clear-all": "Clear all",
+  "tickets.results.more": "+{{count}} more",
+  "tickets.results.sort-by": "Sort by",
+  "tickets.results.sort-creation-date": "Creation date",
+  "tickets.results.sort-title": "Title",
+  "tickets.results.sort-priority": "Priority",
+  "tickets.results.sort-status": "Status",
+  "tickets.results.sort-direction": "Toggle sort direction",
+  "tickets.view.card": "Card view",
+  "tickets.view.table": "Table view"
 }

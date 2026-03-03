@@ -270,6 +270,7 @@ describe('TicketsComponent', () => {
         fixture.detectChanges();
         const liveEl = fixture.nativeElement.querySelector('[aria-live="polite"]');
         expect(liveEl).toBeTruthy();
+        expect(liveEl.textContent).toContain('tickets.results.count');
     });
 
     // ── Dynamic filter builder (STORY-002) ──
@@ -504,6 +505,93 @@ describe('TicketsComponent', () => {
         component.selectedStatusValue = 'TO_DO';
         component.onStatusSelectChange();
         expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _page: 1 }));
+    });
+
+    // ── STORY-003: Results Header Bar ──
+
+    it('should render results heading', () => {
+        fixture.detectChanges();
+        const h2 = fixture.nativeElement.querySelector('h2');
+        expect(h2).toBeTruthy();
+        expect(h2.textContent).toContain('tickets.results.heading');
+    });
+
+    it('should render ticket count with aria-live', () => {
+        fixture.detectChanges();
+        const liveEl = fixture.nativeElement.querySelector('[aria-live="polite"]');
+        expect(liveEl).toBeTruthy();
+        expect(liveEl.textContent).toContain('tickets.results.count');
+    });
+
+    it('should render sort field dropdown with 4 options', () => {
+        fixture.detectChanges();
+        const select = fixture.nativeElement.querySelector('#sort-field');
+        expect(select).toBeTruthy();
+        const options = select.querySelectorAll('option');
+        expect(options.length).toBe(4);
+    });
+
+    it('should change sort field and reload', () => {
+        fixture.detectChanges();
+        ticketsSvc.getTickets.mockClear();
+        component.sortField = 'title';
+        component.onSortFieldChange();
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _sort: 'title', _page: 1 }));
+    });
+
+    it('should toggle sort direction and reload', () => {
+        fixture.detectChanges();
+        expect(component.sortOrder).toBe('desc');
+        ticketsSvc.getTickets.mockClear();
+        component.onToggleSortOrder();
+        expect(component.sortOrder).toBe('asc');
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _order: 'asc', _page: 1 }));
+    });
+
+    it('should render view toggle group', () => {
+        fixture.detectChanges();
+        const toggle = fixture.nativeElement.querySelector('eui-toggle-group');
+        expect(toggle).toBeTruthy();
+        const items = fixture.nativeElement.querySelectorAll('eui-toggle-group-item');
+        expect(items.length).toBe(2);
+    });
+
+    it('should default to card view', () => {
+        fixture.detectChanges();
+        expect(component.currentView).toBe('card');
+        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        expect(cards.length).toBe(2);
+    });
+
+    it('should switch to table view', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        expect(component.currentView).toBe('table');
+        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        expect(cards.length).toBe(0);
+    });
+
+    it('should show chip overflow when more than 5 chips', () => {
+        fixture.detectChanges();
+        // Set up many filters to exceed MAX_VISIBLE_CHIPS
+        component.searchValue = 'test';
+        component.params = { ...component.params, q: 'test' };
+        component.selectedProjectId = '1';
+        component.onProjectChange();
+        component.selectedSprintId = 'sp-2';
+        component.onSprintChange();
+        component.selectedStatusValue = 'TO_DO';
+        component.onStatusSelectChange();
+        component.selectedPriority = 'HIGH';
+        component.onPriorityRadioChange();
+        component.typeChecks.BUG = true;
+        component.onTypeCheckChange();
+        // That's 6 chips: search, project, sprint, status, type, priority
+        expect(component.activeFilterChips.length).toBe(6);
+        expect(component.visibleChips.length).toBe(5);
+        expect(component.hasOverflowChips).toBe(true);
+        expect(component.overflowChipCount).toBe(1);
     });
 
     // ── CR-2001 STORY-001: Breadcrumb + Page Header ──
