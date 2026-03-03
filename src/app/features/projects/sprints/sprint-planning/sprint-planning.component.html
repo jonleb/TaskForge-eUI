@@ -1,0 +1,108 @@
+<eui-page>
+    <eui-page-header [label]="pageTitle">
+        <eui-page-header-action-items>
+            <button euiButton euiSecondary (click)="goBack()">← {{ 'nav.sprints' | translate }}</button>
+        </eui-page-header-action-items>
+    </eui-page-header>
+    <eui-page-content>
+        @if (isLoading) {
+            <eui-progress-bar euiInfo [attr.aria-label]="'common.loading' | translate"></eui-progress-bar>
+        } @else if (hasError || !sprint) {
+            <eui-feedback-message euiDanger>{{ 'sprint.load-error' | translate }}</eui-feedback-message>
+        } @else {
+            <div class="planning-columns">
+                <!-- Available tickets (left) -->
+                <section class="planning-column" [attr.aria-label]="'sprint.planning.available' | translate">
+                    <h2 class="column-heading">
+                        {{ 'sprint.planning.available' | translate }}
+                        <span aria-live="polite">({{ availableTickets.length }})</span>
+                    </h2>
+                    @if (!isReadOnly && selectedTicketNumbers.size > 0) {
+                        <button euiButton euiPrimary class="eui-u-mb-s" (click)="assignSelected()">
+                            {{ 'sprint.planning.assign' | translate }} ({{ selectedTicketNumbers.size }})
+                        </button>
+                    }
+                    @if (availableTickets.length === 0) {
+                        <p class="eui-u-c-text-muted">{{ 'sprint.no-sprints' | translate }}</p>
+                    }
+                    @for (ticket of availableTickets; track ticket.id) {
+                        <eui-card class="ticket-card eui-u-mb-xs" isCompact>
+                            <eui-card-content>
+                                <div class="ticket-row">
+                                    @if (!isReadOnly) {
+                                        <input type="checkbox" euiInputCheckBox
+                                               [checked]="isSelected(ticket.ticket_number)"
+                                               (change)="toggleSelection(ticket.ticket_number)"
+                                               [attr.aria-label]="'#' + ticket.ticket_number + ' ' + ticket.title" />
+                                    }
+                                    <div class="ticket-info">
+                                        <span class="ticket-number">#{{ ticket.ticket_number }}</span>
+                                        <span>{{ ticket.title }}</span>
+                                    </div>
+                                    <div class="ticket-badges">
+                                        <eui-status-badge euiSizeS euiInfo [ariaLabel]="ticket.type">{{ ticket.type }}</eui-status-badge>
+                                        <eui-status-badge euiSizeS [ariaLabel]="ticket.status">{{ ticket.status }}</eui-status-badge>
+                                    </div>
+                                </div>
+                            </eui-card-content>
+                        </eui-card>
+                    }
+                </section>
+
+                <!-- Sprint tickets (right) -->
+                <section class="planning-column" [attr.aria-label]="'sprint.planning.assigned' | translate">
+                    <h2 class="column-heading">
+                        {{ 'sprint.planning.assigned' | translate }}
+                        <span aria-live="polite">({{ sprintTickets.length }})</span>
+                    </h2>
+                    @if (sprintTickets.length === 0) {
+                        <p class="eui-u-c-text-muted">{{ 'sprint.no-sprints' | translate }}</p>
+                    }
+                    <!-- No eUI drag & drop component for lists — using CDK DragDropModule per eUI showcase pattern -->
+                    <div cdkDropList
+                         [cdkDropListData]="sprintTickets"
+                         [cdkDropListDisabled]="isReadOnly"
+                         (cdkDropListDropped)="onSprintTicketDrop($event)"
+                         class="sprint-ticket-list">
+                        @for (ticket of sprintTickets; track ticket.id) {
+                            <eui-card class="ticket-card eui-u-mb-xs" isCompact
+                                      cdkDrag [cdkDragData]="ticket" [cdkDragDisabled]="isReadOnly">
+                                <eui-card-content>
+                                    <div class="ticket-row">
+                                        @if (!isReadOnly) {
+                                            <button cdkDragHandle class="drag-handle"
+                                                [attr.aria-label]="'sprint.planning.drag-handle' | translate"
+                                                [euiTooltip]="'sprint.planning.drag-handle-tooltip' | translate"
+                                                (click)="$event.stopPropagation()">
+                                                <eui-icon-svg icon="dots-six-vertical:regular" aria-hidden="true"></eui-icon-svg>
+                                            </button>
+                                        }
+                                        <div class="ticket-info">
+                                            <span class="ticket-number">#{{ ticket.ticket_number }}</span>
+                                            <span>{{ ticket.title }}</span>
+                                        </div>
+                                        <div class="ticket-badges">
+                                            <eui-status-badge euiSizeS euiInfo [ariaLabel]="ticket.type">{{ ticket.type }}</eui-status-badge>
+                                            <eui-status-badge euiSizeS [ariaLabel]="ticket.status">{{ ticket.status }}</eui-status-badge>
+                                        </div>
+                                        @if (!isReadOnly) {
+                                            <eui-icon-button icon="eui-close"
+                                                [ariaLabel]="('sprint.planning.remove' | translate) + ' #' + ticket.ticket_number"
+                                                (buttonClick)="removeTicket(ticket.ticket_number)">
+                                            </eui-icon-button>
+                                        }
+                                    </div>
+                                </eui-card-content>
+                            </eui-card>
+                        }
+                    </div>
+                </section>
+            </div>
+        }
+    </eui-page-content>
+</eui-page>
+
+<!-- Screen reader announcement for drag & drop reorder -->
+<output class="eui-u-sr-only" aria-live="assertive">
+    {{ reorderAnnouncement }}
+</output>

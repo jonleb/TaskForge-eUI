@@ -1,0 +1,6 @@
+/* Override eui-toggle-group default width:100% to keep items compact */
+/* Add left margin for consistent spacing from the search field */
+:host ::ng-deep eui-toggle-group {
+    width: auto;
+    margin-left: 0.5rem;
+}

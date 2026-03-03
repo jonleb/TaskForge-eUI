@@ -1,0 +1,260 @@
+<eui-page>
+    <eui-page-header [label]="'users.page-title' | translate">
+        <eui-page-header-action-items>
+            <button euiButton euiPrimary
+                    type="button"
+                    aria-haspopup="dialog"
+                    [euiDisabled]="operationPending"
+                    (click)="createDialog.openDialog()">
+                {{ 'users.create-btn' | translate }}
+            </button>
+        </eui-page-header-action-items>
+    </eui-page-header>
+    <eui-page-content>
+
+        <!-- Filter bar: search + status toggle -->
+        <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-s">
+            <eui-table-filter
+                [placeholder]="'users.search-placeholder' | translate"
+                (filterChange)="onFilterChange($event)">
+            </eui-table-filter>
+
+            <eui-toggle-group [attr.aria-label]="'users.filter-status-label' | translate"
+                              (itemClick)="onStatusFilterChange($event)">
+                <eui-toggle-group-item id="status-all" [isChecked]="true">{{ 'common.all' | translate }}</eui-toggle-group-item>
+                <eui-toggle-group-item id="status-active">{{ 'common.active' | translate }}</eui-toggle-group-item>
+                <eui-toggle-group-item id="status-inactive">{{ 'common.inactive' | translate }}</eui-toggle-group-item>
+            </eui-toggle-group>
+        </div>
+
+        <!-- Result count (a11y: aria-live for dynamic updates) -->
+        <p aria-live="polite" class="eui-u-mt-s eui-u-mb-s">
+            {{ 'users.showing-of' | translate:{ count: users.length, total: total } }}
+        </p>
+
+        <!-- Table (async mode — no [paginator] or [filter] binding) -->
+        <table euiTable
+               [data]="users"
+               isAsync
+               [isLoading]="loading"
+               isTableResponsive
+               [attr.aria-label]="'users.table-label' | translate"
+               (sortChange)="onSortChange($event)">
+
+            <ng-template euiTemplate="header">
+                <tr>
+                    <th scope="col" isSortable sortOn="username">{{ 'common.field.username' | translate }}</th>
+                    <th scope="col" isSortable sortOn="firstName">{{ 'common.field.first-name' | translate }}</th>
+                    <th scope="col" isSortable sortOn="lastName">{{ 'common.field.last-name' | translate }}</th>
+                    <th scope="col" isSortable sortOn="email">{{ 'common.field.email' | translate }}</th>
+                    <th scope="col" isSortable sortOn="role">{{ 'common.field.role' | translate }}</th>
+                    <th scope="col">{{ 'common.field.status' | translate }}</th>
+                    <th scope="col">{{ 'common.field.actions' | translate }}</th>
+                </tr>
+            </ng-template>
+
+            <ng-template let-row euiTemplate="body">
+                <tr>
+                    <td [attr.data-col-label]="'common.field.username' | translate">{{ row.username }}</td>
+                    <td [attr.data-col-label]="'common.field.first-name' | translate">{{ row.firstName }}</td>
+                    <td [attr.data-col-label]="'common.field.last-name' | translate">{{ row.lastName }}</td>
+                    <td [attr.data-col-label]="'common.field.email' | translate">{{ row.email }}</td>
+                    <td [attr.data-col-label]="'common.field.role' | translate">{{ row.role }}</td>
+                    <td [attr.data-col-label]="'common.field.status' | translate">
+                        @if (row.is_active) {
+                            <eui-chip euiSuccess euiSizeS [ariaLabel]="'common.active' | translate">{{ 'common.active' | translate }}</eui-chip>
+                        } @else {
+                            <eui-chip euiDanger euiSizeS [ariaLabel]="'common.inactive' | translate">{{ 'common.inactive' | translate }}</eui-chip>
+                        }
+                    </td>
+                    <td [attr.data-col-label]="'common.field.actions' | translate">
+                        <eui-icon-button
+                            icon="key:regular"
+                            size="s"
+                            aria-haspopup="dialog"
+                            [ariaLabel]="'users.action.reset-password' | translate:{ username: row.username }"
+                            [euiDisabled]="operationPending"
+                            (click)="onResetPassword(row)">
+                        </eui-icon-button>
+                        @if (row.is_active) {
+                            <eui-icon-button
+                                icon="prohibit:regular"
+                                size="s"
+                                aria-haspopup="dialog"
+                                [ariaLabel]="'users.action.deactivate' | translate:{ username: row.username }"
+                                [euiDisabled]="operationPending"
+                                (click)="onToggleStatus(row)">
+                            </eui-icon-button>
+                        } @else {
+                            <eui-icon-button
+                                icon="check-circle:regular"
+                                size="s"
+                                aria-haspopup="dialog"
+                                [ariaLabel]="'users.action.reactivate' | translate:{ username: row.username }"
+                                [euiDisabled]="operationPending"
+                                (click)="onToggleStatus(row)">
+                            </eui-icon-button>
+                        }
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template euiTemplate="noData">
+                <tr>
+                    <td class="eui-u-text-center" colspan="7">
+                        {{ emptyStateMessage }}
+                        @if (hasLoadError) {
+                            <button euiButton euiSecondary type="button"
+                                    class="eui-u-ml-m"
+                                    (click)="loadUsers()">
+                                {{ 'common.retry' | translate }}
+                            </button>
+                        }
+                    </td>
+                </tr>
+            </ng-template>
+        </table>
+
+        <!-- Paginator (not bound to table — async mode) -->
+        <eui-paginator
+            [length]="total"
+            [pageSize]="params._limit ?? 10"
+            [pageSizeOptions]="[10, 25, 50]"
+            (pageChange)="onPageChange($event)">
+        </eui-paginator>
+
+    </eui-page-content>
+</eui-page>
+
+<!-- ─── Create User Dialog ────────────────────────────────────────── -->
+<eui-dialog #createDialog
+    [title]="'users.dialog.create-title' | translate"
+    [acceptLabel]="'users.dialog.create-accept' | translate"
+    [width]="'500px'"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onCreateUser()"
+    (dismiss)="resetCreateForm()">
+
+    <form [formGroup]="createForm">
+        @if (createError) {
+            <eui-feedback-message euiDanger class="eui-u-mb-m">
+                {{ createError }}
+            </eui-feedback-message>
+        }
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="cu-username">{{ 'common.field.username' | translate }}</label>
+            <input euiInputText id="cu-username" formControlName="username"
+                   aria-required="true"
+                   [attr.aria-describedby]="createForm.get('username')?.invalid && createForm.get('username')?.touched ? 'cu-username-err' : null" />
+            @if (createForm.get('username')?.invalid && createForm.get('username')?.touched) {
+                <span euiLabel euiDanger id="cu-username-err">{{ 'common.validation.required' | translate:{ field: ('common.field.username' | translate) } }}</span>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="cu-firstName">{{ 'common.field.first-name' | translate }}</label>
+            <input euiInputText id="cu-firstName" formControlName="firstName"
+                   aria-required="true"
+                   [attr.aria-describedby]="createForm.get('firstName')?.invalid && createForm.get('firstName')?.touched ? 'cu-firstName-err' : null" />
+            @if (createForm.get('firstName')?.invalid && createForm.get('firstName')?.touched) {
+                <span euiLabel euiDanger id="cu-firstName-err">{{ 'common.validation.required' | translate:{ field: ('common.field.first-name' | translate) } }}</span>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="cu-lastName">{{ 'common.field.last-name' | translate }}</label>
+            <input euiInputText id="cu-lastName" formControlName="lastName"
+                   aria-required="true"
+                   [attr.aria-describedby]="createForm.get('lastName')?.invalid && createForm.get('lastName')?.touched ? 'cu-lastName-err' : null" />
+            @if (createForm.get('lastName')?.invalid && createForm.get('lastName')?.touched) {
+                <span euiLabel euiDanger id="cu-lastName-err">{{ 'common.validation.required' | translate:{ field: ('common.field.last-name' | translate) } }}</span>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="cu-email">{{ 'common.field.email' | translate }}</label>
+            <input euiInputText id="cu-email" formControlName="email" type="email"
+                   aria-required="true"
+                   [attr.aria-describedby]="createForm.get('email')?.invalid && createForm.get('email')?.touched ? 'cu-email-err' : null" />
+            @if (createForm.get('email')?.invalid && createForm.get('email')?.touched) {
+                <span euiLabel euiDanger id="cu-email-err">
+                    @if (createForm.get('email')?.errors?.['required']) {
+                        {{ 'common.validation.required' | translate:{ field: ('common.field.email' | translate) } }}
+                    } @else {
+                        {{ 'common.validation.email-invalid' | translate }}
+                    }
+                </span>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="cu-role">{{ 'common.field.role' | translate }}</label>
+            <select euiSelect id="cu-role" formControlName="role"
+                    aria-required="true"
+                    [placeholder]="'users.dialog.select-role' | translate">
+                @for (role of availableRoles; track role) {
+                    <option [value]="role">{{ role }}</option>
+                }
+            </select>
+            @if (createForm.get('role')?.invalid && createForm.get('role')?.touched) {
+                <span euiLabel euiDanger id="cu-role-err">{{ 'common.validation.required' | translate:{ field: ('common.field.role' | translate) } }}</span>
+            }
+        </div>
+    </form>
+</eui-dialog>
+
+<!-- ─── Temporary Password Dialog ─────────────────────────────────── -->
+<eui-dialog #tempPasswordDialog
+    [title]="tempPasswordTitle"
+    [hasDismissButton]="false"
+    [acceptLabel]="'common.close' | translate"
+    [width]="'450px'"
+    [isMessageBox]="true">
+
+    <eui-feedback-message euiWarning class="eui-u-mb-m">
+        {{ 'users.dialog.temp-password-warning' | translate }}
+    </eui-feedback-message>
+
+    <div euiInputGroup>
+        <label euiLabel for="temp-password">{{ 'users.dialog.temp-password-label' | translate }}</label>
+        <input euiInputText id="temp-password"
+               [value]="temporaryPassword"
+               readonly
+               [attr.aria-label]="'users.dialog.temp-password-label' | translate" />
+    </div>
+
+    <button euiButton euiSecondary type="button"
+            class="eui-u-mt-s"
+            (click)="copyPassword()">
+        {{ 'users.dialog.copy-btn' | translate }}
+    </button>
+</eui-dialog>
+
+<!-- ─── Reset Password Confirmation Dialog ────────────────────────── -->
+<eui-dialog #resetPasswordDialog
+    [title]="'users.dialog.reset-title' | translate"
+    [acceptLabel]="'users.dialog.reset-accept' | translate"
+    [dismissLabel]="'common.cancel' | translate"
+    [width]="'450px'"
+    (accept)="onConfirmResetPassword()">
+
+    <p [innerHTML]="'users.dialog.reset-confirm' | translate:{ username: selectedUser?.username }"></p>
+    <p>{{ 'users.dialog.reset-info' | translate }}</p>
+</eui-dialog>
+
+<!-- ─── Deactivate / Reactivate Confirmation Dialog ───────────────── -->
+<eui-dialog #toggleStatusDialog
+    [title]="toggleDialogTitle"
+    [acceptLabel]="toggleDialogAcceptLabel"
+    [dismissLabel]="'common.cancel' | translate"
+    [width]="'450px'"
+    (accept)="onConfirmToggleStatus()">
+
+    @if (toggleDialogIsDeactivate) {
+        <p [innerHTML]="'users.dialog.deactivate-confirm' | translate:{ username: selectedUser?.username }"></p>
+        <p>{{ 'users.dialog.deactivate-info' | translate }}</p>
+    } @else {
+        <p [innerHTML]="'users.dialog.reactivate-confirm' | translate:{ username: selectedUser?.username }"></p>
+    }
+</eui-dialog>

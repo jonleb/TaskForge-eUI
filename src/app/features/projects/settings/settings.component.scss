@@ -1,0 +1,132 @@
+.loading-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+// eUI pitfall: toggle group defaults to width: 100%
+.toggle-group-wrapper {
+    margin-bottom: 1.5rem;
+
+    ::ng-deep eui-toggle-group {
+        width: auto;
+    }
+}
+
+.workflow-section {
+    margin-bottom: 2rem;
+
+    h3 {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+}
+
+.status-flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.status-flow-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+// Edit mode: status list
+.edit-statuses {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.edit-status-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.add-status-row {
+    width: 100%;
+    margin-top: 0.5rem;
+
+    .add-status-controls {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        margin-top: 0.25rem;
+    }
+
+    input {
+        padding: 0.375rem 0.5rem;
+        border: 1px solid var(--eui-c-border);
+        border-radius: 4px;
+    }
+}
+
+.field-error {
+    display: block;
+    color: var(--eui-c-danger);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+// Read-only transitions table
+.transitions-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.25rem;
+
+    th,
+    td {
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--eui-c-border);
+    }
+
+    th {
+        font-weight: 600;
+    }
+}
+
+// Edit mode: transition matrix
+.transition-matrix-wrapper {
+    overflow-x: auto;
+    margin-top: 0.5rem;
+}
+
+.transition-matrix {
+    border-collapse: collapse;
+    width: auto;
+
+    th,
+    td {
+        padding: 0.5rem;
+        text-align: center;
+        border: 1px solid var(--eui-c-border);
+    }
+
+    th[scope="row"] {
+        text-align: left;
+        font-weight: 600;
+    }
+
+    input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        cursor: pointer;
+    }
+
+    .self-transition {
+        color: var(--eui-c-grey-50);
+        user-select: none;
+    }
+}

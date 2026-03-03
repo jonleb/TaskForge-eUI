@@ -1,0 +1,95 @@
+<eui-page>
+    <eui-page-header [label]="'board.title' | translate">
+        <eui-page-header-action-items>
+            <div class="sprint-filter">
+                <label euiLabel for="sprint-filter">{{ 'board.sprint-filter' | translate }}</label>
+                <select euiSelect id="sprint-filter"
+                        [(ngModel)]="selectedSprintId"
+                        (ngModelChange)="onSprintFilterChange()">
+                    <option value="">{{ 'board.all-sprints' | translate }}</option>
+                    @for (sprint of sprints; track sprint.id) {
+                        <option [value]="sprint.id">{{ sprint.name }}</option>
+                    }
+                </select>
+            </div>
+        </eui-page-header-action-items>
+    </eui-page-header>
+    <eui-page-content>
+        @if (isLoading) {
+            <eui-progress-bar euiInfo [isIndeterminate]="true"
+                              [attr.aria-label]="'common.loading' | translate">
+            </eui-progress-bar>
+        } @else if (hasError) {
+            <eui-feedback-message euiDanger aria-live="polite">
+                {{ 'board.error-loading' | translate }}
+            </eui-feedback-message>
+            <button euiButton euiSecondary class="eui-u-mt-s" (click)="retry()">
+                {{ 'common.retry' | translate }}
+            </button>
+        } @else {
+            <output class="eui-u-sr-only" aria-live="polite">{{ filterAnnouncement }}</output>
+            <output class="eui-u-sr-only" aria-live="assertive">{{ dndAnnouncement }}</output>
+            <div class="board-columns" [attr.aria-label]="'board.title' | translate">
+                @for (status of columns; track status; let colIdx = $index) {
+                    <section class="board-column"
+                             [attr.aria-label]="formatStatus(status)">
+                        <h2 class="board-column__header">
+                            <span class="board-column__title">{{ formatStatus(status) }}</span>
+                            <eui-chip euiSizeS [isFilled]="true"
+                                      [ariaLabel]="getColumnTickets(status).length + ' ' + ('board.tickets' | translate)">
+                                {{ getColumnTickets(status).length }}
+                            </eui-chip>
+                        </h2>
+                        <!-- CDK drop list per column — eUI has no native DnD component -->
+                        <div class="board-column__cards"
+                             cdkDropList
+                             [id]="'board-col-' + colIdx"
+                             [cdkDropListData]="getColumnTickets(status)"
+                             [cdkDropListConnectedTo]="columnDropListIds"
+                             [cdkDropListDisabled]="!canManage"
+                             (cdkDropListDropped)="onCardDrop($event, status)">
+                            @for (ticket of getColumnTickets(status); track ticket.id) {
+                                <article class="board-card"
+                                         cdkDrag
+                                         [cdkDragData]="ticket"
+                                         [cdkDragDisabled]="!canManage"
+                                         [attr.aria-label]="'board.card-label' | translate:{ number: ticket.ticket_number, title: ticket.title }"
+                                         (click)="navigateToTicket(ticket)"
+                                         (keydown.enter)="navigateToTicket(ticket)">
+                                    @if (canManage) {
+                                        <button cdkDragHandle class="board-card__drag-handle"
+                                                [attr.aria-label]="'board.drag-handle' | translate">
+                                            <eui-icon-svg icon="dots-six-vertical:regular" aria-hidden="true"></eui-icon-svg>
+                                        </button>
+                                    }
+                                    <div class="board-card__header">
+                                        <span class="board-card__number">#{{ ticket.ticket_number }}</span>
+                                        <eui-status-badge euiSizeS euiInfo
+                                                          [ariaLabel]="ticket.type">{{ ticket.type }}</eui-status-badge>
+                                    </div>
+                                    <div class="board-card__title">{{ ticket.title }}</div>
+                                    <div class="board-card__footer">
+                                        @if (ticket.priority) {
+                                            <eui-chip euiSizeS
+                                                      [euiDanger]="ticket.priority === 'CRITICAL'"
+                                                      [euiWarning]="ticket.priority === 'HIGH'"
+                                                      [euiInfo]="ticket.priority === 'MEDIUM'"
+                                                      [ariaLabel]="ticket.priority">
+                                                {{ ticket.priority }}
+                                            </eui-chip>
+                                        }
+                                        @if (getAssigneeName(ticket.assignee_id)) {
+                                            <span class="board-card__assignee">{{ getAssigneeName(ticket.assignee_id) }}</span>
+                                        }
+                                    </div>
+                                </article>
+                            } @empty {
+                                <p class="board-column__empty">{{ 'board.no-tickets' | translate }}</p>
+                            }
+                        </div>
+                    </section>
+                }
+            </div>
+        }
+    </eui-page-content>
+</eui-page>

@@ -1,0 +1,24 @@
+eui-icon-button + eui-icon-button {
+    margin-left: 0.25rem;
+}
+
+.candidate-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--eui-color-grey-25, #ccc);
+    border-radius: 4px;
+
+    li {
+        padding: 0.5rem;
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            background-color: var(--eui-color-grey-5, #f5f5f5);
+            outline: none;
+        }
+    }
+}

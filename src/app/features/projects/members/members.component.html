@@ -1,0 +1,145 @@
+<eui-page>
+    <eui-page-header [label]="'members.page-title' | translate">
+        @if (isManager) {
+            <eui-page-header-action-items>
+                <button euiButton euiPrimary (click)="openAddDialog()">{{ 'members.add-btn' | translate }}</button>
+            </eui-page-header-action-items>
+        }
+    </eui-page-header>
+    <eui-page-content>
+        <table euiTable
+               [data]="members"
+               isAsync
+               [isLoading]="membersLoading"
+               isTableResponsive
+               [attr.aria-label]="'members.table-label' | translate">
+
+            <ng-template euiTemplate="header">
+                <tr>
+                    <th scope="col">{{ 'common.field.name' | translate }}</th>
+                    <th scope="col">{{ 'common.field.email' | translate }}</th>
+                    <th scope="col">{{ 'common.field.role' | translate }}</th>
+                    @if (isManager) {
+                        <th scope="col">{{ 'common.field.actions' | translate }}</th>
+                    }
+                </tr>
+            </ng-template>
+
+            <ng-template let-row euiTemplate="body">
+                <tr>
+                    <td [attr.data-col-label]="'common.field.name' | translate">{{ row.firstName }} {{ row.lastName }}</td>
+                    <td [attr.data-col-label]="'common.field.email' | translate">{{ row.email }}</td>
+                    <td [attr.data-col-label]="'common.field.role' | translate">
+                        <eui-chip euiSizeS [ariaLabel]="row.role">{{ row.role }}</eui-chip>
+                    </td>
+                    @if (isManager) {
+                        <td [attr.data-col-label]="'common.field.actions' | translate">
+                            <eui-icon-button icon="eui-edit"
+                                [ariaLabel]="'members.action.change-role' | translate:{ name: row.firstName + ' ' + row.lastName }"
+                                (buttonClick)="openChangeRoleDialog(row)">
+                            </eui-icon-button>
+                            <eui-icon-button icon="eui-trash"
+                                [ariaLabel]="'members.action.remove' | translate:{ name: row.firstName + ' ' + row.lastName }"
+                                (buttonClick)="openRemoveDialog(row)">
+                            </eui-icon-button>
+                        </td>
+                    }
+                </tr>
+            </ng-template>
+
+            <ng-template euiTemplate="noData">
+                <tr>
+                    <td class="eui-u-text-center" [attr.colspan]="isManager ? 4 : 3">
+                        @if (memberError) {
+                            {{ 'members.load-error' | translate }}
+                        } @else {
+                            {{ 'members.no-members' | translate }}
+                        }
+                    </td>
+                </tr>
+            </ng-template>
+        </table>
+    </eui-page-content>
+</eui-page>
+
+<eui-dialog #addDialog
+    [title]="'members.dialog.add-title' | translate"
+    [acceptLabel]="'members.dialog.add-accept' | translate"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onAddMember()"
+    (dismiss)="resetAddForm()">
+    @if (!selectedCandidate) {
+        <label euiLabel for="candidateSearchInput">{{ 'members.dialog.search-label' | translate }}</label>
+        <input euiInputText
+            id="candidateSearchInput"
+            [(ngModel)]="candidateSearch"
+            (input)="onCandidateSearch()"
+            [placeholder]="'members.dialog.search-placeholder' | translate"
+            aria-required="true" />
+        @if (candidates.length > 0) {
+            <ul role="listbox" [attr.aria-label]="'members.dialog.candidates-label' | translate" class="candidate-list">
+                @for (c of candidates; track c.id) {
+                    <li role="option"
+                        tabindex="0"
+                        (click)="selectCandidate(c)"
+                        (keydown.enter)="selectCandidate(c)">
+                        {{ c.firstName }} {{ c.lastName }} — {{ c.email }}
+                    </li>
+                }
+            </ul>
+        }
+    } @else {
+        <p>{{ 'members.dialog.selected' | translate:{ name: selectedCandidate.firstName + ' ' + selectedCandidate.lastName, email: selectedCandidate.email } }}</p>
+        <button euiButton (click)="selectedCandidate = null">{{ 'common.change' | translate }}</button>
+    }
+    <label euiLabel for="addRoleSelect">{{ 'members.dialog.role-label' | translate }}</label>
+    <select euiSelect id="addRoleSelect" [(ngModel)]="selectedAddRole" aria-required="true">
+        @for (r of projectRoles; track r) {
+            <option [value]="r">{{ r }}</option>
+        }
+    </select>
+    @if (addError) {
+        <eui-feedback-message euiDanger aria-live="assertive">
+            {{ addError }}
+        </eui-feedback-message>
+    }
+</eui-dialog>
+
+<eui-dialog #removeDialog
+    [title]="'members.dialog.remove-title' | translate"
+    [acceptLabel]="'members.dialog.remove-accept' | translate"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onRemoveMember()"
+    (dismiss)="resetRemoveForm()">
+    @if (memberToRemove) {
+        <p>{{ 'members.dialog.remove-confirm' | translate:{ name: memberToRemove.firstName + ' ' + memberToRemove.lastName } }}</p>
+        <p>{{ 'members.dialog.remove-info' | translate }}</p>
+        @if (removeError) {
+            <eui-feedback-message euiDanger aria-live="assertive">
+                {{ removeError }}
+            </eui-feedback-message>
+        }
+    }
+</eui-dialog>
+
+<eui-dialog #changeRoleDialog
+    [title]="'members.dialog.change-role-title' | translate"
+    [acceptLabel]="'members.dialog.change-role-accept' | translate"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onChangeRole()"
+    (dismiss)="resetChangeRoleForm()">
+    @if (selectedMember) {
+        <p>{{ 'members.dialog.change-role-label' | translate:{ name: selectedMember.firstName + ' ' + selectedMember.lastName } }}</p>
+        <label euiLabel for="newRoleSelect">{{ 'members.dialog.new-role-label' | translate }}</label>
+        <select euiSelect id="newRoleSelect" [(ngModel)]="newRole" aria-required="true">
+            @for (r of projectRoles; track r) {
+                <option [value]="r">{{ r }}</option>
+            }
+        </select>
+        @if (changeRoleError) {
+            <eui-feedback-message euiDanger aria-live="assertive">
+                {{ changeRoleError }}
+            </eui-feedback-message>
+        }
+    }
+</eui-dialog>

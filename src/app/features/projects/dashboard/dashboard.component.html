@@ -1,0 +1,93 @@
+<eui-page>
+    <eui-page-header [label]="project?.name ?? ('nav.projects' | translate)"></eui-page-header>
+    <eui-page-content>
+        @if (project) {
+            <section class="project-details" [attr.aria-label]="'dashboard.project-details-label' | translate">
+                <dl>
+                    <div class="detail-item">
+                        <dt>{{ 'common.field.key' | translate }}</dt>
+                        <dd>{{ project.key }}</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>{{ 'common.field.description' | translate }}</dt>
+                        <dd>{{ project.description || '—' }}</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>{{ 'common.field.status' | translate }}</dt>
+                        <dd>
+                            @if (project.is_active) {
+                                <eui-chip euiSuccess euiSizeS [ariaLabel]="'common.active' | translate">{{ 'common.active' | translate }}</eui-chip>
+                            } @else {
+                                <eui-chip euiDanger euiSizeS [ariaLabel]="'common.inactive' | translate">{{ 'common.inactive' | translate }}</eui-chip>
+                            }
+                        </dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>{{ 'dashboard.created-by' | translate }}</dt>
+                        <dd>{{ creatorName ?? ('common.loading' | translate) }}</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>{{ 'dashboard.created' | translate }}</dt>
+                        <dd>{{ project.created_at | date:'mediumDate' }}</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>{{ 'dashboard.last-updated' | translate }}</dt>
+                        <dd>{{ project.updated_at | date:'mediumDate' }}</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <section class="backlog-summary" [attr.aria-label]="'dashboard.backlog-heading' | translate">
+                <h2>{{ 'dashboard.backlog-heading' | translate }}</h2>
+                @if (backlogLoading) {
+                    <p>{{ 'common.loading' | translate }}</p>
+                } @else if (backlogItems.length === 0) {
+                    <p>{{ 'dashboard.no-backlog-items' | translate }}</p>
+                } @else {
+                    <p aria-live="polite">
+                        {{ 'dashboard.backlog-count' | translate:{ count: backlogItems.length } }}
+                    </p>
+                    <ul class="backlog-list">
+                        @for (item of backlogItems; track item.id) {
+                            <li>
+                                <span class="ticket-number">{{ project?.key }}-{{ item.ticket_number }}</span>
+                                <eui-chip euiSizeS [ariaLabel]="'workflow.ticket-type.' + item.type | translate">
+                                    {{ 'workflow.ticket-type.' + item.type | translate }}
+                                </eui-chip>
+                                @if (item.priority) {
+                                    <eui-chip euiSizeS
+                                        [class.eui-chip--danger]="item.priority === 'CRITICAL'"
+                                        [class.eui-chip--warning]="item.priority === 'HIGH'"
+                                        [class.eui-chip--info]="item.priority === 'MEDIUM'"
+                                        [ariaLabel]="'ticket.priority.' + item.priority | translate">
+                                        {{ 'ticket.priority.' + item.priority | translate }}
+                                    </eui-chip>
+                                }
+                                <span class="ticket-title">{{ item.title }}</span>
+                                <span class="backlog-status">{{ 'workflow.status.' + item.status | translate }}</span>
+                            </li>
+                        }
+                    </ul>
+                    <a [routerLink]="['backlog']" class="view-backlog-link">
+                        {{ 'dashboard.view-backlog' | translate }}
+                    </a>
+                }
+            </section>
+
+            <section class="widgets" [attr.aria-label]="'dashboard.widgets-label' | translate">
+                <div class="widget-placeholder">
+                    <h2>{{ 'dashboard.recent-activity' | translate }}</h2>
+                    <p>{{ 'common.coming-soon' | translate }}</p>
+                </div>
+                <div class="widget-placeholder">
+                    <h2>{{ 'dashboard.open-tickets' | translate }}</h2>
+                    <p>{{ 'common.coming-soon' | translate }}</p>
+                </div>
+                <div class="widget-placeholder">
+                    <h2>{{ 'dashboard.sprint-progress' | translate }}</h2>
+                    <p>{{ 'common.coming-soon' | translate }}</p>
+                </div>
+            </section>
+        }
+    </eui-page-content>
+</eui-page>

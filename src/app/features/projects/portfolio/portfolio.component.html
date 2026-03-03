@@ -1,0 +1,208 @@
+<eui-page>
+    <eui-page-header [label]="'projects.page-title' | translate">
+        @if (isSuperAdmin) {
+            <eui-page-header-action-items>
+                <button euiButton euiPrimary
+                        type="button"
+                        aria-haspopup="dialog"
+                        (click)="createDialog.openDialog()">
+                    {{ 'projects.create-btn' | translate }}
+                </button>
+            </eui-page-header-action-items>
+        }
+    </eui-page-header>
+    <eui-page-content>
+
+        <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-s">
+            <eui-table-filter
+                [placeholder]="'projects.search-placeholder' | translate"
+                (filterChange)="onFilterChange($event)">
+            </eui-table-filter>
+
+            @if (isSuperAdmin) {
+                <eui-toggle-group [attr.aria-label]="'projects.filter-status-label' | translate"
+                                  (itemClick)="onStatusFilterChange($event)">
+                    <eui-toggle-group-item id="status-all" [isChecked]="true">{{ 'common.all' | translate }}</eui-toggle-group-item>
+                    <eui-toggle-group-item id="status-active">{{ 'common.active' | translate }}</eui-toggle-group-item>
+                    <eui-toggle-group-item id="status-inactive">{{ 'common.inactive' | translate }}</eui-toggle-group-item>
+                </eui-toggle-group>
+            }
+        </div>
+
+        <p aria-live="polite" class="eui-u-mt-s eui-u-mb-s">
+            {{ 'projects.showing-of' | translate:{ count: projects.length, total: total } }}
+        </p>
+
+        <table euiTable
+               [data]="projects"
+               isAsync
+               [isLoading]="loading"
+               isTableResponsive
+               [attr.aria-label]="'projects.table-label' | translate"
+               (sortChange)="onSortChange($event)">
+
+            <ng-template euiTemplate="header">
+                <tr>
+                    <th scope="col" isSortable sortOn="key">{{ 'common.field.key' | translate }}</th>
+                    <th scope="col" isSortable sortOn="name">{{ 'common.field.name' | translate }}</th>
+                    <th scope="col">{{ 'common.field.description' | translate }}</th>
+                    <th scope="col">{{ 'common.field.status' | translate }}</th>
+                    <th scope="col">{{ 'common.field.actions' | translate }}</th>
+                </tr>
+            </ng-template>
+
+            <ng-template let-row euiTemplate="body">
+                <tr>
+                    <td [attr.data-col-label]="'common.field.key' | translate">{{ row.key }}</td>
+                    <td [attr.data-col-label]="'common.field.name' | translate">{{ row.name }}</td>
+                    <td [attr.data-col-label]="'common.field.description' | translate">{{ row.description }}</td>
+                    <td [attr.data-col-label]="'common.field.status' | translate">
+                        @if (row.is_active) {
+                            <eui-chip euiSuccess euiSizeS [ariaLabel]="'common.active' | translate">{{ 'common.active' | translate }}</eui-chip>
+                        } @else {
+                            <eui-chip euiDanger euiSizeS [ariaLabel]="'common.inactive' | translate">{{ 'common.inactive' | translate }}</eui-chip>
+                        }
+                    </td>
+                    <td [attr.data-col-label]="'common.field.actions' | translate">
+                        @if (isSuperAdmin) {
+                            <eui-icon-button
+                                icon="eui-edit"
+                                size="s"
+                                [ariaLabel]="'projects.action.edit' | translate:{ name: row.name }"
+                                (buttonClick)="openEditDialog(row)">
+                            </eui-icon-button>
+                        }
+                        <button euiButton euiSecondary
+                                type="button"
+                                [attr.aria-label]="'projects.action.open' | translate:{ name: row.name }"
+                                (click)="onOpenProject(row)">
+                            {{ 'common.open' | translate }}
+                        </button>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template euiTemplate="noData">
+                <tr>
+                    <td class="eui-u-text-center" colspan="5">
+                        {{ emptyStateMessage }}
+                        @if (hasError) {
+                            <button euiButton euiSecondary type="button"
+                                    class="eui-u-ml-m"
+                                    (click)="loadProjects()">
+                                {{ 'common.retry' | translate }}
+                            </button>
+                        }
+                    </td>
+                </tr>
+            </ng-template>
+        </table>
+
+        <eui-paginator
+            [length]="total"
+            [pageSize]="params._limit ?? 10"
+            [pageSizeOptions]="[10, 25, 50]"
+            (pageChange)="onPageChange($event)">
+        </eui-paginator>
+
+    </eui-page-content>
+</eui-page>
+
+<eui-dialog #createDialog
+    [title]="'projects.dialog.create-title' | translate"
+    [acceptLabel]="'projects.dialog.create-accept' | translate"
+    [width]="'500px'"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onCreateProject()"
+    (dismiss)="resetCreateForm()">
+
+    <form [formGroup]="createForm" id="create-project-form">
+        @if (createError) {
+            <eui-feedback-message euiDanger class="eui-u-mb-m"
+                                  aria-live="polite">
+                {{ createError }}
+            </eui-feedback-message>
+        }
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="cp-name">{{ 'common.field.name' | translate }}</label>
+            <input euiInputText id="cp-name" formControlName="name"
+                   aria-required="true"
+                   [attr.aria-describedby]="createForm.get('name')?.invalid && createForm.get('name')?.touched ? 'cp-name-err' : null" />
+            @if (createForm.get('name')?.invalid && createForm.get('name')?.touched) {
+                <eui-feedback-message euiDanger id="cp-name-err">
+                    @if (createForm.get('name')?.errors?.['required']) {
+                        {{ 'projects.dialog.name-required' | translate }}
+                    } @else {
+                        {{ 'projects.dialog.name-min-length' | translate }}
+                    }
+                </eui-feedback-message>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel for="cp-key">{{ 'common.field.key' | translate }}</label>
+            <input euiInputText id="cp-key" formControlName="key"
+                   maxlength="10"
+                   (input)="onKeyInput($event)"
+                   [attr.aria-describedby]="createForm.get('key')?.invalid && createForm.get('key')?.touched ? 'cp-key-err' : 'cp-key-hint'" />
+            <eui-helper-text id="cp-key-hint">{{ 'projects.dialog.key-hint' | translate }}</eui-helper-text>
+            @if (createForm.get('key')?.invalid && createForm.get('key')?.touched) {
+                <eui-feedback-message euiDanger id="cp-key-err">
+                    {{ 'projects.dialog.key-format-error' | translate }}
+                </eui-feedback-message>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel for="cp-description">{{ 'common.field.description' | translate }}</label>
+            <textarea euiTextArea id="cp-description" formControlName="description"
+                      rows="3"></textarea>
+        </div>
+    </form>
+</eui-dialog>
+
+<eui-dialog #editDialog
+    [title]="'projects.dialog.edit-title' | translate"
+    [acceptLabel]="'projects.dialog.edit-accept' | translate"
+    [width]="'500px'"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onUpdateProject()"
+    (dismiss)="resetEditForm()">
+
+    <form [formGroup]="editForm" id="edit-project-form">
+        @if (editError) {
+            <eui-feedback-message euiDanger class="eui-u-mb-m"
+                                  aria-live="polite">
+                {{ editError }}
+            </eui-feedback-message>
+        }
+
+        <div euiInputGroup>
+            <label euiLabel>{{ 'common.field.key' | translate }}</label>
+            <p class="eui-u-f-bold">{{ selectedProject?.key }}</p>
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel [euiRequired]="true" for="ep-name">{{ 'common.field.name' | translate }}</label>
+            <input euiInputText id="ep-name" formControlName="name"
+                   aria-required="true"
+                   [attr.aria-describedby]="editForm.get('name')?.invalid && editForm.get('name')?.touched ? 'ep-name-err' : null" />
+            @if (editForm.get('name')?.invalid && editForm.get('name')?.touched) {
+                <eui-feedback-message euiDanger id="ep-name-err">
+                    @if (editForm.get('name')?.errors?.['required']) {
+                        {{ 'projects.dialog.name-required' | translate }}
+                    } @else {
+                        {{ 'projects.dialog.name-min-length' | translate }}
+                    }
+                </eui-feedback-message>
+            }
+        </div>
+
+        <div euiInputGroup>
+            <label euiLabel for="ep-description">{{ 'common.field.description' | translate }}</label>
+            <textarea euiTextArea id="ep-description" formControlName="description"
+                      rows="3"></textarea>
+        </div>
+    </form>
+</eui-dialog>

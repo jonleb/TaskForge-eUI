@@ -1,0 +1,5 @@
+/* Override eui-toggle-group default width:100% to keep items compact */
+:host ::ng-deep eui-toggle-group {
+    width: auto;
+    margin-left: 0.5rem;
+}

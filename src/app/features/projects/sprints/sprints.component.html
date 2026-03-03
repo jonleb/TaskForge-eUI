@@ -1,0 +1,353 @@
+<eui-page>
+    <eui-page-header [label]="'sprint.page-title' | translate">
+        @if (canManage) {
+            <eui-page-header-action-items>
+                <button euiButton euiPrimary (click)="openCreateDialog()">{{ 'sprint.create-btn' | translate }}</button>
+            </eui-page-header-action-items>
+        }
+    </eui-page-header>
+    <eui-page-content>
+        @if (isLoading) {
+            <eui-progress-bar euiInfo [attr.aria-label]="'common.loading' | translate"></eui-progress-bar>
+        } @else if (hasError) {
+            <eui-feedback-message euiDanger>
+                {{ 'sprint.load-error' | translate }}
+                <button euiButton euiSecondary (click)="retry()">{{ 'common.retry' | translate }}</button>
+            </eui-feedback-message>
+        } @else if (sprints.length === 0) {
+            <eui-feedback-message euiInfo>{{ 'sprint.no-sprints' | translate }}</eui-feedback-message>
+        } @else {
+            <!-- Active Sprint section -->
+            <section aria-label="Active Sprint">
+                <eui-card euiCollapsible [euiCollapsed]="false">
+                    <eui-card-header>
+                        <eui-card-header-title>{{ 'sprint.section.active' | translate }} ({{ activeSprints.length }})</eui-card-header-title>
+                    </eui-card-header>
+                    <eui-card-content>
+                        @if (activeSprints.length === 0) {
+                            <p class="eui-u-text-center eui-u-c-text-muted">{{ 'sprint.no-sprints' | translate }}</p>
+                        }
+                        @for (sprint of activeSprints; track sprint.id) {
+                            <div class="sprint-item eui-u-mb-s">
+                                <div class="sprint-item__header">
+                                    <button class="sprint-item__name-btn" (click)="navigateToPlanning(sprint)">
+                                        {{ sprint.name }}
+                                    </button>
+                                    <eui-status-badge euiSuccess [ariaLabel]="'sprint.status.ACTIVE' | translate">
+                                        {{ 'sprint.status.ACTIVE' | translate }}
+                                    </eui-status-badge>
+                                </div>
+                                @if (sprint.goal) {
+                                    <p class="eui-u-mb-xs">{{ sprint.goal }}</p>
+                                }
+                                <p class="eui-u-c-text-muted eui-u-mb-xs">
+                                    {{ 'sprint.tickets-count' | translate:{ count: getTicketCount(sprint.id) } }}
+                                    @if (sprint.start_date) {
+                                        &nbsp;·&nbsp;{{ sprint.start_date | date:'mediumDate' }}
+                                        @if (sprint.end_date) {
+                                            – {{ sprint.end_date | date:'mediumDate' }}
+                                        }
+                                    }
+                                </p>
+                                <!-- No eUI drag & drop component for lists — using CDK DragDropModule per eUI showcase pattern -->
+                                <ul class="sprint-issue-list"
+                                    [attr.aria-label]="'sprint.issue-list-label' | translate:{ name: sprint.name }"
+                                    aria-live="polite"
+                                    cdkDropList
+                                    [cdkDropListData]="getSprintItems(sprint.id)"
+                                    [cdkDropListDisabled]="!canManage"
+                                    (cdkDropListDropped)="onIssueDrop($event, sprint)">
+                                    @for (item of getSprintItems(sprint.id); track item.id) {
+                                        <li class="sprint-issue-item sprint-issue-item--clickable"
+                                            cdkDrag [cdkDragData]="item" [cdkDragDisabled]="!canManage"
+                                            tabindex="0"
+                                            role="button"
+                                            [attr.aria-label]="'#' + item.ticket_number + ' — ' + item.title"
+                                            (click)="openEditDialog(item, sprint)"
+                                            (keydown.enter)="openEditDialog(item, sprint)">
+                                            @if (canManage) {
+                                                <button cdkDragHandle class="drag-handle"
+                                                    [attr.aria-label]="'sprint.drag-handle' | translate"
+                                                    [euiTooltip]="'sprint.drag-handle-tooltip' | translate"
+                                                    (click)="$event.stopPropagation()">
+                                                    <eui-icon-svg icon="dots-six-vertical:regular" aria-hidden="true"></eui-icon-svg>
+                                                </button>
+                                            }
+                                            <span class="sprint-issue-item__number">#{{ item.ticket_number }}</span>
+                                            <eui-status-badge euiSizeS [ariaLabel]="item.type">{{ item.type }}</eui-status-badge>
+                                            <span class="sprint-issue-item__title">{{ item.title }}</span>
+                                            <eui-status-badge
+                                                [euiSuccess]="item.status === 'DONE'"
+                                                [euiWarning]="item.status === 'IN_PROGRESS' || item.status === 'IN_REVIEW'"
+                                                [euiInfo]="item.status === 'TO_DO'"
+                                                euiSizeS
+                                                [ariaLabel]="item.status">{{ item.status }}</eui-status-badge>
+                                            @if (item.priority) {
+                                                <span class="sprint-issue-item__priority">{{ item.priority }}</span>
+                                            }
+                                        </li>
+                                    } @empty {
+                                        <li class="eui-u-c-text-muted eui-u-text-center sprint-issue-item--empty">{{ 'sprint.no-issues' | translate }}</li>
+                                    }
+                                </ul>
+                                @if (canManage) {
+                                    <div class="sprint-item__actions">
+                                        <button euiButton euiDanger (click)="closeSprint(sprint)">
+                                            {{ 'sprint.action.close' | translate }}
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </eui-card-content>
+                </eui-card>
+            </section>
+
+            <!-- Planned Sprints section -->
+            <section aria-label="Planned Sprints" class="eui-u-mt-m">
+                <eui-card euiCollapsible [euiCollapsed]="false">
+                    <eui-card-header>
+                        <eui-card-header-title>{{ 'sprint.section.planned' | translate }} ({{ plannedSprints.length }})</eui-card-header-title>
+                    </eui-card-header>
+                    <eui-card-content>
+                        @if (plannedSprints.length === 0) {
+                            <p class="eui-u-text-center eui-u-c-text-muted">{{ 'sprint.no-sprints' | translate }}</p>
+                        }
+                        @for (sprint of plannedSprints; track sprint.id) {
+                            <div class="sprint-item eui-u-mb-s">
+                                <div class="sprint-item__header">
+                                    <button class="sprint-item__name-btn" (click)="navigateToPlanning(sprint)">
+                                        {{ sprint.name }}
+                                    </button>
+                                    <eui-status-badge euiInfo [ariaLabel]="'sprint.status.PLANNED' | translate">
+                                        {{ 'sprint.status.PLANNED' | translate }}
+                                    </eui-status-badge>
+                                </div>
+                                @if (sprint.goal) {
+                                    <p class="eui-u-mb-xs">{{ sprint.goal }}</p>
+                                }
+                                <p class="eui-u-c-text-muted eui-u-mb-xs">
+                                    {{ 'sprint.tickets-count' | translate:{ count: getTicketCount(sprint.id) } }}
+                                </p>
+                                <!-- No eUI drag & drop component for lists — using CDK DragDropModule per eUI showcase pattern -->
+                                <ul class="sprint-issue-list"
+                                    [attr.aria-label]="'sprint.issue-list-label' | translate:{ name: sprint.name }"
+                                    aria-live="polite"
+                                    cdkDropList
+                                    [cdkDropListData]="getSprintItems(sprint.id)"
+                                    [cdkDropListDisabled]="!canManage"
+                                    (cdkDropListDropped)="onIssueDrop($event, sprint)">
+                                    @for (item of getSprintItems(sprint.id); track item.id) {
+                                        <li class="sprint-issue-item sprint-issue-item--clickable"
+                                            cdkDrag [cdkDragData]="item" [cdkDragDisabled]="!canManage"
+                                            tabindex="0"
+                                            role="button"
+                                            [attr.aria-label]="'#' + item.ticket_number + ' — ' + item.title"
+                                            (click)="openEditDialog(item, sprint)"
+                                            (keydown.enter)="openEditDialog(item, sprint)">
+                                            @if (canManage) {
+                                                <button cdkDragHandle class="drag-handle"
+                                                    [attr.aria-label]="'sprint.drag-handle' | translate"
+                                                    [euiTooltip]="'sprint.drag-handle-tooltip' | translate"
+                                                    (click)="$event.stopPropagation()">
+                                                    <eui-icon-svg icon="dots-six-vertical:regular" aria-hidden="true"></eui-icon-svg>
+                                                </button>
+                                            }
+                                            <span class="sprint-issue-item__number">#{{ item.ticket_number }}</span>
+                                            <eui-status-badge euiSizeS [ariaLabel]="item.type">{{ item.type }}</eui-status-badge>
+                                            <span class="sprint-issue-item__title">{{ item.title }}</span>
+                                            <eui-status-badge
+                                                [euiSuccess]="item.status === 'DONE'"
+                                                [euiWarning]="item.status === 'IN_PROGRESS' || item.status === 'IN_REVIEW'"
+                                                [euiInfo]="item.status === 'TO_DO'"
+                                                euiSizeS
+                                                [ariaLabel]="item.status">{{ item.status }}</eui-status-badge>
+                                            @if (item.priority) {
+                                                <span class="sprint-issue-item__priority">{{ item.priority }}</span>
+                                            }
+                                        </li>
+                                    } @empty {
+                                        <li class="eui-u-c-text-muted eui-u-text-center sprint-issue-item--empty">{{ 'sprint.no-issues' | translate }}</li>
+                                    }
+                                </ul>
+                                @if (canManage) {
+                                    <div class="sprint-item__actions">
+                                        <button euiButton euiPrimary (click)="startSprint(sprint)">
+                                            {{ 'sprint.action.start' | translate }}
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </eui-card-content>
+                </eui-card>
+            </section>
+
+            <!-- Closed Sprints section -->
+            <section aria-label="Closed Sprints" class="eui-u-mt-m">
+                <eui-card euiCollapsible [euiCollapsed]="closedCollapsed" (collapse)="closedCollapsed = $event">
+                    <eui-card-header>
+                        <eui-card-header-title>{{ 'sprint.section.closed' | translate }} ({{ closedSprints.length }})</eui-card-header-title>
+                    </eui-card-header>
+                    <eui-card-content>
+                        @if (closedSprints.length === 0) {
+                            <p class="eui-u-text-center eui-u-c-text-muted">{{ 'sprint.no-sprints' | translate }}</p>
+                        }
+                        @for (sprint of closedSprints; track sprint.id) {
+                            <div class="sprint-item sprint-item--closed eui-u-mb-s">
+                                <div class="sprint-item__header">
+                                    <span class="sprint-item__name">{{ sprint.name }}</span>
+                                    <eui-status-badge [ariaLabel]="'sprint.status.CLOSED' | translate">
+                                        {{ 'sprint.status.CLOSED' | translate }}
+                                    </eui-status-badge>
+                                </div>
+                                @if (sprint.goal) {
+                                    <p class="eui-u-mb-xs">{{ sprint.goal }}</p>
+                                }
+                                <p class="eui-u-c-text-muted eui-u-mb-xs">
+                                    {{ 'sprint.tickets-count' | translate:{ count: getTicketCount(sprint.id) } }}
+                                    @if (sprint.start_date) {
+                                        &nbsp;·&nbsp;{{ sprint.start_date | date:'mediumDate' }}
+                                        @if (sprint.end_date) {
+                                            – {{ sprint.end_date | date:'mediumDate' }}
+                                        }
+                                    }
+                                </p>
+                                <!-- Inline issue list (read-only for closed sprints, no drag & drop) -->
+                                <ul class="sprint-issue-list" [attr.aria-label]="'sprint.issue-list-label' | translate:{ name: sprint.name }">
+                                    @for (item of getSprintItems(sprint.id); track item.id) {
+                                        <li class="sprint-issue-item sprint-issue-item--readonly"
+                                            [attr.aria-label]="'#' + item.ticket_number + ' — ' + item.title">
+                                            <span class="sprint-issue-item__number">#{{ item.ticket_number }}</span>
+                                            <eui-status-badge euiSizeS [ariaLabel]="item.type">{{ item.type }}</eui-status-badge>
+                                            <span class="sprint-issue-item__title">{{ item.title }}</span>
+                                            <eui-status-badge
+                                                [euiSuccess]="item.status === 'DONE'"
+                                                [euiWarning]="item.status === 'IN_PROGRESS' || item.status === 'IN_REVIEW'"
+                                                [euiInfo]="item.status === 'TO_DO'"
+                                                euiSizeS
+                                                [ariaLabel]="item.status">{{ item.status }}</eui-status-badge>
+                                            @if (item.priority) {
+                                                <span class="sprint-issue-item__priority">{{ item.priority }}</span>
+                                            }
+                                        </li>
+                                    } @empty {
+                                        <li class="eui-u-c-text-muted eui-u-text-center sprint-issue-item--empty">{{ 'sprint.no-issues' | translate }}</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    </eui-card-content>
+                </eui-card>
+            </section>
+        }
+    </eui-page-content>
+</eui-page>
+
+<!-- Screen reader announcement for drag & drop reorder -->
+<output class="eui-u-sr-only" aria-live="assertive">
+    {{ reorderAnnouncement }}
+</output>
+
+<!-- Create Sprint dialog -->
+<eui-dialog #createDialog
+    [title]="'sprint.dialog.create-title' | translate"
+    [acceptLabel]="'common.create' | translate"
+    [dismissLabel]="'common.cancel' | translate"
+    (accept)="onCreateSprint()"
+    (dismiss)="resetCreateForm()">
+    <div class="eui-u-mb-m">
+        <label euiLabel for="sprint-name" euiRequired>{{ 'sprint.field.name' | translate }}</label>
+        <input euiInputText id="sprint-name" name="sprintName"
+            [(ngModel)]="newSprintName"
+            aria-required="true" />
+        @if (createError) {
+            <p class="eui-u-c-text-danger eui-u-mt-xs" role="alert">{{ createError }}</p>
+        }
+    </div>
+    <div>
+        <label euiLabel for="sprint-goal">{{ 'sprint.field.goal' | translate }}</label>
+        <textarea euiTextArea id="sprint-goal" name="sprintGoal"
+            [(ngModel)]="newSprintGoal"></textarea>
+    </div>
+</eui-dialog>
+
+<!-- Close Sprint confirmation dialog -->
+<eui-dialog #closeConfirmDialog
+    [title]="'sprint.dialog.close-title' | translate"
+    [acceptLabel]="'sprint.dialog.close-accept' | translate"
+    [dismissLabel]="'common.cancel' | translate"
+    (accept)="onConfirmClose()"
+    (dismiss)="resetCloseForm()">
+    @if (sprintToClose) {
+        <p>{{ 'sprint.dialog.close-message' | translate:{ count: unresolvedTickets.length } }}</p>
+        <ul class="unresolved-list" aria-label="Unresolved tickets">
+            @for (ticket of unresolvedTickets; track ticket.id) {
+                <li>
+                    <span>#{{ ticket.ticket_number }}</span>
+                    <span>{{ ticket.title }}</span>
+                    <eui-status-badge euiSizeS
+                        [euiWarning]="ticket.status === 'IN_PROGRESS' || ticket.status === 'IN_REVIEW'"
+                        [euiInfo]="ticket.status === 'TO_DO'"
+                        [ariaLabel]="ticket.status">{{ ticket.status }}</eui-status-badge>
+                </li>
+            }
+        </ul>
+    }
+</eui-dialog>
+
+<!-- Quick-edit dialog -->
+<eui-dialog #editDialog
+    [title]="editDialogTitle"
+    [acceptLabel]="'common.save' | translate"
+    [dismissLabel]="'common.cancel' | translate"
+    (accept)="onSaveEdit()"
+    (dismiss)="resetEditForm()">
+    <div euiInputGroup>
+        <label euiLabel for="editTitleInput" euiRequired>{{ 'ticket.field.title' | translate }}</label>
+        <input euiInputText id="editTitleInput" name="editTitle"
+            [(ngModel)]="editForm.title"
+            aria-required="true"
+            maxlength="200" />
+    </div>
+    <div euiInputGroup>
+        <label euiLabel for="editDescriptionInput">{{ 'ticket.field.description' | translate }}</label>
+        <textarea euiTextArea id="editDescriptionInput" name="editDescription"
+            [(ngModel)]="editForm.description"
+            maxlength="2000"
+            rows="4"></textarea>
+    </div>
+    <div euiInputGroup>
+        <label euiLabel for="editStatusSelect" euiRequired>{{ 'common.field.status' | translate }}</label>
+        <select euiSelect id="editStatusSelect" name="editStatus"
+            [(ngModel)]="editForm.status"
+            aria-required="true">
+            @for (s of workflowStatuses; track s) {
+                <option [value]="s">{{ s }}</option>
+            }
+        </select>
+    </div>
+    <div euiInputGroup>
+        <label euiLabel for="editPrioritySelect">{{ 'ticket.priority.label' | translate }}</label>
+        <select euiSelect id="editPrioritySelect" name="editPriority"
+            [(ngModel)]="editForm.priority">
+            <option [ngValue]="null">—</option>
+            @for (p of priorities; track p) {
+                <option [value]="p">{{ p }}</option>
+            }
+        </select>
+    </div>
+    <div euiInputGroup>
+        <label euiLabel for="editAssigneeSelect">{{ 'ticket.field.assignee' | translate }}</label>
+        <select euiSelect id="editAssigneeSelect" name="editAssignee"
+            [(ngModel)]="editForm.assignee_id">
+            <option [ngValue]="null">—</option>
+            @for (member of projectMembers; track member.userId) {
+                <option [value]="member.userId">{{ member.firstName }} {{ member.lastName }}</option>
+            }
+        </select>
+    </div>
+    @if (editError) {
+        <eui-feedback-message euiDanger aria-live="assertive">{{ editError }}</eui-feedback-message>
+    }
+</eui-dialog>

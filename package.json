@@ -1,0 +1,48 @@
+{
+  "name": "eui-angular-app",
+  "version": "0.1.0",
+  "license": "EUPL-1.1",
+  "scripts": {
+    "ng": "ng",
+    "test:ci": "ng test --watch=false",
+    "start-mock-server": "nodemon --watch ./mock ./mock/server.js",
+    "test:mock": "jest --config mock/jest.config.js",
+    "test:e2e": "npx playwright test",
+    "start-serve": "eui-cli serve-app --configuration=proxy-mock --configEnvTarget=mock",
+    "start": "npm-run-all --parallel start-mock-server start-serve",
+    "start-proxy": "eui-cli serve-app --configuration=proxy",
+    "start-local": "eui-cli serve-app",
+    "build": "eui-cli build-app",
+    "build-dev": "eui-cli build-app --configuration=development --configEnvTarget=dev",
+    "build-prod": "eui-cli build-app --configuration=production-optimized --configEnvTarget=prod",
+    "build-prod-skip-test": "eui-cli build-app --configuration=production-optimized --configEnvTarget=prod --skipTest",
+    "build-prod-stats": "eui-cli build-app --configuration=production-optimized --configEnvTarget=prod",
+    "app:build": "eui-cli build-app",
+    "app:inject-config": "eui-cli inject-config-app",
+    "generate-sprite": "eui-cli generate-sprite"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/cdk": "^21.1.0",
+    "@eui/deps-base": "^21.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.3.1",
+    "body-parser": "1.20.3",
+    "express": "4.21.2",
+    "jest": "^30.2.0",
+    "json-server": "1.0.0-beta.3",
+    "lowdb": "1.0.0",
+    "nodemon": "3.1.11",
+    "npm-run-all": "4.1.5",
+    "supertest": "^7.2.2"
+  },
+  "resolutions": {
+    "semver": ">=7.5.2",
+    "dompurify": ">=3.2.4",
+    "tmp": ">0.2.4",
+    "tablesort": "5.6.0"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}

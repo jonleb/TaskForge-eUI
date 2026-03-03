@@ -1,0 +1,194 @@
+<eui-page>
+    <eui-page-header [label]="'settings.title' | translate">
+        @if (canManage && !isEditMode && selectedWorkflow) {
+            <eui-page-header-action-items>
+                <button euiButton euiPrimary (click)="enterEditMode()">
+                    {{ 'workflow-mgmt.edit' | translate }}
+                </button>
+            </eui-page-header-action-items>
+        }
+        @if (isEditMode) {
+            <eui-page-header-action-items>
+                <button euiButton euiSecondary (click)="cancelEdit()" [disabled]="isSaving">
+                    {{ 'workflow-mgmt.cancel' | translate }}
+                </button>
+                <button euiButton euiPrimary (click)="onSaveClick()" [disabled]="isSaving">
+                    {{ isSaving ? ('workflow-mgmt.saving' | translate) : ('workflow-mgmt.save' | translate) }}
+                </button>
+            </eui-page-header-action-items>
+        }
+    </eui-page-header>
+    <eui-page-content>
+        @if (!canManage && !isLoading && !hasError) {
+            <eui-feedback-message euiInfo aria-live="polite">
+                {{ 'workflow-mgmt.read-only' | translate }}
+            </eui-feedback-message>
+        }
+
+        @if (isLoading) {
+            <div class="loading-container">
+                <output aria-live="polite">{{ 'common.loading' | translate }}</output>
+            </div>
+        } @else if (hasError) {
+            <eui-feedback-message euiDanger aria-live="polite">
+                {{ 'settings.error-loading' | translate }}
+            </eui-feedback-message>
+            <button euiButton euiSecondary class="eui-u-mt-s" (click)="retry()">
+                {{ 'common.retry' | translate }}
+            </button>
+        } @else if (workflows.length === 0) {
+            <eui-feedback-message euiInfo>
+                {{ 'settings.no-workflows' | translate }}
+            </eui-feedback-message>
+        } @else {
+            <!-- Ticket type selector -->
+            <h2>{{ 'settings.workflows-heading' | translate }}</h2>
+            <fieldset class="toggle-group-wrapper" [attr.aria-label]="'workflow-mgmt.select-type' | translate">
+                <legend class="eui-u-sr-only">{{ 'workflow-mgmt.select-type' | translate }}</legend>
+                <eui-toggle-group (itemClick)="selectWorkflow($event)">
+                    @for (workflow of workflows; track workflow.id) {
+                        <eui-toggle-group-item
+                            [id]="workflow.ticketType"
+                            [isChecked]="selectedWorkflow?.id === workflow.id">
+                            {{ 'workflow.ticket-type.' + workflow.ticketType | translate }}
+                        </eui-toggle-group-item>
+                    }
+                </eui-toggle-group>
+            </fieldset>
+
+            @if (selectedWorkflow) {
+                <section class="workflow-section" [attr.aria-label]="'workflow.ticket-type.' + selectedWorkflow.ticketType | translate">
+                    <!-- ─── Status Flow ─── -->
+                    <h3>{{ 'settings.status-flow' | translate }}</h3>
+
+                    @if (!isEditMode) {
+                        <ul class="status-flow" [attr.aria-label]="'settings.status-flow' | translate">
+                            @for (status of selectedWorkflow.statuses; track status; let last = $last) {
+                                <li class="status-flow-item">
+                                    <span euiStatusBadge euiInfo euiSizeS
+                                          [attr.aria-label]="'workflow.status.' + status | translate">
+                                        {{ 'workflow.status.' + status | translate }}
+                                    </span>
+                                    @if (!last) {
+                                        <eui-icon-svg icon="eui-arrow-right" size="s" aria-hidden="true"></eui-icon-svg>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    } @else {
+                        <!-- Edit mode: editable statuses -->
+                        <div class="edit-statuses" [attr.aria-label]="'settings.status-flow' | translate">
+                            @for (status of editStatuses; track status) {
+                                <div class="edit-status-item">
+                                    <span euiStatusBadge euiInfo euiSizeS>{{ status }}</span>
+                                    <eui-icon-button icon="eui-close" size="s"
+                                        [ariaLabel]="'workflow-mgmt.remove-status' | translate:{ status: status }"
+                                        (buttonClick)="removeStatus(status)"
+                                        [euiDisabled]="editStatuses.length <= 1">
+                                    </eui-icon-button>
+                                </div>
+                            }
+                            <div class="add-status-row">
+                                <label euiLabel for="new-status-input">{{ 'workflow-mgmt.add-status' | translate }}</label>
+                                <div class="add-status-controls">
+                                    <input id="new-status-input" euiInputText
+                                        [(ngModel)]="newStatusName"
+                                        [placeholder]="'workflow-mgmt.add-status-placeholder' | translate"
+                                        (keydown.enter)="addStatus()"
+                                        [attr.aria-describedby]="statusError ? 'status-error-msg' : null" />
+                                    <button euiButton euiSecondary (click)="addStatus()"
+                                        [disabled]="!newStatusName.trim()">
+                                        {{ 'workflow-mgmt.add-status' | translate }}
+                                    </button>
+                                </div>
+                                @if (statusError) {
+                                    <span id="status-error-msg" class="field-error" aria-live="polite">{{ statusError }}</span>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- ─── Transitions ─── -->
+                    <h3>{{ 'settings.transitions' | translate }}</h3>
+
+                    @if (!isEditMode) {
+                        <table class="transitions-table"
+                               [attr.aria-label]="('settings.transitions' | translate) + ' — ' + ('workflow.ticket-type.' + selectedWorkflow.ticketType | translate)">
+                            <caption class="eui-u-sr-only">
+                                {{ 'settings.transitions' | translate }} — {{ 'workflow.ticket-type.' + selectedWorkflow.ticketType | translate }}
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">{{ 'settings.from' | translate }}</th>
+                                    <th scope="col">{{ 'settings.to' | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (status of selectedWorkflow.statuses; track status) {
+                                    @if (getTransitionTargets(selectedWorkflow, status).length > 0) {
+                                        <tr>
+                                            <td data-col-label="From">
+                                                {{ 'workflow.status.' + status | translate }}
+                                            </td>
+                                            <td data-col-label="To">
+                                                @for (target of getTransitionTargets(selectedWorkflow, status); track target; let lastTarget = $last) {
+                                                    {{ 'workflow.status.' + target | translate }}@if (!lastTarget) {, }
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    } @else {
+                        <!-- Edit mode: transition matrix -->
+                        <div class="transition-matrix-wrapper">
+                            <table class="transition-matrix"
+                                   [attr.aria-label]="'workflow-mgmt.transitions-heading' | translate">
+                                <caption class="eui-u-sr-only">
+                                    {{ 'workflow-mgmt.transitions-heading' | translate }}
+                                </caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">{{ 'workflow-mgmt.transition-from' | translate }} / {{ 'workflow-mgmt.transition-to' | translate }}</th>
+                                        @for (status of editStatuses; track status) {
+                                            <th scope="col">{{ status }}</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (fromStatus of editStatuses; track fromStatus) {
+                                        <tr>
+                                            <th scope="row">{{ fromStatus }}</th>
+                                            @for (toStatus of editStatuses; track toStatus) {
+                                                <td [attr.data-col-label]="toStatus">
+                                                    @if (fromStatus === toStatus) {
+                                                        <!-- Self-transition not allowed — empty cell -->
+                                                        <span class="self-transition" aria-hidden="true">—</span>
+                                                    } @else {
+                                                        <input euiInputCheckBox type="checkbox"
+                                                            [checked]="hasTransition(fromStatus, toStatus)"
+                                                            (change)="toggleTransition(fromStatus, toStatus)"
+                                                            [attr.aria-label]="'workflow-mgmt.transition-label' | translate:{ from: fromStatus, to: toStatus }" />
+                                                    }
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </section>
+            }
+        }
+    </eui-page-content>
+</eui-page>
+
+<!-- Confirmation dialog -->
+<eui-dialog #confirmDialog
+    [title]="'workflow-mgmt.confirm-save-title' | translate"
+    [acceptLabel]="'workflow-mgmt.confirm-save-accept' | translate"
+    (accept)="saveWorkflow()">
+    <p>{{ 'workflow-mgmt.confirm-save-message' | translate:{ type: selectedWorkflow?.ticketType ?? '' } }}</p>
+</eui-dialog>
