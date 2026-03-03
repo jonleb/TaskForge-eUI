@@ -447,5 +447,7 @@
   "tickets.growl.created-summary": "Ticket created",
   "tickets.growl.created-detail": "{{key}}-{{number}} {{title}} has been created.",
   "tickets.growl.load-failed-summary": "Load failed",
-  "tickets.growl.load-failed-detail": "Could not load tickets. Please try again."
+  "tickets.growl.load-failed-detail": "Could not load tickets. Please try again.",
+  "tickets.breadcrumb.home": "Home",
+  "tickets.breadcrumb.tickets": "Tickets"
 }

@@ -18,6 +18,7 @@ import { EUI_CARD } from '@eui/components/eui-card';
 import { EUI_INPUT_CHECKBOX } from '@eui/components/eui-input-checkbox';
 import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
 import { EUI_ICON } from '@eui/components/eui-icon';
+import { EUI_BREADCRUMB } from '@eui/components/eui-breadcrumb';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BacklogItem, Project, ProjectMember, ProjectService, Sprint, WORKFLOW_STATUSES, TICKET_TYPES, TICKET_PRIORITIES, CREATABLE_TICKET_TYPES, WorkflowStatus, TicketType, TicketPriority } from '../../core/project';
@@ -41,6 +42,7 @@ export interface FilterChip {
         ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT, ...EUI_TEXTAREA,
         EuiDialogComponent, EuiPaginatorComponent, ...EUI_CONTENT_CARD, ...EUI_CARD,
         ...EUI_INPUT_CHECKBOX, ...EUI_PROGRESS_BAR, ...EUI_ICON,
+        ...EUI_BREADCRUMB,
         FormsModule, TranslateModule, RouterLink,
     ],
 })

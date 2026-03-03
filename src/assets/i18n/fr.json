@@ -447,5 +447,7 @@
   "tickets.growl.created-summary": "Ticket créé",
   "tickets.growl.created-detail": "{{key}}-{{number}} {{title}} a été créé.",
   "tickets.growl.load-failed-summary": "Échec du chargement",
-  "tickets.growl.load-failed-detail": "Impossible de charger les tickets. Veuillez réessayer."
+  "tickets.growl.load-failed-detail": "Impossible de charger les tickets. Veuillez réessayer.",
+  "tickets.breadcrumb.home": "Accueil",
+  "tickets.breadcrumb.tickets": "Tickets"
 }

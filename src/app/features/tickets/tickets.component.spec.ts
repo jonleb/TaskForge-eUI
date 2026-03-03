@@ -520,6 +520,40 @@ describe('TicketsComponent', () => {
         expect(cb).toBeTruthy();
     });
 
+    // ── CR-2001 STORY-001: Breadcrumb + Page Header ──
+
+    it('should render breadcrumb with 2 items', () => {
+        fixture.detectChanges();
+        const breadcrumb = fixture.nativeElement.querySelector('eui-breadcrumb');
+        expect(breadcrumb).toBeTruthy();
+        const items = fixture.nativeElement.querySelectorAll('eui-breadcrumb-item');
+        expect(items.length).toBe(2);
+    });
+
+    it('should render home breadcrumb with link and icon', () => {
+        fixture.detectChanges();
+        const items = fixture.nativeElement.querySelectorAll('eui-breadcrumb-item');
+        const homeItem = items[0];
+        expect(homeItem.getAttribute('link')).toBe('/screen/home');
+        expect(homeItem.getAttribute('iconsvgname')).toBe('home:outline');
+    });
+
+    it('should render tickets breadcrumb without link', () => {
+        fixture.detectChanges();
+        const items = fixture.nativeElement.querySelectorAll('eui-breadcrumb-item');
+        const ticketsItem = items[1];
+        expect(ticketsItem.getAttribute('link')).toBeFalsy();
+    });
+
+    it('should render create button with icon', () => {
+        fixture.detectChanges();
+        const btn = fixture.nativeElement.querySelector('button[aria-haspopup="dialog"]');
+        expect(btn).toBeTruthy();
+        const icon = btn.querySelector('eui-icon-svg');
+        expect(icon).toBeTruthy();
+        expect(icon.getAttribute('icon')).toBe('plus:regular');
+    });
+
     // ── STORY-005: Create Ticket Dialog ──
 
     it('should set canCreate=true for super admin', () => {
