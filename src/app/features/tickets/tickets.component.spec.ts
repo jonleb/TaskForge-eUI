@@ -222,9 +222,9 @@ describe('TicketsComponent', () => {
 
     it('should set activeKebabItemIndex on openKebabMenu', () => {
         fixture.detectChanges();
-        const mockTrigger = { _elementRef: { nativeElement: document.createElement('button') } };
+        const mockEvent = { target: document.createElement('button') } as unknown as Event;
         vi.spyOn(component.kebabPopover, 'openPopover').mockImplementation(() => {});
-        component.openKebabMenu(1, mockTrigger);
+        component.openKebabMenu(1, mockEvent);
         expect(component.activeKebabItemIndex).toBe(1);
     });
 

@@ -300,11 +300,10 @@
                                                 {{ 'workflow.status.' + item.status | translate }}
                                             </span>
                                             <eui-icon-button
-                                                #kebabTrigger
                                                 icon="dots-three-vertical:regular"
                                                 size="s"
                                                 [ariaLabel]="'tickets.card.actions-menu' | translate"
-                                                (buttonClick)="openKebabMenu(i, kebabTrigger)">
+                                                (buttonClick)="openKebabMenu(i, $event)">
                                             </eui-icon-button>
                                         </eui-content-card-header-end>
 

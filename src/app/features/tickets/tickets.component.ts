@@ -545,9 +545,10 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
 
-    openKebabMenu(index: number, triggerRef: any): void {
+    openKebabMenu(index: number, event: Event): void {
         this.activeKebabItemIndex = index;
-        this.kebabPopover.openPopover(triggerRef._elementRef || triggerRef);
+        // eui-popover.openPopover expects ElementRef; wrap native target
+        this.kebabPopover.openPopover({ nativeElement: event.target } as any);
     }
 
     onCardAction(action: 'edit' | 'delete' | 'assign' | 'change-status'): void {
