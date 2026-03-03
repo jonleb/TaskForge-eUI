@@ -449,5 +449,10 @@
   "tickets.growl.load-failed-summary": "Échec du chargement",
   "tickets.growl.load-failed-detail": "Impossible de charger les tickets. Veuillez réessayer.",
   "tickets.breadcrumb.home": "Accueil",
-  "tickets.breadcrumb.tickets": "Tickets"
+  "tickets.breadcrumb.tickets": "Tickets",
+  "tickets.filter.select-filter": "Sélectionner un filtre",
+  "tickets.filter.search-filter-placeholder": "Rechercher des tickets...",
+  "tickets.filter.all-statuses": "Tous les statuts",
+  "tickets.filter.priority-all": "Tous",
+  "tickets.filter.remove-filter": "Supprimer le filtre"
 }

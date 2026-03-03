@@ -449,5 +449,10 @@
   "tickets.growl.load-failed-summary": "Load failed",
   "tickets.growl.load-failed-detail": "Could not load tickets. Please try again.",
   "tickets.breadcrumb.home": "Home",
-  "tickets.breadcrumb.tickets": "Tickets"
+  "tickets.breadcrumb.tickets": "Tickets",
+  "tickets.filter.select-filter": "Select filter",
+  "tickets.filter.search-filter-placeholder": "Search tickets...",
+  "tickets.filter.all-statuses": "All statuses",
+  "tickets.filter.priority-all": "All",
+  "tickets.filter.remove-filter": "Remove filter"
 }
