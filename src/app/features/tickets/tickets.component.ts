@@ -541,16 +541,9 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
 
-    onCardAction(action: 'edit' | 'delete' | 'assign' | 'change-status', item: BacklogItem): void {
+    onCardAction(action: 'edit' | 'assign' | 'change-status', item: BacklogItem): void {
         switch (action) {
             case 'edit':
-                break;
-            case 'delete':
-                this.growlService.growl({
-                    severity: 'info',
-                    summary: this.translate.instant('tickets.card.action.delete'),
-                    detail: `${this.getProjectKey(item)}-${item.ticket_number}`,
-                });
                 break;
             case 'assign':
                 this.growlService.growl({

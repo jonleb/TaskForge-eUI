@@ -180,10 +180,15 @@ describe('TicketsComponent', () => {
         });
     });
 
-    it('should show growl on card action (delete)', () => {
+    it('should not render delete button in card dropdown', () => {
         fixture.detectChanges();
-        component.onCardAction('delete', mockItems[0]);
-        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'info' }));
+        const dropdowns = fixture.nativeElement.querySelectorAll('eui-dropdown-content');
+        dropdowns.forEach((dd: Element) => {
+            const buttons = dd.querySelectorAll('button');
+            buttons.forEach((btn: Element) => {
+                expect(btn.textContent).not.toContain('tickets.card.action.delete');
+            });
+        });
     });
 
     it('should show growl on card action (assign)', () => {
