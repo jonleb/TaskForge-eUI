@@ -500,3 +500,67 @@
         </select>
     </div>
 </eui-dialog>
+
+<eui-dialog #editDialog
+    [title]="'tickets.dialog.edit-title' | translate"
+    [acceptLabel]="'common.save' | translate"
+    [dismissLabel]="'common.cancel' | translate"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onEditTicket()"
+    (dismiss)="resetEditForm()">
+
+    @if (editError) {
+        <eui-feedback-message euiDanger aria-live="polite">{{ editError }}</eui-feedback-message>
+    }
+
+    <div class="dialog-form">
+        <!-- Title (required, 2-200 chars) -->
+        <label euiLabel for="edit-title" euiRequired>{{ 'ticket.field.title' | translate }}</label>
+        <input euiInputText id="edit-title" [(ngModel)]="editTitle"
+               aria-required="true"
+               [attr.aria-describedby]="editTitle.trim().length > 0 && editTitle.trim().length < 2 ? 'edit-title-error' : null"
+               maxlength="200" />
+        @if (editTitle.trim().length > 0 && editTitle.trim().length < 2) {
+            <span id="edit-title-error" class="eui-u-c-danger">
+                {{ 'common.validation.min-length' | translate:{ field: ('ticket.field.title' | translate), min: 2 } }}
+            </span>
+        }
+
+        <!-- Description (optional) -->
+        <label euiLabel for="edit-description">{{ 'ticket.field.description' | translate }}</label>
+        <textarea euiTextArea id="edit-description" [(ngModel)]="editDescription" maxlength="2000"></textarea>
+
+        <!-- Type -->
+        <label euiLabel for="edit-type">{{ 'ticket.field.type' | translate }}</label>
+        <select euiSelect id="edit-type" [(ngModel)]="editType">
+            @for (t of ticketTypes; track t) {
+                <option [ngValue]="t">{{ 'workflow.ticket-type.' + t | translate }}</option>
+            }
+        </select>
+
+        <!-- Priority -->
+        <label euiLabel for="edit-priority">{{ 'ticket.priority.label' | translate }}</label>
+        <select euiSelect id="edit-priority" [(ngModel)]="editPriority">
+            @for (p of priorities; track p) {
+                <option [ngValue]="p">{{ 'ticket.priority.' + p | translate }}</option>
+            }
+        </select>
+
+        <!-- Status -->
+        <label euiLabel for="edit-status">{{ 'ticket.field.status' | translate }}</label>
+        <select euiSelect id="edit-status" [(ngModel)]="editStatus">
+            @for (s of workflowStatuses; track s) {
+                <option [ngValue]="s">{{ 'workflow.status.' + s | translate }}</option>
+            }
+        </select>
+
+        <!-- Assignee -->
+        <label euiLabel for="edit-assignee">{{ 'ticket.field.assignee' | translate }}</label>
+        <select euiSelect id="edit-assignee" [(ngModel)]="editAssigneeId">
+            <option [ngValue]="null">—</option>
+            @for (m of editMembers; track m.userId) {
+                <option [ngValue]="m.userId">{{ m.firstName }} {{ m.lastName }}</option>
+            }
+        </select>
+    </div>
+</eui-dialog>

@@ -69,6 +69,7 @@ describe('TicketsComponent', () => {
             updateProject: vi.fn(), upsertMember: vi.fn(), removeMember: vi.fn(),
             searchCandidates: vi.fn(), getWorkflows: vi.fn(),
             createTicket: vi.fn().mockReturnValue(of({ ...mockItems[0], ticket_number: 99, title: 'New ticket' })),
+            updateTicket: vi.fn().mockReturnValue(of({ ...mockItems[0], title: 'Updated' })),
             getEpics: vi.fn().mockReturnValue(of(mockEpics)), reorderBacklog: vi.fn(),
         };
         perm = {
@@ -203,10 +204,12 @@ describe('TicketsComponent', () => {
         expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'info' }));
     });
 
-    it('should not show growl on card action (edit) — placeholder', () => {
+    it('should open edit dialog on card action (edit)', () => {
         fixture.detectChanges();
+        const spy = vi.spyOn(component.editDialog, 'openDialog');
         component.onCardAction('edit', mockItems[0]);
-        expect(growl.growl).not.toHaveBeenCalled();
+        expect(spy).toHaveBeenCalled();
+        expect(component.editItem).toEqual(mockItems[0]);
     });
 
     it('should toggle card expand and show description', () => {
@@ -909,5 +912,121 @@ describe('TicketsComponent', () => {
         expect(component.createError).toBe('');
         expect(component.dialogMembers).toEqual([]);
         expect(component.dialogEpics).toEqual([]);
+    });
+
+    // ── Edit Ticket Dialog ──
+
+    it('should pre-populate edit form with ticket data', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.editDialog, 'openDialog');
+        component.openEditDialog(mockItems[0]);
+        expect(component.editTitle).toBe('Login page');
+        expect(component.editDescription).toBe('Implement login');
+        expect(component.editType).toBe('STORY');
+        expect(component.editPriority).toBe('HIGH');
+        expect(component.editStatus).toBe('TO_DO');
+        expect(component.editAssigneeId).toBe('2');
+    });
+
+    it('should load project members when opening edit dialog', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.editDialog, 'openDialog');
+        component.openEditDialog(mockItems[0]);
+        expect(projectSvc.getProjectMembers).toHaveBeenCalledWith('1');
+        expect(component.editMembers).toEqual(mockMembers);
+    });
+
+    it('should default editDescription to empty string when ticket has no description', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.editDialog, 'openDialog');
+        component.openEditDialog(mockItems[1]); // mockItems[1] has description: null
+        expect(component.editDescription).toBe('');
+    });
+
+    it('should validate edit form — title too short returns false', () => {
+        fixture.detectChanges();
+        component.editTitle = 'A';
+        expect(component.isEditFormValid()).toBe(false);
+    });
+
+    it('should validate edit form — valid title returns true', () => {
+        fixture.detectChanges();
+        component.editTitle = 'Valid title';
+        expect(component.isEditFormValid()).toBe(true);
+    });
+
+    it('should update ticket successfully: close dialog, growl, reload', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.editDialog, 'openDialog');
+        component.openEditDialog(mockItems[0]);
+
+        const closeSpy = vi.spyOn(component.editDialog, 'closeDialog');
+        ticketsSvc.getTickets.mockClear();
+
+        component.editTitle = 'Updated title';
+        component.onEditTicket();
+
+        expect(projectSvc.updateTicket).toHaveBeenCalledWith('1', 1, expect.objectContaining({
+            title: 'Updated title',
+            type: 'STORY',
+            priority: 'HIGH',
+            status: 'TO_DO',
+            assignee_id: '2',
+        }));
+        expect(closeSpy).toHaveBeenCalled();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+        expect(ticketsSvc.getTickets).toHaveBeenCalled();
+    });
+
+    it('should show inline error on edit failure', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.editDialog, 'openDialog');
+        component.openEditDialog(mockItems[0]);
+
+        projectSvc.updateTicket.mockReturnValue(throwError(() => ({ error: { message: 'Conflict' } })));
+        component.onEditTicket();
+
+        expect(component.editError).toBe('Conflict');
+    });
+
+    it('should use default error message when server returns no message', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.editDialog, 'openDialog');
+        component.openEditDialog(mockItems[0]);
+
+        projectSvc.updateTicket.mockReturnValue(throwError(() => ({})));
+        component.onEditTicket();
+
+        expect(component.editError).toBe('tickets.error.update-default');
+    });
+
+    it('should not call updateTicket when edit form is invalid', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.editDialog, 'openDialog');
+        component.openEditDialog(mockItems[0]);
+        component.editTitle = 'A'; // too short
+        projectSvc.updateTicket.mockClear();
+
+        component.onEditTicket();
+        expect(projectSvc.updateTicket).not.toHaveBeenCalled();
+    });
+
+    it('should reset edit form on resetEditForm()', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.editDialog, 'openDialog');
+        component.openEditDialog(mockItems[0]);
+        component.editError = 'some error';
+
+        component.resetEditForm();
+
+        expect(component.editItem).toBeNull();
+        expect(component.editTitle).toBe('');
+        expect(component.editDescription).toBe('');
+        expect(component.editType).toBe('STORY');
+        expect(component.editPriority).toBe('MEDIUM');
+        expect(component.editStatus).toBe('TO_DO');
+        expect(component.editAssigneeId).toBeNull();
+        expect(component.editMembers).toEqual([]);
+        expect(component.editError).toBe('');
     });
 });

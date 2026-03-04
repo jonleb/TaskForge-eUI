@@ -68,6 +68,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     private paginatorReady = false;
 
     @ViewChild('createDialog') createDialog!: EuiDialogComponent;
+    @ViewChild('editDialog') editDialog!: EuiDialogComponent;
 
     items: BacklogItem[] = [];
     total = 0;
@@ -147,6 +148,17 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     dialogEpics: BacklogItem[] = [];
     createError = '';
     isCreating = false;
+
+    // Edit dialog state
+    editItem: BacklogItem | null = null;
+    editTitle = '';
+    editDescription = '';
+    editType: TicketType = 'STORY';
+    editPriority: TicketPriority = 'MEDIUM';
+    editStatus: WorkflowStatus = 'TO_DO';
+    editAssigneeId: string | null = null;
+    editMembers: ProjectMember[] = [];
+    editError = '';
 
     ngOnInit(): void {
         this.searchSubject.pipe(
@@ -529,6 +541,80 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         return !!this.selectedCreateProjectId && len >= 2 && len <= 200;
     }
 
+    // ── Edit Dialog ──
+
+    openEditDialog(item: BacklogItem): void {
+        this.editItem = item;
+        this.editTitle = item.title;
+        this.editDescription = item.description || '';
+        this.editType = item.type;
+        this.editPriority = item.priority || 'MEDIUM';
+        this.editStatus = item.status;
+        this.editAssigneeId = item.assignee_id;
+        this.editError = '';
+        this.editMembers = [];
+
+        this.projectService.getProjectMembers(item.projectId).pipe(takeUntil(this.destroy$)).subscribe({
+            next: members => {
+                this.editMembers = members;
+                this.cdr.markForCheck();
+            },
+        });
+
+        this.cdr.detectChanges();
+        this.editDialog.openDialog();
+    }
+
+    onEditTicket(): void {
+        if (!this.editItem || !this.isEditFormValid()) return;
+        const item = this.editItem;
+        this.editError = '';
+
+        this.projectService.updateTicket(item.projectId, item.ticket_number, {
+            title: this.editTitle.trim(),
+            description: this.editDescription.trim() || undefined,
+            type: this.editType,
+            priority: this.editPriority,
+            status: this.editStatus,
+            assignee_id: this.editAssigneeId,
+        }).pipe(takeUntil(this.destroy$)).subscribe({
+            next: () => {
+                this.editDialog.closeDialog();
+                const proj = this.projectMap.get(item.projectId);
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: this.translate.instant('tickets.growl.updated-summary'),
+                    detail: this.translate.instant('tickets.growl.updated-detail', {
+                        key: proj?.key ?? '', number: item.ticket_number,
+                    }),
+                });
+                this.resetEditForm();
+                this.loadTickets();
+            },
+            error: err => {
+                this.editError = err.error?.message || this.translate.instant('tickets.error.update-default');
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    resetEditForm(): void {
+        this.editItem = null;
+        this.editTitle = '';
+        this.editDescription = '';
+        this.editType = 'STORY';
+        this.editPriority = 'MEDIUM';
+        this.editStatus = 'TO_DO';
+        this.editAssigneeId = null;
+        this.editMembers = [];
+        this.editError = '';
+    }
+
+    isEditFormValid(): boolean {
+        const len = this.editTitle.trim().length;
+        return len >= 2 && len <= 200;
+    }
+
     // ── Card View (STORY-004) ──
 
     toggleCardExpand(itemId: string): void {
@@ -544,6 +630,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     onCardAction(action: 'edit' | 'assign' | 'change-status', item: BacklogItem): void {
         switch (action) {
             case 'edit':
+                this.openEditDialog(item);
                 break;
             case 'assign':
                 this.growlService.growl({
