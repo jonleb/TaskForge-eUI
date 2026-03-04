@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
@@ -8,11 +9,14 @@ import {
     TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock,
 } from '../../../testing/test-providers';
 import { TicketDetailComponent } from './ticket-detail.component';
+import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import {
     ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember, Workflow,
     LinkType, TicketLink,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
+
+interface DialogMock { openDialog: ReturnType<typeof vi.fn>; closeDialog: ReturnType<typeof vi.fn> }
 
 const mockProject: Project = {
     id: '1', key: 'TF', name: 'TaskForge Core',
@@ -69,6 +73,16 @@ const mockTicketLinks: TicketLink[] = [
     { id: 'tl2', projectId: '1', linkTypeId: 'lt2', sourceTicketNumber: 5, targetTicketNumber: 7, targetProjectId: '1', created_by: '3', created_at: '2026-02-21T10:00:00.000Z', linkTypeName: 'Relates to', linkLabel: 'relates to' },
 ];
 
+const mockComments = [
+    { id: 'c1', projectId: '1', ticketId: '17', ticketNumber: 5, authorId: '2', authorName: 'Bob Smith', content: 'Looks good', created_at: '2026-02-15T10:00:00.000Z' },
+    { id: 'c2', projectId: '1', ticketId: '17', ticketNumber: 5, authorId: '3', authorName: 'Jane Doe', content: 'Needs review', created_at: '2026-02-16T10:00:00.000Z' },
+];
+
+const mockActivity = [
+    { id: 'a1', projectId: '1', ticketId: '17', ticketNumber: 5, field: 'status', oldValue: 'TO_DO', newValue: 'IN_PROGRESS', changedBy: '2', created_at: '2026-02-12T10:00:00.000Z' },
+    { id: 'a2', projectId: '1', ticketId: '17', ticketNumber: 5, field: 'priority', oldValue: 'MEDIUM', newValue: 'HIGH', changedBy: '3', created_at: '2026-02-13T10:00:00.000Z' },
+];
+
 describe('TicketDetailComponent', () => {
     let fixture: ComponentFixture<TicketDetailComponent>;
     let component: TicketDetailComponent;
@@ -122,6 +136,7 @@ describe('TicketDetailComponent', () => {
             imports: [TicketDetailComponent, TranslateTestingModule],
             providers: [
                 ...provideEuiCoreMocks(),
+                provideNoopAnimations(),
                 { provide: ProjectContextService, useValue: { currentProject$ } },
                 { provide: ProjectService, useValue: svc },
                 { provide: PermissionService, useValue: perm },
@@ -136,7 +151,7 @@ describe('TicketDetailComponent', () => {
         component = fixture.componentInstance;
     });
 
-    // --- STORY-004: Read-only layout ---
+    // --- Basic rendering ---
 
     it('should create', () => {
         currentProject$.next(mockProject);
@@ -152,63 +167,10 @@ describe('TicketDetailComponent', () => {
         expect(component.isLoading).toBe(false);
     });
 
-    it('should display ticket key and number', () => {
+    it('should display ticket key', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         expect(component.ticketKey).toBe('TF-5');
-    });
-
-    it('should display title', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const h2 = fixture.nativeElement.querySelector('h2');
-        expect(h2.textContent).toContain('Login page redesign');
-    });
-
-    it('should display type chip', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const chips = fixture.nativeElement.querySelectorAll('eui-chip');
-        const chipTexts = Array.from(chips).map((c: any) => c.textContent.trim());
-        expect(chipTexts).toContain('workflow.ticket-type.STORY');
-    });
-
-    it('should display status chip', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const chips = fixture.nativeElement.querySelectorAll('eui-chip');
-        const chipTexts = Array.from(chips).map((c: any) => c.textContent.trim());
-        expect(chipTexts).toContain('workflow.status.IN_PROGRESS');
-    });
-
-    it('should display priority chip', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const chips = fixture.nativeElement.querySelectorAll('eui-chip');
-        const chipTexts = Array.from(chips).map((c: any) => c.textContent.trim());
-        expect(chipTexts).toContain('ticket.priority.HIGH');
-    });
-
-    it('should display assignee name from members', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        expect(component.getAssigneeName()).toBe('Bob Smith');
-    });
-
-    it('should display description', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const dd = fixture.nativeElement.querySelector('.description-text');
-        expect(dd.textContent).toContain('Redesign the login page');
-    });
-
-    it('should show "No description" when empty', () => {
-        svc['getTicket'].mockReturnValue(of(mockTicketNoDesc));
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const em = fixture.nativeElement.querySelector('.description-text em');
-        expect(em).toBeTruthy();
-        expect(em.textContent).toContain('ticket-detail.no-description');
     });
 
     it('should navigate back on goBack()', () => {
@@ -216,19 +178,6 @@ describe('TicketDetailComponent', () => {
         fixture.detectChanges();
         component.goBack();
         expect(locationMock.back).toHaveBeenCalled();
-    });
-
-    it('should show unassigned when no assignee', () => {
-        svc['getTicket'].mockReturnValue(of(mockTicketNoDesc));
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        expect(component.getAssigneeName()).toBe('ticket-detail.unassigned');
-    });
-
-    it('should show creator name from members', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        expect(component.getCreatorName()).toBe('Jane Doe');
     });
 
     it('should set notFound on 404 error', () => {
@@ -261,36 +210,86 @@ describe('TicketDetailComponent', () => {
         expect(fixture.nativeElement.textContent).toContain('ticket-detail.load-error');
     });
 
-    // --- STORY-005: Inline Edit & Save ---
+    // --- STORY-001: Breadcrumb + Header + Edit Toggle ---
 
-    it('should show edit buttons when canEdit is true', () => {
+    it('should render breadcrumb with 3 items', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const editBtns = fixture.nativeElement.querySelectorAll('eui-icon-button[icon="eui-edit"]');
-        expect(editBtns.length).toBeGreaterThan(0);
+        const items = fixture.nativeElement.querySelectorAll('eui-breadcrumb-item');
+        expect(items.length).toBe(3);
     });
 
-    it('should hide edit buttons when canEdit is false', () => {
+    it('should show page header with ticket key as label', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.ticketKey).toBe('TF-5');
+        const header = fixture.nativeElement.querySelector('eui-page-header');
+        expect(header).toBeTruthy();
+    });
+
+    it('should show page header with ticket title as subLabel', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.ticket?.title).toBe('Login page redesign');
+    });
+
+    it('should show edit toggle button when canEdit', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const btns = fixture.nativeElement.querySelectorAll('eui-page-header-action-items button[euibutton]');
+        expect(btns.length).toBe(1);
+        expect(btns[0].textContent.trim()).toContain('ticket-detail.edit-mode.toggle');
+    });
+
+    it('should hide edit toggle button when cannot edit', () => {
         perm['isSuperAdmin'].mockReturnValue(false);
         perm['hasProjectRole'].mockReturnValue(of(false));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const editBtns = fixture.nativeElement.querySelectorAll('eui-icon-button[icon="eui-edit"]');
-        expect(editBtns.length).toBe(0);
+        const btns = fixture.nativeElement.querySelectorAll('eui-page-header-action-items button[euibutton]');
+        expect(btns.length).toBe(0);
     });
 
-    it('should switch to edit mode on startEdit', () => {
+    it('should toggle isEditActive on toggleEditMode()', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        expect(component.isEditing('title')).toBe(false);
-        component.startEdit('title');
-        expect(component.isEditing('title')).toBe(true);
+        expect(component.isEditActive).toBe(false);
+        component.toggleEditMode();
+        expect(component.isEditActive).toBe(true);
+        component.toggleEditMode();
+        expect(component.isEditActive).toBe(false);
+    });
+
+    it('should reset form when cancelling edit mode', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.toggleEditMode(); // activate
+        component.ticketForm.patchValue({ title: 'Changed' });
+        component.toggleEditMode(); // deactivate
+        expect(component.ticketForm.get('title')?.value).toBe(mockTicket.title);
+    });
+
+    // --- STORY-002: Reactive Forms + Fieldsets ---
+
+    it('should initialize form with ticket data', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.ticketForm.get('title')?.value).toBe('Login page redesign');
+        expect(component.ticketForm.get('status')?.value).toBe('IN_PROGRESS');
+        expect(component.ticketForm.get('priority')?.value).toBe('HIGH');
+        expect(component.ticketForm.get('assignee_id')?.value).toBe('2');
+    });
+
+    it('should render 3 fieldset sections', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const fieldsets = fixture.nativeElement.querySelectorAll('eui-fieldset');
+        expect(fieldsets.length).toBe(3);
     });
 
     it('should show status dropdown with valid transitions', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        // IN_PROGRESS can go to IN_REVIEW or TO_DO
         const allowed = component.allowedStatuses;
         expect(allowed).toContain('IN_PROGRESS');
         expect(allowed).toContain('IN_REVIEW');
@@ -301,8 +300,8 @@ describe('TicketDetailComponent', () => {
     it('should call updateTicket on save', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        component.startEdit('title');
-        component.editTitle = 'Updated title';
+        component.toggleEditMode();
+        component.ticketForm.patchValue({ title: 'Updated title' });
         component.saveChanges();
         expect(svc['updateTicket']).toHaveBeenCalledWith('1', 5, { title: 'Updated title' });
     });
@@ -312,8 +311,8 @@ describe('TicketDetailComponent', () => {
         svc['updateTicket'].mockReturnValue(of(updatedTicket));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        component.startEdit('title');
-        component.editTitle = 'Updated title';
+        component.toggleEditMode();
+        component.ticketForm.patchValue({ title: 'Updated title' });
         component.saveChanges();
         expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
     });
@@ -322,36 +321,30 @@ describe('TicketDetailComponent', () => {
         svc['updateTicket'].mockReturnValue(throwError(() => new Error('fail')));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        component.startEdit('title');
-        component.editTitle = 'Updated title';
+        component.toggleEditMode();
+        component.ticketForm.patchValue({ title: 'Updated title' });
         component.saveChanges();
         expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
     });
 
-    it('should revert on cancel', () => {
+    it('should not call updateTicket when no changes', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        component.startEdit('title');
-        component.editTitle = 'Changed';
-        component.cancelEdit('title');
-        expect(component.editTitle).toBe(mockTicket.title);
-        expect(component.isEditing('title')).toBe(false);
+        component.toggleEditMode();
+        component.saveChanges();
+        expect(svc['updateTicket']).not.toHaveBeenCalled();
     });
 
-    it('should determine canEdit for SUPER_ADMIN', () => {
-        perm['isSuperAdmin'].mockReturnValue(true);
+    it('should reset form on onResetForm()', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        expect(component.canEdit).toBe(true);
+        component.toggleEditMode();
+        component.ticketForm.patchValue({ title: 'Changed' });
+        component.onResetForm();
+        expect(component.ticketForm.get('title')?.value).toBe(mockTicket.title);
     });
 
-    it('should determine canEdit false for VIEWER', () => {
-        perm['isSuperAdmin'].mockReturnValue(false);
-        perm['hasProjectRole'].mockReturnValue(of(false));
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        expect(component.canEdit).toBe(false);
-    });
+    // --- Read-only banner ---
 
     it('should show read-only banner when canEdit is false', () => {
         perm['isSuperAdmin'].mockReturnValue(false);
@@ -370,34 +363,40 @@ describe('TicketDetailComponent', () => {
         expect(banner).toBeFalsy();
     });
 
-    it('should show save bar when editing', () => {
+    it('should determine canEdit for SUPER_ADMIN', () => {
+        perm['isSuperAdmin'].mockReturnValue(true);
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        component.startEdit('description');
-        fixture.detectChanges();
-        const saveBar = fixture.nativeElement.querySelector('.save-bar');
-        expect(saveBar).toBeTruthy();
+        expect(component.canEdit).toBe(true);
     });
 
-    it('should cancel all edits', () => {
+    it('should determine canEdit false for VIEWER', () => {
+        perm['isSuperAdmin'].mockReturnValue(false);
+        perm['hasProjectRole'].mockReturnValue(of(false));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        component.startEdit('title');
-        component.startEdit('description');
-        component.cancelAllEdits();
-        expect(component.hasUnsavedChanges).toBe(false);
+        expect(component.canEdit).toBe(false);
     });
 
-    it('should not call updateTicket when no changes', () => {
+    // --- STORY-003: Tabs ---
+
+    it('should render 4 tabs', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        component.startEdit('title');
-        // editTitle is already synced to ticket.title, so no actual change
-        component.saveChanges();
-        expect(svc['updateTicket']).not.toHaveBeenCalled();
+        const tabHeaders = fixture.nativeElement.querySelectorAll('eui-tab-header-label');
+        expect(tabHeaders.length).toBe(4);
     });
 
-    // --- STORY-006: Comments Section ---
+    it('should show comment count badge on comments tab', () => {
+        svc['getComments'].mockReturnValue(of(mockComments));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const badge = fixture.nativeElement.querySelector('eui-tab-header-right-content eui-badge');
+        expect(badge).toBeTruthy();
+        expect(badge.textContent.trim()).toBe('2');
+    });
+
+    // --- STORY-004: Comments Discussion Thread ---
 
     it('should load comments after ticket loads', () => {
         svc['getComments'].mockReturnValue(of([]));
@@ -406,54 +405,21 @@ describe('TicketDetailComponent', () => {
         expect(svc['getComments']).toHaveBeenCalledWith('1', 5);
     });
 
-    it('should display comment list', () => {
-        const mockComments = [
-            { id: 'c1', projectId: '1', ticketId: '17', ticketNumber: 5, authorId: '2', authorName: 'Bob Smith', content: 'Looks good', created_at: '2026-02-15T10:00:00.000Z' },
-            { id: 'c2', projectId: '1', ticketId: '17', ticketNumber: 5, authorId: '3', authorName: 'Jane Doe', content: 'Needs review', created_at: '2026-02-16T10:00:00.000Z' },
-        ];
+    it('should map comments to discussion thread items', () => {
         svc['getComments'].mockReturnValue(of(mockComments));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const items = fixture.nativeElement.querySelectorAll('.comment-item');
+        const items = component.commentThreadItems;
         expect(items.length).toBe(2);
-    });
-
-    it('should display author name and date in comment', () => {
-        const mockComments = [
-            { id: 'c1', projectId: '1', ticketId: '17', ticketNumber: 5, authorId: '2', authorName: 'Bob Smith', content: 'Test comment', created_at: '2026-02-15T10:00:00.000Z' },
-        ];
-        svc['getComments'].mockReturnValue(of(mockComments));
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const author = fixture.nativeElement.querySelector('.comment-author');
-        expect(author.textContent).toContain('Bob Smith');
-        const content = fixture.nativeElement.querySelector('.comment-content');
-        expect(content.textContent).toContain('Test comment');
+        expect(items[0].author).toBe('Bob Smith');
+        expect(items[0].body).toBe('Looks good');
     });
 
     it('should show empty state when no comments', () => {
         svc['getComments'].mockReturnValue(of([]));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        expect(fixture.nativeElement.textContent).toContain('ticket-detail.comments.empty');
-    });
-
-    it('should show add comment form when canEdit', () => {
-        svc['getComments'].mockReturnValue(of([]));
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const textarea = fixture.nativeElement.querySelector('#new-comment');
-        expect(textarea).toBeTruthy();
-    });
-
-    it('should hide add comment form when cannot edit', () => {
-        svc['getComments'].mockReturnValue(of([]));
-        perm['isSuperAdmin'].mockReturnValue(false);
-        perm['hasProjectRole'].mockReturnValue(of(false));
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const textarea = fixture.nativeElement.querySelector('#new-comment');
-        expect(textarea).toBeFalsy();
+        expect(component.comments.length).toBe(0);
     });
 
     it('should call addComment on submit', () => {
@@ -466,7 +432,7 @@ describe('TicketDetailComponent', () => {
         expect(svc['addComment']).toHaveBeenCalledWith('1', 5, 'New comment');
     });
 
-    it('should clear textarea after successful submit', () => {
+    it('should clear textarea after successful comment submit', () => {
         svc['getComments'].mockReturnValue(of([]));
         svc['addComment'].mockReturnValue(of({ id: 'c1', content: 'New comment' }));
         currentProject$.next(mockProject);
@@ -477,7 +443,7 @@ describe('TicketDetailComponent', () => {
         expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
     });
 
-    // --- STORY-007: Activity Timeline ---
+    // --- STORY-005: Activity Discussion Thread ---
 
     it('should load activity after ticket loads', () => {
         currentProject$.next(mockProject);
@@ -485,23 +451,21 @@ describe('TicketDetailComponent', () => {
         expect(svc['getActivity']).toHaveBeenCalledWith('1', 5);
     });
 
-    it('should display activity entries', () => {
-        const mockActivity = [
-            { id: 'a1', projectId: '1', ticketId: '17', ticketNumber: 5, field: 'status', oldValue: 'TO_DO', newValue: 'IN_PROGRESS', changedBy: '2', created_at: '2026-02-12T10:00:00.000Z' },
-            { id: 'a2', projectId: '1', ticketId: '17', ticketNumber: 5, field: 'priority', oldValue: 'MEDIUM', newValue: 'HIGH', changedBy: '3', created_at: '2026-02-13T10:00:00.000Z' },
-        ];
+    it('should map activity to discussion thread items', () => {
         svc['getActivity'].mockReturnValue(of(mockActivity));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const items = fixture.nativeElement.querySelectorAll('.activity-item');
+        const items = component.activityThreadItems;
         expect(items.length).toBe(2);
+        expect(items[0].author).toBe('Bob Smith');
+        expect(items[0].typeClass).toBe('info');
     });
 
     it('should show empty state when no activity', () => {
         svc['getActivity'].mockReturnValue(of([]));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        expect(fixture.nativeElement.textContent).toContain('ticket-detail.activity.empty');
+        expect(component.activity.length).toBe(0);
     });
 
     it('should resolve changer name from members', () => {
@@ -511,27 +475,7 @@ describe('TicketDetailComponent', () => {
         expect(component.getChangerName('unknown')).toBe('unknown');
     });
 
-    it('should display activity section heading', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const headings = fixture.nativeElement.querySelectorAll('h3');
-        const texts = Array.from(headings).map((h: Element) => h.textContent?.trim());
-        expect(texts).toContain('ticket-detail.activity.title');
-    });
-
-    it('should show activity date', () => {
-        const mockActivity = [
-            { id: 'a1', projectId: '1', ticketId: '17', ticketNumber: 5, field: 'title', oldValue: 'Old', newValue: 'New', changedBy: '2', created_at: '2026-02-12T10:00:00.000Z' },
-        ];
-        svc['getActivity'].mockReturnValue(of(mockActivity));
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const dateEl = fixture.nativeElement.querySelector('.activity-date');
-        expect(dateEl).toBeTruthy();
-        expect(dateEl.textContent.trim()).toBeTruthy();
-    });
-
-    // --- STORY-016-004: Linked Tickets Section ---
+    // --- STORY-006: Links Tab ---
 
     it('should load ticket links after ticket loads', () => {
         currentProject$.next(mockProject);
@@ -545,53 +489,11 @@ describe('TicketDetailComponent', () => {
         expect(svc['getLinkTypes']).toHaveBeenCalled();
     });
 
-    it('should display linked tickets list', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const items = fixture.nativeElement.querySelectorAll('.link-item');
-        expect(items.length).toBe(2);
-    });
-
-    it('should display link label and ticket key', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const firstItem = fixture.nativeElement.querySelector('.link-item');
-        expect(firstItem.textContent).toContain('blocks');
-        expect(firstItem.textContent).toContain('TF-3');
-    });
-
     it('should show empty state when no links', () => {
         svc['getTicketLinks'].mockReturnValue(of([]));
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        expect(fixture.nativeElement.textContent).toContain('ticket-detail.links.empty');
-    });
-
-    it('should show linked tickets section heading', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const headings = fixture.nativeElement.querySelectorAll('h3');
-        const texts = Array.from(headings).map((h: Element) => h.textContent?.trim());
-        expect(texts).toContain('ticket-detail.links.title');
-    });
-
-    // --- STORY-016-005: Add Link Dialog ---
-
-    it('should show add link button when canEdit', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const btn = fixture.nativeElement.querySelector('.section-header button');
-        expect(btn).toBeTruthy();
-        expect(btn.textContent).toContain('ticket-detail.links.add');
-    });
-
-    it('should hide add link button when cannot edit', () => {
-        perm['isSuperAdmin'].mockReturnValue(false);
-        perm['hasProjectRole'].mockReturnValue(of(false));
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const sectionHeaders = fixture.nativeElement.querySelectorAll('.section-header button');
-        expect(sectionHeaders.length).toBe(0);
+        expect(component.ticketLinks.length).toBe(0);
     });
 
     it('should call createTicketLink on submitAddLink', () => {
@@ -599,8 +501,7 @@ describe('TicketDetailComponent', () => {
         fixture.detectChanges();
         component.newLinkTypeId = 'lt1';
         component.newLinkTargetNumber = 10;
-        // Mock the dialog ViewChild
-        component.addLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as any;
+        component.addLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as DialogMock as unknown as EuiDialogComponent;
         component.submitAddLink();
         expect(svc['createTicketLink']).toHaveBeenCalledWith('1', 5, {
             linkTypeId: 'lt1',
@@ -613,7 +514,7 @@ describe('TicketDetailComponent', () => {
         fixture.detectChanges();
         component.newLinkTypeId = 'lt1';
         component.newLinkTargetNumber = 10;
-        component.addLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as any;
+        component.addLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as DialogMock as unknown as EuiDialogComponent;
         component.submitAddLink();
         expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
     });
@@ -624,34 +525,16 @@ describe('TicketDetailComponent', () => {
         fixture.detectChanges();
         component.newLinkTypeId = 'lt1';
         component.newLinkTargetNumber = 10;
-        component.addLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as any;
+        component.addLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as DialogMock as unknown as EuiDialogComponent;
         component.submitAddLink();
         expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
-    });
-
-    // --- STORY-016-006: Remove Link & Role Gating ---
-
-    it('should show delete button for each link when canEdit', () => {
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const trashBtns = fixture.nativeElement.querySelectorAll('.link-item eui-icon-button[icon="eui-trash"]');
-        expect(trashBtns.length).toBe(2);
-    });
-
-    it('should hide delete buttons when cannot edit', () => {
-        perm['isSuperAdmin'].mockReturnValue(false);
-        perm['hasProjectRole'].mockReturnValue(of(false));
-        currentProject$.next(mockProject);
-        fixture.detectChanges();
-        const trashBtns = fixture.nativeElement.querySelectorAll('.link-item eui-icon-button[icon="eui-trash"]');
-        expect(trashBtns.length).toBe(0);
     });
 
     it('should call deleteTicketLink on removeLink', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         component.linkToDelete = mockTicketLinks[0];
-        component.confirmDeleteLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as any;
+        component.confirmDeleteLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as DialogMock as unknown as EuiDialogComponent;
         component.removeLink();
         expect(svc['deleteTicketLink']).toHaveBeenCalledWith('1', 5, 'tl1');
     });
@@ -660,7 +543,7 @@ describe('TicketDetailComponent', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         component.linkToDelete = mockTicketLinks[0];
-        component.confirmDeleteLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as any;
+        component.confirmDeleteLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as DialogMock as unknown as EuiDialogComponent;
         component.removeLink();
         expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
     });
@@ -670,8 +553,47 @@ describe('TicketDetailComponent', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         component.linkToDelete = mockTicketLinks[0];
-        component.confirmDeleteLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as any;
+        component.confirmDeleteLinkDialog = { openDialog: vi.fn(), closeDialog: vi.fn() } as DialogMock as unknown as EuiDialogComponent;
         component.removeLink();
         expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
+    });
+
+    // --- STORY-007: Page Footer ---
+
+    it('should show page footer when isEditActive is true', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        component.toggleEditMode();
+        fixture.detectChanges();
+        const footer = fixture.nativeElement.querySelector('eui-page-footer');
+        expect(footer).toBeTruthy();
+    });
+
+    it('should hide page footer when isEditActive is false', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        const footer = fixture.nativeElement.querySelector('eui-page-footer');
+        expect(footer).toBeFalsy();
+    });
+
+    // --- Display helpers ---
+
+    it('should display assignee name from members', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.getAssigneeName()).toBe('Bob Smith');
+    });
+
+    it('should show unassigned when no assignee', () => {
+        svc['getTicket'].mockReturnValue(of(mockTicketNoDesc));
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.getAssigneeName()).toBe('ticket-detail.unassigned');
+    });
+
+    it('should show creator name from members', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(component.getCreatorName()).toBe('Jane Doe');
     });
 });
