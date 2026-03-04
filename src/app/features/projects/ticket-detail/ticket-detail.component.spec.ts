@@ -237,8 +237,9 @@ describe('TicketDetailComponent', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         const btns = fixture.nativeElement.querySelectorAll('eui-page-header-action-items button[euibutton]');
-        expect(btns.length).toBe(1);
-        expect(btns[0].textContent.trim()).toContain('ticket-detail.edit-mode.toggle');
+        expect(btns.length).toBe(2);
+        expect(btns[0].textContent.trim()).toContain('ticket-detail.comments.submit');
+        expect(btns[1].textContent.trim()).toContain('ticket-detail.edit-mode.toggle');
     });
 
     it('should hide edit toggle button when cannot edit', () => {

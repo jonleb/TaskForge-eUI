@@ -288,6 +288,8 @@
   "ticket-detail.comments.title": "Commentaires",
   "ticket-detail.comments.add-placeholder": "Écrire un commentaire...",
   "ticket-detail.comments.submit": "Ajouter un commentaire",
+  "ticket-detail.comments.dialog.title": "Ajouter un commentaire",
+  "ticket-detail.comments.dialog.cancel": "Annuler",
   "ticket-detail.comments.empty": "Aucun commentaire.",
   "ticket-detail.comments.growl.added": "Commentaire ajouté",
   "ticket-detail.comments.growl.failed": "Échec de l'ajout du commentaire.",

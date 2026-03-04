@@ -103,6 +103,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
     @ViewChild('addLinkDialog') addLinkDialog!: EuiDialogComponent;
     @ViewChild('confirmDeleteLinkDialog') confirmDeleteLinkDialog!: EuiDialogComponent;
+    @ViewChild('addCommentDialog') addCommentDialog!: EuiDialogComponent;
 
     ngOnInit(): void {
         combineLatest([
@@ -326,9 +327,16 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         });
     }
 
+    openAddCommentDialog(): void {
+        this.newCommentText = '';
+        this.cdr.detectChanges();
+        this.addCommentDialog.openDialog();
+    }
+
     submitComment(): void {
         if (!this.project || !this.ticket || this.isAddingComment || !this.newCommentText.trim()) return;
         this.isAddingComment = true;
+        this.addCommentDialog.closeDialog();
         this.cdr.markForCheck();
 
         this.projectService.addComment(this.project.id, this.ticket.ticket_number, this.newCommentText.trim()).pipe(

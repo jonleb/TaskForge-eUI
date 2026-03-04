@@ -18,6 +18,11 @@
                              (buttonClick)="goBack()">
             </eui-icon-button>
             @if (canEdit && !isLoading && ticket) {
+                <button euiButton euiSecondary
+                        (click)="openAddCommentDialog()"
+                        aria-haspopup="dialog">
+                    {{ 'ticket-detail.comments.submit' | translate }}
+                </button>
                 <button euiButton [euiSecondary]="isEditActive" [euiPrimary]="!isEditActive"
                         (click)="toggleEditMode()"
                         [attr.aria-pressed]="isEditActive">
@@ -232,27 +237,6 @@
                         </eui-tab-header-right-content>
                     </eui-tab-header>
                     <eui-tab-body>
-                        @if (canEdit) {
-                            <div class="eui-u-mb-m eui-u-width-30">
-                                <div euiInputGroup>
-                                    <label euiLabel for="new-comment">{{ 'ticket-detail.comments.add-placeholder' | translate }}</label>
-                                    <textarea euiTextArea id="new-comment"
-                                              [(ngModel)]="newCommentText"
-                                              [placeholder]="'ticket-detail.comments.add-placeholder' | translate"
-                                              maxlength="2000"
-                                              rows="3"
-                                              aria-required="true"></textarea>
-                                </div>
-                                <div class="eui-u-mt-xs">
-                                    <button euiButton euiPrimary euiSizeS
-                                            (click)="submitComment()"
-                                            [attr.aria-busy]="isAddingComment">
-                                        {{ 'ticket-detail.comments.submit' | translate }}
-                                    </button>
-                                </div>
-                            </div>
-                        }
-
                         @if (comments.length === 0) {
                             <p class="eui-u-f-m eui-u-c-text-secondary">{{ 'ticket-detail.comments.empty' | translate }}</p>
                         } @else {
@@ -350,6 +334,26 @@
                         [dismissLabel]="'ticket-detail.links.dialog.cancel' | translate"
                         (accept)="removeLink()">
                 <p>{{ 'ticket-detail.links.confirm-delete-message' | translate }}</p>
+            </eui-dialog>
+
+            <!-- Add Comment Dialog -->
+            <eui-dialog #addCommentDialog
+                        [title]="'ticket-detail.comments.dialog.title' | translate"
+                        [acceptLabel]="'ticket-detail.comments.submit' | translate"
+                        [dismissLabel]="'ticket-detail.comments.dialog.cancel' | translate"
+                        (accept)="submitComment()">
+                <fieldset class="eui-u-p-none eui-u-border-none">
+                    <legend class="eui-u-sr-only">{{ 'ticket-detail.comments.dialog.title' | translate }}</legend>
+                    <div euiInputGroup>
+                        <label euiLabel for="dialog-comment" euiRequired>{{ 'ticket-detail.comments.add-placeholder' | translate }}</label>
+                        <textarea euiTextArea id="dialog-comment"
+                                  [(ngModel)]="newCommentText"
+                                  [placeholder]="'ticket-detail.comments.add-placeholder' | translate"
+                                  maxlength="2000"
+                                  rows="5"
+                                  aria-required="true"></textarea>
+                    </div>
+                </fieldset>
             </eui-dialog>
 
         }

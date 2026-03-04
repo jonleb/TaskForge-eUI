@@ -4832,8 +4832,8 @@
       "id": "116",
       "projectId": "5",
       "type": "BUG",
-      "title": "Mon ticket",
-      "description": "",
+      "title": "My issue",
+      "description": "My issue description",
       "status": "TO_DO",
       "priority": "MEDIUM",
       "assignee_id": null,
@@ -5021,6 +5021,28 @@
       "newValue": "IN_PROGRESS",
       "changedBy": "1",
       "created_at": "2026-03-03T13:41:23.603Z"
+    },
+    {
+      "id": "17",
+      "projectId": "5",
+      "ticketId": "116",
+      "ticketNumber": 16,
+      "field": "title",
+      "oldValue": "Mon ticket",
+      "newValue": "My issue",
+      "changedBy": "1",
+      "created_at": "2026-03-04T09:37:04.214Z"
+    },
+    {
+      "id": "18",
+      "projectId": "5",
+      "ticketId": "116",
+      "ticketNumber": 16,
+      "field": "description",
+      "oldValue": "",
+      "newValue": "My issue description",
+      "changedBy": "1",
+      "created_at": "2026-03-04T09:37:04.214Z"
     }
   ],
   "link_types": [
@@ -5109,6 +5131,16 @@
       "authorName": "Super Admin",
       "content": "Second comment",
       "created_at": "2026-02-28T09:54:36.577Z"
+    },
+    {
+      "id": "5",
+      "projectId": "5",
+      "ticketId": "116",
+      "ticketNumber": 16,
+      "authorId": "1",
+      "authorName": "Super Admin",
+      "content": "My first comment",
+      "created_at": "2026-03-04T09:37:28.606Z"
     }
   ],
   "sprints": [
