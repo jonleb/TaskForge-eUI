@@ -45,6 +45,7 @@
   "login.title": "TaskForge",
   "login.sign-in": "Sign in",
   "login.signing-in": "Signing in...",
+  "login.remember-me": "Remember me",
   "login.error.unexpected": "An unexpected error occurred",
   "page.home.title": "Welcome to TaskForge",
   "page.home.overview": "Overview",

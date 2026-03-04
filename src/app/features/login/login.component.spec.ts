@@ -85,16 +85,25 @@ describe('LoginComponent', () => {
     it('should call AuthService.login() with form values on submit', () => {
         authServiceMock.login.mockReturnValue(of(mockLoginResponse));
 
-        component.loginForm.setValue({ username: 'superadmin', password: 'SecurePassword!123' });
+        component.loginForm.setValue({ username: 'superadmin', password: 'SecurePassword!123', rememberMe: false });
         component.onSubmit();
 
-        expect(authServiceMock.login).toHaveBeenCalledWith('superadmin', 'SecurePassword!123');
+        expect(authServiceMock.login).toHaveBeenCalledWith('superadmin', 'SecurePassword!123', false);
+    });
+
+    it('should pass rememberMe=true when checkbox is checked', () => {
+        authServiceMock.login.mockReturnValue(of(mockLoginResponse));
+
+        component.loginForm.setValue({ username: 'superadmin', password: 'SecurePassword!123', rememberMe: true });
+        component.onSubmit();
+
+        expect(authServiceMock.login).toHaveBeenCalledWith('superadmin', 'SecurePassword!123', true);
     });
 
     it('should navigate to /screen/home on successful login', () => {
         authServiceMock.login.mockReturnValue(of(mockLoginResponse));
 
-        component.loginForm.setValue({ username: 'superadmin', password: 'SecurePassword!123' });
+        component.loginForm.setValue({ username: 'superadmin', password: 'SecurePassword!123', rememberMe: false });
         component.onSubmit();
 
         expect(router.navigate).toHaveBeenCalledWith(['/screen/home']);
@@ -103,7 +112,7 @@ describe('LoginComponent', () => {
     it('should call appStarter.start() to initialize user session after login', () => {
         authServiceMock.login.mockReturnValue(of(mockLoginResponse));
 
-        component.loginForm.setValue({ username: 'superadmin', password: 'SecurePassword!123' });
+        component.loginForm.setValue({ username: 'superadmin', password: 'SecurePassword!123', rememberMe: false });
         component.onSubmit();
 
         expect(appStarterMock.start).toHaveBeenCalled();
@@ -116,7 +125,7 @@ describe('LoginComponent', () => {
         });
         authServiceMock.login.mockReturnValue(throwError(() => errorResponse));
 
-        component.loginForm.setValue({ username: 'superadmin', password: 'wrong' });
+        component.loginForm.setValue({ username: 'superadmin', password: 'wrong', rememberMe: false });
         component.onSubmit();
         fixture.detectChanges();
 
@@ -129,7 +138,7 @@ describe('LoginComponent', () => {
     it('should disable submit button while loading', () => {
         authServiceMock.login.mockReturnValue(of(mockLoginResponse));
 
-        component.loginForm.setValue({ username: 'superadmin', password: 'SecurePassword!123' });
+        component.loginForm.setValue({ username: 'superadmin', password: 'SecurePassword!123', rememberMe: false });
         component.isLoading = true;
         fixture.detectChanges();
 
@@ -178,6 +187,14 @@ describe('LoginComponent', () => {
         expect(passwordInput?.getAttribute('aria-required')).toBe('true');
     });
 
+    it('should render Remember me checkbox with label (a11y)', () => {
+        const compiled = fixture.nativeElement as HTMLElement;
+        const checkbox = compiled.querySelector('#login-remember');
+        const label = compiled.querySelector('label[for="login-remember"]');
+        expect(checkbox).toBeTruthy();
+        expect(label).toBeTruthy();
+    });
+
     it('should have aria-live="polite" on error container (a11y)', () => {
         // Trigger an error to show the container
         const errorResponse = new HttpErrorResponse({
@@ -186,7 +203,7 @@ describe('LoginComponent', () => {
         });
         authServiceMock.login.mockReturnValue(throwError(() => errorResponse));
 
-        component.loginForm.setValue({ username: 'test', password: 'test' });
+        component.loginForm.setValue({ username: 'test', password: 'test', rememberMe: false });
         component.onSubmit();
         fixture.detectChanges();
 

@@ -8,6 +8,8 @@ import { EUI_LABEL } from '@eui/components/eui-label';
 import { EUI_INPUT_GROUP } from '@eui/components/eui-input-group';
 import { EUI_FEEDBACK_MESSAGE } from '@eui/components/eui-feedback-message';
 
+import { EUI_INPUT_CHECKBOX } from '@eui/components/eui-input-checkbox';
+
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/auth';
 import { AppStarterService } from '../../app-starter.service';
@@ -24,6 +26,7 @@ import { AppStarterService } from '../../app-starter.service';
         ...EUI_LABEL,
         ...EUI_INPUT_GROUP,
         ...EUI_FEEDBACK_MESSAGE,
+        ...EUI_INPUT_CHECKBOX,
     ],
 })
 export class LoginComponent implements OnInit {
@@ -36,6 +39,7 @@ export class LoginComponent implements OnInit {
     loginForm = new FormGroup({
         username: new FormControl('', [Validators.required]),
         password: new FormControl('', [Validators.required]),
+        rememberMe: new FormControl(false),
     });
 
     errorMessage = '';
@@ -59,8 +63,9 @@ export class LoginComponent implements OnInit {
 
         const username = this.loginForm.get('username')?.value ?? '';
         const password = this.loginForm.get('password')?.value ?? '';
+        const rememberMe = !!this.loginForm.get('rememberMe')?.value;
 
-        this.authService.login(username, password).subscribe({
+        this.authService.login(username, password, rememberMe).subscribe({
             next: () => {
                 // Re-run app initialization to load user profile, permissions, and project context
                 this.appStarter.start().subscribe(() => {

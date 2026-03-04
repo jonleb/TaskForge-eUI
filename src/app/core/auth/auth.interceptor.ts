@@ -15,6 +15,7 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
     const translate = inject(TranslateService);
 
     const isLoginRequest = req.url.includes('/api/auth/login');
+    const isRefreshRequest = req.url.includes('/api/auth/refresh');
 
     // Don't attach token to login requests — login is public
     if (!isLoginRequest) {
@@ -28,13 +29,15 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
 
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
-            // Login errors are handled by the login component — skip interceptor handling
-            if (isLoginRequest) {
+            // Login and refresh errors are handled by their callers — skip interceptor handling
+            if (isLoginRequest || isRefreshRequest) {
                 return throwError(() => error);
             }
 
             if (error.status === 401) {
                 localStorage.removeItem('auth_token');
+                sessionStorage.removeItem('auth_token');
+                localStorage.removeItem('auth_remember');
                 authService.isAuthenticated$.next(false);
                 growlService.growl({
                     severity: 'warning',

@@ -250,6 +250,73 @@ describe('POST /api/auth/logout', () => {
     });
 });
 
+describe('POST /api/auth/refresh', () => {
+
+    it('should return 200 with a new token for valid token', async () => {
+        const token = await getValidToken();
+        const res = await request(app)
+            .post('/api/auth/refresh')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.accessToken).toBeDefined();
+        expect(res.body.accessToken).not.toBe(token);
+    });
+
+    it('should return a token with future expiry', async () => {
+        const token = await getValidToken();
+        const res = await request(app)
+            .post('/api/auth/refresh')
+            .set('Authorization', `Bearer ${token}`);
+
+        const decoded = JSON.parse(Buffer.from(res.body.accessToken, 'base64').toString());
+        expect(decoded.exp).toBeGreaterThan(Date.now());
+        expect(decoded.userId).toBe('1');
+        expect(decoded.role).toBe('SUPER_ADMIN');
+    });
+
+    it('should return 401 without token', async () => {
+        const res = await request(app).post('/api/auth/refresh');
+
+        expect(res.status).toBe(401);
+    });
+
+    it('should return 401 with expired token', async () => {
+        const res = await request(app)
+            .post('/api/auth/refresh')
+            .set('Authorization', `Bearer ${getExpiredToken()}`);
+
+        expect(res.status).toBe(401);
+    });
+});
+
+describe('POST /api/auth/login — rememberMe', () => {
+
+    it('should return a token with 7-day expiry when rememberMe is true', async () => {
+        const res = await request(app)
+            .post('/api/auth/login')
+            .send({ username: 'superadmin', password: 'SecurePassword!123', rememberMe: true });
+
+        expect(res.status).toBe(200);
+        const decoded = JSON.parse(Buffer.from(res.body.accessToken, 'base64').toString());
+        // 7 days = 604800000ms; allow 5s tolerance
+        const expectedMin = Date.now() + 604800000 - 5000;
+        expect(decoded.exp).toBeGreaterThan(expectedMin);
+    });
+
+    it('should return a token with 1-hour expiry when rememberMe is false', async () => {
+        const res = await request(app)
+            .post('/api/auth/login')
+            .send({ username: 'superadmin', password: 'SecurePassword!123', rememberMe: false });
+
+        expect(res.status).toBe(200);
+        const decoded = JSON.parse(Buffer.from(res.body.accessToken, 'base64').toString());
+        // 1 hour = 3600000ms; should be less than 2 hours
+        const maxExpiry = Date.now() + 7200000;
+        expect(decoded.exp).toBeLessThan(maxExpiry);
+    });
+});
+
 describe('POST /api/auth/login — remains public', () => {
 
     it('should still work without Authorization header', async () => {

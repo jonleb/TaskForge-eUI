@@ -30,6 +30,11 @@ export class AppStarterService {
         return this.initUserService().pipe(
             switchMap(() => this.i18nService.init()),
             tap(() => this.restoreLanguage()),
+            tap(() => {
+                if (this.authService.isAuthenticated()) {
+                    this.authService.startRefreshTimer();
+                }
+            }),
             switchMap(status => this.projectContext.restoreProject().pipe(map(() => status))),
         );
     }

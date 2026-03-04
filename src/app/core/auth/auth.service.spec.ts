@@ -23,6 +23,7 @@ describe('AuthService', () => {
 
     beforeEach(() => {
         localStorage.clear();
+        sessionStorage.clear();
 
         TestBed.configureTestingModule({
             imports: [TranslateTestingModule],
@@ -40,6 +41,7 @@ describe('AuthService', () => {
     afterEach(() => {
         httpMock.verify();
         localStorage.clear();
+        sessionStorage.clear();
     });
 
     it('should be created', () => {
@@ -47,15 +49,39 @@ describe('AuthService', () => {
     });
 
     describe('login()', () => {
-        it('should POST to /api/auth/login and store token in localStorage', () => {
-            service.login('superadmin', 'SecurePassword!123').subscribe();
+        it('should POST to /api/auth/login with rememberMe flag', () => {
+            service.login('superadmin', 'SecurePassword!123', true).subscribe();
 
             const req = httpMock.expectOne('/api/auth/login');
             expect(req.request.method).toBe('POST');
-            expect(req.request.body).toEqual({ username: 'superadmin', password: 'SecurePassword!123' });
+            expect(req.request.body).toEqual({ username: 'superadmin', password: 'SecurePassword!123', rememberMe: true });
             req.flush(mockLoginResponse);
+        });
+
+        it('should store token in localStorage when rememberMe is true', () => {
+            service.login('superadmin', 'SecurePassword!123', true).subscribe();
+            httpMock.expectOne('/api/auth/login').flush(mockLoginResponse);
 
             expect(localStorage.getItem('auth_token')).toBe(mockLoginResponse.accessToken);
+            expect(sessionStorage.getItem('auth_token')).toBeNull();
+        });
+
+        it('should store token in sessionStorage when rememberMe is false', () => {
+            service.login('superadmin', 'SecurePassword!123', false).subscribe();
+            httpMock.expectOne('/api/auth/login').flush(mockLoginResponse);
+
+            expect(sessionStorage.getItem('auth_token')).toBe(mockLoginResponse.accessToken);
+            expect(localStorage.getItem('auth_token')).toBeNull();
+        });
+
+        it('should default rememberMe to false', () => {
+            service.login('superadmin', 'SecurePassword!123').subscribe();
+
+            const req = httpMock.expectOne('/api/auth/login');
+            expect(req.request.body.rememberMe).toBe(false);
+            req.flush(mockLoginResponse);
+
+            expect(sessionStorage.getItem('auth_token')).toBe(mockLoginResponse.accessToken);
         });
 
         it('should update isAuthenticated$ to true on success', () => {
@@ -96,6 +122,22 @@ describe('AuthService', () => {
             expect(localStorage.getItem('auth_token')).toBeNull();
         });
 
+        it('should remove token from sessionStorage', () => {
+            sessionStorage.setItem('auth_token', 'some-token');
+            service.logout().subscribe();
+            httpMock.expectOne('/api/auth/logout').flush(null);
+
+            expect(sessionStorage.getItem('auth_token')).toBeNull();
+        });
+
+        it('should clear remember flag on logout', () => {
+            localStorage.setItem('auth_remember', 'true');
+            service.logout().subscribe();
+            httpMock.expectOne('/api/auth/logout').flush(null);
+
+            expect(localStorage.getItem('auth_remember')).toBeNull();
+        });
+
         it('should update isAuthenticated$ to false', () => {
             let authState = true;
             service.isAuthenticated$.subscribe(val => authState = val);
@@ -125,15 +167,32 @@ describe('AuthService', () => {
             expect(service.getToken()).toBe('my-token');
         });
 
+        it('should return token from sessionStorage', () => {
+            sessionStorage.setItem('auth_token', 'my-session-token');
+            expect(service.getToken()).toBe('my-session-token');
+        });
+
+        it('should prefer localStorage over sessionStorage', () => {
+            localStorage.setItem('auth_token', 'local-token');
+            sessionStorage.setItem('auth_token', 'session-token');
+            expect(service.getToken()).toBe('local-token');
+        });
+
         it('should return null when no token exists', () => {
             expect(service.getToken()).toBeNull();
         });
     });
 
     describe('isAuthenticated()', () => {
-        it('should return true for valid non-expired token', () => {
+        it('should return true for valid non-expired token in localStorage', () => {
             const token = btoa(JSON.stringify({ userId: '1', role: 'SUPER_ADMIN', exp: Date.now() + 3600000 }));
             localStorage.setItem('auth_token', token);
+            expect(service.isAuthenticated()).toBe(true);
+        });
+
+        it('should return true for valid non-expired token in sessionStorage', () => {
+            const token = btoa(JSON.stringify({ userId: '1', role: 'SUPER_ADMIN', exp: Date.now() + 3600000 }));
+            sessionStorage.setItem('auth_token', token);
             expect(service.isAuthenticated()).toBe(true);
         });
 

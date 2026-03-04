@@ -36,6 +36,14 @@
                 }
             </div>
 
+            <div euiInputGroup class="eui-u-mb-m">
+                <input euiInputCheckBox
+                       id="login-remember"
+                       formControlName="rememberMe"
+                       type="checkbox" />
+                <label euiLabel for="login-remember">{{ 'login.remember-me' | translate }}</label>
+            </div>
+
             <button euiButton
                     euiPrimary
                     euiBlockButton
