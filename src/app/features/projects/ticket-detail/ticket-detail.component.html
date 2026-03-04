@@ -64,8 +64,8 @@
                             <eui-fieldset [label]="'ticket-detail.fieldset.info' | translate"
                                           iconSvgName="note-pencil:regular"
                                           [isExpandable]="true" [isExpanded]="true" [isFirst]="true">
-                                <div class="row">
-                                    <div class="col-md-6">
+                                <div class="eui-u-d-flex eui-u-gap-m">
+                                    <div class="eui-u-flex-1">
                                         <div euiInputGroup>
                                             <label euiLabel for="field-title" euiRequired>{{ 'ticket.field.title' | translate }}</label>
                                             <input euiInputText id="field-title"
@@ -80,12 +80,30 @@
                                             }
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="eui-u-flex-1">
                                         <div euiInputGroup>
                                             <label euiLabel for="field-type">{{ 'ticket.field.type' | translate }}</label>
                                             <input euiInputText id="field-type"
                                                    [value]="'workflow.ticket-type.' + ticket.type | translate"
                                                    [readonly]="true" />
+                                        </div>
+                                    </div>
+                                    <div class="eui-u-flex-1">
+                                        <div euiInputGroup>
+                                            <label euiLabel for="field-epic">{{ 'ticket-detail.field.epic' | translate }}</label>
+                                            @if (isEditActive) {
+                                                <select euiSelect id="field-epic"
+                                                        formControlName="epic_id">
+                                                    <option [ngValue]="null">—</option>
+                                                    @for (e of epics; track e.id) {
+                                                        <option [ngValue]="e.id">{{ e.title }}</option>
+                                                    }
+                                                </select>
+                                            } @else {
+                                                <input euiInputText id="field-epic"
+                                                       [value]="getEpicName() ?? '—'"
+                                                       [readonly]="true" />
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -163,26 +181,8 @@
                             <eui-fieldset [label]="'ticket-detail.fieldset.additional' | translate"
                                           iconSvgName="eui-ellipsis-horizontal"
                                           [isExpandable]="true" [isExpanded]="true">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div euiInputGroup>
-                                            <label euiLabel for="field-epic">{{ 'ticket-detail.field.epic' | translate }}</label>
-                                            @if (isEditActive) {
-                                                <select euiSelect id="field-epic"
-                                                        formControlName="epic_id">
-                                                    <option [ngValue]="null">—</option>
-                                                    @for (e of epics; track e.id) {
-                                                        <option [ngValue]="e.id">{{ e.title }}</option>
-                                                    }
-                                                </select>
-                                            } @else {
-                                                <input euiInputText id="field-epic"
-                                                       [value]="getEpicName() ?? '—'"
-                                                       [readonly]="true" />
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
+                                <div class="eui-u-d-flex eui-u-gap-m">
+                                    <div class="eui-u-flex-1">
                                         <div euiInputGroup>
                                             <label euiLabel for="field-created-by">{{ 'ticket-detail.field.created-by' | translate }}</label>
                                             <input euiInputText id="field-created-by"
@@ -190,9 +190,7 @@
                                                    [readonly]="true" />
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row eui-u-mt-m">
-                                    <div class="col-md-6">
+                                    <div class="eui-u-flex-1">
                                         <div euiInputGroup>
                                             <label euiLabel for="field-created-at">{{ 'ticket-detail.field.created-at' | translate }}</label>
                                             <input euiInputText id="field-created-at"
