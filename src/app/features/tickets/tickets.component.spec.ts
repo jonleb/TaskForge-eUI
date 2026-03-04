@@ -200,10 +200,12 @@ describe('TicketsComponent', () => {
         expect(component.assignItem).toEqual(mockItems[0]);
     });
 
-    it('should show growl on card action (change-status)', () => {
+    it('should open status dialog on card action (change-status)', () => {
         fixture.detectChanges();
+        const spy = vi.spyOn(component.statusDialog, 'openDialog');
         component.onCardAction('change-status', mockItems[0]);
-        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'info' }));
+        expect(spy).toHaveBeenCalled();
+        expect(component.statusItem).toEqual(mockItems[0]);
     });
 
     it('should open edit dialog on card action (edit)', () => {
@@ -1135,5 +1137,86 @@ describe('TicketsComponent', () => {
         expect(component.assignMemberId).toBeNull();
         expect(component.assignMembers).toEqual([]);
         expect(component.assignError).toBe('');
+    });
+
+    // ── Change Status Dialog ──
+
+    it('should pre-populate status dialog with current status', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.statusDialog, 'openDialog');
+        component.openStatusDialog(mockItems[0]);
+        expect(component.statusValue).toBe('TO_DO');
+        expect(component.statusItem).toEqual(mockItems[0]);
+    });
+
+    it('should change status successfully: close dialog, growl, reload', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.statusDialog, 'openDialog');
+        component.openStatusDialog(mockItems[0]);
+
+        const closeSpy = vi.spyOn(component.statusDialog, 'closeDialog');
+        ticketsSvc.getTickets.mockClear();
+
+        component.statusValue = 'IN_PROGRESS';
+        component.onChangeStatus();
+
+        expect(projectSvc.updateTicket).toHaveBeenCalledWith('1', 1, { status: 'IN_PROGRESS' });
+        expect(closeSpy).toHaveBeenCalled();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+        expect(ticketsSvc.getTickets).toHaveBeenCalled();
+    });
+
+    it('should show inline error on status change failure', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.statusDialog, 'openDialog');
+        component.openStatusDialog(mockItems[0]);
+
+        projectSvc.updateTicket.mockReturnValue(throwError(() => ({ error: { message: 'Conflict' } })));
+        component.onChangeStatus();
+
+        expect(component.statusError).toBe('Conflict');
+    });
+
+    it('should use default error message on status change when server returns no message', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.statusDialog, 'openDialog');
+        component.openStatusDialog(mockItems[0]);
+
+        projectSvc.updateTicket.mockReturnValue(throwError(() => ({})));
+        component.onChangeStatus();
+
+        expect(component.statusError).toBe('tickets.error.status-default');
+    });
+
+    it('should reset status form on resetStatusForm()', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.statusDialog, 'openDialog');
+        component.openStatusDialog(mockItems[1]);
+        component.statusError = 'some error';
+
+        component.resetStatusForm();
+
+        expect(component.statusItem).toBeNull();
+        expect(component.statusValue).toBe('TO_DO');
+        expect(component.statusError).toBe('');
+    });
+
+    it('should hide change-status button when user lacks permission', () => {
+        perm.hasProjectRole.mockReturnValue(of(false));
+        fixture.detectChanges();
+        const dropdowns = fixture.nativeElement.querySelectorAll('eui-dropdown-content');
+        dropdowns.forEach((dd: Element) => {
+            const buttons = dd.querySelectorAll('button');
+            buttons.forEach((btn: Element) => {
+                expect(btn.textContent).not.toContain('tickets.card.action.change-status');
+            });
+        });
+    });
+
+    it('should show change-status button when user has permission', () => {
+        fixture.detectChanges();
+        fixture.detectChanges();
+        expect(component.canManage(mockItems[0])).toBe(true);
+        expect(component.canManage(mockItems[1])).toBe(true);
     });
 });

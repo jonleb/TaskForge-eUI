@@ -588,3 +588,25 @@
         </select>
     </div>
 </eui-dialog>
+
+<eui-dialog #statusDialog
+    [title]="'tickets.dialog.status-title' | translate"
+    [acceptLabel]="'common.save' | translate"
+    [dismissLabel]="'common.cancel' | translate"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onChangeStatus()"
+    (dismiss)="resetStatusForm()">
+
+    @if (statusError) {
+        <eui-feedback-message euiDanger aria-live="polite">{{ statusError }}</eui-feedback-message>
+    }
+
+    <div class="dialog-form">
+        <label euiLabel for="status-select" euiRequired>{{ 'ticket.field.status' | translate }}</label>
+        <select euiSelect id="status-select" [(ngModel)]="statusValue" aria-required="true">
+            @for (s of workflowStatuses; track s) {
+                <option [ngValue]="s">{{ 'workflow.status.' + s | translate }}</option>
+            }
+        </select>
+    </div>
+</eui-dialog>

@@ -70,6 +70,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('createDialog') createDialog!: EuiDialogComponent;
     @ViewChild('editDialog') editDialog!: EuiDialogComponent;
     @ViewChild('assignDialog') assignDialog!: EuiDialogComponent;
+    @ViewChild('statusDialog') statusDialog!: EuiDialogComponent;
 
     items: BacklogItem[] = [];
     total = 0;
@@ -167,6 +168,11 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     assignMembers: ProjectMember[] = [];
     assignError = '';
     canManageMap = new Map<string, boolean>();
+
+    // Status dialog state
+    statusItem: BacklogItem | null = null;
+    statusValue: WorkflowStatus = 'TO_DO';
+    statusError = '';
 
     ngOnInit(): void {
         this.searchSubject.pipe(
@@ -699,6 +705,51 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.assignError = '';
     }
 
+    // ── Status Dialog ──
+
+    openStatusDialog(item: BacklogItem): void {
+        this.statusItem = item;
+        this.statusValue = item.status;
+        this.statusError = '';
+        this.cdr.detectChanges();
+        this.statusDialog.openDialog();
+    }
+
+    onChangeStatus(): void {
+        if (!this.statusItem) return;
+        const item = this.statusItem;
+        this.statusError = '';
+
+        this.projectService.updateTicket(item.projectId, item.ticket_number, {
+            status: this.statusValue,
+        }).pipe(takeUntil(this.destroy$)).subscribe({
+            next: () => {
+                this.statusDialog.closeDialog();
+                const proj = this.projectMap.get(item.projectId);
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: this.translate.instant('tickets.growl.status-summary'),
+                    detail: this.translate.instant('tickets.growl.status-detail', {
+                        key: proj?.key ?? '', number: item.ticket_number,
+                        status: this.translate.instant('workflow.status.' + this.statusValue),
+                    }),
+                });
+                this.resetStatusForm();
+                this.loadTickets();
+            },
+            error: err => {
+                this.statusError = err.error?.message || this.translate.instant('tickets.error.status-default');
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    resetStatusForm(): void {
+        this.statusItem = null;
+        this.statusValue = 'TO_DO';
+        this.statusError = '';
+    }
+
     // ── Card View (STORY-004) ──
 
     toggleCardExpand(itemId: string): void {
@@ -720,11 +771,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.openAssignDialog(item);
                 break;
             case 'change-status':
-                this.growlService.growl({
-                    severity: 'info',
-                    summary: this.translate.instant('tickets.card.action.change-status'),
-                    detail: `${this.getProjectKey(item)}-${item.ticket_number}`,
-                });
+                this.openStatusDialog(item);
                 break;
         }
     }
