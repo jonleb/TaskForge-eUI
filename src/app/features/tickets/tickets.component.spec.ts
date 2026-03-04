@@ -192,10 +192,12 @@ describe('TicketsComponent', () => {
         });
     });
 
-    it('should show growl on card action (assign)', () => {
+    it('should open assign dialog on card action (assign)', () => {
         fixture.detectChanges();
-        component.onCardAction('assign', mockItems[1]);
-        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'info' }));
+        const spy = vi.spyOn(component.assignDialog, 'openDialog');
+        component.onCardAction('assign', mockItems[0]);
+        expect(spy).toHaveBeenCalled();
+        expect(component.assignItem).toEqual(mockItems[0]);
     });
 
     it('should show growl on card action (change-status)', () => {
@@ -1028,5 +1030,110 @@ describe('TicketsComponent', () => {
         expect(component.editAssigneeId).toBeNull();
         expect(component.editMembers).toEqual([]);
         expect(component.editError).toBe('');
+    });
+
+    // ── Assign Ticket Dialog ──
+
+    it('should check manage permissions after tickets load', () => {
+        fixture.detectChanges();
+        // hasProjectRole is called for each unique projectId in items
+        expect(perm.hasProjectRole).toHaveBeenCalledWith('1', 'PROJECT_ADMIN', 'PRODUCT_OWNER');
+        expect(perm.hasProjectRole).toHaveBeenCalledWith('2', 'PROJECT_ADMIN', 'PRODUCT_OWNER');
+    });
+
+    it('should populate canManageMap with permission results', () => {
+        fixture.detectChanges();
+        expect(component.canManageMap.get('1')).toBe(true);
+        expect(component.canManageMap.get('2')).toBe(true);
+    });
+
+    it('should return true from canManage when user has permission', () => {
+        fixture.detectChanges();
+        expect(component.canManage(mockItems[0])).toBe(true);
+    });
+
+    it('should return false from canManage when user lacks permission', () => {
+        perm.hasProjectRole.mockReturnValue(of(false));
+        fixture.detectChanges();
+        expect(component.canManage(mockItems[0])).toBe(false);
+    });
+
+    it('should hide assign button when user lacks permission', () => {
+        perm.hasProjectRole.mockReturnValue(of(false));
+        fixture.detectChanges();
+        const dropdowns = fixture.nativeElement.querySelectorAll('eui-dropdown-content');
+        dropdowns.forEach((dd: Element) => {
+            const buttons = dd.querySelectorAll('button');
+            buttons.forEach((btn: Element) => {
+                expect(btn.textContent).not.toContain('tickets.card.action.assign');
+            });
+        });
+    });
+
+    it('should show assign button when user has permission', () => {
+        fixture.detectChanges();
+        fixture.detectChanges();
+        // canManageMap is populated, canManage returns true for both items
+        expect(component.canManage(mockItems[0])).toBe(true);
+        expect(component.canManage(mockItems[1])).toBe(true);
+    });
+
+    it('should pre-populate assign dialog with current assignee', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.assignDialog, 'openDialog');
+        component.openAssignDialog(mockItems[0]);
+        expect(component.assignMemberId).toBe('2');
+        expect(component.assignItem).toEqual(mockItems[0]);
+    });
+
+    it('should load project members when opening assign dialog', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.assignDialog, 'openDialog');
+        projectSvc.getProjectMembers.mockClear();
+        component.openAssignDialog(mockItems[0]);
+        expect(projectSvc.getProjectMembers).toHaveBeenCalledWith('1');
+        expect(component.assignMembers).toEqual(mockMembers);
+    });
+
+    it('should assign ticket successfully: close dialog, growl, reload', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.assignDialog, 'openDialog');
+        component.openAssignDialog(mockItems[0]);
+
+        const closeSpy = vi.spyOn(component.assignDialog, 'closeDialog');
+        ticketsSvc.getTickets.mockClear();
+
+        component.assignMemberId = '2';
+        component.onAssignTicket();
+
+        expect(projectSvc.updateTicket).toHaveBeenCalledWith('1', 1, { assignee_id: '2' });
+        expect(closeSpy).toHaveBeenCalled();
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+        expect(ticketsSvc.getTickets).toHaveBeenCalled();
+    });
+
+    it('should show inline error on assign failure', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.assignDialog, 'openDialog');
+        component.openAssignDialog(mockItems[0]);
+
+        projectSvc.updateTicket.mockReturnValue(throwError(() => ({ error: { message: 'Forbidden' } })));
+        component.onAssignTicket();
+
+        expect(component.assignError).toBe('Forbidden');
+    });
+
+    it('should reset assign form on resetAssignForm()', () => {
+        fixture.detectChanges();
+        vi.spyOn(component.assignDialog, 'openDialog');
+        component.openAssignDialog(mockItems[0]);
+        component.assignError = 'some error';
+
+        component.resetAssignForm();
+
+        expect(component.assignItem).toBeNull();
+        expect(component.assignMemberId).toBeNull();
+        expect(component.assignMembers).toEqual([]);
+        expect(component.assignError).toBe('');
     });
 });

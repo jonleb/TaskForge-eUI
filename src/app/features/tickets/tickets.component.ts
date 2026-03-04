@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { EUI_PAGE } from '@eui/components/eui-page';
 import { EUI_CHIP } from '@eui/components/eui-chip';
@@ -69,6 +69,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('createDialog') createDialog!: EuiDialogComponent;
     @ViewChild('editDialog') editDialog!: EuiDialogComponent;
+    @ViewChild('assignDialog') assignDialog!: EuiDialogComponent;
 
     items: BacklogItem[] = [];
     total = 0;
@@ -160,6 +161,13 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     editMembers: ProjectMember[] = [];
     editError = '';
 
+    // Assign dialog state
+    assignItem: BacklogItem | null = null;
+    assignMemberId: string | null = null;
+    assignMembers: ProjectMember[] = [];
+    assignError = '';
+    canManageMap = new Map<string, boolean>();
+
     ngOnInit(): void {
         this.searchSubject.pipe(
             debounceTime(300),
@@ -201,6 +209,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.items = res.data;
                 this.total = res.total;
                 this.isLoading = false;
+                this.checkManagePermissions();
                 this.cdr.markForCheck();
             },
             error: () => {
@@ -615,6 +624,81 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         return len >= 2 && len <= 200;
     }
 
+    // ── Assign Dialog ──
+
+    checkManagePermissions(): void {
+        const projectIds = [...new Set(this.items.map(i => i.projectId))];
+        if (projectIds.length === 0) return;
+
+        const checks = projectIds.reduce((acc, pid) => {
+            acc[pid] = this.permissionService.hasProjectRole(pid, 'PROJECT_ADMIN', 'PRODUCT_OWNER');
+            return acc;
+        }, {} as Record<string, import('rxjs').Observable<boolean>>);
+
+        forkJoin(checks).pipe(takeUntil(this.destroy$)).subscribe(results => {
+            Object.entries(results).forEach(([pid, allowed]) => this.canManageMap.set(pid, allowed));
+            this.cdr.markForCheck();
+        });
+    }
+
+    canManage(item: BacklogItem): boolean {
+        return this.canManageMap.get(item.projectId) ?? false;
+    }
+
+    openAssignDialog(item: BacklogItem): void {
+        this.assignItem = item;
+        this.assignMemberId = item.assignee_id;
+        this.assignError = '';
+        this.assignMembers = [];
+
+        this.projectService.getProjectMembers(item.projectId).pipe(takeUntil(this.destroy$)).subscribe({
+            next: members => {
+                this.assignMembers = members;
+                this.cdr.markForCheck();
+            },
+        });
+
+        this.cdr.detectChanges();
+        this.assignDialog.openDialog();
+    }
+
+    onAssignTicket(): void {
+        if (!this.assignItem) return;
+        const item = this.assignItem;
+        this.assignError = '';
+
+        this.projectService.updateTicket(item.projectId, item.ticket_number, {
+            assignee_id: this.assignMemberId,
+        }).pipe(takeUntil(this.destroy$)).subscribe({
+            next: () => {
+                this.assignDialog.closeDialog();
+                const proj = this.projectMap.get(item.projectId);
+                const member = this.assignMembers.find(m => m.userId === this.assignMemberId);
+                const name = member ? `${member.firstName} ${member.lastName}` : '—';
+                this.growlService.growl({
+                    severity: 'success',
+                    summary: this.translate.instant('tickets.growl.assigned-summary'),
+                    detail: this.translate.instant('tickets.growl.assigned-detail', {
+                        key: proj?.key ?? '', number: item.ticket_number, name,
+                    }),
+                });
+                this.resetAssignForm();
+                this.loadTickets();
+            },
+            error: err => {
+                this.assignError = err.error?.message || this.translate.instant('tickets.error.assign-default');
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
+    resetAssignForm(): void {
+        this.assignItem = null;
+        this.assignMemberId = null;
+        this.assignMembers = [];
+        this.assignError = '';
+    }
+
     // ── Card View (STORY-004) ──
 
     toggleCardExpand(itemId: string): void {
@@ -633,11 +717,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.openEditDialog(item);
                 break;
             case 'assign':
-                this.growlService.growl({
-                    severity: 'info',
-                    summary: this.translate.instant('tickets.card.action.assign'),
-                    detail: `${this.getProjectKey(item)}-${item.ticket_number}`,
-                });
+                this.openAssignDialog(item);
                 break;
             case 'change-status':
                 this.growlService.growl({

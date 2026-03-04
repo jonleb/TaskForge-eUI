@@ -324,17 +324,18 @@
                                                         <eui-icon-svg icon="eui-edit" class="eui-u-mr-s" aria-hidden="true"></eui-icon-svg>
                                                         {{ 'tickets.card.action.edit' | translate }}
                                                     </button>
-                                                    <button euiDropdownItem
-                                                            (click)="onCardAction('assign', item)">
-                                                        <eui-icon-svg icon="user:regular" class="eui-u-mr-s" aria-hidden="true"></eui-icon-svg>
-                                                        {{ 'tickets.card.action.assign' | translate }}
-                                                    </button>
-                                                    <button euiDropdownItem
-                                                            (click)="onCardAction('change-status', item)">
-                                                        <eui-icon-svg icon="arrows-clockwise:regular" class="eui-u-mr-s" aria-hidden="true"></eui-icon-svg>
-                                                        {{ 'tickets.card.action.change-status' | translate }}
-                                                    </button>
-
+                                                    @if (canManage(item)) {
+                                                        <button euiDropdownItem
+                                                                (click)="onCardAction('assign', item)">
+                                                            <eui-icon-svg icon="user:regular" class="eui-u-mr-s" aria-hidden="true"></eui-icon-svg>
+                                                            {{ 'tickets.card.action.assign' | translate }}
+                                                        </button>
+                                                        <button euiDropdownItem
+                                                                (click)="onCardAction('change-status', item)">
+                                                            <eui-icon-svg icon="arrows-clockwise:regular" class="eui-u-mr-s" aria-hidden="true"></eui-icon-svg>
+                                                            {{ 'tickets.card.action.change-status' | translate }}
+                                                        </button>
+                                                    }
                                                 </eui-dropdown-content>
                                             </eui-dropdown>
                                         </eui-card-header-right-content>
@@ -559,6 +560,29 @@
         <select euiSelect id="edit-assignee" [(ngModel)]="editAssigneeId">
             <option [ngValue]="null">—</option>
             @for (m of editMembers; track m.userId) {
+                <option [ngValue]="m.userId">{{ m.firstName }} {{ m.lastName }}</option>
+            }
+        </select>
+    </div>
+</eui-dialog>
+
+<eui-dialog #assignDialog
+    [title]="'tickets.dialog.assign-title' | translate"
+    [acceptLabel]="'common.save' | translate"
+    [dismissLabel]="'common.cancel' | translate"
+    [isHandleCloseOnAccept]="true"
+    (accept)="onAssignTicket()"
+    (dismiss)="resetAssignForm()">
+
+    @if (assignError) {
+        <eui-feedback-message euiDanger aria-live="polite">{{ assignError }}</eui-feedback-message>
+    }
+
+    <div class="dialog-form">
+        <label euiLabel for="assign-member" euiRequired>{{ 'tickets.dialog.select-assignee' | translate }}</label>
+        <select euiSelect id="assign-member" [(ngModel)]="assignMemberId" aria-required="true">
+            <option [ngValue]="null" disabled>{{ 'tickets.dialog.select-assignee' | translate }}</option>
+            @for (m of assignMembers; track m.userId) {
                 <option [ngValue]="m.userId">{{ m.firstName }} {{ m.lastName }}</option>
             }
         </select>
