@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { EUI_PAGE } from '@eui/components/eui-page';
 import { EUI_CHIP } from '@eui/components/eui-chip';
+import { EUI_CHIP_LIST } from '@eui/components/eui-chip-list';
 import { EUI_BUTTON } from '@eui/components/eui-button';
 import { EUI_FEEDBACK_MESSAGE } from '@eui/components/eui-feedback-message';
 import { EUI_SELECT } from '@eui/components/eui-select';
@@ -14,7 +15,7 @@ import { EUI_TEXTAREA } from '@eui/components/eui-textarea';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiPaginatorComponent } from '@eui/components/eui-paginator';
 import { EUI_CARD } from '@eui/components/eui-card';
-import { EUI_CONTENT_CARD } from '@eui/components/eui-content-card';
+import { EUI_DROPDOWN } from '@eui/components/eui-dropdown';
 import { EUI_INPUT_CHECKBOX } from '@eui/components/eui-input-checkbox';
 import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
 import { EUI_ICON } from '@eui/components/eui-icon';
@@ -22,7 +23,6 @@ import { EUI_BREADCRUMB } from '@eui/components/eui-breadcrumb';
 import { EUI_ICON_BUTTON } from '@eui/components/eui-icon-button';
 import { EUI_INPUT_RADIO } from '@eui/components/eui-input-radio';
 import { EUI_TOGGLE_GROUP } from '@eui/components/eui-toggle-group';
-import { EUI_POPOVER, EuiPopoverComponent } from '@eui/components/eui-popover';
 import { EUI_STATUS_BADGE } from '@eui/components/eui-status-badge';
 import { EUI_TABLE, Sort } from '@eui/components/eui-table';
 import { EuiTemplateDirective } from '@eui/components/directives';
@@ -45,12 +45,12 @@ export interface FilterChip {
     styleUrls: ['./tickets.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        ...EUI_PAGE, ...EUI_CHIP, ...EUI_BUTTON, ...EUI_FEEDBACK_MESSAGE,
+        ...EUI_PAGE, ...EUI_CHIP, ...EUI_CHIP_LIST, ...EUI_BUTTON, ...EUI_FEEDBACK_MESSAGE,
         ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT, ...EUI_TEXTAREA,
-        EuiDialogComponent, EuiPaginatorComponent, ...EUI_CARD, ...EUI_CONTENT_CARD,
+        EuiDialogComponent, EuiPaginatorComponent, ...EUI_CARD, ...EUI_DROPDOWN,
         ...EUI_INPUT_CHECKBOX, ...EUI_PROGRESS_BAR, ...EUI_ICON,
         ...EUI_BREADCRUMB, ...EUI_ICON_BUTTON, ...EUI_INPUT_RADIO,
-        ...EUI_TOGGLE_GROUP, ...EUI_POPOVER, ...EUI_STATUS_BADGE,
+        ...EUI_TOGGLE_GROUP, ...EUI_STATUS_BADGE,
         ...EUI_TABLE, EuiTemplateDirective,
         FormsModule, TranslateModule, RouterLink,
     ],
@@ -68,7 +68,6 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     private paginatorReady = false;
 
     @ViewChild('createDialog') createDialog!: EuiDialogComponent;
-    @ViewChild('kebabPopover') kebabPopover!: EuiPopoverComponent;
 
     items: BacklogItem[] = [];
     total = 0;
@@ -98,9 +97,6 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Card expand state
     expandedCards = new Set<string>();
-
-    // Kebab menu
-    activeKebabItemIndex: number | null = null;
 
     // Dynamic filter builder
     visibleFilters = new Set<string>();
@@ -545,17 +541,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
 
-    openKebabMenu(index: number, event: Event): void {
-        this.activeKebabItemIndex = index;
-        // eui-popover.openPopover expects ElementRef; wrap native target
-        this.kebabPopover.openPopover({ nativeElement: event.target } as any);
-    }
-
-    onCardAction(action: 'edit' | 'delete' | 'assign' | 'change-status'): void {
-        if (this.activeKebabItemIndex === null) return;
-        const item = this.items[this.activeKebabItemIndex];
-        this.kebabPopover.closePopover();
-
+    onCardAction(action: 'edit' | 'delete' | 'assign' | 'change-status', item: BacklogItem): void {
         switch (action) {
             case 'edit':
                 break;
@@ -583,7 +569,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-    getStatusBadgeVariant(status: string): string {
+    getStatusChipVariant(status: string): string {
         switch (status) {
             case 'DONE': return 'success';
             case 'IN_PROGRESS':

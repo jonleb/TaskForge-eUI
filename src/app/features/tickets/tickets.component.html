@@ -197,77 +197,77 @@
 
             <!-- Right: results column -->
             <eui-page-column>
-                <eui-page-column-body>
-
-                    <!-- Results header bar -->
-                    <div class="eui-u-d-flex eui-u-align-items-center eui-u-flex-justify-content-between eui-u-mb-s">
-                        <div class="eui-u-d-flex eui-u-align-items-baseline eui-u-gap-s">
-                            <h2 class="eui-u-f-l eui-u-f-bold">{{ 'tickets.results.heading' | translate }}</h2>
-                            <p aria-live="polite" class="eui-u-f-s">
-                                {{ 'tickets.results.count' | translate:{ total: total } }}
-                            </p>
-                        </div>
-                        <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-s">
-                            <!-- Sort control -->
-                            <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-2xs">
-                                <label euiLabel for="sort-field" class="eui-u-sr-only">{{ 'tickets.results.sort-by' | translate }}</label>
-                                <select euiSelect id="sort-field"
-                                        [(ngModel)]="sortField"
-                                        (ngModelChange)="onSortFieldChange()">
-                                    <option value="created_at">{{ 'tickets.results.sort-creation-date' | translate }}</option>
-                                    <option value="title">{{ 'tickets.results.sort-title' | translate }}</option>
-                                    <option value="priority">{{ 'tickets.results.sort-priority' | translate }}</option>
-                                    <option value="status">{{ 'tickets.results.sort-status' | translate }}</option>
-                                </select>
-                                <eui-icon-button
-                                    [icon]="sortOrder === 'asc' ? 'arrow-up:regular' : 'arrow-down:regular'"
-                                    size="s"
-                                    [ariaLabel]="'tickets.results.sort-direction' | translate"
-                                    (buttonClick)="onToggleSortOrder()">
-                                </eui-icon-button>
-                            </div>
-                            <!-- View toggle -->
-                            <eui-toggle-group>
-                                <eui-toggle-group-item id="view-card"
-                                                       [isChecked]="currentView === 'card'"
-                                                       (itemClick)="onViewChange('card')">
-                                    <eui-icon-svg icon="squares-four:regular" aria-hidden="true"></eui-icon-svg>
-                                    <span class="eui-u-sr-only">{{ 'tickets.view.card' | translate }}</span>
-                                </eui-toggle-group-item>
-                                <eui-toggle-group-item id="view-table"
-                                                       [isChecked]="currentView === 'table'"
-                                                       (itemClick)="onViewChange('table')">
-                                    <eui-icon-svg icon="list:regular" aria-hidden="true"></eui-icon-svg>
-                                    <span class="eui-u-sr-only">{{ 'tickets.view.table' | translate }}</span>
-                                </eui-toggle-group-item>
-                            </eui-toggle-group>
-                        </div>
+                <eui-page-column-header-left-content>
+                    <div class="eui-u-f-l eui-u-f-bold">{{ 'tickets.results.heading' | translate }}</div>
+                    <div aria-live="polite">
+                        <strong>{{ total }}</strong>&nbsp;{{ 'tickets.results.count' | translate:{ total: total } }}
                     </div>
+                </eui-page-column-header-left-content>
 
-                    <!-- Selected criteria chips -->
+                <eui-page-column-header-body>
                     @if (hasActiveFilters) {
-                        <section class="eui-u-d-flex eui-u-align-items-center eui-u-flex-wrap eui-u-gap-xs eui-u-mb-m"
-                                 [attr.aria-label]="'tickets.results.selected-criteria' | translate">
-                            <span class="eui-u-f-s eui-u-f-bold">{{ 'tickets.results.selected-criteria' | translate }}:</span>
-                            @for (chip of visibleChips; track chip.key) {
-                                <eui-chip euiSizeS
-                                          [isChipRemovable]="true"
-                                          [ariaLabel]="chip.label"
-                                          (remove)="onChipRemove(chip)">
-                                    {{ chip.label }}
-                                </eui-chip>
-                            }
+                        <div class="eui-u-flex eui-u-flex-gap-m">
+                            <div class="eui-u-f-s">
+                                {{ 'tickets.results.selected-criteria' | translate }}:<br>
+                                <a class="eui-u-text-link" (click)="clearAllFilters()" (keydown.enter)="clearAllFilters()" tabindex="0">
+                                    {{ 'tickets.results.clear-all' | translate }}
+                                </a>
+                            </div>
+                            <eui-chip-list euiSizeS>
+                                @for (chip of visibleChips; track chip.key) {
+                                    <eui-chip [isChipRemovable]="true"
+                                              [ariaLabel]="chip.label"
+                                              (remove)="onChipRemove(chip)">
+                                        {{ chip.label }}
+                                    </eui-chip>
+                                }
+                            </eui-chip-list>
                             @if (hasOverflowChips) {
                                 <span class="eui-u-f-s">{{ 'tickets.results.more' | translate:{ count: overflowChipCount } }}</span>
                             }
-                            <button euiButton euiBasicButton euiSizeS
-                                    type="button"
-                                    (click)="clearAllFilters()">
-                                {{ 'tickets.results.clear-all' | translate }}
-                            </button>
-                        </section>
+                        </div>
                     }
+                </eui-page-column-header-body>
 
+                <eui-page-column-header-right-content>
+                    <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-s">
+                        <!-- Sort control -->
+                        <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-2xs">
+                            <label euiLabel for="sort-field" class="eui-u-sr-only">{{ 'tickets.results.sort-by' | translate }}</label>
+                            <select euiSelect id="sort-field"
+                                    [(ngModel)]="sortField"
+                                    (ngModelChange)="onSortFieldChange()">
+                                <option value="created_at">{{ 'tickets.results.sort-creation-date' | translate }}</option>
+                                <option value="title">{{ 'tickets.results.sort-title' | translate }}</option>
+                                <option value="priority">{{ 'tickets.results.sort-priority' | translate }}</option>
+                                <option value="status">{{ 'tickets.results.sort-status' | translate }}</option>
+                            </select>
+                            <eui-icon-button
+                                [icon]="sortOrder === 'asc' ? 'arrow-up:regular' : 'arrow-down:regular'"
+                                size="s"
+                                [ariaLabel]="'tickets.results.sort-direction' | translate"
+                                (buttonClick)="onToggleSortOrder()">
+                            </eui-icon-button>
+                        </div>
+                        <!-- View toggle -->
+                        <eui-toggle-group>
+                            <eui-toggle-group-item id="view-card"
+                                                   [isChecked]="currentView === 'card'"
+                                                   (itemClick)="onViewChange('card')">
+                                <eui-icon-svg icon="squares-four:regular" aria-hidden="true"></eui-icon-svg>
+                                <span class="eui-u-sr-only">{{ 'tickets.view.card' | translate }}</span>
+                            </eui-toggle-group-item>
+                            <eui-toggle-group-item id="view-table"
+                                                   [isChecked]="currentView === 'table'"
+                                                   (itemClick)="onViewChange('table')">
+                                <eui-icon-svg icon="list:regular" aria-hidden="true"></eui-icon-svg>
+                                <span class="eui-u-sr-only">{{ 'tickets.view.table' | translate }}</span>
+                            </eui-toggle-group-item>
+                        </eui-toggle-group>
+                    </div>
+                </eui-page-column-header-right-content>
+
+                <eui-page-column-body>
                     <!-- Loading state -->
                     @if (isLoading) {
                         <eui-progress-bar [isIndeterminate]="true"
@@ -290,89 +290,66 @@
                         @if (currentView === 'card') {
                             <!-- Card list -->
                             @for (item of items; track item.id; let i = $index) {
-                                <eui-content-card
-                                    [attr.aria-label]="getProjectKey(item) + '-' + item.ticket_number + ' ' + item.title">
-
-                                    <eui-content-card-header>
-                                        <eui-content-card-header-end>
-                                            <span euiStatusBadge
-                                                  [colorPalette]="getStatusBadgeVariant(item.status)">
-                                                {{ 'workflow.status.' + item.status | translate }}
-                                            </span>
-                                            <eui-icon-button
-                                                icon="dots-three-vertical:regular"
-                                                size="s"
-                                                [ariaLabel]="'tickets.card.actions-menu' | translate"
-                                                (buttonClick)="openKebabMenu(i, $event)">
-                                            </eui-icon-button>
-                                        </eui-content-card-header-end>
-
-                                        <eui-content-card-header-title>
+                                <eui-card class="eui-u-mb-m"
+                                          [attr.aria-label]="getProjectKey(item) + '-' + item.ticket_number + ' ' + item.title">
+                                    <eui-card-header>
+                                        <eui-card-header-title>
                                             <a [routerLink]="['/screen/projects', item.projectId, 'tickets', item.ticket_number]"
                                                class="eui-u-text-link">
                                                 {{ item.title }}
                                             </a>
-                                        </eui-content-card-header-title>
-
-                                        <eui-content-card-header-subtitle>
+                                        </eui-card-header-title>
+                                        <eui-card-header-subtitle>
                                             {{ getProjectKey(item) }}-{{ item.ticket_number }}
-                                        </eui-content-card-header-subtitle>
-
-                                        <eui-content-card-header-metadata>
-                                            {{ 'workflow.ticket-type.' + item.type | translate }}
+                                            · {{ 'workflow.ticket-type.' + item.type | translate }}
                                             · {{ item.priority ? ('ticket.priority.' + item.priority | translate) : '' }}
                                             · {{ getAssigneeName(item) }}
-                                            @if (item.description) {
-                                                · <button euiButton euiBasicButton euiSizeS type="button"
-                                                          [attr.aria-expanded]="expandedCards.has(item.id)"
-                                                          (click)="toggleCardExpand(item.id)">
-                                                    {{ (expandedCards.has(item.id) ? 'tickets.card.collapse' : 'tickets.card.expand') | translate }}
+                                        </eui-card-header-subtitle>
+                                        <eui-card-header-right-content>
+                                            <eui-chip
+                                                [class.euiSuccess]="getStatusChipVariant(item.status) === 'success'"
+                                                [class.euiInfo]="getStatusChipVariant(item.status) === 'info'"
+                                                [class.euiWarning]="getStatusChipVariant(item.status) === 'warning'"
+                                                [ariaLabel]="'workflow.status.' + item.status | translate">
+                                                {{ 'workflow.status.' + item.status | translate }}
+                                            </eui-chip>
+                                            <eui-dropdown class="eui-u-ml-s">
+                                                <button euiButton euiBasicButton euiPrimary euiOutline euiSizeS
+                                                        [attr.aria-label]="'tickets.card.actions-menu' | translate">
+                                                    <eui-icon-svg icon="dots-three-vertical:regular" aria-hidden="true"></eui-icon-svg>
                                                 </button>
-                                            }
-                                        </eui-content-card-header-metadata>
-                                    </eui-content-card-header>
-
+                                                <eui-dropdown-content>
+                                                    <button euiDropdownItem
+                                                            (click)="onCardAction('edit', item)">
+                                                        <eui-icon-svg icon="eui-edit" class="eui-u-mr-s" aria-hidden="true"></eui-icon-svg>
+                                                        {{ 'tickets.card.action.edit' | translate }}
+                                                    </button>
+                                                    <button euiDropdownItem
+                                                            (click)="onCardAction('assign', item)">
+                                                        <eui-icon-svg icon="user:regular" class="eui-u-mr-s" aria-hidden="true"></eui-icon-svg>
+                                                        {{ 'tickets.card.action.assign' | translate }}
+                                                    </button>
+                                                    <button euiDropdownItem
+                                                            (click)="onCardAction('change-status', item)">
+                                                        <eui-icon-svg icon="arrows-clockwise:regular" class="eui-u-mr-s" aria-hidden="true"></eui-icon-svg>
+                                                        {{ 'tickets.card.action.change-status' | translate }}
+                                                    </button>
+                                                    <button euiDropdownItem
+                                                            (click)="onCardAction('delete', item)">
+                                                        <eui-icon-svg icon="eui-trash" class="eui-u-mr-s" aria-hidden="true"></eui-icon-svg>
+                                                        {{ 'tickets.card.action.delete' | translate }}
+                                                    </button>
+                                                </eui-dropdown-content>
+                                            </eui-dropdown>
+                                        </eui-card-header-right-content>
+                                    </eui-card-header>
                                     @if (item.description && expandedCards.has(item.id)) {
-                                        <eui-content-card-body>
+                                        <eui-card-content>
                                             <p>{{ item.description }}</p>
-                                        </eui-content-card-body>
+                                        </eui-card-content>
                                     }
-                                </eui-content-card>
+                                </eui-card>
                             }
-
-                            <!-- Shared kebab popover -->
-                            <eui-popover #kebabPopover
-                                         [isDismissable]="true"
-                                         [hasCloseButton]="false"
-                                         [hasNoContentPadding]="true"
-                                         position="bottom">
-                                <div role="menu" [attr.aria-label]="'tickets.card.actions-menu' | translate">
-                                    <button euiButton euiBasicButton class="eui-u-w-100 eui-u-text-align-start"
-                                            role="menuitem"
-                                            (click)="onCardAction('edit')">
-                                        <eui-icon-svg icon="eui-edit" aria-hidden="true"></eui-icon-svg>
-                                        {{ 'tickets.card.action.edit' | translate }}
-                                    </button>
-                                    <button euiButton euiBasicButton class="eui-u-w-100 eui-u-text-align-start"
-                                            role="menuitem"
-                                            (click)="onCardAction('assign')">
-                                        <eui-icon-svg icon="user:regular" aria-hidden="true"></eui-icon-svg>
-                                        {{ 'tickets.card.action.assign' | translate }}
-                                    </button>
-                                    <button euiButton euiBasicButton class="eui-u-w-100 eui-u-text-align-start"
-                                            role="menuitem"
-                                            (click)="onCardAction('change-status')">
-                                        <eui-icon-svg icon="arrows-clockwise:regular" aria-hidden="true"></eui-icon-svg>
-                                        {{ 'tickets.card.action.change-status' | translate }}
-                                    </button>
-                                    <button euiButton euiBasicButton euiDanger class="eui-u-w-100 eui-u-text-align-start"
-                                            role="menuitem"
-                                            (click)="onCardAction('delete')">
-                                        <eui-icon-svg icon="eui-trash" aria-hidden="true"></eui-icon-svg>
-                                        {{ 'tickets.card.action.delete' | translate }}
-                                    </button>
-                                </div>
-                            </eui-popover>
                         } @else {
                             <!-- Table view -->
                             <table euiTable
@@ -411,7 +388,7 @@
                                         </td>
                                         <td [attr.data-col-label]="'tickets.table.col.status' | translate">
                                             <span euiStatusBadge
-                                                  [colorPalette]="getStatusBadgeVariant(row.status)">
+                                                  [colorPalette]="getStatusChipVariant(row.status)">
                                                 {{ 'workflow.status.' + row.status | translate }}
                                             </span>
                                         </td>
@@ -429,8 +406,10 @@
                             </table>
                         }
                     }
+                </eui-page-column-body>
 
-                    <!-- Paginator -->
+                <!-- Paginator -->
+                <eui-page-column-footer>
                     @if (!isLoading) {
                         <eui-paginator
                             [length]="total"
@@ -440,8 +419,7 @@
                             (pageChange)="onPageChange($event)">
                         </eui-paginator>
                     }
-
-                </eui-page-column-body>
+                </eui-page-column-footer>
             </eui-page-column>
 
         </eui-page-columns>

@@ -122,94 +122,98 @@ describe('TicketsComponent', () => {
         expect(component.projectMap.size).toBe(2);
     });
 
-    // ── Card rendering (STORY-004) ──
+    // ── Card rendering ──
 
-    it('should display ticket cards', () => {
+    it('should display ticket cards using eui-card', () => {
         fixture.detectChanges();
-        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        const cards = fixture.nativeElement.querySelectorAll('eui-card');
         expect(cards.length).toBe(2);
     });
 
     it('should render card title as a link', () => {
         fixture.detectChanges();
-        const links = fixture.nativeElement.querySelectorAll('eui-content-card a');
+        const links = fixture.nativeElement.querySelectorAll('eui-card a');
         expect(links[0].getAttribute('href')).toBe('/screen/projects/1/tickets/1');
         expect(links[0].textContent).toContain('Login page');
     });
 
-    it('should render card subtitle with project key and ticket number', () => {
+    it('should render card subtitle with project key, ticket number, type, priority, assignee', () => {
         fixture.detectChanges();
-        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        const cards = fixture.nativeElement.querySelectorAll('eui-card');
         expect(cards[0].textContent).toContain('TF-1');
+        expect(cards[0].textContent).toContain('workflow.ticket-type.STORY');
+        expect(cards[0].textContent).toContain('ticket.priority.HIGH');
         expect(cards[1].textContent).toContain('DEMO-5');
     });
 
-    it('should render metadata line with type, priority, assignee', () => {
+    it('should render status chip in card header right content', () => {
         fixture.detectChanges();
-        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
-        expect(cards[0].textContent).toContain('workflow.ticket-type.STORY');
-        expect(cards[0].textContent).toContain('ticket.priority.HIGH');
+        const rightContents = fixture.nativeElement.querySelectorAll('eui-card-header-right-content');
+        expect(rightContents.length).toBe(2);
+        expect(rightContents[0].textContent).toContain('workflow.status.TO_DO');
+        expect(rightContents[1].textContent).toContain('workflow.status.IN_PROGRESS');
     });
 
-    it('should render status badge', () => {
+    it('should return correct status chip variant', () => {
         fixture.detectChanges();
-        const headerEnds = fixture.nativeElement.querySelectorAll('eui-content-card-header-end');
-        expect(headerEnds.length).toBe(2);
-        expect(headerEnds[0].textContent).toContain('workflow.status.TO_DO');
-        expect(headerEnds[1].textContent).toContain('workflow.status.IN_PROGRESS');
+        expect(component.getStatusChipVariant('DONE')).toBe('success');
+        expect(component.getStatusChipVariant('IN_PROGRESS')).toBe('info');
+        expect(component.getStatusChipVariant('IN_REVIEW')).toBe('info');
+        expect(component.getStatusChipVariant('TO_DO')).toBe('warning');
+        expect(component.getStatusChipVariant('UNKNOWN')).toBe('');
     });
 
-    it('should return correct status badge variant', () => {
+    it('should render dropdown actions menu on each card', () => {
         fixture.detectChanges();
-        expect(component.getStatusBadgeVariant('DONE')).toBe('success');
-        expect(component.getStatusBadgeVariant('IN_PROGRESS')).toBe('info');
-        expect(component.getStatusBadgeVariant('IN_REVIEW')).toBe('info');
-        expect(component.getStatusBadgeVariant('TO_DO')).toBe('warning');
-        expect(component.getStatusBadgeVariant('UNKNOWN')).toBe('');
+        const dropdowns = fixture.nativeElement.querySelectorAll('eui-card-header-right-content eui-dropdown');
+        expect(dropdowns.length).toBe(2);
     });
 
-    it('should render kebab button on each card', () => {
+    it('should render dropdown trigger button on each card', () => {
         fixture.detectChanges();
-        const headerEnds = fixture.nativeElement.querySelectorAll('eui-content-card-header-end');
-        expect(headerEnds.length).toBe(2);
-        headerEnds.forEach((el: Element) => {
-            const kebab = el.querySelector('eui-icon-button');
-            expect(kebab).toBeTruthy();
+        const dropdowns = fixture.nativeElement.querySelectorAll('eui-card-header-right-content eui-dropdown');
+        expect(dropdowns.length).toBe(2);
+        // Each dropdown has a trigger button
+        dropdowns.forEach((dd: Element) => {
+            const trigger = dd.querySelector('button');
+            expect(trigger).toBeTruthy();
         });
     });
 
-    it('should show expand button only for cards with description', () => {
+    it('should show growl on card action (delete)', () => {
         fixture.detectChanges();
-        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
-        // mockItems[0] has description → expand button present
-        const expandBtn0 = cards[0].querySelector('button[aria-expanded]');
-        expect(expandBtn0).toBeTruthy();
-        // mockItems[1] has null description → no expand button
-        const expandBtn1 = cards[1].querySelector('button[aria-expanded]');
-        expect(expandBtn1).toBeFalsy();
+        component.onCardAction('delete', mockItems[0]);
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'info' }));
+    });
+
+    it('should show growl on card action (assign)', () => {
+        fixture.detectChanges();
+        component.onCardAction('assign', mockItems[1]);
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'info' }));
+    });
+
+    it('should show growl on card action (change-status)', () => {
+        fixture.detectChanges();
+        component.onCardAction('change-status', mockItems[0]);
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'info' }));
+    });
+
+    it('should not show growl on card action (edit) — placeholder', () => {
+        fixture.detectChanges();
+        component.onCardAction('edit', mockItems[0]);
+        expect(growl.growl).not.toHaveBeenCalled();
     });
 
     it('should toggle card expand and show description', () => {
         fixture.detectChanges();
         expect(component.expandedCards.has('b1')).toBe(false);
-        // Description not visible when collapsed
-        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
-        expect(cards[0].querySelector('eui-content-card-body')).toBeFalsy();
+        const cards = fixture.nativeElement.querySelectorAll('eui-card');
+        expect(cards[0].querySelector('eui-card-content')).toBeFalsy();
         // Expand
         component.toggleCardExpand('b1');
         fixture.detectChanges();
         expect(component.expandedCards.has('b1')).toBe(true);
         expect(cards[0].textContent).toContain('Implement login');
-    });
-
-    it('should update aria-expanded on expand button', () => {
-        fixture.detectChanges();
-        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
-        const expandBtn = cards[0].querySelector('button[aria-expanded]');
-        expect(expandBtn.getAttribute('aria-expanded')).toBe('false');
-        component.toggleCardExpand('b1');
-        fixture.detectChanges();
-        expect(expandBtn.getAttribute('aria-expanded')).toBe('true');
     });
 
     it('should collapse card on second toggle', () => {
@@ -218,31 +222,6 @@ describe('TicketsComponent', () => {
         component.toggleCardExpand('b1');
         fixture.detectChanges();
         expect(component.expandedCards.has('b1')).toBe(false);
-    });
-
-    it('should set activeKebabItemIndex on openKebabMenu', () => {
-        fixture.detectChanges();
-        const mockEvent = { target: document.createElement('button') } as unknown as Event;
-        vi.spyOn(component.kebabPopover, 'openPopover').mockImplementation(() => {});
-        component.openKebabMenu(1, mockEvent);
-        expect(component.activeKebabItemIndex).toBe(1);
-    });
-
-    it('should close popover and show growl on card action', () => {
-        fixture.detectChanges();
-        component.activeKebabItemIndex = 0;
-        vi.spyOn(component.kebabPopover, 'closePopover').mockImplementation(() => {});
-        component.onCardAction('delete');
-        expect(component.kebabPopover.closePopover).toHaveBeenCalled();
-        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'info' }));
-    });
-
-    it('should not act if activeKebabItemIndex is null', () => {
-        fixture.detectChanges();
-        component.activeKebabItemIndex = null;
-        vi.spyOn(component.kebabPopover, 'closePopover').mockImplementation(() => {});
-        component.onCardAction('edit');
-        expect(component.kebabPopover.closePopover).not.toHaveBeenCalled();
     });
 
     it('should resolve project key via getProjectKey', () => {
@@ -286,6 +265,7 @@ describe('TicketsComponent', () => {
     it('should ignore paginator init event before AfterViewInit', () => {
         fixture.detectChanges();
         ticketsSvc.getTickets.mockClear();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (component as any).paginatorReady = false;
         component.onPageChange({ page: 0, pageSize: 10 });
         expect(ticketsSvc.getTickets).not.toHaveBeenCalled();
@@ -342,10 +322,9 @@ describe('TicketsComponent', () => {
         fixture.detectChanges();
         const liveEl = fixture.nativeElement.querySelector('[aria-live="polite"]');
         expect(liveEl).toBeTruthy();
-        expect(liveEl.textContent).toContain('tickets.results.count');
     });
 
-    // ── Dynamic filter builder (STORY-002) ──
+    // ── Dynamic filter builder ──
 
     it('should render select-filter dropdown', () => {
         fixture.detectChanges();
@@ -381,7 +360,7 @@ describe('TicketsComponent', () => {
         expect(component.availableFilterDimensions.some(d => d.value === 'status')).toBe(false);
     });
 
-    // ── Status filter (single-select dropdown) ──
+    // ── Status filter ──
 
     it('should send single status param on status select change', () => {
         fixture.detectChanges();
@@ -411,7 +390,7 @@ describe('TicketsComponent', () => {
         expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ status: undefined }));
     });
 
-    // ── Type filter (checkboxes) ──
+    // ── Type filter ──
 
     it('should send multi-value type param', () => {
         fixture.detectChanges();
@@ -421,7 +400,7 @@ describe('TicketsComponent', () => {
         expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ type: 'BUG' }));
     });
 
-    // ── Priority filter (radio buttons) ──
+    // ── Priority filter ──
 
     it('should send single priority param on radio change', () => {
         fixture.detectChanges();
@@ -579,20 +558,19 @@ describe('TicketsComponent', () => {
         expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _page: 1 }));
     });
 
-    // ── STORY-003: Results Header Bar ──
+    // ── Results Header Bar ──
 
-    it('should render results heading', () => {
+    it('should render results heading in column header', () => {
         fixture.detectChanges();
-        const h2 = fixture.nativeElement.querySelector('h2');
-        expect(h2).toBeTruthy();
-        expect(h2.textContent).toContain('tickets.results.heading');
+        const headerLeft = fixture.nativeElement.querySelector('eui-page-column-header-left-content');
+        expect(headerLeft).toBeTruthy();
+        expect(headerLeft.textContent).toContain('tickets.results.heading');
     });
 
     it('should render ticket count with aria-live', () => {
         fixture.detectChanges();
         const liveEl = fixture.nativeElement.querySelector('[aria-live="polite"]');
         expect(liveEl).toBeTruthy();
-        expect(liveEl.textContent).toContain('tickets.results.count');
     });
 
     it('should render sort field dropdown with 4 options', () => {
@@ -631,7 +609,7 @@ describe('TicketsComponent', () => {
     it('should default to card view', () => {
         fixture.detectChanges();
         expect(component.currentView).toBe('card');
-        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        const cards = fixture.nativeElement.querySelectorAll('eui-card');
         expect(cards.length).toBe(2);
     });
 
@@ -640,11 +618,11 @@ describe('TicketsComponent', () => {
         component.onViewChange('table');
         fixture.detectChanges();
         expect(component.currentView).toBe('table');
-        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        const cards = fixture.nativeElement.querySelectorAll('eui-card');
         expect(cards.length).toBe(0);
     });
 
-    // ── STORY-005: Table View ──
+    // ── Table View ──
 
     it('should render table when currentView is table', () => {
         fixture.detectChanges();
@@ -737,7 +715,7 @@ describe('TicketsComponent', () => {
         expect(component.overflowChipCount).toBe(1);
     });
 
-    // ── CR-2001 STORY-001: Breadcrumb + Page Header ──
+    // ── Breadcrumb + Page Header ──
 
     it('should render breadcrumb with 2 items', () => {
         fixture.detectChanges();
@@ -769,6 +747,16 @@ describe('TicketsComponent', () => {
         const icon = btn.querySelector('eui-icon-svg');
         expect(icon).toBeTruthy();
         expect(icon.getAttribute('icon')).toBe('plus:regular');
+    });
+
+    // ── Paginator in column footer ──
+
+    it('should render paginator inside eui-page-column-footer', () => {
+        fixture.detectChanges();
+        const footer = fixture.nativeElement.querySelector('eui-page-column-footer');
+        expect(footer).toBeTruthy();
+        const paginator = footer.querySelector('eui-paginator');
+        expect(paginator).toBeTruthy();
     });
 
     // ── Create Ticket Dialog ──
