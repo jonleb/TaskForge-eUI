@@ -93,38 +93,53 @@
                                     <div class="eui-u-flex-1">
                                         <div euiInputGroup>
                                             <label euiLabel for="field-status">{{ 'ticket-detail.field.status' | translate }}</label>
-                                            <select euiSelect id="field-status"
-                                                    formControlName="status"
-                                                    [attr.disabled]="!isEditActive ? '' : null">
-                                                @for (s of allowedStatuses; track s) {
-                                                    <option [ngValue]="s">{{ 'workflow.status.' + s | translate }}</option>
-                                                }
-                                            </select>
+                                            @if (isEditActive) {
+                                                <select euiSelect id="field-status"
+                                                        formControlName="status">
+                                                    @for (s of allowedStatuses; track s) {
+                                                        <option [ngValue]="s">{{ 'workflow.status.' + s | translate }}</option>
+                                                    }
+                                                </select>
+                                            } @else {
+                                                <input euiInputText id="field-status"
+                                                       [value]="'workflow.status.' + ticket.status | translate"
+                                                       [readonly]="true" />
+                                            }
                                         </div>
                                     </div>
                                     <div class="eui-u-flex-1">
                                         <div euiInputGroup>
                                             <label euiLabel for="field-priority">{{ 'ticket.priority.label' | translate }}</label>
-                                            <select euiSelect id="field-priority"
-                                                    formControlName="priority"
-                                                    [attr.disabled]="!isEditActive ? '' : null">
-                                                @for (p of priorities; track p) {
-                                                    <option [ngValue]="p">{{ 'ticket.priority.' + p | translate }}</option>
-                                                }
-                                            </select>
+                                            @if (isEditActive) {
+                                                <select euiSelect id="field-priority"
+                                                        formControlName="priority">
+                                                    @for (p of priorities; track p) {
+                                                        <option [ngValue]="p">{{ 'ticket.priority.' + p | translate }}</option>
+                                                    }
+                                                </select>
+                                            } @else {
+                                                <input euiInputText id="field-priority"
+                                                       [value]="'ticket.priority.' + ticket.priority | translate"
+                                                       [readonly]="true" />
+                                            }
                                         </div>
                                     </div>
                                     <div class="eui-u-flex-1">
                                         <div euiInputGroup>
                                             <label euiLabel for="field-assignee">{{ 'ticket-detail.field.assignee' | translate }}</label>
-                                            <select euiSelect id="field-assignee"
-                                                    formControlName="assignee_id"
-                                                    [attr.disabled]="!isEditActive ? '' : null">
-                                                <option [ngValue]="null">—</option>
-                                                @for (m of members; track m.userId) {
-                                                    <option [ngValue]="m.userId">{{ m.firstName }} {{ m.lastName }}</option>
-                                                }
-                                            </select>
+                                            @if (isEditActive) {
+                                                <select euiSelect id="field-assignee"
+                                                        formControlName="assignee_id">
+                                                    <option [ngValue]="null">—</option>
+                                                    @for (m of members; track m.userId) {
+                                                        <option [ngValue]="m.userId">{{ m.firstName }} {{ m.lastName }}</option>
+                                                    }
+                                                </select>
+                                            } @else {
+                                                <input euiInputText id="field-assignee"
+                                                       [value]="getAssigneeName()"
+                                                       [readonly]="true" />
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -152,14 +167,19 @@
                                     <div class="col-md-6">
                                         <div euiInputGroup>
                                             <label euiLabel for="field-epic">{{ 'ticket-detail.field.epic' | translate }}</label>
-                                            <select euiSelect id="field-epic"
-                                                    formControlName="epic_id"
-                                                    [attr.disabled]="!isEditActive ? '' : null">
-                                                <option [ngValue]="null">—</option>
-                                                @for (e of epics; track e.id) {
-                                                    <option [ngValue]="e.id">{{ e.title }}</option>
-                                                }
-                                            </select>
+                                            @if (isEditActive) {
+                                                <select euiSelect id="field-epic"
+                                                        formControlName="epic_id">
+                                                    <option [ngValue]="null">—</option>
+                                                    @for (e of epics; track e.id) {
+                                                        <option [ngValue]="e.id">{{ e.title }}</option>
+                                                    }
+                                                </select>
+                                            } @else {
+                                                <input euiInputText id="field-epic"
+                                                       [value]="getEpicName() ?? '—'"
+                                                       [readonly]="true" />
+                                            }
                                         </div>
                                     </div>
                                     <div class="col-md-6">

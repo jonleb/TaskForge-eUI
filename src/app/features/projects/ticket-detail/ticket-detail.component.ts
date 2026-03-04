@@ -254,8 +254,10 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     }
 
     getEpicName(): string | null {
-        if (!this.ticket?.epic_id) return null;
-        return this.ticket.epic_id;
+        const ticket = this.ticket;
+        if (!ticket?.epic_id) return null;
+        const epic = this.epics.find(e => e.id === ticket.epic_id);
+        return epic ? epic.title : ticket.epic_id;
     }
 
     getCreatorName(): string {
