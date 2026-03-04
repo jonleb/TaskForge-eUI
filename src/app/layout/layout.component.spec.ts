@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { describe, it, beforeEach, expect, vi } from 'vitest';
+import { describe, it, beforeEach, afterEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { TranslateTestingModule, provideEuiCoreMocks } from '../testing/test-providers';
 import { LayoutComponent } from './layout.component';
 import { AuthService, PermissionService } from '../core/auth';
@@ -47,6 +48,10 @@ describe('LayoutComponent', () => {
         component = fixture.componentInstance;
         router = TestBed.inject(Router);
         vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    });
+
+    afterEach(() => {
+        localStorage.removeItem('taskforge_lang');
     });
 
     it('should create the component', () => {
@@ -186,5 +191,14 @@ describe('LayoutComponent', () => {
         expect(urls).toContain('screen/projects/42/backlog');
         expect(urls).toContain('screen/projects/42/board');
         expect(urls).toContain('screen/projects/42/settings');
+    });
+
+    it('should persist language selection to localStorage on language change', () => {
+        const translate = TestBed.inject(TranslateService);
+        component.ngOnInit();
+
+        translate.use('fr');
+
+        expect(localStorage.getItem('taskforge_lang')).toBe('fr');
     });
 });

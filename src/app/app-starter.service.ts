@@ -6,10 +6,13 @@ import {
     UserPreferences,
     EuiServiceStatus,
 } from '@eui/core';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService, PermissionService } from './core/auth';
 import { ProjectContextService } from './core/project';
+
+const LANG_STORAGE_KEY = 'taskforge_lang';
 
 @Injectable({
     providedIn: 'root',
@@ -21,12 +24,21 @@ export class AppStarterService {
     private readonly authService = inject(AuthService);
     private readonly permissionService = inject(PermissionService);
     private readonly projectContext = inject(ProjectContextService);
+    private readonly translate = inject(TranslateService);
 
     start(): Observable<EuiServiceStatus> {
         return this.initUserService().pipe(
             switchMap(() => this.i18nService.init()),
+            tap(() => this.restoreLanguage()),
             switchMap(status => this.projectContext.restoreProject().pipe(map(() => status))),
         );
+    }
+
+    private restoreLanguage(): void {
+        const savedLang = localStorage.getItem(LANG_STORAGE_KEY);
+        if (savedLang && savedLang !== this.translate.currentLang) {
+            this.translate.use(savedLang);
+        }
     }
 
     initUserService(): Observable<EuiServiceStatus> {

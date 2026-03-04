@@ -45,12 +45,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     sidebarItems: EuiMenuItem<SidebarItemMetadata>[] = [];
     private currentProject: Project | null = null;
-    notificationItems = [
-        { label: 'Title label 1', subLabel: 'Subtitle label' },
-        { label: 'Title label 2', subLabel: 'Subtitle label' },
-        { label: 'Title label 3', subLabel: 'Subtitle label' },
-        { label: 'Title label 4', subLabel: 'Subtitle label' },
-    ];
+
 
     ngOnInit(): void {
         // User profile already loaded by AppStarterService — read cached role
@@ -65,10 +60,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
             this.cdr.markForCheck();
         });
 
-        // Rebuild sidebar labels when language changes
+        // Rebuild sidebar labels when language changes + persist selection
         this.translate.onLangChange.pipe(
             takeUntil(this.destroy$),
-        ).subscribe(() => {
+        ).subscribe(event => {
+            localStorage.setItem('taskforge_lang', event.lang);
             this.buildSidebar(this.currentProject);
             this.cdr.markForCheck();
         });
