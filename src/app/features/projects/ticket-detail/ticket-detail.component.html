@@ -1,12 +1,37 @@
 <eui-page>
-    <eui-page-header [label]="ticketKey">
+    <eui-page-breadcrumb>
+        <eui-breadcrumb>
+            <eui-breadcrumb-item link="/screen/home" iconSvgName="home:outline"
+                                 [ariaLabel]="'tickets.breadcrumb.home' | translate">
+            </eui-breadcrumb-item>
+            <eui-breadcrumb-item link="/screen/tickets"
+                                 [label]="'ticket-detail.breadcrumb.tickets' | translate">
+            </eui-breadcrumb-item>
+            <eui-breadcrumb-item [label]="ticketKey"></eui-breadcrumb-item>
+        </eui-breadcrumb>
+    </eui-page-breadcrumb>
+
+    <eui-page-header [label]="ticketKey" [subLabel]="ticket?.title ?? ''">
         <eui-page-header-action-items>
             <eui-icon-button icon="arrow-left:regular"
                              [ariaLabel]="'ticket-detail.back' | translate"
                              (buttonClick)="goBack()">
             </eui-icon-button>
+            @if (canEdit && !isLoading && ticket) {
+                <button euiButton euiSecondary
+                        (click)="openAddCommentDialog()"
+                        aria-haspopup="dialog">
+                    {{ 'ticket-detail.comments.submit' | translate }}
+                </button>
+                <button euiButton [euiSecondary]="isEditActive" [euiPrimary]="!isEditActive"
+                        (click)="toggleEditMode()"
+                        [attr.aria-pressed]="isEditActive">
+                    {{ (isEditActive ? 'ticket-detail.edit-mode.cancel' : 'ticket-detail.edit-mode.toggle') | translate }}
+                </button>
+            }
         </eui-page-header-action-items>
     </eui-page-header>
+
     <eui-page-content>
         @if (isLoading) {
             <eui-progress-bar [isIndeterminate]="true"
@@ -29,233 +54,251 @@
                 </eui-feedback-message>
             }
 
-            <!-- Title -->
-            <div class="field-row eui-u-mb-m">
-                @if (isEditing('title')) {
-                    <div class="edit-field">
-                        <label euiLabel for="edit-title" class="eui-u-sr-only">{{ 'ticket.field.title' | translate }}</label>
-                        <input euiInputText id="edit-title"
-                               [(ngModel)]="editTitle"
-                               maxlength="200"
-                               aria-required="true" />
-                        <div class="edit-actions eui-u-mt-xs">
-                            <button euiButton euiPrimary euiSizeS (click)="saveChanges()">
-                                {{ 'ticket-detail.save' | translate }}
-                            </button>
-                            <button euiButton euiSecondary euiSizeS (click)="cancelEdit('title')">
-                                {{ 'ticket-detail.cancel' | translate }}
-                            </button>
-                        </div>
-                    </div>
-                } @else {
-                    <h2 class="ticket-title eui-u-f-xl">
-                        {{ ticket.title }}
+            <!-- Tabs -->
+            <eui-tabs [ariaLabel]="'ticket-detail.tabs' | translate">
+
+                <!-- Details Tab -->
+                <eui-tab>
+                    <eui-tab-header>
+                        <eui-tab-header-label>{{ 'ticket-detail.tab.details' | translate }}</eui-tab-header-label>
+                    </eui-tab-header>
+                    <eui-tab-body>
+                        <form [formGroup]="ticketForm">
+
+                            <!-- Fieldset 1: Title -->
+                            <eui-fieldset [label]="'ticket.field.title' | translate"
+                                          iconSvgName="note-pencil:regular"
+                                          [isExpandable]="true" [isExpanded]="true" [isFirst]="true">
+                                <div euiInputGroup>
+                                    <label euiLabel for="field-title" euiRequired class="eui-u-sr-only">{{ 'ticket.field.title' | translate }}</label>
+                                    <input euiInputText id="field-title"
+                                           formControlName="title"
+                                           [readonly]="!isEditActive"
+                                           aria-required="true"
+                                           [attr.aria-describedby]="ticketForm.get('title')?.invalid && ticketForm.get('title')?.touched ? 'title-error' : null" />
+                                    @if (isEditActive && ticketForm.get('title')?.invalid && ticketForm.get('title')?.touched) {
+                                        <eui-feedback-message euiDanger id="title-error">
+                                            {{ 'common.validation.required' | translate:{ field: ('ticket.field.title' | translate) } }}
+                                        </eui-feedback-message>
+                                    }
+                                </div>
+                            </eui-fieldset>
+
+                            <!-- Fieldset 2: Description -->
+                            <eui-fieldset [label]="'ticket-detail.fieldset.description' | translate"
+                                          iconSvgName="eui-edit"
+                                          [isExpandable]="true" [isExpanded]="true">
+                                <div euiInputGroup>
+                                    <label euiLabel for="field-description" class="eui-u-sr-only">{{ 'ticket-detail.field.description' | translate }}</label>
+                                    <textarea euiTextArea id="field-description"
+                                              formControlName="description"
+                                              [readonly]="!isEditActive"
+                                              rows="5"
+                                              maxlength="2000"></textarea>
+                                </div>
+                            </eui-fieldset>
+
+                            <!-- Fieldset 3: Ticket Information -->
+                            <eui-fieldset [label]="'ticket-detail.fieldset.info' | translate"
+                                          iconSvgName="info:regular"
+                                          [isExpandable]="true" [isExpanded]="true">
+                                <div class="eui-u-d-flex eui-u-gap-m">
+                                    <div class="eui-u-flex-1">
+                                        <div euiInputGroup>
+                                            <label euiLabel for="field-type">{{ 'ticket.field.type' | translate }}</label>
+                                            @if (isEditActive) {
+                                                <select euiSelect id="field-type"
+                                                        formControlName="type">
+                                                    @for (t of ticketTypes; track t) {
+                                                        <option [ngValue]="t">{{ 'workflow.ticket-type.' + t | translate }}</option>
+                                                    }
+                                                </select>
+                                            } @else {
+                                                <input euiInputText id="field-type"
+                                                       [value]="'workflow.ticket-type.' + ticket.type | translate"
+                                                       [readonly]="true" />
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="eui-u-flex-1">
+                                        <div euiInputGroup>
+                                            <label euiLabel for="field-epic">{{ 'ticket-detail.field.epic' | translate }}</label>
+                                            @if (isEditActive) {
+                                                <select euiSelect id="field-epic"
+                                                        formControlName="epic_id">
+                                                    <option [ngValue]="null">—</option>
+                                                    @for (e of epics; track e.id) {
+                                                        <option [ngValue]="e.id">{{ e.title }}</option>
+                                                    }
+                                                </select>
+                                            } @else {
+                                                <input euiInputText id="field-epic"
+                                                       [value]="getEpicName() ?? '—'"
+                                                       [readonly]="true" />
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="eui-u-flex-1">
+                                        <div euiInputGroup>
+                                            <label euiLabel for="field-status">{{ 'ticket-detail.field.status' | translate }}</label>
+                                            @if (isEditActive) {
+                                                <select euiSelect id="field-status"
+                                                        formControlName="status">
+                                                    @for (s of allowedStatuses; track s) {
+                                                        <option [ngValue]="s">{{ 'workflow.status.' + s | translate }}</option>
+                                                    }
+                                                </select>
+                                            } @else {
+                                                <input euiInputText id="field-status"
+                                                       [value]="'workflow.status.' + ticket.status | translate"
+                                                       [readonly]="true" />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="eui-u-d-flex eui-u-gap-m eui-u-mt-l">
+                                    <div class="eui-u-flex-1">
+                                        <div euiInputGroup>
+                                            <label euiLabel for="field-priority">{{ 'ticket.priority.label' | translate }}</label>
+                                            @if (isEditActive) {
+                                                <select euiSelect id="field-priority"
+                                                        formControlName="priority">
+                                                    @for (p of priorities; track p) {
+                                                        <option [ngValue]="p">{{ 'ticket.priority.' + p | translate }}</option>
+                                                    }
+                                                </select>
+                                            } @else {
+                                                <input euiInputText id="field-priority"
+                                                       [value]="'ticket.priority.' + ticket.priority | translate"
+                                                       [readonly]="true" />
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="eui-u-flex-1">
+                                        <div euiInputGroup>
+                                            <label euiLabel for="field-assignee">{{ 'ticket-detail.field.assignee' | translate }}</label>
+                                            @if (isEditActive) {
+                                                <select euiSelect id="field-assignee"
+                                                        formControlName="assignee_id">
+                                                    <option [ngValue]="null">—</option>
+                                                    @for (m of members; track m.userId) {
+                                                        <option [ngValue]="m.userId">{{ m.firstName }} {{ m.lastName }}</option>
+                                                    }
+                                                </select>
+                                            } @else {
+                                                <input euiInputText id="field-assignee"
+                                                       [value]="getAssigneeName()"
+                                                       [readonly]="true" />
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="eui-u-flex-1">
+                                        <!-- spacer for alignment -->
+                                    </div>
+                                </div>
+                            </eui-fieldset>
+
+                            <!-- Fieldset 4: Additional Information -->
+                            <eui-fieldset [label]="'ticket-detail.fieldset.additional' | translate"
+                                          iconSvgName="eui-ellipsis-horizontal"
+                                          [isExpandable]="true" [isExpanded]="true">
+                                <div class="eui-u-d-flex eui-u-gap-m">
+                                    <div class="eui-u-flex-1">
+                                        <div euiInputGroup>
+                                            <label euiLabel for="field-created-by">{{ 'ticket-detail.field.created-by' | translate }}</label>
+                                            <input euiInputText id="field-created-by"
+                                                   [value]="getCreatorName()"
+                                                   [readonly]="true" />
+                                        </div>
+                                    </div>
+                                    <div class="eui-u-flex-1">
+                                        <div euiInputGroup>
+                                            <label euiLabel for="field-created-at">{{ 'ticket-detail.field.created-at' | translate }}</label>
+                                            <input euiInputText id="field-created-at"
+                                                   [value]="(ticket.created_at | date:'mediumDate') ?? ''"
+                                                   [readonly]="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </eui-fieldset>
+
+                        </form>
+                    </eui-tab-body>
+                </eui-tab>
+
+                <!-- Comments Tab -->
+                <eui-tab>
+                    <eui-tab-header>
+                        <eui-tab-header-label>{{ 'ticket-detail.tab.comments' | translate }}</eui-tab-header-label>
+                        <eui-tab-header-right-content>
+                            @if (comments.length > 0) {
+                                <eui-badge euiInfo>{{ comments.length }}</eui-badge>
+                            }
+                        </eui-tab-header-right-content>
+                    </eui-tab-header>
+                    <eui-tab-body>
+                        @if (comments.length === 0) {
+                            <p class="eui-u-f-m eui-u-c-text-secondary">{{ 'ticket-detail.comments.empty' | translate }}</p>
+                        } @else {
+                            <eui-discussion-thread
+                                [items]="commentThreadItems"
+                                [titleLabel]="'ticket-detail.comments.title' | translate">
+                            </eui-discussion-thread>
+                        }
+                    </eui-tab-body>
+                </eui-tab>
+
+                <!-- Activity Tab -->
+                <eui-tab>
+                    <eui-tab-header>
+                        <eui-tab-header-label>{{ 'ticket-detail.tab.activity' | translate }}</eui-tab-header-label>
+                    </eui-tab-header>
+                    <eui-tab-body>
+                        @if (activity.length === 0) {
+                            <p class="eui-u-f-m eui-u-c-text-secondary">{{ 'ticket-detail.activity.empty' | translate }}</p>
+                        } @else {
+                            <eui-discussion-thread
+                                [items]="activityThreadItems"
+                                [titleLabel]="'ticket-detail.activity.title' | translate">
+                            </eui-discussion-thread>
+                        }
+                    </eui-tab-body>
+                </eui-tab>
+
+                <!-- Links Tab -->
+                <eui-tab>
+                    <eui-tab-header>
+                        <eui-tab-header-label>{{ 'ticket-detail.tab.links' | translate }}</eui-tab-header-label>
+                    </eui-tab-header>
+                    <eui-tab-body>
                         @if (canEdit) {
-                            <eui-icon-button icon="eui-edit" size="s"
-                                             [ariaLabel]="'ticket-detail.edit' | translate"
-                                             (buttonClick)="startEdit('title')">
-                            </eui-icon-button>
+                            <div class="eui-u-mb-m">
+                                <button euiButton euiSecondary euiSizeS (click)="openAddLinkDialog()">
+                                    {{ 'ticket-detail.links.add' | translate }}
+                                </button>
+                            </div>
                         }
-                    </h2>
-                }
-            </div>
 
-            <!-- Chips row: type (read-only), status, priority -->
-            <div class="ticket-chips eui-u-d-flex eui-u-gap-s eui-u-mb-l eui-u-align-items-center">
-                <eui-chip euiSizeS [ariaLabel]="'workflow.ticket-type.' + ticket.type | translate">
-                    {{ 'workflow.ticket-type.' + ticket.type | translate }}
-                </eui-chip>
-
-                <!-- Status -->
-                @if (isEditing('status')) {
-                    <div class="inline-edit-select">
-                        <label euiLabel for="edit-status" class="eui-u-sr-only">{{ 'ticket-detail.field.status' | translate }}</label>
-                        <select euiSelect id="edit-status" [(ngModel)]="editStatus">
-                            @for (s of allowedStatuses; track s) {
-                                <option [ngValue]="s">{{ 'workflow.status.' + s | translate }}</option>
-                            }
-                        </select>
-                    </div>
-                } @else {
-                    <eui-chip euiSizeS [ariaLabel]="'workflow.status.' + ticket.status | translate">
-                        {{ 'workflow.status.' + ticket.status | translate }}
-                    </eui-chip>
-                    @if (canEdit) {
-                        <eui-icon-button icon="eui-edit" size="s"
-                                         [ariaLabel]="'ticket-detail.edit' | translate"
-                                         (buttonClick)="startEdit('status')">
-                        </eui-icon-button>
-                    }
-                }
-
-                <!-- Priority -->
-                @if (isEditing('priority')) {
-                    <div class="inline-edit-select">
-                        <label euiLabel for="edit-priority" class="eui-u-sr-only">{{ 'ticket.priority.label' | translate }}</label>
-                        <select euiSelect id="edit-priority" [(ngModel)]="editPriority">
-                            @for (p of priorities; track p) {
-                                <option [ngValue]="p">{{ 'ticket.priority.' + p | translate }}</option>
-                            }
-                        </select>
-                    </div>
-                } @else {
-                    @if (ticket.priority) {
-                        <eui-chip euiSizeS
-                                  [class.eui-chip--danger]="ticket.priority === 'CRITICAL'"
-                                  [class.eui-chip--warning]="ticket.priority === 'HIGH'"
-                                  [class.eui-chip--info]="ticket.priority === 'MEDIUM'"
-                                  [ariaLabel]="'ticket.priority.' + ticket.priority | translate">
-                            {{ 'ticket.priority.' + ticket.priority | translate }}
-                        </eui-chip>
-                    }
-                    @if (canEdit) {
-                        <eui-icon-button icon="eui-edit" size="s"
-                                         [ariaLabel]="'ticket-detail.edit' | translate"
-                                         (buttonClick)="startEdit('priority')">
-                        </eui-icon-button>
-                    }
-                }
-            </div>
-
-            <section class="ticket-fields" aria-label="Ticket details">
-                <dl class="detail-list">
-                    <!-- Description -->
-                    <div class="detail-item">
-                        <dt>
-                            {{ 'ticket-detail.field.description' | translate }}
-                            @if (canEdit && !isEditing('description')) {
-                                <eui-icon-button icon="eui-edit" size="s"
-                                                 [ariaLabel]="'ticket-detail.edit' | translate"
-                                                 (buttonClick)="startEdit('description')">
-                                </eui-icon-button>
-                            }
-                        </dt>
-                        <dd class="description-text">
-                            @if (isEditing('description')) {
-                                <label euiLabel for="edit-description" class="eui-u-sr-only">{{ 'ticket-detail.field.description' | translate }}</label>
-                                <textarea euiTextArea id="edit-description"
-                                          [(ngModel)]="editDescription"
-                                          maxlength="2000"
-                                          rows="5"></textarea>
-                            } @else if (ticket.description) {
-                                {{ ticket.description }}
-                            } @else {
-                                <em>{{ 'ticket-detail.no-description' | translate }}</em>
-                            }
-                        </dd>
-                    </div>
-
-                    <!-- Assignee -->
-                    <div class="detail-item">
-                        <dt>
-                            {{ 'ticket-detail.field.assignee' | translate }}
-                            @if (canEdit && !isEditing('assignee')) {
-                                <eui-icon-button icon="eui-edit" size="s"
-                                                 [ariaLabel]="'ticket-detail.edit' | translate"
-                                                 (buttonClick)="startEdit('assignee')">
-                                </eui-icon-button>
-                            }
-                        </dt>
-                        <dd>
-                            @if (isEditing('assignee')) {
-                                <label euiLabel for="edit-assignee" class="eui-u-sr-only">{{ 'ticket-detail.field.assignee' | translate }}</label>
-                                <select euiSelect id="edit-assignee" [(ngModel)]="editAssigneeId">
-                                    <option [ngValue]="null">—</option>
-                                    @for (m of members; track m.userId) {
-                                        <option [ngValue]="m.userId">{{ m.firstName }} {{ m.lastName }}</option>
+                        @if (ticketLinks.length === 0) {
+                            <p class="eui-u-f-m eui-u-c-text-secondary">{{ 'ticket-detail.links.empty' | translate }}</p>
+                        } @else {
+                            @for (link of ticketLinks; track link.id) {
+                                <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-s eui-u-pv-xs eui-u-border-bottom">
+                                    <span class="eui-u-f-s">{{ link.linkLabel || link.linkTypeName || link.linkTypeId }}</span>
+                                    <span class="eui-u-f-s eui-u-fw-bold">{{ getLinkedTicketKey(link) }}</span>
+                                    @if (canDeleteLink()) {
+                                        <eui-icon-button icon="eui-trash" size="s"
+                                                         [ariaLabel]="'ticket-detail.links.remove' | translate"
+                                                         (buttonClick)="confirmRemoveLink(link)">
+                                        </eui-icon-button>
                                     }
-                                </select>
-                            } @else {
-                                {{ getAssigneeName() }}
+                                </div>
                             }
-                        </dd>
-                    </div>
-
-                    <!-- Epic -->
-                    <div class="detail-item">
-                        <dt>
-                            {{ 'ticket-detail.field.epic' | translate }}
-                            @if (canEdit && !isEditing('epic')) {
-                                <eui-icon-button icon="eui-edit" size="s"
-                                                 [ariaLabel]="'ticket-detail.edit' | translate"
-                                                 (buttonClick)="startEdit('epic')">
-                                </eui-icon-button>
-                            }
-                        </dt>
-                        <dd>
-                            @if (isEditing('epic')) {
-                                <label euiLabel for="edit-epic" class="eui-u-sr-only">{{ 'ticket-detail.field.epic' | translate }}</label>
-                                <select euiSelect id="edit-epic" [(ngModel)]="editEpicId">
-                                    <option [ngValue]="null">—</option>
-                                    @for (e of epics; track e.id) {
-                                        <option [ngValue]="e.id">{{ e.title }}</option>
-                                    }
-                                </select>
-                            } @else if (getEpicName()) {
-                                {{ getEpicName() }}
-                            } @else {
-                                —
-                            }
-                        </dd>
-                    </div>
-
-                    <!-- Created by (read-only) -->
-                    <div class="detail-item">
-                        <dt>{{ 'ticket-detail.field.created-by' | translate }}</dt>
-                        <dd>{{ getCreatorName() }}</dd>
-                    </div>
-                    <div class="detail-item">
-                        <dt>{{ 'ticket-detail.field.created-at' | translate }}</dt>
-                        <dd>{{ ticket.created_at | date:'mediumDate' }}</dd>
-                    </div>
-                </dl>
-            </section>
-
-            <!-- Global save / cancel bar -->
-            @if (hasUnsavedChanges) {
-                <div class="save-bar eui-u-d-flex eui-u-gap-s eui-u-mt-l" aria-live="polite">
-                    <button euiButton euiPrimary
-                            (click)="saveChanges()"
-                            [attr.aria-busy]="isSaving">
-                        {{ 'ticket-detail.save' | translate }}
-                    </button>
-                    <button euiButton euiSecondary
-                            (click)="cancelAllEdits()">
-                        {{ 'ticket-detail.cancel' | translate }}
-                    </button>
-                </div>
-            }
-
-            <!-- Linked Tickets section -->
-            <section class="links-section eui-u-mt-l" aria-label="Linked Tickets">
-                <div class="section-header eui-u-d-flex eui-u-align-items-center eui-u-gap-s eui-u-mb-m">
-                    <h3 class="eui-u-f-l">{{ 'ticket-detail.links.title' | translate }}</h3>
-                    @if (canEdit) {
-                        <button euiButton euiSecondary euiSizeS (click)="openAddLinkDialog()">
-                            {{ 'ticket-detail.links.add' | translate }}
-                        </button>
-                    }
-                </div>
-
-                @if (ticketLinks.length === 0) {
-                    <p class="eui-u-f-m eui-u-c-text-secondary">{{ 'ticket-detail.links.empty' | translate }}</p>
-                } @else {
-                    <ul class="link-list">
-                        @for (link of ticketLinks; track link.id) {
-                            <li class="link-item eui-u-d-flex eui-u-align-items-center eui-u-gap-s eui-u-mb-xs">
-                                <span class="link-label eui-u-f-s">{{ link.linkLabel || link.linkTypeName || link.linkTypeId }}</span>
-                                <span class="link-target eui-u-f-s eui-u-fw-bold">{{ getLinkedTicketKey(link) }}</span>
-                                @if (canDeleteLink(link)) {
-                                    <eui-icon-button icon="eui-trash" size="s"
-                                                     [ariaLabel]="'ticket-detail.links.remove' | translate"
-                                                     (buttonClick)="confirmRemoveLink(link)">
-                                    </eui-icon-button>
-                                }
-                            </li>
                         }
-                    </ul>
-                }
-            </section>
+                    </eui-tab-body>
+                </eui-tab>
+
+            </eui-tabs>
 
             <!-- Add Link Dialog -->
             <eui-dialog #addLinkDialog
@@ -293,67 +336,47 @@
                 <p>{{ 'ticket-detail.links.confirm-delete-message' | translate }}</p>
             </eui-dialog>
 
-            <!-- Comments section -->
-            <section class="comments-section eui-u-mt-l" aria-label="Comments">
-                <h3 class="eui-u-f-l eui-u-mb-m">{{ 'ticket-detail.comments.title' | translate }}</h3>
-
-                @if (canEdit) {
-                    <div class="add-comment eui-u-mb-m">
-                        <label euiLabel for="new-comment">{{ 'ticket-detail.comments.add-placeholder' | translate }}</label>
-                        <textarea euiTextArea id="new-comment"
+            <!-- Add Comment Dialog -->
+            <eui-dialog #addCommentDialog
+                        [title]="'ticket-detail.comments.dialog.title' | translate"
+                        [acceptLabel]="'ticket-detail.comments.submit' | translate"
+                        [dismissLabel]="'ticket-detail.comments.dialog.cancel' | translate"
+                        (accept)="submitComment()">
+                <fieldset class="eui-u-p-none eui-u-border-none">
+                    <legend class="eui-u-sr-only">{{ 'ticket-detail.comments.dialog.title' | translate }}</legend>
+                    <div euiInputGroup>
+                        <label euiLabel for="dialog-comment" euiRequired>{{ 'ticket-detail.comments.add-placeholder' | translate }}</label>
+                        <textarea euiTextArea id="dialog-comment"
                                   [(ngModel)]="newCommentText"
                                   [placeholder]="'ticket-detail.comments.add-placeholder' | translate"
                                   maxlength="2000"
-                                  rows="3"
+                                  rows="5"
                                   aria-required="true"></textarea>
-                        <div class="eui-u-mt-xs">
-                            <button euiButton euiPrimary euiSizeS
-                                    (click)="submitComment()"
-                                    [attr.aria-busy]="isAddingComment">
-                                {{ 'ticket-detail.comments.submit' | translate }}
-                            </button>
-                        </div>
                     </div>
-                }
+                </fieldset>
+            </eui-dialog>
 
-                @if (comments.length === 0) {
-                    <p class="eui-u-f-m eui-u-c-text-secondary">{{ 'ticket-detail.comments.empty' | translate }}</p>
-                } @else {
-                    <ul class="comment-list">
-                        @for (comment of comments; track comment.id) {
-                            <li class="comment-item eui-u-mb-m">
-                                <div class="comment-meta eui-u-f-s eui-u-c-text-secondary">
-                                    <span class="comment-author">{{ comment.authorName }}</span>
-                                    <span class="comment-date">{{ comment.created_at | date:'medium' }}</span>
-                                </div>
-                                <p class="comment-content eui-u-mt-2xs">{{ comment.content }}</p>
-                            </li>
-                        }
-                    </ul>
-                }
-            </section>
-
-            <!-- Activity timeline -->
-            <section class="activity-section eui-u-mt-l" aria-label="Activity">
-                <h3 class="eui-u-f-l eui-u-mb-m">{{ 'ticket-detail.activity.title' | translate }}</h3>
-
-                @if (activity.length === 0) {
-                    <p class="eui-u-f-m eui-u-c-text-secondary">{{ 'ticket-detail.activity.empty' | translate }}</p>
-                } @else {
-                    <ul class="activity-list">
-                        @for (entry of activity; track entry.id) {
-                            <li class="activity-item eui-u-mb-s">
-                                <span class="activity-text eui-u-f-s">
-                                    {{ 'ticket-detail.activity.changed' | translate:{ user: getChangerName(entry.changedBy), field: entry.field, oldValue: entry.oldValue, newValue: entry.newValue } }}
-                                </span>
-                                <span class="activity-date eui-u-f-s eui-u-c-text-secondary eui-u-ml-s">
-                                    {{ entry.created_at | date:'medium' }}
-                                </span>
-                            </li>
-                        }
-                    </ul>
-                }
-            </section>
         }
     </eui-page-content>
+
+    <!-- Page footer for edit mode -->
+    @if (isEditActive) {
+        <eui-page-footer>
+            <div class="eui-u-d-flex eui-u-flex-justify-content-between">
+                <div>
+                    <button euiButton (click)="onResetForm()">
+                        {{ 'ticket-detail.footer.reset' | translate }}
+                    </button>
+                </div>
+                <div class="eui-u-d-flex eui-u-gap-s">
+                    <button euiButton euiSecondary (click)="toggleEditMode()">
+                        {{ 'ticket-detail.footer.cancel' | translate }}
+                    </button>
+                    <button euiButton euiPrimary (click)="saveChanges()" [attr.aria-busy]="isSaving">
+                        {{ 'ticket-detail.footer.save' | translate }}
+                    </button>
+                </div>
+            </div>
+        </eui-page-footer>
+    }
 </eui-page>

@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { EUI_PAGE } from '@eui/components/eui-page';
 import { EUI_CHIP } from '@eui/components/eui-chip';
+import { EUI_CHIP_LIST } from '@eui/components/eui-chip-list';
 import { EUI_BUTTON } from '@eui/components/eui-button';
 import { EUI_FEEDBACK_MESSAGE } from '@eui/components/eui-feedback-message';
 import { EUI_SELECT } from '@eui/components/eui-select';
@@ -13,11 +14,18 @@ import { EUI_INPUT_TEXT } from '@eui/components/eui-input-text';
 import { EUI_TEXTAREA } from '@eui/components/eui-textarea';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiPaginatorComponent } from '@eui/components/eui-paginator';
-import { EUI_CONTENT_CARD } from '@eui/components/eui-content-card';
 import { EUI_CARD } from '@eui/components/eui-card';
+import { EUI_DROPDOWN } from '@eui/components/eui-dropdown';
 import { EUI_INPUT_CHECKBOX } from '@eui/components/eui-input-checkbox';
 import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
 import { EUI_ICON } from '@eui/components/eui-icon';
+import { EUI_BREADCRUMB } from '@eui/components/eui-breadcrumb';
+import { EUI_ICON_BUTTON } from '@eui/components/eui-icon-button';
+import { EUI_INPUT_RADIO } from '@eui/components/eui-input-radio';
+import { EUI_TOGGLE_GROUP } from '@eui/components/eui-toggle-group';
+import { EUI_STATUS_BADGE } from '@eui/components/eui-status-badge';
+import { EUI_TABLE, Sort } from '@eui/components/eui-table';
+import { EuiTemplateDirective } from '@eui/components/directives';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BacklogItem, Project, ProjectMember, ProjectService, Sprint, WORKFLOW_STATUSES, TICKET_TYPES, TICKET_PRIORITIES, CREATABLE_TICKET_TYPES, WorkflowStatus, TicketType, TicketPriority } from '../../core/project';
@@ -26,7 +34,7 @@ import { PermissionService } from '../../core/auth';
 
 export interface FilterChip {
     key: string;
-    dimension: 'search' | 'status' | 'type' | 'priority' | 'project' | 'assignee' | 'sprint';
+    dimension: 'search' | 'status' | 'type' | 'priority' | 'project' | 'sprint';
     value: string;
     label: string;
 }
@@ -37,10 +45,13 @@ export interface FilterChip {
     styleUrls: ['./tickets.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        ...EUI_PAGE, ...EUI_CHIP, ...EUI_BUTTON, ...EUI_FEEDBACK_MESSAGE,
+        ...EUI_PAGE, ...EUI_CHIP, ...EUI_CHIP_LIST, ...EUI_BUTTON, ...EUI_FEEDBACK_MESSAGE,
         ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT, ...EUI_TEXTAREA,
-        EuiDialogComponent, EuiPaginatorComponent, ...EUI_CONTENT_CARD, ...EUI_CARD,
+        EuiDialogComponent, EuiPaginatorComponent, ...EUI_CARD, ...EUI_DROPDOWN,
         ...EUI_INPUT_CHECKBOX, ...EUI_PROGRESS_BAR, ...EUI_ICON,
+        ...EUI_BREADCRUMB, ...EUI_ICON_BUTTON, ...EUI_INPUT_RADIO,
+        ...EUI_TOGGLE_GROUP, ...EUI_STATUS_BADGE,
+        ...EUI_TABLE, EuiTemplateDirective,
         FormsModule, TranslateModule, RouterLink,
     ],
 })
@@ -51,6 +62,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly growlService = inject(EuiGrowlService);
     private readonly translate = inject(TranslateService);
+    private readonly router = inject(Router);
     private readonly destroy$ = new Subject<void>();
     private readonly searchSubject = new Subject<string>();
     private paginatorReady = false;
@@ -73,31 +85,52 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     isFilterCollapsed = false;
     searchValue = '';
 
+    // Sort
+    sortField = 'created_at';
+    sortOrder: 'asc' | 'desc' = 'desc';
+
+    // View toggle
+    currentView: 'card' | 'table' = 'card';
+
+    // Chip overflow
+    readonly MAX_VISIBLE_CHIPS = 5;
+
+    // Card expand state
+    expandedCards = new Set<string>();
+
+    // Dynamic filter builder
+    visibleFilters = new Set<string>();
+    filterDropdownValue: string | null = null;
+    private readonly allFilterDimensions = [
+        { value: 'status', label: 'tickets.filter.status-legend' },
+        { value: 'type', label: 'tickets.filter.type-legend' },
+        { value: 'priority', label: 'tickets.filter.priority-legend' },
+    ];
+
     // Project filter
     userProjects: Project[] = [];
     projectMap = new Map<string, Project>();
     selectedProjectId: string | null = null;
 
-    // Assigned to me
-    assignedToMe = false;
-
     // Sprint filters
-    openSprintsChecked = false;
     selectedSprintId: string | null = null;
     availableSprints: Sprint[] = [];
 
-    // Checkbox filter state
+    // Advanced filters collapse
+    isAdvancedCollapsed = true;
+
+    // Status filter (single-select dropdown)
+    selectedStatusValue: WorkflowStatus | null = null;
+
+    // Type filter (checkboxes — kept)
     readonly workflowStatuses = WORKFLOW_STATUSES;
     readonly ticketTypes = TICKET_TYPES;
     readonly priorities = TICKET_PRIORITIES;
-
-    statusChecks: Record<WorkflowStatus, boolean> = { TO_DO: false, IN_PROGRESS: false, IN_REVIEW: false, DONE: false };
     typeChecks: Record<TicketType, boolean> = { STORY: false, BUG: false, TASK: false, EPIC: false };
-    priorityChecks: Record<TicketPriority, boolean> = { CRITICAL: false, HIGH: false, MEDIUM: false, LOW: false };
-
-    selectedStatuses = new Set<WorkflowStatus>();
     selectedTypes = new Set<TicketType>();
-    selectedPriorities = new Set<TicketPriority>();
+
+    // Priority filter (single-select radio)
+    selectedPriority: TicketPriority | null = null;
 
     // Create dialog state
     canCreate = false;
@@ -176,17 +209,39 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.searchSubject.next(value);
     }
 
-    onSearchSubmit(): void {
-        this.params = { ...this.params, q: this.searchValue || undefined, _page: 1 };
-        this.loadTickets();
+    // Dynamic filter builder
+    get availableFilterDimensions(): { value: string; label: string }[] {
+        return this.allFilterDimensions.filter(d => !this.visibleFilters.has(d.value));
     }
 
-    onStatusCheckChange(): void {
-        this.selectedStatuses.clear();
-        for (const s of this.workflowStatuses) {
-            if (this.statusChecks[s]) this.selectedStatuses.add(s);
+    onAddFilter(dimension: string): void {
+        if (dimension) {
+            this.visibleFilters.add(dimension);
         }
-        this.params = { ...this.params, status: this.selectedStatuses.size ? [...this.selectedStatuses].join(',') : undefined, _page: 1 };
+        this.filterDropdownValue = null;
+        this.cdr.markForCheck();
+    }
+
+    onRemoveFilter(dimension: string): void {
+        this.visibleFilters.delete(dimension);
+        switch (dimension) {
+            case 'status':
+                this.selectedStatusValue = null;
+                this.onStatusSelectChange();
+                break;
+            case 'type':
+                for (const t of this.ticketTypes) this.typeChecks[t] = false;
+                this.onTypeCheckChange();
+                break;
+            case 'priority':
+                this.selectedPriority = null;
+                this.onPriorityRadioChange();
+                break;
+        }
+    }
+
+    onStatusSelectChange(): void {
+        this.params = { ...this.params, status: this.selectedStatusValue || undefined, _page: 1 };
         this.loadTickets();
     }
 
@@ -199,46 +254,23 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.loadTickets();
     }
 
-    onPriorityCheckChange(): void {
-        this.selectedPriorities.clear();
-        for (const p of this.priorities) {
-            if (this.priorityChecks[p]) this.selectedPriorities.add(p);
-        }
-        this.params = { ...this.params, priority: this.selectedPriorities.size ? [...this.selectedPriorities].join(',') : undefined, _page: 1 };
+    onPriorityRadioChange(): void {
+        this.params = { ...this.params, priority: this.selectedPriority || undefined, _page: 1 };
         this.loadTickets();
     }
 
     onProjectChange(): void {
         this.params = { ...this.params, project_id: this.selectedProjectId || undefined, _page: 1 };
-        // Clear sprint selection when project changes
         this.selectedSprintId = null;
         this.availableSprints = [];
-        this.params = { ...this.params, sprint_id: this.openSprintsChecked ? 'open' : undefined };
+        this.params = { ...this.params, sprint_id: undefined };
         if (this.selectedProjectId) {
             this.loadSprints(this.selectedProjectId);
         }
         this.loadTickets();
     }
 
-    onAssignedToMeChange(): void {
-        this.params = { ...this.params, assignee_id: this.assignedToMe ? this.permissionService.getUserId() : undefined, _page: 1 };
-        this.loadTickets();
-    }
-
-    onOpenSprintsChange(): void {
-        if (this.openSprintsChecked) {
-            this.selectedSprintId = null;
-            this.params = { ...this.params, sprint_id: 'open', _page: 1 };
-        } else {
-            this.params = { ...this.params, sprint_id: undefined, _page: 1 };
-        }
-        this.loadTickets();
-    }
-
     onSprintChange(): void {
-        if (this.selectedSprintId) {
-            this.openSprintsChecked = false;
-        }
         this.params = { ...this.params, sprint_id: this.selectedSprintId || undefined, _page: 1 };
         this.loadTickets();
     }
@@ -262,6 +294,51 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.loadTickets();
     }
 
+    // Sort
+    onSortFieldChange(): void {
+        this.params = { ...this.params, _sort: this.sortField, _page: 1 };
+        this.loadTickets();
+    }
+
+    onToggleSortOrder(): void {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+        this.params = { ...this.params, _order: this.sortOrder, _page: 1 };
+        this.loadTickets();
+    }
+
+    // View toggle
+    onViewChange(view: 'card' | 'table'): void {
+        this.currentView = view;
+        this.cdr.markForCheck();
+    }
+
+    // Table sort
+    onTableSort(sort: Sort[]): void {
+        if (sort.length > 0) {
+            this.sortField = sort[0].sort;
+            this.sortOrder = sort[0].order.toLowerCase() as 'asc' | 'desc';
+            this.params = { ...this.params, _sort: this.sortField, _order: this.sortOrder, _page: 1 };
+            this.loadTickets();
+        }
+    }
+
+    navigateToTicket(item: BacklogItem): void {
+        this.router.navigate(['/screen/projects', item.projectId, 'tickets', item.ticket_number]);
+    }
+
+    // Chip overflow
+    get visibleChips(): FilterChip[] {
+        return this.activeFilterChips.slice(0, this.MAX_VISIBLE_CHIPS);
+    }
+
+    get hasOverflowChips(): boolean {
+        return this.activeFilterChips.length > this.MAX_VISIBLE_CHIPS;
+    }
+
+    get overflowChipCount(): number {
+        return this.activeFilterChips.length - this.MAX_VISIBLE_CHIPS;
+    }
+
     get activeFilterChips(): FilterChip[] {
         const chips: FilterChip[] = [];
         if (this.searchValue) {
@@ -271,23 +348,18 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
             const proj = this.projectMap.get(this.selectedProjectId);
             chips.push({ key: 'project', dimension: 'project', value: this.selectedProjectId, label: this.translate.instant('tickets.chip.project', { name: proj?.name ?? this.selectedProjectId }) });
         }
-        if (this.assignedToMe) {
-            chips.push({ key: 'assignee', dimension: 'assignee', value: 'me', label: this.translate.instant('tickets.chip.assigned-to-me') });
-        }
-        if (this.openSprintsChecked) {
-            chips.push({ key: 'open-sprints', dimension: 'sprint', value: 'open', label: this.translate.instant('tickets.chip.open-sprints') });
-        } else if (this.selectedSprintId) {
+        if (this.selectedSprintId) {
             const sprint = this.availableSprints.find(s => s.id === this.selectedSprintId);
             chips.push({ key: `sprint-${this.selectedSprintId}`, dimension: 'sprint', value: this.selectedSprintId, label: this.translate.instant('tickets.chip.sprint', { name: sprint?.name ?? this.selectedSprintId }) });
         }
-        for (const s of this.selectedStatuses) {
-            chips.push({ key: `status-${s}`, dimension: 'status', value: s, label: this.translate.instant('tickets.chip.status', { value: this.translate.instant('workflow.status.' + s) }) });
+        if (this.selectedStatusValue) {
+            chips.push({ key: `status-${this.selectedStatusValue}`, dimension: 'status', value: this.selectedStatusValue, label: this.translate.instant('tickets.chip.status', { value: this.translate.instant('workflow.status.' + this.selectedStatusValue) }) });
         }
         for (const t of this.selectedTypes) {
             chips.push({ key: `type-${t}`, dimension: 'type', value: t, label: this.translate.instant('tickets.chip.type', { value: this.translate.instant('workflow.ticket-type.' + t) }) });
         }
-        for (const p of this.selectedPriorities) {
-            chips.push({ key: `priority-${p}`, dimension: 'priority', value: p, label: this.translate.instant('tickets.chip.priority', { value: this.translate.instant('ticket.priority.' + p) }) });
+        if (this.selectedPriority) {
+            chips.push({ key: `priority-${this.selectedPriority}`, dimension: 'priority', value: this.selectedPriority, label: this.translate.instant('tickets.chip.priority', { value: this.translate.instant('ticket.priority.' + this.selectedPriority) }) });
         }
         return chips;
     }
@@ -306,31 +378,23 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.selectedProjectId = null;
                 this.availableSprints = [];
                 this.selectedSprintId = null;
-                this.params = { ...this.params, project_id: undefined, sprint_id: this.openSprintsChecked ? 'open' : undefined, _page: 1 };
-                break;
-            case 'assignee':
-                this.assignedToMe = false;
-                this.params = { ...this.params, assignee_id: undefined, _page: 1 };
+                this.params = { ...this.params, project_id: undefined, sprint_id: undefined, _page: 1 };
                 break;
             case 'sprint':
-                if (chip.value === 'open') {
-                    this.openSprintsChecked = false;
-                } else {
-                    this.selectedSprintId = null;
-                }
+                this.selectedSprintId = null;
                 this.params = { ...this.params, sprint_id: undefined, _page: 1 };
                 break;
             case 'status':
-                this.statusChecks[chip.value as WorkflowStatus] = false;
-                this.onStatusCheckChange();
+                this.selectedStatusValue = null;
+                this.onStatusSelectChange();
                 return;
             case 'type':
                 this.typeChecks[chip.value as TicketType] = false;
                 this.onTypeCheckChange();
                 return;
             case 'priority':
-                this.priorityChecks[chip.value as TicketPriority] = false;
-                this.onPriorityCheckChange();
+                this.selectedPriority = null;
+                this.onPriorityRadioChange();
                 return;
         }
         this.loadTickets();
@@ -339,16 +403,13 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     clearAllFilters(): void {
         this.searchValue = '';
         this.selectedProjectId = null;
-        this.assignedToMe = false;
-        this.openSprintsChecked = false;
         this.selectedSprintId = null;
         this.availableSprints = [];
-        for (const s of this.workflowStatuses) this.statusChecks[s] = false;
+        this.selectedStatusValue = null;
         for (const t of this.ticketTypes) this.typeChecks[t] = false;
-        for (const p of this.priorities) this.priorityChecks[p] = false;
-        this.selectedStatuses.clear();
         this.selectedTypes.clear();
-        this.selectedPriorities.clear();
+        this.selectedPriority = null;
+        this.visibleFilters.clear();
         this.params = { _page: 1, _limit: this.params._limit, _sort: this.params._sort, _order: this.params._order };
         this.loadTickets();
     }
@@ -372,10 +433,6 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         return item.assignee_id;
     }
 
-    truncateDescription(desc: string | null | undefined, max = 120): string {
-        if (!desc) return '';
-        return desc.length > max ? desc.substring(0, max) + '…' : desc;
-    }
 
     // ── Create Dialog ──
 
@@ -471,4 +528,55 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
         const len = this.newTicketTitle.trim().length;
         return !!this.selectedCreateProjectId && len >= 2 && len <= 200;
     }
+
+    // ── Card View (STORY-004) ──
+
+    toggleCardExpand(itemId: string): void {
+        if (this.expandedCards.has(itemId)) {
+            this.expandedCards.delete(itemId);
+        } else {
+            this.expandedCards.add(itemId);
+        }
+        this.cdr.markForCheck();
+    }
+
+
+    onCardAction(action: 'edit' | 'delete' | 'assign' | 'change-status', item: BacklogItem): void {
+        switch (action) {
+            case 'edit':
+                break;
+            case 'delete':
+                this.growlService.growl({
+                    severity: 'info',
+                    summary: this.translate.instant('tickets.card.action.delete'),
+                    detail: `${this.getProjectKey(item)}-${item.ticket_number}`,
+                });
+                break;
+            case 'assign':
+                this.growlService.growl({
+                    severity: 'info',
+                    summary: this.translate.instant('tickets.card.action.assign'),
+                    detail: `${this.getProjectKey(item)}-${item.ticket_number}`,
+                });
+                break;
+            case 'change-status':
+                this.growlService.growl({
+                    severity: 'info',
+                    summary: this.translate.instant('tickets.card.action.change-status'),
+                    detail: `${this.getProjectKey(item)}-${item.ticket_number}`,
+                });
+                break;
+        }
+    }
+
+    getStatusChipVariant(status: string): string {
+        switch (status) {
+            case 'DONE': return 'success';
+            case 'IN_PROGRESS':
+            case 'IN_REVIEW': return 'info';
+            case 'TO_DO': return 'warning';
+            default: return '';
+        }
+    }
+
 }

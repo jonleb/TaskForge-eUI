@@ -149,6 +149,7 @@ export interface BacklogListResponse {
 
 export interface UpdateTicketPayload {
     title?: string;
+    type?: TicketType;
     description?: string;
     status?: WorkflowStatus;
     priority?: TicketPriority | null;

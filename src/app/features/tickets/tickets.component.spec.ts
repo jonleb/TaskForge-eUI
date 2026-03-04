@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, beforeEach, afterEach, expect, vi, beforeAll } from 'vitest';
+import { Router } from '@angular/router';
 
 beforeAll(() => {
     globalThis.ResizeObserver ??= class {
@@ -18,6 +19,7 @@ import { TicketsComponent } from './tickets.component';
 import { TicketsService } from '../../core/tickets';
 import { PermissionService } from '../../core/auth';
 import { BacklogItem, BacklogListResponse, Project, ProjectMember, ProjectService, Sprint } from '../../core/project';
+import { Sort } from '@eui/components/eui-table';
 
 const mockProjects: Project[] = [
     { id: '1', key: 'TF', name: 'TaskForge', description: '', created_by: '1', created_at: '', updated_at: '', is_active: true },
@@ -96,22 +98,10 @@ describe('TicketsComponent', () => {
     });
 
     afterEach(() => {
-        // Ensure all subscriptions (including NEVER) are cleaned up before Angular teardown
         component.ngOnDestroy();
     });
 
-    it('should truncate long descriptions', () => {
-        fixture.detectChanges();
-        const long = 'A'.repeat(200);
-        const result = component.truncateDescription(long);
-        expect(result.length).toBeLessThan(200);
-        expect(result).toContain('…');
-    });
-
-    it('should return empty string for null description', () => {
-        fixture.detectChanges();
-        expect(component.truncateDescription(null)).toBe('');
-    });
+    // ── Basic ──
 
     it('should create', () => {
         fixture.detectChanges();
@@ -132,43 +122,115 @@ describe('TicketsComponent', () => {
         expect(component.projectMap.size).toBe(2);
     });
 
-    it('should display ticket cards', () => {
+    // ── Card rendering ──
+
+    it('should display ticket cards using eui-card', () => {
         fixture.detectChanges();
-        const cards = fixture.nativeElement.querySelectorAll('eui-content-card');
+        const cards = fixture.nativeElement.querySelectorAll('eui-card');
         expect(cards.length).toBe(2);
     });
 
-    it('should show project key prefix in card subtitle', () => {
+    it('should render card title as a link', () => {
         fixture.detectChanges();
-        const subtitles = fixture.nativeElement.querySelectorAll('eui-content-card-header-subtitle');
-        expect(subtitles[0].textContent).toContain('TF-1');
-        expect(subtitles[1].textContent).toContain('DEMO-5');
-    });
-
-    it('should show type chip', () => {
-        fixture.detectChanges();
-        const starts = fixture.nativeElement.querySelectorAll('eui-content-card-header-start eui-chip');
-        expect(starts[0].textContent).toContain('workflow.ticket-type.STORY');
-    });
-
-    it('should show status chip', () => {
-        fixture.detectChanges();
-        const ends = fixture.nativeElement.querySelectorAll('eui-content-card-header-end eui-chip');
-        expect(ends[0].textContent).toContain('workflow.status.TO_DO');
-    });
-
-    it('should show priority chip when priority exists', () => {
-        fixture.detectChanges();
-        const metadata = fixture.nativeElement.querySelectorAll('eui-content-card-header-metadata');
-        expect(metadata[0].textContent).toContain('ticket.priority.HIGH');
-    });
-
-    it('should link cards to ticket detail', () => {
-        fixture.detectChanges();
-        const links = fixture.nativeElement.querySelectorAll('a.card-link');
+        const links = fixture.nativeElement.querySelectorAll('eui-card a');
         expect(links[0].getAttribute('href')).toBe('/screen/projects/1/tickets/1');
-        expect(links[1].getAttribute('href')).toBe('/screen/projects/2/tickets/5');
+        expect(links[0].textContent).toContain('Login page');
     });
+
+    it('should render card subtitle with project key, ticket number, type, priority, assignee', () => {
+        fixture.detectChanges();
+        const cards = fixture.nativeElement.querySelectorAll('eui-card');
+        expect(cards[0].textContent).toContain('TF-1');
+        expect(cards[0].textContent).toContain('workflow.ticket-type.STORY');
+        expect(cards[0].textContent).toContain('ticket.priority.HIGH');
+        expect(cards[1].textContent).toContain('DEMO-5');
+    });
+
+    it('should render status chip in card header right content', () => {
+        fixture.detectChanges();
+        const rightContents = fixture.nativeElement.querySelectorAll('eui-card-header-right-content');
+        expect(rightContents.length).toBe(2);
+        expect(rightContents[0].textContent).toContain('workflow.status.TO_DO');
+        expect(rightContents[1].textContent).toContain('workflow.status.IN_PROGRESS');
+    });
+
+    it('should return correct status chip variant', () => {
+        fixture.detectChanges();
+        expect(component.getStatusChipVariant('DONE')).toBe('success');
+        expect(component.getStatusChipVariant('IN_PROGRESS')).toBe('info');
+        expect(component.getStatusChipVariant('IN_REVIEW')).toBe('info');
+        expect(component.getStatusChipVariant('TO_DO')).toBe('warning');
+        expect(component.getStatusChipVariant('UNKNOWN')).toBe('');
+    });
+
+    it('should render dropdown actions menu on each card', () => {
+        fixture.detectChanges();
+        const dropdowns = fixture.nativeElement.querySelectorAll('eui-card-header-right-content eui-dropdown');
+        expect(dropdowns.length).toBe(2);
+    });
+
+    it('should render dropdown trigger button on each card', () => {
+        fixture.detectChanges();
+        const dropdowns = fixture.nativeElement.querySelectorAll('eui-card-header-right-content eui-dropdown');
+        expect(dropdowns.length).toBe(2);
+        // Each dropdown has a trigger button
+        dropdowns.forEach((dd: Element) => {
+            const trigger = dd.querySelector('button');
+            expect(trigger).toBeTruthy();
+        });
+    });
+
+    it('should show growl on card action (delete)', () => {
+        fixture.detectChanges();
+        component.onCardAction('delete', mockItems[0]);
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'info' }));
+    });
+
+    it('should show growl on card action (assign)', () => {
+        fixture.detectChanges();
+        component.onCardAction('assign', mockItems[1]);
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'info' }));
+    });
+
+    it('should show growl on card action (change-status)', () => {
+        fixture.detectChanges();
+        component.onCardAction('change-status', mockItems[0]);
+        expect(growl.growl).toHaveBeenCalledWith(expect.objectContaining({ severity: 'info' }));
+    });
+
+    it('should not show growl on card action (edit) — placeholder', () => {
+        fixture.detectChanges();
+        component.onCardAction('edit', mockItems[0]);
+        expect(growl.growl).not.toHaveBeenCalled();
+    });
+
+    it('should toggle card expand and show description', () => {
+        fixture.detectChanges();
+        expect(component.expandedCards.has('b1')).toBe(false);
+        const cards = fixture.nativeElement.querySelectorAll('eui-card');
+        expect(cards[0].querySelector('eui-card-content')).toBeFalsy();
+        // Expand
+        component.toggleCardExpand('b1');
+        fixture.detectChanges();
+        expect(component.expandedCards.has('b1')).toBe(true);
+        expect(cards[0].textContent).toContain('Implement login');
+    });
+
+    it('should collapse card on second toggle', () => {
+        fixture.detectChanges();
+        component.toggleCardExpand('b1');
+        component.toggleCardExpand('b1');
+        fixture.detectChanges();
+        expect(component.expandedCards.has('b1')).toBe(false);
+    });
+
+    it('should resolve project key via getProjectKey', () => {
+        fixture.detectChanges();
+        expect(component.getProjectKey(mockItems[0])).toBe('TF');
+        expect(component.getProjectKey(mockItems[1])).toBe('DEMO');
+    });
+
+    // ── Search ──
 
     it('should trigger debounced search on text input', () => {
         vi.useFakeTimers();
@@ -183,13 +245,13 @@ describe('TicketsComponent', () => {
         vi.useRealTimers();
     });
 
-    it('should trigger immediate search on onSearchSubmit', () => {
+    it('should have no search button (debounce only)', () => {
         fixture.detectChanges();
-        ticketsSvc.getTickets.mockClear();
-        component.searchValue = 'immediate';
-        component.onSearchSubmit();
-        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ q: 'immediate', _page: 1 }));
+        const searchBtn = fixture.nativeElement.querySelector('.search-input-group button');
+        expect(searchBtn).toBeFalsy();
     });
+
+    // ── Pagination ──
 
     it('should update page on pagination', () => {
         fixture.detectChanges();
@@ -203,27 +265,27 @@ describe('TicketsComponent', () => {
     it('should ignore paginator init event before AfterViewInit', () => {
         fixture.detectChanges();
         ticketsSvc.getTickets.mockClear();
-        // Reset paginatorReady to simulate a call before AfterViewInit
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (component as any).paginatorReady = false;
         component.onPageChange({ page: 0, pageSize: 10 });
         expect(ticketsSvc.getTickets).not.toHaveBeenCalled();
     });
 
+    // ── Loading / Empty / Error states ──
+
     it('should show loading state', () => {
-        // Use a Subject so we can control when it emits; component stays in loading state
         const pending$ = new Subject<BacklogListResponse>();
         ticketsSvc.getTickets.mockReturnValue(pending$.asObservable());
         fixture.detectChanges();
         const bar = fixture.nativeElement.querySelector('eui-progress-bar');
         expect(bar).toBeTruthy();
-        // Complete the subject to avoid cleanup errors
         pending$.complete();
     });
 
     it('should show empty state when no results', () => {
         ticketsSvc.getTickets.mockReturnValue(of(emptyResp));
         fixture.detectChanges();
-        const output = fixture.nativeElement.querySelector('output.empty-state');
+        const output = fixture.nativeElement.querySelector('output');
         expect(output).toBeTruthy();
         expect(output.textContent).toContain('tickets.no-items');
     });
@@ -232,7 +294,7 @@ describe('TicketsComponent', () => {
         ticketsSvc.getTickets.mockReturnValue(throwError(() => ({ status: 500 })));
         fixture.detectChanges();
         expect(component.hasError).toBe(true);
-        const retryBtn = fixture.nativeElement.querySelector('output.empty-state button');
+        const retryBtn = fixture.nativeElement.querySelector('output button');
         expect(retryBtn).toBeTruthy();
     });
 
@@ -245,6 +307,8 @@ describe('TicketsComponent', () => {
         expect(component.hasError).toBe(false);
         expect(component.items.length).toBe(2);
     });
+
+    // ── Filter column collapse ──
 
     it('should toggle filter column collapse', () => {
         fixture.detectChanges();
@@ -260,14 +324,73 @@ describe('TicketsComponent', () => {
         expect(liveEl).toBeTruthy();
     });
 
-    it('should send multi-value status param', () => {
+    // ── Dynamic filter builder ──
+
+    it('should render select-filter dropdown', () => {
+        fixture.detectChanges();
+        const select = fixture.nativeElement.querySelector('#select-filter');
+        expect(select).toBeTruthy();
+    });
+
+    it('should add a filter section when dimension selected', () => {
+        fixture.detectChanges();
+        component.onAddFilter('status');
+        expect(component.visibleFilters.has('status')).toBe(true);
+        expect(component.filterDropdownValue).toBeNull();
+    });
+
+    it('should remove a filter section and clear its value', () => {
+        fixture.detectChanges();
+        component.onAddFilter('status');
+        component.selectedStatusValue = 'TO_DO';
+        component.onStatusSelectChange();
+        ticketsSvc.getTickets.mockClear();
+
+        component.onRemoveFilter('status');
+        expect(component.visibleFilters.has('status')).toBe(false);
+        expect(component.selectedStatusValue).toBeNull();
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ status: undefined }));
+    });
+
+    it('should hide already-visible dimensions from dropdown', () => {
+        fixture.detectChanges();
+        expect(component.availableFilterDimensions.length).toBe(3);
+        component.onAddFilter('status');
+        expect(component.availableFilterDimensions.length).toBe(2);
+        expect(component.availableFilterDimensions.some(d => d.value === 'status')).toBe(false);
+    });
+
+    // ── Status filter ──
+
+    it('should send single status param on status select change', () => {
         fixture.detectChanges();
         ticketsSvc.getTickets.mockClear();
-        component.statusChecks.TO_DO = true;
-        component.statusChecks.DONE = true;
-        component.onStatusCheckChange();
-        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ status: 'TO_DO,DONE' }));
+        component.selectedStatusValue = 'TO_DO';
+        component.onStatusSelectChange();
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ status: 'TO_DO' }));
     });
+
+    it('should build status chip from selectedStatusValue', () => {
+        fixture.detectChanges();
+        component.selectedStatusValue = 'TO_DO';
+        component.onStatusSelectChange();
+        const chips = component.activeFilterChips;
+        expect(chips.some(c => c.dimension === 'status' && c.value === 'TO_DO')).toBe(true);
+    });
+
+    it('should remove status chip and clear status filter', () => {
+        fixture.detectChanges();
+        component.selectedStatusValue = 'TO_DO';
+        component.onStatusSelectChange();
+        ticketsSvc.getTickets.mockClear();
+
+        const chip = component.activeFilterChips.find(c => c.dimension === 'status')!;
+        component.onChipRemove(chip);
+        expect(component.selectedStatusValue).toBeNull();
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ status: undefined }));
+    });
+
+    // ── Type filter ──
 
     it('should send multi-value type param', () => {
         fixture.detectChanges();
@@ -277,55 +400,67 @@ describe('TicketsComponent', () => {
         expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ type: 'BUG' }));
     });
 
-    it('should send multi-value priority param', () => {
+    // ── Priority filter ──
+
+    it('should send single priority param on radio change', () => {
         fixture.detectChanges();
         ticketsSvc.getTickets.mockClear();
-        component.priorityChecks.HIGH = true;
-        component.priorityChecks.CRITICAL = true;
-        component.onPriorityCheckChange();
-        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ priority: 'CRITICAL,HIGH' }));
+        component.selectedPriority = 'HIGH';
+        component.onPriorityRadioChange();
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ priority: 'HIGH' }));
     });
 
-    it('should build activeFilterChips from selected statuses', () => {
+    it('should build priority chip from selectedPriority', () => {
         fixture.detectChanges();
-        component.statusChecks.TO_DO = true;
-        component.onStatusCheckChange();
+        component.selectedPriority = 'HIGH';
+        component.onPriorityRadioChange();
         const chips = component.activeFilterChips;
-        expect(chips.some(c => c.dimension === 'status' && c.value === 'TO_DO')).toBe(true);
+        expect(chips.some(c => c.dimension === 'priority' && c.value === 'HIGH')).toBe(true);
     });
 
-    it('should clear all filters on clearAllFilters()', () => {
+    it('should remove priority chip and clear priority filter', () => {
         fixture.detectChanges();
-        component.searchValue = 'test';
-        component.statusChecks.TO_DO = true;
-        component.onStatusCheckChange();
+        component.selectedPriority = 'HIGH';
+        component.onPriorityRadioChange();
         ticketsSvc.getTickets.mockClear();
 
-        component.clearAllFilters();
-        expect(component.searchValue).toBe('');
-        expect(component.selectedStatuses.size).toBe(0);
-        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _page: 1 }));
-    });
-
-    it('should remove chip and uncheck filter', () => {
-        fixture.detectChanges();
-        component.statusChecks.TO_DO = true;
-        component.onStatusCheckChange();
-        ticketsSvc.getTickets.mockClear();
-
-        const chip = component.activeFilterChips.find(c => c.value === 'TO_DO')!;
+        const chip = component.activeFilterChips.find(c => c.dimension === 'priority')!;
         component.onChipRemove(chip);
-        expect(component.statusChecks.TO_DO).toBe(false);
-        expect(component.selectedStatuses.has('TO_DO')).toBe(false);
+        expect(component.selectedPriority).toBeNull();
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ priority: undefined }));
     });
 
-    it('should resolve project key via getProjectKey', () => {
+    // ── Quick Filters removed ──
+
+    it('should not have assigned-to-me checkbox', () => {
         fixture.detectChanges();
-        expect(component.getProjectKey(mockItems[0])).toBe('TF');
-        expect(component.getProjectKey(mockItems[1])).toBe('DEMO');
+        const cb = fixture.nativeElement.querySelector('#assigned-to-me');
+        expect(cb).toBeFalsy();
     });
 
-    // ── STORY-004: Filter Panel ──
+    it('should not have open-sprints checkbox', () => {
+        fixture.detectChanges();
+        const cb = fixture.nativeElement.querySelector('#open-sprints');
+        expect(cb).toBeFalsy();
+    });
+
+    // ── Advanced filters ──
+
+    it('should start with advanced filters collapsed', () => {
+        fixture.detectChanges();
+        expect(component.isAdvancedCollapsed).toBe(true);
+    });
+
+    it('should toggle advanced filters', () => {
+        fixture.detectChanges();
+        component.isAdvancedCollapsed = false;
+        component['cdr'].markForCheck();
+        fixture.detectChanges();
+        const projectSelect = fixture.nativeElement.querySelector('#tickets-project');
+        expect(projectSelect).toBeTruthy();
+    });
+
+    // ── Project / Sprint filters ──
 
     it('should populate userProjects on init', () => {
         fixture.detectChanges();
@@ -360,72 +495,12 @@ describe('TicketsComponent', () => {
         expect(component.selectedSprintId).toBeNull();
     });
 
-    it('should set assignee_id param on assigned-to-me check', () => {
-        fixture.detectChanges();
-        ticketsSvc.getTickets.mockClear();
-        component.assignedToMe = true;
-        component.onAssignedToMeChange();
-        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ assignee_id: '1', _page: 1 }));
-    });
-
-    it('should clear assignee_id param on assigned-to-me uncheck', () => {
-        fixture.detectChanges();
-        component.assignedToMe = true;
-        component.onAssignedToMeChange();
-        ticketsSvc.getTickets.mockClear();
-
-        component.assignedToMe = false;
-        component.onAssignedToMeChange();
-        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ assignee_id: undefined }));
-    });
-
-    it('should set sprint_id=open on open-sprints check', () => {
-        fixture.detectChanges();
-        ticketsSvc.getTickets.mockClear();
-        component.openSprintsChecked = true;
-        component.onOpenSprintsChange();
-        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ sprint_id: 'open', _page: 1 }));
-    });
-
-    it('should clear specific sprint when open-sprints checked', () => {
-        fixture.detectChanges();
-        component.selectedSprintId = 'sp-2';
-        component.openSprintsChecked = true;
-        component.onOpenSprintsChange();
-        expect(component.selectedSprintId).toBeNull();
-    });
-
-    it('should uncheck open-sprints when specific sprint selected', () => {
-        fixture.detectChanges();
-        component.openSprintsChecked = true;
-        component.selectedSprintId = 'sp-2';
-        component.onSprintChange();
-        expect(component.openSprintsChecked).toBe(false);
-        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ sprint_id: 'sp-2' }));
-    });
-
     it('should generate project chip when project selected', () => {
         fixture.detectChanges();
         component.selectedProjectId = '1';
         component.onProjectChange();
         const chips = component.activeFilterChips;
         expect(chips.some(c => c.dimension === 'project' && c.value === '1')).toBe(true);
-    });
-
-    it('should generate assigned-to-me chip', () => {
-        fixture.detectChanges();
-        component.assignedToMe = true;
-        component.onAssignedToMeChange();
-        const chips = component.activeFilterChips;
-        expect(chips.some(c => c.dimension === 'assignee' && c.value === 'me')).toBe(true);
-    });
-
-    it('should generate open-sprints chip', () => {
-        fixture.detectChanges();
-        component.openSprintsChecked = true;
-        component.onOpenSprintsChange();
-        const chips = component.activeFilterChips;
-        expect(chips.some(c => c.dimension === 'sprint' && c.value === 'open')).toBe(true);
     });
 
     it('should generate sprint chip when specific sprint selected', () => {
@@ -451,76 +526,240 @@ describe('TicketsComponent', () => {
         expect(ticketsSvc.getTickets).toHaveBeenCalled();
     });
 
-    it('should remove assignee chip and uncheck assigned-to-me', () => {
+    // ── Clear all filters ──
+
+    it('should clear all filters on clearAllFilters()', () => {
         fixture.detectChanges();
-        component.assignedToMe = true;
-        component.onAssignedToMeChange();
-        ticketsSvc.getTickets.mockClear();
-
-        const chip = component.activeFilterChips.find(c => c.dimension === 'assignee');
-        component.onChipRemove(chip!);
-        expect(component.assignedToMe).toBe(false);
-        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ assignee_id: undefined }));
-    });
-
-    it('should remove open-sprints chip', () => {
-        fixture.detectChanges();
-        component.openSprintsChecked = true;
-        component.onOpenSprintsChange();
-        ticketsSvc.getTickets.mockClear();
-
-        const chip = component.activeFilterChips.find(c => c.value === 'open');
-        component.onChipRemove(chip!);
-        expect(component.openSprintsChecked).toBe(false);
-        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ sprint_id: undefined }));
-    });
-
-    it('should clear all filters including project and assignee', () => {
-        fixture.detectChanges();
-        component.selectedProjectId = '1';
-        component.onProjectChange();
-        component.assignedToMe = true;
-        component.onAssignedToMeChange();
-        component.openSprintsChecked = true;
-        component.onOpenSprintsChange();
-        component.statusChecks.TO_DO = true;
-        component.onStatusCheckChange();
+        component.searchValue = 'test';
+        component.selectedStatusValue = 'TO_DO';
+        component.onStatusSelectChange();
+        component.selectedPriority = 'HIGH';
+        component.onPriorityRadioChange();
+        component.onAddFilter('status');
+        component.onAddFilter('priority');
         ticketsSvc.getTickets.mockClear();
 
         component.clearAllFilters();
-        expect(component.selectedProjectId).toBeNull();
-        expect(component.assignedToMe).toBe(false);
-        expect(component.openSprintsChecked).toBe(false);
-        expect(component.selectedSprintId).toBeNull();
-        expect(component.selectedStatuses.size).toBe(0);
+        expect(component.searchValue).toBe('');
+        expect(component.selectedStatusValue).toBeNull();
+        expect(component.selectedPriority).toBeNull();
+        expect(component.visibleFilters.size).toBe(0);
         expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _page: 1 }));
     });
 
     it('should reset page to 1 on every filter change', () => {
         fixture.detectChanges();
-        // Advance to page 2
         component.ngAfterViewInit();
         component.onPageChange({ page: 1, pageSize: 10 });
         ticketsSvc.getTickets.mockClear();
 
-        component.assignedToMe = true;
-        component.onAssignedToMeChange();
+        component.selectedStatusValue = 'TO_DO';
+        component.onStatusSelectChange();
         expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _page: 1 }));
     });
 
-    it('should render assigned-to-me checkbox', () => {
+    // ── Results Header Bar ──
+
+    it('should render results heading in column header', () => {
         fixture.detectChanges();
-        const cb = fixture.nativeElement.querySelector('#assigned-to-me');
-        expect(cb).toBeTruthy();
+        const headerLeft = fixture.nativeElement.querySelector('eui-page-column-header-left-content');
+        expect(headerLeft).toBeTruthy();
+        expect(headerLeft.textContent).toContain('tickets.results.heading');
     });
 
-    it('should render open-sprints checkbox', () => {
+    it('should render ticket count with aria-live', () => {
         fixture.detectChanges();
-        const cb = fixture.nativeElement.querySelector('#open-sprints');
-        expect(cb).toBeTruthy();
+        const liveEl = fixture.nativeElement.querySelector('[aria-live="polite"]');
+        expect(liveEl).toBeTruthy();
     });
 
-    // ── STORY-005: Create Ticket Dialog ──
+    it('should render sort field dropdown with 4 options', () => {
+        fixture.detectChanges();
+        const select = fixture.nativeElement.querySelector('#sort-field');
+        expect(select).toBeTruthy();
+        const options = select.querySelectorAll('option');
+        expect(options.length).toBe(4);
+    });
+
+    it('should change sort field and reload', () => {
+        fixture.detectChanges();
+        ticketsSvc.getTickets.mockClear();
+        component.sortField = 'title';
+        component.onSortFieldChange();
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _sort: 'title', _page: 1 }));
+    });
+
+    it('should toggle sort direction and reload', () => {
+        fixture.detectChanges();
+        expect(component.sortOrder).toBe('desc');
+        ticketsSvc.getTickets.mockClear();
+        component.onToggleSortOrder();
+        expect(component.sortOrder).toBe('asc');
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _order: 'asc', _page: 1 }));
+    });
+
+    it('should render view toggle group', () => {
+        fixture.detectChanges();
+        const toggle = fixture.nativeElement.querySelector('eui-toggle-group');
+        expect(toggle).toBeTruthy();
+        const items = fixture.nativeElement.querySelectorAll('eui-toggle-group-item');
+        expect(items.length).toBe(2);
+    });
+
+    it('should default to card view', () => {
+        fixture.detectChanges();
+        expect(component.currentView).toBe('card');
+        const cards = fixture.nativeElement.querySelectorAll('eui-card');
+        expect(cards.length).toBe(2);
+    });
+
+    it('should switch to table view', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        expect(component.currentView).toBe('table');
+        const cards = fixture.nativeElement.querySelectorAll('eui-card');
+        expect(cards.length).toBe(0);
+    });
+
+    // ── Table View ──
+
+    it('should render table when currentView is table', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        const table = fixture.nativeElement.querySelector('table[euitable]');
+        expect(table).toBeTruthy();
+    });
+
+    it('should render table with aria-label', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        const table = fixture.nativeElement.querySelector('table[euitable]');
+        expect(table.getAttribute('aria-label')).toBe('tickets.table.caption');
+    });
+
+    it('should render 7 table columns with scope=col', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        const ths = fixture.nativeElement.querySelectorAll('th[scope="col"]');
+        expect(ths.length).toBe(7);
+    });
+
+    it('should render table rows with data-col-label on cells', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        const tds = fixture.nativeElement.querySelectorAll('td[data-col-label]');
+        // 2 items × 7 columns = 14
+        expect(tds.length).toBe(14);
+    });
+
+    it('should render ticket data in table cells', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        const rows = fixture.nativeElement.querySelectorAll('tbody tr');
+        expect(rows.length).toBe(2);
+        expect(rows[0].textContent).toContain('TF-1');
+        expect(rows[0].textContent).toContain('Login page');
+        expect(rows[1].textContent).toContain('DEMO-5');
+    });
+
+    it('should render status badge in table', () => {
+        fixture.detectChanges();
+        component.onViewChange('table');
+        fixture.detectChanges();
+        const badges = fixture.nativeElement.querySelectorAll('tbody [euistatusbadge]');
+        expect(badges.length).toBe(2);
+    });
+
+    it('should handle table sort change', () => {
+        fixture.detectChanges();
+        ticketsSvc.getTickets.mockClear();
+        component.onTableSort([{ sort: 'title', order: 'ASC' }] as unknown as Sort[]);
+        expect(component.sortField).toBe('title');
+        expect(component.sortOrder).toBe('asc');
+        expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _sort: 'title', _order: 'asc', _page: 1 }));
+    });
+
+    it('should navigate to ticket on navigateToTicket', () => {
+        fixture.detectChanges();
+        const router = TestBed.inject(Router);
+        const spy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+        component.navigateToTicket(mockItems[0]);
+        expect(spy).toHaveBeenCalledWith(['/screen/projects', '1', 'tickets', 1]);
+    });
+
+    it('should show chip overflow when more than 5 chips', () => {
+        fixture.detectChanges();
+        // Set up many filters to exceed MAX_VISIBLE_CHIPS
+        component.searchValue = 'test';
+        component.params = { ...component.params, q: 'test' };
+        component.selectedProjectId = '1';
+        component.onProjectChange();
+        component.selectedSprintId = 'sp-2';
+        component.onSprintChange();
+        component.selectedStatusValue = 'TO_DO';
+        component.onStatusSelectChange();
+        component.selectedPriority = 'HIGH';
+        component.onPriorityRadioChange();
+        component.typeChecks.BUG = true;
+        component.onTypeCheckChange();
+        // That's 6 chips: search, project, sprint, status, type, priority
+        expect(component.activeFilterChips.length).toBe(6);
+        expect(component.visibleChips.length).toBe(5);
+        expect(component.hasOverflowChips).toBe(true);
+        expect(component.overflowChipCount).toBe(1);
+    });
+
+    // ── Breadcrumb + Page Header ──
+
+    it('should render breadcrumb with 2 items', () => {
+        fixture.detectChanges();
+        const breadcrumb = fixture.nativeElement.querySelector('eui-breadcrumb');
+        expect(breadcrumb).toBeTruthy();
+        const items = fixture.nativeElement.querySelectorAll('eui-breadcrumb-item');
+        expect(items.length).toBe(2);
+    });
+
+    it('should render home breadcrumb with link and icon', () => {
+        fixture.detectChanges();
+        const items = fixture.nativeElement.querySelectorAll('eui-breadcrumb-item');
+        const homeItem = items[0];
+        expect(homeItem.getAttribute('link')).toBe('/screen/home');
+        expect(homeItem.getAttribute('iconsvgname')).toBe('home:outline');
+    });
+
+    it('should render tickets breadcrumb without link', () => {
+        fixture.detectChanges();
+        const items = fixture.nativeElement.querySelectorAll('eui-breadcrumb-item');
+        const ticketsItem = items[1];
+        expect(ticketsItem.getAttribute('link')).toBeFalsy();
+    });
+
+    it('should render create button with icon', () => {
+        fixture.detectChanges();
+        const btn = fixture.nativeElement.querySelector('button[aria-haspopup="dialog"]');
+        expect(btn).toBeTruthy();
+        const icon = btn.querySelector('eui-icon-svg');
+        expect(icon).toBeTruthy();
+        expect(icon.getAttribute('icon')).toBe('plus:regular');
+    });
+
+    // ── Paginator in column footer ──
+
+    it('should render paginator inside eui-page-column-footer', () => {
+        fixture.detectChanges();
+        const footer = fixture.nativeElement.querySelector('eui-page-column-footer');
+        expect(footer).toBeTruthy();
+        const paginator = footer.querySelector('eui-paginator');
+        expect(paginator).toBeTruthy();
+    });
+
+    // ── Create Ticket Dialog ──
 
     it('should set canCreate=true for super admin', () => {
         fixture.detectChanges();
@@ -606,19 +845,6 @@ describe('TicketsComponent', () => {
         expect(projectSvc.getEpics).not.toHaveBeenCalled();
     });
 
-    it('should render assignee select as disabled when no project selected', () => {
-        fixture.detectChanges();
-        // Dialog content is rendered in an overlay, so we test the component state
-        expect(component.selectedCreateProjectId).toBeNull();
-        // The template binds [disabled]="!selectedCreateProjectId", so disabled=true when null
-    });
-
-    it('should render epic select as disabled when no project selected', () => {
-        fixture.detectChanges();
-        expect(component.selectedCreateProjectId).toBeNull();
-        // The template binds [disabled]="!selectedCreateProjectId", so disabled=true when null
-    });
-
     it('should validate title too short', () => {
         fixture.detectChanges();
         expect(component.isCreateFormValid()).toBe(false);
@@ -632,21 +858,6 @@ describe('TicketsComponent', () => {
         component.selectedCreateProjectId = '1';
         component.newTicketTitle = 'Valid title';
         expect(component.isCreateFormValid()).toBe(true);
-    });
-
-    it('should show title validation error when title too short', () => {
-        fixture.detectChanges();
-        component.newTicketTitle = 'A';
-        // The template condition: newTicketTitle.trim().length > 0 && newTicketTitle.trim().length < 2
-        expect(component.newTicketTitle.trim().length).toBe(1);
-        expect(component.newTicketTitle.trim().length > 0 && component.newTicketTitle.trim().length < 2).toBe(true);
-    });
-
-    it('should hide title validation error when valid', () => {
-        fixture.detectChanges();
-        component.newTicketTitle = 'Valid title';
-        expect(component.newTicketTitle.trim().length >= 2).toBe(true);
-        expect(component.newTicketTitle.trim().length > 0 && component.newTicketTitle.trim().length < 2).toBe(false);
     });
 
     it('should create ticket successfully: close dialog, growl, reload', () => {

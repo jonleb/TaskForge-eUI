@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe, Location } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, switchMap, combineLatest } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { EUI_PAGE } from '@eui/components/eui-page';
-import { EUI_CHIP } from '@eui/components/eui-chip';
 import { EUI_BUTTON } from '@eui/components/eui-button';
 import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
 import { EUI_SELECT } from '@eui/components/eui-select';
@@ -15,17 +14,21 @@ import { EUI_TEXTAREA } from '@eui/components/eui-textarea';
 import { EUI_FEEDBACK_MESSAGE } from '@eui/components/eui-feedback-message';
 import { EuiIconButtonComponent } from '@eui/components/eui-icon-button';
 import { EuiDialogComponent, EUI_DIALOG } from '@eui/components/eui-dialog';
+import { EUI_BREADCRUMB } from '@eui/components/eui-breadcrumb';
+import { EUI_FIELDSET } from '@eui/components/eui-fieldset';
+import { EUI_INPUT_GROUP } from '@eui/components/eui-input-group';
+import { EUI_TABS } from '@eui/components/eui-tabs';
+import { EUI_BADGE } from '@eui/components/eui-badge';
+import { EUI_DISCUSSION_THREAD, EuiDiscussionThreadItem } from '@eui/components/eui-discussion-thread';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
     ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember,
-    Workflow, WorkflowStatus, TicketPriority, UpdateTicketPayload,
-    TICKET_PRIORITIES, TicketComment, ActivityEntry, LinkType, TicketLink,
+    Workflow, WorkflowStatus, TicketPriority, TicketType, UpdateTicketPayload,
+    TICKET_PRIORITIES, TICKET_TYPES, TicketComment, ActivityEntry, LinkType, TicketLink,
     CreateTicketLinkPayload,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
-
-type EditableField = 'title' | 'description' | 'status' | 'priority' | 'assignee' | 'epic';
 
 @Component({
     selector: 'app-ticket-detail',
@@ -33,10 +36,12 @@ type EditableField = 'title' | 'description' | 'status' | 'priority' | 'assignee
     styleUrls: ['./ticket-detail.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-        ...EUI_PAGE, ...EUI_CHIP, ...EUI_BUTTON, ...EUI_PROGRESS_BAR,
+        ...EUI_PAGE, ...EUI_BUTTON, ...EUI_PROGRESS_BAR,
         ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT, ...EUI_TEXTAREA,
-        ...EUI_FEEDBACK_MESSAGE, ...EUI_DIALOG,
-        EuiIconButtonComponent, DatePipe, TranslateModule, FormsModule,
+        ...EUI_FEEDBACK_MESSAGE, ...EUI_DIALOG, ...EUI_BREADCRUMB,
+        ...EUI_FIELDSET, ...EUI_INPUT_GROUP, ...EUI_TABS, ...EUI_BADGE,
+        ...EUI_DISCUSSION_THREAD,
+        EuiIconButtonComponent, DatePipe, TranslateModule, ReactiveFormsModule, FormsModule,
     ],
 })
 export class TicketDetailComponent implements OnInit, OnDestroy {
@@ -64,16 +69,22 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     // Role-based permissions
     canEdit = false;
 
-    // Edit state
-    editingFields = new Set<EditableField>();
-    editTitle = '';
-    editDescription = '';
-    editStatus: WorkflowStatus = 'TO_DO';
-    editPriority: TicketPriority = 'MEDIUM';
-    editAssigneeId: string | null = null;
-    editEpicId: string | null = null;
+    // Global edit mode toggle (replaces per-field editingFields)
+    isEditActive = false;
+
+    // Reactive form
+    ticketForm = new FormGroup({
+        title: new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]),
+        type: new FormControl<TicketType>('STORY'),
+        status: new FormControl<WorkflowStatus>('TO_DO'),
+        priority: new FormControl<TicketPriority>('MEDIUM'),
+        assignee_id: new FormControl<string | null>(null),
+        description: new FormControl('', [Validators.maxLength(2000)]),
+        epic_id: new FormControl<string | null>(null),
+    });
 
     readonly priorities = TICKET_PRIORITIES;
+    readonly ticketTypes = TICKET_TYPES;
 
     // Comments
     comments: TicketComment[] = [];
@@ -92,6 +103,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
     @ViewChild('addLinkDialog') addLinkDialog!: EuiDialogComponent;
     @ViewChild('confirmDeleteLinkDialog') confirmDeleteLinkDialog!: EuiDialogComponent;
+    @ViewChild('addCommentDialog') addCommentDialog!: EuiDialogComponent;
 
     ngOnInit(): void {
         combineLatest([
@@ -116,7 +128,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
             next: ticket => {
                 this.ticket = ticket;
                 this.isLoading = false;
-                this.syncEditFields();
+                this.patchFormFromTicket();
                 this.loadComments();
                 this.loadActivity();
                 this.loadTicketLinks();
@@ -148,58 +160,51 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         this.location.back();
     }
 
-    // --- Edit mode ---
+    // --- Edit mode toggle ---
 
-    isEditing(field: EditableField): boolean {
-        return this.editingFields.has(field);
-    }
-
-    startEdit(field: EditableField): void {
-        this.editingFields.add(field);
+    toggleEditMode(): void {
+        this.isEditActive = !this.isEditActive;
+        if (!this.isEditActive) {
+            this.patchFormFromTicket();
+        }
         this.cdr.markForCheck();
     }
 
-    cancelEdit(field: EditableField): void {
-        this.editingFields.delete(field);
-        this.syncEditFields();
-        this.cdr.markForCheck();
-    }
-
-    cancelAllEdits(): void {
-        this.editingFields.clear();
-        this.syncEditFields();
-        this.cdr.markForCheck();
-    }
-
-    get hasUnsavedChanges(): boolean {
-        return this.editingFields.size > 0;
+    onResetForm(): void {
+        this.patchFormFromTicket();
     }
 
     saveChanges(): void {
         if (!this.project || !this.ticket || this.isSaving) return;
+        if (this.ticketForm.invalid) return;
 
+        const formVal = this.ticketForm.getRawValue();
         const payload: UpdateTicketPayload = {};
-        if (this.editingFields.has('title') && this.editTitle.trim() !== this.ticket.title) {
-            payload.title = this.editTitle.trim();
+
+        if (formVal.title?.trim() !== this.ticket.title) {
+            payload.title = formVal.title?.trim();
         }
-        if (this.editingFields.has('description') && this.editDescription !== (this.ticket.description ?? '')) {
-            payload.description = this.editDescription;
+        if (formVal.type !== this.ticket.type) {
+            payload.type = formVal.type ?? undefined;
         }
-        if (this.editingFields.has('status') && this.editStatus !== this.ticket.status) {
-            payload.status = this.editStatus;
+        if (formVal.description !== (this.ticket.description ?? '')) {
+            payload.description = formVal.description ?? '';
         }
-        if (this.editingFields.has('priority') && this.editPriority !== this.ticket.priority) {
-            payload.priority = this.editPriority;
+        if (formVal.status !== this.ticket.status) {
+            payload.status = formVal.status ?? undefined;
         }
-        if (this.editingFields.has('assignee') && this.editAssigneeId !== this.ticket.assignee_id) {
-            payload.assignee_id = this.editAssigneeId;
+        if (formVal.priority !== this.ticket.priority) {
+            payload.priority = formVal.priority;
         }
-        if (this.editingFields.has('epic') && this.editEpicId !== this.ticket.epic_id) {
-            payload.epic_id = this.editEpicId;
+        if (formVal.assignee_id !== this.ticket.assignee_id) {
+            payload.assignee_id = formVal.assignee_id;
+        }
+        if (formVal.epic_id !== this.ticket.epic_id) {
+            payload.epic_id = formVal.epic_id;
         }
 
         if (Object.keys(payload).length === 0) {
-            this.cancelAllEdits();
+            this.toggleEditMode();
             return;
         }
 
@@ -211,8 +216,8 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         ).subscribe({
             next: updated => {
                 this.ticket = updated;
-                this.editingFields.clear();
-                this.syncEditFields();
+                this.isEditActive = false;
+                this.patchFormFromTicket();
                 this.isSaving = false;
                 this.growlService.growl({
                     severity: 'success',
@@ -255,8 +260,10 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     }
 
     getEpicName(): string | null {
-        if (!this.ticket?.epic_id) return null;
-        return this.ticket.epic_id;
+        const ticket = this.ticket;
+        if (!ticket?.epic_id) return null;
+        const epic = this.epics.find(e => e.id === ticket.epic_id);
+        return epic ? epic.title : ticket.epic_id;
     }
 
     getCreatorName(): string {
@@ -264,6 +271,31 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         if (!ticket) return '';
         const member = this.members.find(m => m.userId === ticket.created_by);
         return member ? `${member.firstName} ${member.lastName}` : ticket.created_by;
+    }
+
+    // --- Discussion thread items ---
+
+    get commentThreadItems(): EuiDiscussionThreadItem[] {
+        return this.comments.map(c => ({
+            id: c.id,
+            typeClass: 'secondary',
+            author: c.authorName,
+            date: c.created_at,
+            body: c.content,
+        }));
+    }
+
+    get activityThreadItems(): EuiDiscussionThreadItem[] {
+        return this.activity.map(a => ({
+            id: a.id,
+            typeClass: 'info',
+            author: this.getChangerName(a.changedBy),
+            date: a.created_at,
+            body: this.translate.instant('ticket-detail.activity.changed', {
+                user: this.getChangerName(a.changedBy),
+                field: a.field, oldValue: a.oldValue, newValue: a.newValue,
+            }),
+        }));
     }
 
     // --- Activity ---
@@ -295,9 +327,16 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         });
     }
 
+    openAddCommentDialog(): void {
+        this.newCommentText = '';
+        this.cdr.detectChanges();
+        this.addCommentDialog.openDialog();
+    }
+
     submitComment(): void {
         if (!this.project || !this.ticket || this.isAddingComment || !this.newCommentText.trim()) return;
         this.isAddingComment = true;
+        this.addCommentDialog.closeDialog();
         this.cdr.markForCheck();
 
         this.projectService.addComment(this.project.id, this.ticket.ticket_number, this.newCommentText.trim()).pipe(
@@ -343,9 +382,8 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         return `${this.project.key}-${link.targetTicketNumber}`;
     }
 
-    canDeleteLink(link: TicketLink): boolean {
+    canDeleteLink(): boolean {
         if (this.permissionService.isSuperAdmin()) return true;
-        // canEdit already covers PROJECT_ADMIN, PRODUCT_OWNER, DEVELOPER
         if (this.canEdit) return true;
         return false;
     }
@@ -426,14 +464,17 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
     // --- Private ---
 
-    private syncEditFields(): void {
+    private patchFormFromTicket(): void {
         if (!this.ticket) return;
-        this.editTitle = this.ticket.title;
-        this.editDescription = this.ticket.description ?? '';
-        this.editStatus = this.ticket.status;
-        this.editPriority = this.ticket.priority ?? 'MEDIUM';
-        this.editAssigneeId = this.ticket.assignee_id;
-        this.editEpicId = this.ticket.epic_id;
+        this.ticketForm.patchValue({
+            title: this.ticket.title,
+            type: this.ticket.type,
+            description: this.ticket.description ?? '',
+            status: this.ticket.status,
+            priority: this.ticket.priority ?? 'MEDIUM',
+            assignee_id: this.ticket.assignee_id,
+            epic_id: this.ticket.epic_id,
+        });
     }
 
     private loadSupportData(projectId: string): void {
@@ -478,7 +519,6 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
             if (can) {
                 this.canEdit = true;
             } else {
-                // REPORTER can only edit own tickets — check after ticket loads
                 this.permissionService.hasProjectRole(projectId, 'REPORTER').pipe(
                     takeUntil(this.destroy$),
                 ).subscribe(isReporter => {
