@@ -168,6 +168,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     assignMembers: ProjectMember[] = [];
     assignError = '';
     canManageMap = new Map<string, boolean>();
+    assigneeNameMap = new Map<string, string>();
 
     // Status dialog state
     statusItem: BacklogItem | null = null;
@@ -216,6 +217,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.total = res.total;
                 this.isLoading = false;
                 this.checkManagePermissions();
+                this.loadAssigneeNames();
                 this.cdr.markForCheck();
             },
             error: () => {
@@ -457,7 +459,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     getAssigneeName(item: BacklogItem): string {
         if (!item.assignee_id) return this.translate.instant('tickets.card.no-assignee');
-        return item.assignee_id;
+        return this.assigneeNameMap.get(item.assignee_id) || item.assignee_id;
     }
 
 
@@ -643,6 +645,23 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
 
         forkJoin(checks).pipe(takeUntil(this.destroy$)).subscribe(results => {
             Object.entries(results).forEach(([pid, allowed]) => this.canManageMap.set(pid, allowed));
+            this.cdr.markForCheck();
+        });
+    }
+
+    loadAssigneeNames(): void {
+        const projectIds = [...new Set(this.items.map(i => i.projectId))];
+        if (projectIds.length === 0) return;
+
+        const memberCalls = projectIds.reduce((acc, pid) => {
+            acc[pid] = this.projectService.getProjectMembers(pid);
+            return acc;
+        }, {} as Record<string, import('rxjs').Observable<ProjectMember[]>>);
+
+        forkJoin(memberCalls).pipe(takeUntil(this.destroy$)).subscribe(results => {
+            Object.values(results).forEach(members => {
+                members.forEach(m => this.assigneeNameMap.set(m.userId, `${m.firstName} ${m.lastName}`));
+            });
             this.cdr.markForCheck();
         });
     }

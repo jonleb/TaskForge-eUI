@@ -147,6 +147,16 @@ describe('TicketsComponent', () => {
         expect(cards[1].textContent).toContain('DEMO-5');
     });
 
+    it('should resolve assignee name from member data', () => {
+        fixture.detectChanges();
+        expect(component.getAssigneeName(mockItems[0])).toBe('Jane Doe');
+    });
+
+    it('should show no-assignee text when assignee_id is null', () => {
+        fixture.detectChanges();
+        expect(component.getAssigneeName(mockItems[1])).toBe('tickets.card.no-assignee');
+    });
+
     it('should render status chip in card header right content', () => {
         fixture.detectChanges();
         const rightContents = fixture.nativeElement.querySelectorAll('eui-card-header-right-content');
