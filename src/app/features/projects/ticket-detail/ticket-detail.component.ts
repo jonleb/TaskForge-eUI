@@ -24,8 +24,8 @@ import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
     ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember,
-    Workflow, WorkflowStatus, TicketPriority, UpdateTicketPayload,
-    TICKET_PRIORITIES, TicketComment, ActivityEntry, LinkType, TicketLink,
+    Workflow, WorkflowStatus, TicketPriority, TicketType, UpdateTicketPayload,
+    TICKET_PRIORITIES, TICKET_TYPES, TicketComment, ActivityEntry, LinkType, TicketLink,
     CreateTicketLinkPayload,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
@@ -75,6 +75,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     // Reactive form
     ticketForm = new FormGroup({
         title: new FormControl('', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]),
+        type: new FormControl<TicketType>('STORY'),
         status: new FormControl<WorkflowStatus>('TO_DO'),
         priority: new FormControl<TicketPriority>('MEDIUM'),
         assignee_id: new FormControl<string | null>(null),
@@ -83,6 +84,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     });
 
     readonly priorities = TICKET_PRIORITIES;
+    readonly ticketTypes = TICKET_TYPES;
 
     // Comments
     comments: TicketComment[] = [];
@@ -180,6 +182,9 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
         if (formVal.title?.trim() !== this.ticket.title) {
             payload.title = formVal.title?.trim();
+        }
+        if (formVal.type !== this.ticket.type) {
+            payload.type = formVal.type ?? undefined;
         }
         if (formVal.description !== (this.ticket.description ?? '')) {
             payload.description = formVal.description ?? '';
@@ -455,6 +460,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         if (!this.ticket) return;
         this.ticketForm.patchValue({
             title: this.ticket.title,
+            type: this.ticket.type,
             description: this.ticket.description ?? '',
             status: this.ticket.status,
             priority: this.ticket.priority ?? 'MEDIUM',

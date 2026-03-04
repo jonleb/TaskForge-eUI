@@ -280,11 +280,11 @@ describe('TicketDetailComponent', () => {
         expect(component.ticketForm.get('assignee_id')?.value).toBe('2');
     });
 
-    it('should render 3 fieldset sections', () => {
+    it('should render 4 fieldset sections', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
         const fieldsets = fixture.nativeElement.querySelectorAll('eui-fieldset');
-        expect(fieldsets.length).toBe(3);
+        expect(fieldsets.length).toBe(4);
     });
 
     it('should show status dropdown with valid transitions', () => {

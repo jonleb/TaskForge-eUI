@@ -663,7 +663,7 @@ module.exports = function (app, db) {
                     return res.status(403).json({ message: 'Reporters can only edit their own tickets' });
                 }
 
-                const { title, description, status, priority, assignee_id, epic_id } = req.body;
+                const { title, type, description, status, priority, assignee_id, epic_id } = req.body;
                 const updates = {};
                 const activities = [];
                 const now = new Date().toISOString();
@@ -677,6 +677,18 @@ module.exports = function (app, db) {
                     if (trimmed !== item.title) {
                         activities.push({ field: 'title', oldValue: item.title, newValue: trimmed });
                         updates.title = trimmed;
+                    }
+                }
+
+                // Validate & collect type change
+                if (type !== undefined) {
+                    const validTypes = ['STORY', 'BUG', 'TASK', 'EPIC'];
+                    if (!validTypes.includes(type)) {
+                        return res.status(400).json({ message: 'Invalid type. Must be one of: STORY, BUG, TASK, EPIC' });
+                    }
+                    if (type !== item.type) {
+                        activities.push({ field: 'type', oldValue: item.type, newValue: type });
+                        updates.type = type;
                     }
                 }
 

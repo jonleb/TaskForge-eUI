@@ -60,32 +60,59 @@
                     <eui-tab-body>
                         <form [formGroup]="ticketForm">
 
-                            <!-- Fieldset 1: Ticket Information -->
-                            <eui-fieldset [label]="'ticket-detail.fieldset.info' | translate"
+                            <!-- Fieldset 1: Title -->
+                            <eui-fieldset [label]="'ticket.field.title' | translate"
                                           iconSvgName="note-pencil:regular"
                                           [isExpandable]="true" [isExpanded]="true" [isFirst]="true">
+                                <div euiInputGroup>
+                                    <label euiLabel for="field-title" euiRequired class="eui-u-sr-only">{{ 'ticket.field.title' | translate }}</label>
+                                    <input euiInputText id="field-title"
+                                           formControlName="title"
+                                           [readonly]="!isEditActive"
+                                           aria-required="true"
+                                           [attr.aria-describedby]="ticketForm.get('title')?.invalid && ticketForm.get('title')?.touched ? 'title-error' : null" />
+                                    @if (isEditActive && ticketForm.get('title')?.invalid && ticketForm.get('title')?.touched) {
+                                        <eui-feedback-message euiDanger id="title-error">
+                                            {{ 'common.validation.required' | translate:{ field: ('ticket.field.title' | translate) } }}
+                                        </eui-feedback-message>
+                                    }
+                                </div>
+                            </eui-fieldset>
+
+                            <!-- Fieldset 2: Description -->
+                            <eui-fieldset [label]="'ticket-detail.fieldset.description' | translate"
+                                          iconSvgName="eui-edit"
+                                          [isExpandable]="true" [isExpanded]="true">
+                                <div euiInputGroup>
+                                    <label euiLabel for="field-description" class="eui-u-sr-only">{{ 'ticket-detail.field.description' | translate }}</label>
+                                    <textarea euiTextArea id="field-description"
+                                              formControlName="description"
+                                              [readonly]="!isEditActive"
+                                              rows="5"
+                                              maxlength="2000"></textarea>
+                                </div>
+                            </eui-fieldset>
+
+                            <!-- Fieldset 3: Ticket Information -->
+                            <eui-fieldset [label]="'ticket-detail.fieldset.info' | translate"
+                                          iconSvgName="info:regular"
+                                          [isExpandable]="true" [isExpanded]="true">
                                 <div class="eui-u-d-flex eui-u-gap-m">
                                     <div class="eui-u-flex-1">
                                         <div euiInputGroup>
-                                            <label euiLabel for="field-title" euiRequired>{{ 'ticket.field.title' | translate }}</label>
-                                            <input euiInputText id="field-title"
-                                                   formControlName="title"
-                                                   [readonly]="!isEditActive"
-                                                   aria-required="true"
-                                                   [attr.aria-describedby]="ticketForm.get('title')?.invalid && ticketForm.get('title')?.touched ? 'title-error' : null" />
-                                            @if (isEditActive && ticketForm.get('title')?.invalid && ticketForm.get('title')?.touched) {
-                                                <eui-feedback-message euiDanger id="title-error">
-                                                    {{ 'common.validation.required' | translate:{ field: ('ticket.field.title' | translate) } }}
-                                                </eui-feedback-message>
-                                            }
-                                        </div>
-                                    </div>
-                                    <div class="eui-u-flex-1">
-                                        <div euiInputGroup>
                                             <label euiLabel for="field-type">{{ 'ticket.field.type' | translate }}</label>
-                                            <input euiInputText id="field-type"
-                                                   [value]="'workflow.ticket-type.' + ticket.type | translate"
-                                                   [readonly]="true" />
+                                            @if (isEditActive) {
+                                                <select euiSelect id="field-type"
+                                                        formControlName="type">
+                                                    @for (t of ticketTypes; track t) {
+                                                        <option [ngValue]="t">{{ 'workflow.ticket-type.' + t | translate }}</option>
+                                                    }
+                                                </select>
+                                            } @else {
+                                                <input euiInputText id="field-type"
+                                                       [value]="'workflow.ticket-type.' + ticket.type | translate"
+                                                       [readonly]="true" />
+                                            }
                                         </div>
                                     </div>
                                     <div class="eui-u-flex-1">
@@ -106,8 +133,6 @@
                                             }
                                         </div>
                                     </div>
-                                </div>
-                                <div class="eui-u-d-flex eui-u-gap-m eui-u-mt-l">
                                     <div class="eui-u-flex-1">
                                         <div euiInputGroup>
                                             <label euiLabel for="field-status">{{ 'ticket-detail.field.status' | translate }}</label>
@@ -125,6 +150,8 @@
                                             }
                                         </div>
                                     </div>
+                                </div>
+                                <div class="eui-u-d-flex eui-u-gap-m eui-u-mt-l">
                                     <div class="eui-u-flex-1">
                                         <div euiInputGroup>
                                             <label euiLabel for="field-priority">{{ 'ticket.priority.label' | translate }}</label>
@@ -160,24 +187,13 @@
                                             }
                                         </div>
                                     </div>
+                                    <div class="eui-u-flex-1">
+                                        <!-- spacer for alignment -->
+                                    </div>
                                 </div>
                             </eui-fieldset>
 
-                            <!-- Fieldset 2: Description -->
-                            <eui-fieldset [label]="'ticket-detail.fieldset.description' | translate"
-                                          iconSvgName="eui-edit"
-                                          [isExpandable]="true" [isExpanded]="true">
-                                <div euiInputGroup>
-                                    <label euiLabel for="field-description">{{ 'ticket-detail.field.description' | translate }}</label>
-                                    <textarea euiTextArea id="field-description"
-                                              formControlName="description"
-                                              [readonly]="!isEditActive"
-                                              rows="5"
-                                              maxlength="2000"></textarea>
-                                </div>
-                            </eui-fieldset>
-
-                            <!-- Fieldset 3: Additional Information -->
+                            <!-- Fieldset 4: Additional Information -->
                             <eui-fieldset [label]="'ticket-detail.fieldset.additional' | translate"
                                           iconSvgName="eui-ellipsis-horizontal"
                                           [isExpandable]="true" [isExpanded]="true">
