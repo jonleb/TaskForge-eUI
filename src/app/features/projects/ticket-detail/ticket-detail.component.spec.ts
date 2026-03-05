@@ -7,6 +7,7 @@ import { Location } from '@angular/common';
 import { EuiGrowlService } from '@eui/core';
 import {
     TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock,
+    createBreadcrumbServiceMock,
 } from '../../../testing/test-providers';
 import { TicketDetailComponent } from './ticket-detail.component';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
@@ -15,6 +16,7 @@ import {
     LinkType, TicketLink,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 
 interface DialogMock { openDialog: ReturnType<typeof vi.fn>; closeDialog: ReturnType<typeof vi.fn> }
 
@@ -93,6 +95,7 @@ describe('TicketDetailComponent', () => {
     let growl: ReturnType<typeof createGrowlServiceMock>;
     let router: { navigate: ReturnType<typeof vi.fn> };
     let locationMock: { back: ReturnType<typeof vi.fn> };
+    let breadcrumbMock: ReturnType<typeof createBreadcrumbServiceMock>;
 
     beforeEach(async () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
@@ -129,6 +132,7 @@ describe('TicketDetailComponent', () => {
         };
 
         growl = createGrowlServiceMock();
+        breadcrumbMock = createBreadcrumbServiceMock();
         router = { navigate: vi.fn() };
         locationMock = { back: vi.fn() };
 
@@ -144,6 +148,7 @@ describe('TicketDetailComponent', () => {
                 { provide: ActivatedRoute, useValue: { paramMap: paramMap$ } },
                 { provide: Router, useValue: router },
                 { provide: Location, useValue: locationMock },
+                { provide: EuiBreadcrumbService, useValue: breadcrumbMock },
             ],
         }).compileComponents();
 
@@ -212,11 +217,14 @@ describe('TicketDetailComponent', () => {
 
     // --- STORY-001: Breadcrumb + Header + Edit Toggle ---
 
-    it('should render breadcrumb with 3 items', () => {
+    it('should set breadcrumb via service after ticket loads', () => {
         currentProject$.next(mockProject);
         fixture.detectChanges();
-        const items = fixture.nativeElement.querySelectorAll('eui-breadcrumb-item');
-        expect(items.length).toBe(3);
+        expect(breadcrumbMock.setBreadcrumb).toHaveBeenCalledWith([
+            { id: 'projects', label: 'nav.projects', link: '/screen/projects' },
+            { id: 'project', label: 'TaskForge Core', link: '/screen/projects/1' },
+            { id: 'ticket', label: 'TF-5', link: null },
+        ]);
     });
 
     it('should show page header with ticket key as label', () => {

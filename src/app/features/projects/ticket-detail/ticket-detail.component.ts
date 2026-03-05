@@ -14,7 +14,7 @@ import { EUI_TEXTAREA } from '@eui/components/eui-textarea';
 import { EUI_FEEDBACK_MESSAGE } from '@eui/components/eui-feedback-message';
 import { EuiIconButtonComponent } from '@eui/components/eui-icon-button';
 import { EuiDialogComponent, EUI_DIALOG } from '@eui/components/eui-dialog';
-import { EUI_BREADCRUMB } from '@eui/components/eui-breadcrumb';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { EUI_FIELDSET } from '@eui/components/eui-fieldset';
 import { EUI_INPUT_GROUP } from '@eui/components/eui-input-group';
 import { EUI_TABS } from '@eui/components/eui-tabs';
@@ -38,7 +38,7 @@ import { PermissionService } from '../../../core/auth';
     imports: [
         ...EUI_PAGE, ...EUI_BUTTON, ...EUI_PROGRESS_BAR,
         ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT, ...EUI_TEXTAREA,
-        ...EUI_FEEDBACK_MESSAGE, ...EUI_DIALOG, ...EUI_BREADCRUMB,
+        ...EUI_FEEDBACK_MESSAGE, ...EUI_DIALOG,
         ...EUI_FIELDSET, ...EUI_INPUT_GROUP, ...EUI_TABS, ...EUI_BADGE,
         ...EUI_DISCUSSION_THREAD,
         EuiIconButtonComponent, DatePipe, TranslateModule, ReactiveFormsModule, FormsModule,
@@ -54,6 +54,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     private readonly growlService = inject(EuiGrowlService);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly translate = inject(TranslateService);
+    private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly destroy$ = new Subject<void>();
 
     ticket: BacklogItem | null = null;
@@ -132,6 +133,14 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
                 this.loadComments();
                 this.loadActivity();
                 this.loadTicketLinks();
+
+                // Set breadcrumb via service (project-context trail)
+                this.breadcrumbService.setBreadcrumb([
+                    { id: 'projects', label: this.translate.instant('nav.projects'), link: '/screen/projects' },
+                    { id: 'project', label: this.project!.name, link: `/screen/projects/${this.project!.id}` },
+                    { id: 'ticket', label: this.ticketKey, link: null },
+                ]);
+
                 this.cdr.markForCheck();
             },
             error: (err) => {

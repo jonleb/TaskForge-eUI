@@ -1,16 +1,4 @@
 <eui-page>
-    <eui-page-breadcrumb>
-        <eui-breadcrumb>
-            <eui-breadcrumb-item link="/screen/home" iconSvgName="home:outline"
-                                 [ariaLabel]="'tickets.breadcrumb.home' | translate">
-            </eui-breadcrumb-item>
-            <eui-breadcrumb-item link="/screen/tickets"
-                                 [label]="'ticket-detail.breadcrumb.tickets' | translate">
-            </eui-breadcrumb-item>
-            <eui-breadcrumb-item [label]="ticketKey"></eui-breadcrumb-item>
-        </eui-breadcrumb>
-    </eui-page-breadcrumb>
-
     <eui-page-header [label]="ticketKey" [subLabel]="ticket?.title ?? ''">
         <eui-page-header-action-items>
             <eui-icon-button icon="arrow-left:regular"
