@@ -56,6 +56,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     private readonly translate = inject(TranslateService);
     private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly destroy$ = new Subject<void>();
+    private navigatedFromTickets = false;
 
     ticket: BacklogItem | null = null;
     project: Project | null = null;
@@ -107,6 +108,10 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     @ViewChild('addCommentDialog') addCommentDialog!: EuiDialogComponent;
 
     ngOnInit(): void {
+        // Detect navigation origin (Tickets page vs project context)
+        const navState = this.location.getState() as Record<string, unknown> | null;
+        this.navigatedFromTickets = navState?.['from'] === 'tickets';
+
         combineLatest([
             this.projectContext.currentProject$.pipe(filter((p): p is Project => p !== null)),
             this.route.paramMap,
@@ -134,12 +139,21 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
                 this.loadActivity();
                 this.loadTicketLinks();
 
-                // Set breadcrumb via service (project-context trail)
-                this.breadcrumbService.setBreadcrumb([
-                    { id: 'projects', label: this.translate.instant('nav.projects'), link: '/screen/projects' },
-                    { id: 'project', label: this.project!.name, link: `/screen/projects/${this.project!.id}` },
-                    { id: 'ticket', label: this.ticketKey, link: null },
-                ]);
+                // Context-aware breadcrumb + sidebar
+                if (this.navigatedFromTickets) {
+                    this.breadcrumbService.setBreadcrumb([
+                        { id: 'tickets', label: this.translate.instant('nav.tickets'), link: '/screen/tickets' },
+                        { id: 'ticket', label: this.ticketKey, link: null },
+                    ]);
+                    // Clear project context so sidebar stays global
+                    this.projectContext.clearProject();
+                } else {
+                    this.breadcrumbService.setBreadcrumb([
+                        { id: 'projects', label: this.translate.instant('nav.projects'), link: '/screen/projects' },
+                        { id: 'project', label: this.project!.name, link: `/screen/projects/${this.project!.id}` },
+                        { id: 'ticket', label: this.ticketKey, link: null },
+                    ]);
+                }
 
                 this.cdr.markForCheck();
             },

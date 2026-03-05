@@ -94,7 +94,7 @@ describe('TicketDetailComponent', () => {
     let perm: Record<string, ReturnType<typeof vi.fn>>;
     let growl: ReturnType<typeof createGrowlServiceMock>;
     let router: { navigate: ReturnType<typeof vi.fn> };
-    let locationMock: { back: ReturnType<typeof vi.fn> };
+    let locationMock: { back: ReturnType<typeof vi.fn>; getState: ReturnType<typeof vi.fn> };
     let breadcrumbMock: ReturnType<typeof createBreadcrumbServiceMock>;
 
     beforeEach(async () => {
@@ -134,14 +134,14 @@ describe('TicketDetailComponent', () => {
         growl = createGrowlServiceMock();
         breadcrumbMock = createBreadcrumbServiceMock();
         router = { navigate: vi.fn() };
-        locationMock = { back: vi.fn() };
+        locationMock = { back: vi.fn(), getState: vi.fn().mockReturnValue({}) };
 
         await TestBed.configureTestingModule({
             imports: [TicketDetailComponent, TranslateTestingModule],
             providers: [
                 ...provideEuiCoreMocks(),
                 provideNoopAnimations(),
-                { provide: ProjectContextService, useValue: { currentProject$ } },
+                { provide: ProjectContextService, useValue: { currentProject$, clearProject: vi.fn() } },
                 { provide: ProjectService, useValue: svc },
                 { provide: PermissionService, useValue: perm },
                 { provide: EuiGrowlService, useValue: growl },
@@ -225,6 +225,36 @@ describe('TicketDetailComponent', () => {
             { id: 'project', label: 'TaskForge Core', link: '/screen/projects/1' },
             { id: 'ticket', label: 'TF-5', link: null },
         ]);
+    });
+
+    it('should set global breadcrumb when navigated from tickets page', async () => {
+        locationMock.getState.mockReturnValue({ from: 'tickets' });
+        // Re-create component so ngOnInit reads the new state
+        fixture = TestBed.createComponent(TicketDetailComponent);
+        component = fixture.componentInstance;
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(breadcrumbMock.setBreadcrumb).toHaveBeenCalledWith([
+            { id: 'tickets', label: 'nav.tickets', link: '/screen/tickets' },
+            { id: 'ticket', label: 'TF-5', link: null },
+        ]);
+    });
+
+    it('should call clearProject when navigated from tickets page', async () => {
+        locationMock.getState.mockReturnValue({ from: 'tickets' });
+        fixture = TestBed.createComponent(TicketDetailComponent);
+        component = fixture.componentInstance;
+        const ctxMock = TestBed.inject(ProjectContextService);
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(ctxMock.clearProject).toHaveBeenCalled();
+    });
+
+    it('should not call clearProject when navigated from project context', () => {
+        const ctxMock = TestBed.inject(ProjectContextService);
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(ctxMock.clearProject).not.toHaveBeenCalled();
     });
 
     it('should show page header with ticket key as label', () => {

@@ -716,7 +716,10 @@ describe('TicketsComponent', () => {
         const router = TestBed.inject(Router);
         const spy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
         component.navigateToTicket(mockItems[0]);
-        expect(spy).toHaveBeenCalledWith(['/screen/projects', '1', 'tickets', 1]);
+        expect(spy).toHaveBeenCalledWith(
+            ['/screen/projects', '1', 'tickets', 1],
+            { state: { from: 'tickets' } },
+        );
     });
 
     it('should show chip overflow when more than 5 chips', () => {

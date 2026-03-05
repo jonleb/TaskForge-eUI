@@ -357,7 +357,10 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     navigateToTicket(item: BacklogItem): void {
-        this.router.navigate(['/screen/projects', item.projectId, 'tickets', item.ticket_number]);
+        this.router.navigate(
+            ['/screen/projects', item.projectId, 'tickets', item.ticket_number],
+            { state: { from: 'tickets' } },
+        );
     }
 
     // Chip overflow
