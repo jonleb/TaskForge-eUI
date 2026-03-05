@@ -16,6 +16,7 @@ import { EUI_ICON } from '@eui/components/eui-icon';
 import { EuiTooltipDirective } from '@eui/components/directives';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import {
     ProjectContextService, ProjectService, Project,
     Sprint, BacklogItem,
@@ -44,6 +45,7 @@ export class SprintPlanningComponent implements OnInit, OnDestroy {
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly growlService = inject(EuiGrowlService);
     private readonly translate = inject(TranslateService);
+    private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly destroy$ = new Subject<void>();
 
     project: Project | null = null;
@@ -74,6 +76,11 @@ export class SprintPlanningComponent implements OnInit, OnDestroy {
         ).subscribe(project => {
             if (!project) return;
             this.project = project;
+            this.breadcrumbService.setBreadcrumb([
+                { id: 'projects', label: this.translate.instant('nav.projects'), link: '/screen/projects' },
+                { id: 'project', label: project.name, link: `/screen/projects/${project.id}` },
+                { id: 'sprints', label: this.translate.instant('nav.sprints'), link: `/screen/projects/${project.id}/sprints` },
+            ]);
             this.determineCanManage(project.id);
             this.loadData(project.id, sprintId);
         });
@@ -100,6 +107,17 @@ export class SprintPlanningComponent implements OnInit, OnDestroy {
                 this.availableTickets = backlog.data.filter(item => !item.sprint_id).sort(sortByPosition);
                 this.sprintTickets = backlog.data.filter(item => item.sprint_id === sprintId).sort(sortByPosition);
                 this.isLoading = false;
+
+                // Update breadcrumb with sprint name (4-level)
+                if (this.sprint && this.project) {
+                    this.breadcrumbService.setBreadcrumb([
+                        { id: 'projects', label: this.translate.instant('nav.projects'), link: '/screen/projects' },
+                        { id: 'project', label: this.project.name, link: `/screen/projects/${this.project.id}` },
+                        { id: 'sprints', label: this.translate.instant('nav.sprints'), link: `/screen/projects/${this.project.id}/sprints` },
+                        { id: 'sprint', label: this.sprint.name, link: null },
+                    ]);
+                }
+
                 this.cdr.markForCheck();
             },
             error: () => {

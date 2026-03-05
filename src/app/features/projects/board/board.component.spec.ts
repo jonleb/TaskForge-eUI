@@ -3,13 +3,14 @@ import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { EuiGrowlService } from '@eui/core';
-import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock } from '../../../testing/test-providers';
+import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock, createBreadcrumbServiceMock } from '../../../testing/test-providers';
 import { BoardComponent } from './board.component';
 import {
     ProjectContextService, ProjectService, Project,
     Workflow, BacklogListResponse, Sprint, ProjectMember, BacklogItem,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 
 const mockProject: Project = {
     id: '1', key: 'TF', name: 'TaskForge Core',
@@ -60,6 +61,7 @@ describe('BoardComponent', () => {
     let projectServiceMock: Record<string, ReturnType<typeof vi.fn>>;
     let permissionMock: Record<string, ReturnType<typeof vi.fn>>;
     let growlServiceMock: ReturnType<typeof createGrowlServiceMock>;
+    let breadcrumbMock: ReturnType<typeof createBreadcrumbServiceMock>;
 
     beforeEach(async () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
@@ -82,6 +84,7 @@ describe('BoardComponent', () => {
             hasProjectRole: vi.fn().mockReturnValue(of(true)),
         };
         growlServiceMock = createGrowlServiceMock();
+        breadcrumbMock = createBreadcrumbServiceMock();
 
         await TestBed.configureTestingModule({
             imports: [BoardComponent, TranslateTestingModule],
@@ -91,6 +94,7 @@ describe('BoardComponent', () => {
                 { provide: ProjectService, useValue: projectServiceMock },
                 { provide: PermissionService, useValue: permissionMock },
                 { provide: EuiGrowlService, useValue: growlServiceMock },
+                { provide: EuiBreadcrumbService, useValue: breadcrumbMock },
             ],
         }).compileComponents();
 
@@ -367,5 +371,15 @@ describe('BoardComponent', () => {
         expect(component.canManage).toBe(true);
         const handles = fixture.nativeElement.querySelectorAll('.board-card__drag-handle');
         expect(handles.length).toBeGreaterThan(0);
+    });
+
+    it('should set breadcrumb via service on project load', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(breadcrumbMock.setBreadcrumb).toHaveBeenCalledWith([
+            { id: 'projects', label: 'nav.projects', link: '/screen/projects' },
+            { id: 'project', label: 'TaskForge Core', link: '/screen/projects/1' },
+            { id: 'board', label: 'nav.board', link: null },
+        ]);
     });
 });

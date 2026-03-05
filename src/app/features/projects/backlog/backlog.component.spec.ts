@@ -13,6 +13,7 @@ import { BehaviorSubject, NEVER, of, throwError } from 'rxjs';
 import { EuiGrowlService } from '@eui/core';
 import {
     TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock,
+    createBreadcrumbServiceMock,
 } from '../../../testing/test-providers';
 import { BacklogComponent } from './backlog.component';
 import {
@@ -20,6 +21,7 @@ import {
     ProjectMember, BacklogListResponse,
 } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 
 const mockProject: Project = {
     id: '1', key: 'TF', name: 'TaskForge Core',
@@ -61,6 +63,7 @@ describe('BacklogComponent', () => {
     let svc: Record<string, ReturnType<typeof vi.fn>>;
     let perm: Record<string, ReturnType<typeof vi.fn>>;
     let growl: ReturnType<typeof createGrowlServiceMock>;
+    let breadcrumbMock: ReturnType<typeof createBreadcrumbServiceMock>;
 
     beforeEach(async () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
@@ -85,6 +88,7 @@ describe('BacklogComponent', () => {
             hasProjectRole: vi.fn().mockReturnValue(of(true)),
         };
         growl = createGrowlServiceMock();
+        breadcrumbMock = createBreadcrumbServiceMock();
 
         await TestBed.configureTestingModule({
             imports: [BacklogComponent, TranslateTestingModule],
@@ -94,6 +98,7 @@ describe('BacklogComponent', () => {
                 { provide: ProjectService, useValue: svc },
                 { provide: PermissionService, useValue: perm },
                 { provide: EuiGrowlService, useValue: growl },
+                { provide: EuiBreadcrumbService, useValue: breadcrumbMock },
             ],
         }).compileComponents();
         fixture = TestBed.createComponent(BacklogComponent);
@@ -104,6 +109,14 @@ describe('BacklogComponent', () => {
     it('should create', () => {
         currentProject$.next(mockProject); fixture.detectChanges();
         expect(component).toBeTruthy();
+    });
+    it('should set breadcrumb via service when project loads', () => {
+        currentProject$.next(mockProject); fixture.detectChanges();
+        expect(breadcrumbMock.setBreadcrumb).toHaveBeenCalledWith([
+            { id: 'projects', label: 'nav.projects', link: '/screen/projects' },
+            { id: 'project', label: 'TaskForge Core', link: '/screen/projects/1' },
+            { id: 'backlog', label: 'nav.backlog', link: null },
+        ]);
     });
     it('should be loading initially', () => {
         currentProject$.next(mockProject); fixture.detectChanges();

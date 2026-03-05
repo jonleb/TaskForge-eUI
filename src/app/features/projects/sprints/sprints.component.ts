@@ -21,6 +21,7 @@ import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiTooltipDirective } from '@eui/components/directives';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import {
     ProjectContextService, ProjectService, Project,
     Sprint, SprintStatus, BacklogItem,
@@ -50,6 +51,7 @@ export class SprintsComponent implements OnInit, OnDestroy {
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly growlService = inject(EuiGrowlService);
     private readonly translate = inject(TranslateService);
+    private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly router = inject(Router);
     private readonly destroy$ = new Subject<void>();
 
@@ -104,6 +106,11 @@ export class SprintsComponent implements OnInit, OnDestroy {
             this.project = project;
             this.isLoading = true;
             this.hasError = false;
+            this.breadcrumbService.setBreadcrumb([
+                { id: 'projects', label: this.translate.instant('nav.projects'), link: '/screen/projects' },
+                { id: 'project', label: project.name, link: `/screen/projects/${project.id}` },
+                { id: 'sprints', label: this.translate.instant('nav.sprints'), link: null },
+            ]);
             this.cdr.markForCheck();
             this.determineCanManage(project.id);
             this.loadSprints(project.id);

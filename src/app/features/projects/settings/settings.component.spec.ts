@@ -2,13 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock } from '../../../testing/test-providers';
+import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock, createBreadcrumbServiceMock } from '../../../testing/test-providers';
 import { SettingsComponent } from './settings.component';
 import { ProjectContextService, ProjectService, Project, Workflow } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 import { EuiGrowlService } from '@eui/core';
 import { EuiToggleGroupItemComponent } from '@eui/components/eui-toggle-group';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 
 const mockProject: Project = {
     id: '1', key: 'TF', name: 'TaskForge Core',
@@ -51,6 +52,7 @@ describe('SettingsComponent', () => {
     let projectContextMock: { currentProject$: BehaviorSubject<Project | null>; getCurrentProject: ReturnType<typeof vi.fn> };
     let permissionServiceMock: Record<string, ReturnType<typeof vi.fn>>;
     let growlServiceMock: ReturnType<typeof createGrowlServiceMock>;
+    let breadcrumbMock: ReturnType<typeof createBreadcrumbServiceMock>;
 
     function initWithData(opts?: { canManage?: boolean }): void {
         const canManage = opts?.canManage ?? true;
@@ -75,6 +77,7 @@ describe('SettingsComponent', () => {
             hasGlobalRole: vi.fn().mockReturnValue(false),
         };
         growlServiceMock = createGrowlServiceMock();
+        breadcrumbMock = createBreadcrumbServiceMock();
 
         await TestBed.configureTestingModule({
             imports: [SettingsComponent, TranslateTestingModule],
@@ -84,6 +87,7 @@ describe('SettingsComponent', () => {
                 { provide: ProjectService, useValue: projectServiceMock },
                 { provide: PermissionService, useValue: permissionServiceMock },
                 { provide: EuiGrowlService, useValue: growlServiceMock },
+                { provide: EuiBreadcrumbService, useValue: breadcrumbMock },
             ],
         }).compileComponents();
 
@@ -373,5 +377,14 @@ describe('SettingsComponent', () => {
         // Simply verify that saveWorkflow is not called unless explicitly invoked
         expect(component.isSaving).toBe(false);
         expect(component.isEditMode).toBe(true);
+    });
+
+    it('should set breadcrumb via service on project load', () => {
+        initWithData();
+        expect(breadcrumbMock.setBreadcrumb).toHaveBeenCalledWith([
+            { id: 'projects', label: 'nav.projects', link: '/screen/projects' },
+            { id: 'project', label: 'TaskForge Core', link: '/screen/projects/1' },
+            { id: 'settings', label: 'nav.settings', link: null },
+        ]);
     });
 });

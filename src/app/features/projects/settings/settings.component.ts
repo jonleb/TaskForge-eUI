@@ -14,6 +14,7 @@ import { EUI_INPUT_CHECKBOX } from '@eui/components/eui-input-checkbox';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { ProjectContextService, ProjectService, Project, Workflow, UpdateWorkflowPayload } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
@@ -35,6 +36,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private readonly permissionService = inject(PermissionService);
     private readonly growlService = inject(EuiGrowlService);
     private readonly translate = inject(TranslateService);
+    private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly destroy$ = new Subject<void>();
 
@@ -70,6 +72,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
                 this.isLoading = true;
                 this.hasError = false;
                 this.isEditMode = false;
+                this.breadcrumbService.setBreadcrumb([
+                    { id: 'projects', label: this.translate.instant('nav.projects'), link: '/screen/projects' },
+                    { id: 'project', label: project.name, link: `/screen/projects/${project.id}` },
+                    { id: 'settings', label: this.translate.instant('nav.settings'), link: null },
+                ]);
                 this.cdr.markForCheck();
                 this.determineCanManage(project.id);
                 return this.projectService.getWorkflows(project.id);

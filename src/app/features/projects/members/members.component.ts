@@ -15,6 +15,7 @@ import { EuiIconButtonComponent } from '@eui/components/eui-icon-button';
 import { EuiDialogComponent } from '@eui/components/eui-dialog';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { ProjectContextService, ProjectService, Project, ProjectMember, MemberCandidate, PROJECT_ROLES } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
 
@@ -38,6 +39,7 @@ export class MembersComponent implements OnInit, OnDestroy {
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly growlService = inject(EuiGrowlService);
     private readonly translate = inject(TranslateService);
+    private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly destroy$ = new Subject<void>();
 
     @ViewChild('changeRoleDialog') changeRoleDialog!: EuiDialogComponent;
@@ -78,6 +80,11 @@ export class MembersComponent implements OnInit, OnDestroy {
             this.membersLoading = true;
             this.memberError = false;
             this.isManager = false;
+            this.breadcrumbService.setBreadcrumb([
+                { id: 'projects', label: this.translate.instant('nav.projects'), link: '/screen/projects' },
+                { id: 'project', label: project.name, link: `/screen/projects/${project.id}` },
+                { id: 'members', label: this.translate.instant('nav.members'), link: null },
+            ]);
             this.cdr.markForCheck();
             this.loadMembers(project.id);
         });

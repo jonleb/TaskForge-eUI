@@ -2,10 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { EuiGrowlService } from '@eui/core';
-import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock } from '../../../testing/test-providers';
+import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock, createBreadcrumbServiceMock } from '../../../testing/test-providers';
 import { SprintsComponent } from './sprints.component';
 import { ProjectContextService, ProjectService, Project, Sprint, BacklogListResponse } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 
 const mockProject: Project = {
     id: '1', key: 'TF', name: 'TaskForge Core',
@@ -35,6 +36,7 @@ describe('SprintsComponent', () => {
     let projectServiceMock: Record<string, ReturnType<typeof vi.fn>>;
     let permissionMock: Record<string, ReturnType<typeof vi.fn>>;
     let growlServiceMock: ReturnType<typeof createGrowlServiceMock>;
+    let breadcrumbMock: ReturnType<typeof createBreadcrumbServiceMock>;
 
     beforeEach(async () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
@@ -59,6 +61,7 @@ describe('SprintsComponent', () => {
             hasProjectRole: vi.fn().mockReturnValue(of(false)),
         };
         growlServiceMock = createGrowlServiceMock();
+        breadcrumbMock = createBreadcrumbServiceMock();
 
         await TestBed.configureTestingModule({
             imports: [SprintsComponent, TranslateTestingModule],
@@ -68,6 +71,7 @@ describe('SprintsComponent', () => {
                 { provide: ProjectService, useValue: projectServiceMock },
                 { provide: PermissionService, useValue: permissionMock },
                 { provide: EuiGrowlService, useValue: growlServiceMock },
+                { provide: EuiBreadcrumbService, useValue: breadcrumbMock },
             ],
         }).compileComponents();
 
@@ -77,6 +81,16 @@ describe('SprintsComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should set breadcrumb via service when project loads', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(breadcrumbMock.setBreadcrumb).toHaveBeenCalledWith([
+            { id: 'projects', label: 'nav.projects', link: '/screen/projects' },
+            { id: 'project', label: 'TaskForge Core', link: '/screen/projects/1' },
+            { id: 'sprints', label: 'nav.sprints', link: null },
+        ]);
     });
 
     it('should load sprints when project is set', () => {

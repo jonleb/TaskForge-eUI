@@ -23,6 +23,7 @@ import { EUI_ICON } from '@eui/components/eui-icon';
 import { EuiTooltipDirective } from '@eui/components/directives';
 import { EuiGrowlService } from '@eui/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import {
     ProjectContextService, ProjectService, Project, BacklogItem, ProjectMember,
     TicketType, TicketPriority, WorkflowStatus,
@@ -60,6 +61,7 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly growlService = inject(EuiGrowlService);
     private readonly translate = inject(TranslateService);
+    private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly destroy$ = new Subject<void>();
     private readonly searchSubject = new Subject<string>();
     private paginatorReady = false;
@@ -153,6 +155,11 @@ export class BacklogComponent implements OnInit, AfterViewInit, OnDestroy {
         ).subscribe(project => {
             this.project = project;
             this.projectKey = project.key;
+            this.breadcrumbService.setBreadcrumb([
+                { id: 'projects', label: this.translate.instant('nav.projects'), link: '/screen/projects' },
+                { id: 'project', label: project.name, link: `/screen/projects/${project.id}` },
+                { id: 'backlog', label: this.translate.instant('nav.backlog'), link: null },
+            ]);
             this.cdr.markForCheck();
             this.determineCanCreate(project.id);
             this.determineCanReorder(project.id);

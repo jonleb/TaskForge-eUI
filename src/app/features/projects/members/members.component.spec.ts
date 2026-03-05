@@ -3,10 +3,11 @@ import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { EuiGrowlService } from '@eui/core';
-import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock } from '../../../testing/test-providers';
+import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock, createBreadcrumbServiceMock } from '../../../testing/test-providers';
 import { MembersComponent } from './members.component';
 import { ProjectContextService, ProjectService, Project, ProjectMember, MemberCandidate } from '../../../core/project';
 import { PermissionService } from '../../../core/auth';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 
 const mockProject: Project = {
     id: '1', key: 'TF', name: 'TaskForge Core',
@@ -27,6 +28,7 @@ describe('MembersComponent', () => {
     let projectServiceMock: Record<string, ReturnType<typeof vi.fn>>;
     let permissionMock: Record<string, ReturnType<typeof vi.fn>>;
     let growlServiceMock: ReturnType<typeof createGrowlServiceMock>;
+    let breadcrumbMock: ReturnType<typeof createBreadcrumbServiceMock>;
 
     beforeEach(async () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
@@ -53,6 +55,7 @@ describe('MembersComponent', () => {
             hasProjectRole: vi.fn(),
         };
         growlServiceMock = createGrowlServiceMock();
+        breadcrumbMock = createBreadcrumbServiceMock();
 
         await TestBed.configureTestingModule({
             imports: [MembersComponent, TranslateTestingModule],
@@ -62,6 +65,7 @@ describe('MembersComponent', () => {
                 { provide: ProjectService, useValue: projectServiceMock },
                 { provide: PermissionService, useValue: permissionMock },
                 { provide: EuiGrowlService, useValue: growlServiceMock },
+                { provide: EuiBreadcrumbService, useValue: breadcrumbMock },
             ],
         }).compileComponents();
 
@@ -71,6 +75,16 @@ describe('MembersComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should set breadcrumb via service when project loads', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(breadcrumbMock.setBreadcrumb).toHaveBeenCalledWith([
+            { id: 'projects', label: 'nav.projects', link: '/screen/projects' },
+            { id: 'project', label: 'TaskForge Core', link: '/screen/projects/1' },
+            { id: 'members', label: 'nav.members', link: null },
+        ]);
     });
 
     it('should load members when project is set', () => {

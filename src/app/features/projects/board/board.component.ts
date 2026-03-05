@@ -5,6 +5,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, transferArrayItem } from '@angular/cdk/drag-drop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { EUI_PAGE } from '@eui/components/eui-page';
 import { EUI_CHIP } from '@eui/components/eui-chip';
 import { EUI_BUTTON } from '@eui/components/eui-button';
@@ -40,6 +41,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     private readonly permissionService = inject(PermissionService);
     private readonly growlService = inject(EuiGrowlService);
     private readonly translate = inject(TranslateService);
+    private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly router = inject(Router);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly destroy$ = new Subject<void>();
@@ -79,6 +81,11 @@ export class BoardComponent implements OnInit, OnDestroy {
             this.project = project;
             this.isLoading = true;
             this.hasError = false;
+            this.breadcrumbService.setBreadcrumb([
+                { id: 'projects', label: this.translate.instant('nav.projects'), link: '/screen/projects' },
+                { id: 'project', label: project.name, link: `/screen/projects/${project.id}` },
+                { id: 'board', label: this.translate.instant('nav.board'), link: null },
+            ]);
             this.cdr.markForCheck();
             this.determineCanManage(project.id);
             this.loadBoardData(project.id);

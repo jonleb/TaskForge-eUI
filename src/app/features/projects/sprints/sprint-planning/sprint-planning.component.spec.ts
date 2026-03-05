@@ -3,10 +3,11 @@ import { describe, it, beforeEach, expect, vi } from 'vitest';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { EuiGrowlService } from '@eui/core';
-import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock } from '../../../../testing/test-providers';
+import { TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock, createBreadcrumbServiceMock } from '../../../../testing/test-providers';
 import { SprintPlanningComponent } from './sprint-planning.component';
 import { ProjectContextService, ProjectService, Project, Sprint, BacklogListResponse } from '../../../../core/project';
 import { PermissionService } from '../../../../core/auth';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 
 const mockProject: Project = {
     id: '1', key: 'TF', name: 'TaskForge Core',
@@ -35,6 +36,7 @@ describe('SprintPlanningComponent', () => {
     let projectServiceMock: Record<string, ReturnType<typeof vi.fn>>;
     let permissionMock: Record<string, ReturnType<typeof vi.fn>>;
     let growlServiceMock: ReturnType<typeof createGrowlServiceMock>;
+    let breadcrumbMock: ReturnType<typeof createBreadcrumbServiceMock>;
 
     beforeEach(async () => {
         currentProject$ = new BehaviorSubject<Project | null>(null);
@@ -57,6 +59,7 @@ describe('SprintPlanningComponent', () => {
             hasProjectRole: vi.fn().mockReturnValue(of(true)),
         };
         growlServiceMock = createGrowlServiceMock();
+        breadcrumbMock = createBreadcrumbServiceMock();
 
         await TestBed.configureTestingModule({
             imports: [SprintPlanningComponent, TranslateTestingModule],
@@ -66,6 +69,7 @@ describe('SprintPlanningComponent', () => {
                 { provide: ProjectService, useValue: projectServiceMock },
                 { provide: PermissionService, useValue: permissionMock },
                 { provide: EuiGrowlService, useValue: growlServiceMock },
+                { provide: EuiBreadcrumbService, useValue: breadcrumbMock },
                 { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => 'sp-2' } } } },
             ],
         }).compileComponents();
@@ -279,5 +283,16 @@ describe('SprintPlanningComponent', () => {
             const liveRegion = fixture.nativeElement.querySelector('output[aria-live="assertive"]');
             expect(liveRegion).toBeTruthy();
         });
+    });
+
+    it('should set 4-level breadcrumb after sprint loads', () => {
+        currentProject$.next(mockProject);
+        fixture.detectChanges();
+        expect(breadcrumbMock.setBreadcrumb).toHaveBeenCalledWith([
+            { id: 'projects', label: 'nav.projects', link: '/screen/projects' },
+            { id: 'project', label: 'TaskForge Core', link: '/screen/projects/1' },
+            { id: 'sprints', label: 'nav.sprints', link: '/screen/projects/1/sprints' },
+            { id: 'sprint', label: 'Sprint 2', link: null },
+        ]);
     });
 });
