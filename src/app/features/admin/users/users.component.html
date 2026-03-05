@@ -10,119 +10,224 @@
             </button>
         </eui-page-header-action-items>
     </eui-page-header>
+
     <eui-page-content>
+        <eui-page-columns>
 
-        <!-- Filter bar: search + status toggle -->
-        <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-s">
-            <eui-table-filter
-                [placeholder]="'users.search-placeholder' | translate"
-                (filterChange)="onFilterChange($event)">
-            </eui-table-filter>
+            <!-- Left: collapsible filter column -->
+            <eui-page-column
+                [label]="'users.filter.column-label' | translate"
+                euiSize2XL
+                [isCollapsible]="true"
+                [isCollapsed]="isFilterCollapsed"
+                [isAutocloseOnMobile]="true"
+                [expandAriaLabel]="'users.filter.expand-label' | translate"
+                [collapseAriaLabel]="'users.filter.collapse-label' | translate"
+                (collapse)="onFilterColumnCollapse($event)">
+                <eui-page-column-body>
 
-            <eui-toggle-group [attr.aria-label]="'users.filter-status-label' | translate"
-                              (itemClick)="onStatusFilterChange($event)">
-                <eui-toggle-group-item id="status-all" [isChecked]="true">{{ 'common.all' | translate }}</eui-toggle-group-item>
-                <eui-toggle-group-item id="status-active">{{ 'common.active' | translate }}</eui-toggle-group-item>
-                <eui-toggle-group-item id="status-inactive">{{ 'common.inactive' | translate }}</eui-toggle-group-item>
-            </eui-toggle-group>
-        </div>
+                    <!-- Search -->
+                    <div class="eui-u-mb-m">
+                        <label euiLabel for="users-search">
+                            {{ 'users.filter.search-label' | translate }}
+                        </label>
+                        <input euiInputText id="users-search"
+                               [value]="searchValue"
+                               [placeholder]="'users.filter.search-placeholder' | translate"
+                               (input)="onFilterChange($any($event.target).value)" />
+                    </div>
 
-        <!-- Result count (a11y: aria-live for dynamic updates) -->
-        <p aria-live="polite" class="eui-u-mt-s eui-u-mb-s">
-            {{ 'users.showing-of' | translate:{ count: users.length, total: total } }}
-        </p>
+                    <!-- Status filter (dropdown) -->
+                    <div class="eui-u-mb-m">
+                        <label euiLabel for="filter-status">
+                            {{ 'users.filter.status-label' | translate }}
+                        </label>
+                        <select euiSelect id="filter-status"
+                                [(ngModel)]="selectedStatusValue"
+                                (ngModelChange)="onStatusSelectChange()">
+                            <option [ngValue]="null">{{ 'users.filter.all-statuses' | translate }}</option>
+                            <option [ngValue]="'true'">{{ 'common.active' | translate }}</option>
+                            <option [ngValue]="'false'">{{ 'common.inactive' | translate }}</option>
+                        </select>
+                    </div>
 
-        <!-- Table (async mode — no [paginator] or [filter] binding) -->
-        <table euiTable
-               [data]="users"
-               isAsync
-               [isLoading]="loading"
-               isTableResponsive
-               [attr.aria-label]="'users.table-label' | translate"
-               (sortChange)="onSortChange($event)">
+                    <!-- Role filter (dropdown) -->
+                    <div class="eui-u-mb-m">
+                        <label euiLabel for="filter-role">
+                            {{ 'users.filter.role-label' | translate }}
+                        </label>
+                        <select euiSelect id="filter-role"
+                                [(ngModel)]="selectedRole"
+                                (ngModelChange)="onRoleSelectChange()">
+                            <option [ngValue]="null">{{ 'users.filter.all-roles' | translate }}</option>
+                            @for (role of availableRoles; track role) {
+                                <option [ngValue]="role">{{ role }}</option>
+                            }
+                        </select>
+                    </div>
 
-            <ng-template euiTemplate="header">
-                <tr>
-                    <th scope="col" isSortable sortOn="username">{{ 'common.field.username' | translate }}</th>
-                    <th scope="col" isSortable sortOn="firstName">{{ 'common.field.first-name' | translate }}</th>
-                    <th scope="col" isSortable sortOn="lastName">{{ 'common.field.last-name' | translate }}</th>
-                    <th scope="col" isSortable sortOn="email">{{ 'common.field.email' | translate }}</th>
-                    <th scope="col" isSortable sortOn="role">{{ 'common.field.role' | translate }}</th>
-                    <th scope="col">{{ 'common.field.status' | translate }}</th>
-                    <th scope="col">{{ 'common.field.actions' | translate }}</th>
-                </tr>
-            </ng-template>
+                </eui-page-column-body>
+            </eui-page-column>
 
-            <ng-template let-row euiTemplate="body">
-                <tr>
-                    <td [attr.data-col-label]="'common.field.username' | translate">{{ row.username }}</td>
-                    <td [attr.data-col-label]="'common.field.first-name' | translate">{{ row.firstName }}</td>
-                    <td [attr.data-col-label]="'common.field.last-name' | translate">{{ row.lastName }}</td>
-                    <td [attr.data-col-label]="'common.field.email' | translate">{{ row.email }}</td>
-                    <td [attr.data-col-label]="'common.field.role' | translate">{{ row.role }}</td>
-                    <td [attr.data-col-label]="'common.field.status' | translate">
-                        @if (row.is_active) {
-                            <eui-chip euiSuccess euiSizeS [ariaLabel]="'common.active' | translate">{{ 'common.active' | translate }}</eui-chip>
-                        } @else {
-                            <eui-chip euiDanger euiSizeS [ariaLabel]="'common.inactive' | translate">{{ 'common.inactive' | translate }}</eui-chip>
-                        }
-                    </td>
-                    <td [attr.data-col-label]="'common.field.actions' | translate">
+            <!-- Right: results column -->
+            <eui-page-column>
+                <eui-page-column-header-left-content>
+                    <div class="eui-u-f-l eui-u-f-bold">{{ 'users.results.heading' | translate }}</div>
+                    <div aria-live="polite" class="eui-u-f-m">
+                        {{ 'users.results.count' | translate:{ total: total } }}
+                    </div>
+                </eui-page-column-header-left-content>
+
+                <eui-page-column-header-body>
+                    @if (hasActiveFilters) {
+                        <div class="eui-u-flex eui-u-flex-gap-m">
+                            <div class="eui-u-f-s">
+                                {{ 'users.results.selected-criteria' | translate }}:<br>
+                                <a class="eui-u-text-link" (click)="clearAllFilters()" (keydown.enter)="clearAllFilters()" tabindex="0">
+                                    {{ 'users.results.clear-all' | translate }}
+                                </a>
+                            </div>
+                            <eui-chip-list euiSizeS>
+                                @for (chip of visibleChips; track chip.key) {
+                                    <eui-chip [isChipRemovable]="true"
+                                              [ariaLabel]="chip.label"
+                                              (remove)="onChipRemove(chip)">
+                                        {{ chip.label }}
+                                    </eui-chip>
+                                }
+                            </eui-chip-list>
+                            @if (hasOverflowChips) {
+                                <span class="eui-u-f-s">{{ 'users.results.more' | translate:{ count: overflowChipCount } }}</span>
+                            }
+                        </div>
+                    }
+                </eui-page-column-header-body>
+
+                <eui-page-column-header-right-content>
+                    <div class="eui-u-d-flex eui-u-align-items-center eui-u-gap-2xs">
+                        <label euiLabel for="sort-field" class="eui-u-sr-only">
+                            {{ 'users.results.sort-by' | translate }}
+                        </label>
+                        <select euiSelect id="sort-field"
+                                [(ngModel)]="sortField"
+                                (ngModelChange)="onSortFieldChange()">
+                            <option value="created_at">{{ 'users.results.sort-creation-date' | translate }}</option>
+                            <option value="username">{{ 'users.results.sort-username' | translate }}</option>
+                            <option value="lastName">{{ 'users.results.sort-last-name' | translate }}</option>
+                            <option value="role">{{ 'users.results.sort-role' | translate }}</option>
+                        </select>
                         <eui-icon-button
-                            icon="key:regular"
+                            [icon]="sortOrder === 'asc' ? 'arrow-up:regular' : 'arrow-down:regular'"
                             size="s"
-                            aria-haspopup="dialog"
-                            [ariaLabel]="'users.action.reset-password' | translate:{ username: row.username }"
-                            [euiDisabled]="operationPending"
-                            (click)="onResetPassword(row)">
+                            [ariaLabel]="'users.results.sort-direction' | translate"
+                            (buttonClick)="onToggleSortOrder()">
                         </eui-icon-button>
-                        @if (row.is_active) {
-                            <eui-icon-button
-                                icon="prohibit:regular"
-                                size="s"
-                                aria-haspopup="dialog"
-                                [ariaLabel]="'users.action.deactivate' | translate:{ username: row.username }"
-                                [euiDisabled]="operationPending"
-                                (click)="onToggleStatus(row)">
-                            </eui-icon-button>
-                        } @else {
-                            <eui-icon-button
-                                icon="check-circle:regular"
-                                size="s"
-                                aria-haspopup="dialog"
-                                [ariaLabel]="'users.action.reactivate' | translate:{ username: row.username }"
-                                [euiDisabled]="operationPending"
-                                (click)="onToggleStatus(row)">
-                            </eui-icon-button>
-                        }
-                    </td>
-                </tr>
-            </ng-template>
+                    </div>
+                </eui-page-column-header-right-content>
 
-            <ng-template euiTemplate="noData">
-                <tr>
-                    <td class="eui-u-text-center" colspan="7">
-                        {{ emptyStateMessage }}
-                        @if (hasLoadError) {
-                            <button euiButton euiSecondary type="button"
-                                    class="eui-u-ml-m"
-                                    (click)="loadUsers()">
-                                {{ 'common.retry' | translate }}
-                            </button>
-                        }
-                    </td>
-                </tr>
-            </ng-template>
-        </table>
+                <eui-page-column-body>
+                    <!-- Loading state -->
+                    @if (loading) {
+                        <eui-progress-bar [isIndeterminate]="true"
+                                          [label]="'common.loading' | translate">
+                        </eui-progress-bar>
+                    } @else if (users.length === 0) {
+                        <!-- Empty state -->
+                        <output class="eui-u-d-flex eui-u-flex-direction-column eui-u-align-items-center eui-u-pv-xl">
+                            <p class="eui-u-f-l eui-u-mb-s">{{ emptyStateMessage }}</p>
+                            @if (hasLoadError) {
+                                <button euiButton euiSecondary euiSizeS
+                                        type="button"
+                                        class="eui-u-mt-m"
+                                        (click)="loadUsers()">
+                                    {{ 'common.retry' | translate }}
+                                </button>
+                            }
+                        </output>
+                    } @else {
+                        <!-- Table -->
+                        <table euiTable
+                               [data]="users"
+                               isAsync
+                               isTableResponsive
+                               [attr.aria-label]="'users.table-label' | translate"
+                               (sortChange)="onSortChange($event)">
 
-        <!-- Paginator (not bound to table — async mode) -->
-        <eui-paginator
-            [length]="total"
-            [pageSize]="params._limit ?? 10"
-            [pageSizeOptions]="[10, 25, 50]"
-            (pageChange)="onPageChange($event)">
-        </eui-paginator>
+                            <ng-template euiTemplate="header">
+                                <tr>
+                                    <th scope="col" isSortable sortOn="username">{{ 'common.field.username' | translate }}</th>
+                                    <th scope="col" isSortable sortOn="firstName">{{ 'common.field.first-name' | translate }}</th>
+                                    <th scope="col" isSortable sortOn="lastName">{{ 'common.field.last-name' | translate }}</th>
+                                    <th scope="col" isSortable sortOn="email">{{ 'common.field.email' | translate }}</th>
+                                    <th scope="col" isSortable sortOn="role">{{ 'common.field.role' | translate }}</th>
+                                    <th scope="col">{{ 'common.field.status' | translate }}</th>
+                                    <th scope="col">{{ 'common.field.actions' | translate }}</th>
+                                </tr>
+                            </ng-template>
 
+                            <ng-template let-row euiTemplate="body">
+                                <tr>
+                                    <td [attr.data-col-label]="'common.field.username' | translate">{{ row.username }}</td>
+                                    <td [attr.data-col-label]="'common.field.first-name' | translate">{{ row.firstName }}</td>
+                                    <td [attr.data-col-label]="'common.field.last-name' | translate">{{ row.lastName }}</td>
+                                    <td [attr.data-col-label]="'common.field.email' | translate">{{ row.email }}</td>
+                                    <td [attr.data-col-label]="'common.field.role' | translate">{{ row.role }}</td>
+                                    <td [attr.data-col-label]="'common.field.status' | translate">
+                                        @if (row.is_active) {
+                                            <eui-chip euiSuccess euiSizeS [ariaLabel]="'common.active' | translate">{{ 'common.active' | translate }}</eui-chip>
+                                        } @else {
+                                            <eui-chip euiDanger euiSizeS [ariaLabel]="'common.inactive' | translate">{{ 'common.inactive' | translate }}</eui-chip>
+                                        }
+                                    </td>
+                                    <td [attr.data-col-label]="'common.field.actions' | translate">
+                                        <eui-icon-button
+                                            icon="key:regular"
+                                            size="s"
+                                            aria-haspopup="dialog"
+                                            [ariaLabel]="'users.action.reset-password' | translate:{ username: row.username }"
+                                            [euiDisabled]="operationPending"
+                                            (click)="onResetPassword(row)">
+                                        </eui-icon-button>
+                                        @if (row.is_active) {
+                                            <eui-icon-button
+                                                icon="prohibit:regular"
+                                                size="s"
+                                                aria-haspopup="dialog"
+                                                [ariaLabel]="'users.action.deactivate' | translate:{ username: row.username }"
+                                                [euiDisabled]="operationPending"
+                                                (click)="onToggleStatus(row)">
+                                            </eui-icon-button>
+                                        } @else {
+                                            <eui-icon-button
+                                                icon="check-circle:regular"
+                                                size="s"
+                                                aria-haspopup="dialog"
+                                                [ariaLabel]="'users.action.reactivate' | translate:{ username: row.username }"
+                                                [euiDisabled]="operationPending"
+                                                (click)="onToggleStatus(row)">
+                                            </eui-icon-button>
+                                        }
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </table>
+                    }
+                </eui-page-column-body>
+
+                <!-- Paginator -->
+                <eui-page-column-footer>
+                    <eui-paginator
+                        [length]="total"
+                        [page]="(params._page ?? 1) - 1"
+                        [pageSize]="params._limit ?? 10"
+                        [pageSizeOptions]="[10, 25, 50]"
+                        [hasDynamicLength]="true"
+                        (pageChange)="onPageChange($event)">
+                    </eui-paginator>
+                </eui-page-column-footer>
+            </eui-page-column>
+
+        </eui-page-columns>
     </eui-page-content>
 </eui-page>
 

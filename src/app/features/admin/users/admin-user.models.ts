@@ -20,6 +20,7 @@ export interface AdminUserListParams {
     _order?: 'asc' | 'desc';
     q?: string;
     is_active?: 'true' | 'false';
+    role?: string;
 }
 
 export interface AdminUserListResponse {

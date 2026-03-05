@@ -224,6 +224,41 @@ describe('GET /api/admin/users', () => {
             expect(combined).toContain('admin');
         });
     });
+
+    it('role=DEVELOPER returns only developers', async () => {
+        const res = await request(app)
+            .get('/api/admin/users?role=DEVELOPER&_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        res.body.data.forEach(user => {
+            expect(user.role).toBe('DEVELOPER');
+        });
+    });
+
+    it('role=SUPER_ADMIN returns only super admins', async () => {
+        const res = await request(app)
+            .get('/api/admin/users?role=SUPER_ADMIN&_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        expect(res.body.data.length).toBeGreaterThan(0);
+        res.body.data.forEach(user => {
+            expect(user.role).toBe('SUPER_ADMIN');
+        });
+    });
+
+    it('combined: role + is_active + q', async () => {
+        const res = await request(app)
+            .get('/api/admin/users?role=DEVELOPER&is_active=true&q=dev&_limit=100')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(res.status).toBe(200);
+        res.body.data.forEach(user => {
+            expect(user.role).toBe('DEVELOPER');
+            expect(user.is_active).toBe(true);
+        });
+    });
 });
 
 // ─── GET /api/admin/users/:userId — Get single user ─────────────────────────

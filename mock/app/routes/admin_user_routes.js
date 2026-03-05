@@ -43,6 +43,12 @@ module.exports = function (app, db) {
                 users = users.filter(u => u.is_active === false);
             }
 
+            // 1b. Filter by role
+            const roleParam = req.query.role;
+            if (roleParam) {
+                users = users.filter(u => u.role === roleParam);
+            }
+
             // 2. Search
             const q = (req.query.q || '').trim().toLowerCase();
             if (q) {
