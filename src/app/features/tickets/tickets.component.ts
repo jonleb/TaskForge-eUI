@@ -19,7 +19,7 @@ import { EUI_DROPDOWN } from '@eui/components/eui-dropdown';
 import { EUI_INPUT_CHECKBOX } from '@eui/components/eui-input-checkbox';
 import { EUI_PROGRESS_BAR } from '@eui/components/eui-progress-bar';
 import { EUI_ICON } from '@eui/components/eui-icon';
-import { EUI_BREADCRUMB } from '@eui/components/eui-breadcrumb';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import { EUI_ICON_BUTTON } from '@eui/components/eui-icon-button';
 import { EUI_INPUT_RADIO } from '@eui/components/eui-input-radio';
 import { EUI_TOGGLE_GROUP } from '@eui/components/eui-toggle-group';
@@ -49,7 +49,7 @@ export interface FilterChip {
         ...EUI_SELECT, ...EUI_LABEL, ...EUI_INPUT_TEXT, ...EUI_TEXTAREA,
         EuiDialogComponent, EuiPaginatorComponent, ...EUI_CARD, ...EUI_DROPDOWN,
         ...EUI_INPUT_CHECKBOX, ...EUI_PROGRESS_BAR, ...EUI_ICON,
-        ...EUI_BREADCRUMB, ...EUI_ICON_BUTTON, ...EUI_INPUT_RADIO,
+        ...EUI_ICON_BUTTON, ...EUI_INPUT_RADIO,
         ...EUI_TOGGLE_GROUP, ...EUI_STATUS_BADGE,
         ...EUI_TABLE, EuiTemplateDirective,
         FormsModule, TranslateModule, RouterLink,
@@ -61,6 +61,7 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly permissionService = inject(PermissionService);
     private readonly cdr = inject(ChangeDetectorRef);
     private readonly growlService = inject(EuiGrowlService);
+    private readonly breadcrumbService = inject(EuiBreadcrumbService);
     private readonly translate = inject(TranslateService);
     private readonly router = inject(Router);
     private readonly destroy$ = new Subject<void>();
@@ -176,6 +177,10 @@ export class TicketsComponent implements OnInit, AfterViewInit, OnDestroy {
     statusError = '';
 
     ngOnInit(): void {
+        this.breadcrumbService.setBreadcrumb([
+            { id: 'tickets', label: this.translate.instant('tickets.breadcrumb.tickets'), link: null },
+        ]);
+
         this.searchSubject.pipe(
             debounceTime(300),
             distinctUntilChanged(),

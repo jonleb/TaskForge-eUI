@@ -1,17 +1,4 @@
 <eui-page>
-    <eui-page-breadcrumb>
-        <eui-breadcrumb>
-            <eui-breadcrumb-item
-                link="/screen/home"
-                iconSvgName="home:outline"
-                [ariaLabel]="'tickets.breadcrumb.home' | translate">
-            </eui-breadcrumb-item>
-            <eui-breadcrumb-item
-                [label]="'tickets.breadcrumb.tickets' | translate">
-            </eui-breadcrumb-item>
-        </eui-breadcrumb>
-    </eui-page-breadcrumb>
-
     <eui-page-header [label]="'tickets.page-title' | translate">
         @if (canCreate) {
             <eui-page-header-action-items>

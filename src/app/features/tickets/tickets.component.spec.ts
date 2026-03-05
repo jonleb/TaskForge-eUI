@@ -12,8 +12,9 @@ beforeAll(() => {
 
 import { of, throwError, Subject } from 'rxjs';
 import { EuiGrowlService } from '@eui/core';
+import { EuiBreadcrumbService } from '@eui/components/eui-breadcrumb';
 import {
-    TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock,
+    TranslateTestingModule, provideEuiCoreMocks, createGrowlServiceMock, createBreadcrumbServiceMock,
 } from '../../testing/test-providers';
 import { TicketsComponent } from './tickets.component';
 import { TicketsService } from '../../core/tickets';
@@ -55,6 +56,7 @@ describe('TicketsComponent', () => {
     let projectSvc: Record<string, ReturnType<typeof vi.fn>>;
     let perm: Record<string, ReturnType<typeof vi.fn>>;
     let growl: ReturnType<typeof createGrowlServiceMock>;
+    let breadcrumbMock: ReturnType<typeof createBreadcrumbServiceMock>;
 
     beforeEach(async () => {
         ticketsSvc = {
@@ -82,6 +84,7 @@ describe('TicketsComponent', () => {
             hasProjectRole: vi.fn().mockReturnValue(of(true)),
         };
         growl = createGrowlServiceMock();
+        breadcrumbMock = createBreadcrumbServiceMock();
 
         await TestBed.configureTestingModule({
             imports: [TicketsComponent, TranslateTestingModule],
@@ -91,6 +94,7 @@ describe('TicketsComponent', () => {
                 { provide: ProjectService, useValue: projectSvc },
                 { provide: PermissionService, useValue: perm },
                 { provide: EuiGrowlService, useValue: growl },
+                { provide: EuiBreadcrumbService, useValue: breadcrumbMock },
             ],
         }).compileComponents();
 
@@ -739,27 +743,11 @@ describe('TicketsComponent', () => {
 
     // ── Breadcrumb + Page Header ──
 
-    it('should render breadcrumb with 2 items', () => {
+    it('should set breadcrumb via service on init', () => {
         fixture.detectChanges();
-        const breadcrumb = fixture.nativeElement.querySelector('eui-breadcrumb');
-        expect(breadcrumb).toBeTruthy();
-        const items = fixture.nativeElement.querySelectorAll('eui-breadcrumb-item');
-        expect(items.length).toBe(2);
-    });
-
-    it('should render home breadcrumb with link and icon', () => {
-        fixture.detectChanges();
-        const items = fixture.nativeElement.querySelectorAll('eui-breadcrumb-item');
-        const homeItem = items[0];
-        expect(homeItem.getAttribute('link')).toBe('/screen/home');
-        expect(homeItem.getAttribute('iconsvgname')).toBe('home:outline');
-    });
-
-    it('should render tickets breadcrumb without link', () => {
-        fixture.detectChanges();
-        const items = fixture.nativeElement.querySelectorAll('eui-breadcrumb-item');
-        const ticketsItem = items[1];
-        expect(ticketsItem.getAttribute('link')).toBeFalsy();
+        expect(breadcrumbMock.setBreadcrumb).toHaveBeenCalledWith([
+            { id: 'tickets', label: 'tickets.breadcrumb.tickets', link: null },
+        ]);
     });
 
     it('should render create button with icon', () => {
