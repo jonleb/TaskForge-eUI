@@ -394,15 +394,14 @@
 
                 <!-- Paginator -->
                 <eui-page-column-footer>
-                    @if (!isLoading) {
-                        <eui-paginator
-                            [length]="total"
-                            [page]="(params._page ?? 1) - 1"
-                            [pageSize]="params._limit ?? 10"
-                            [pageSizeOptions]="[10, 25, 50]"
-                            (pageChange)="onPageChange($event)">
-                        </eui-paginator>
-                    }
+                    <eui-paginator
+                        [length]="total"
+                        [page]="(params._page ?? 1) - 1"
+                        [pageSize]="params._limit ?? 10"
+                        [pageSizeOptions]="[10, 25, 50]"
+                        [hasDynamicLength]="true"
+                        (pageChange)="onPageChange($event)">
+                    </eui-paginator>
                 </eui-page-column-footer>
             </eui-page-column>
 

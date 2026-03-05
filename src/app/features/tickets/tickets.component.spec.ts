@@ -288,13 +288,29 @@ describe('TicketsComponent', () => {
         expect(ticketsSvc.getTickets).toHaveBeenCalledWith(expect.objectContaining({ _page: 3, _limit: 25 }));
     });
 
-    it('should ignore paginator init event before AfterViewInit', () => {
+    it('should ignore paginator init event before paginatorReady is set', () => {
         fixture.detectChanges();
         ticketsSvc.getTickets.mockClear();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (component as any).paginatorReady = false;
         component.onPageChange({ page: 0, pageSize: 10 });
         expect(ticketsSvc.getTickets).not.toHaveBeenCalled();
+    });
+
+    it('should not destroy paginator during loading (paginator always rendered)', () => {
+        fixture.detectChanges();
+        const footer = fixture.nativeElement.querySelector('eui-page-column-footer');
+        const paginator = footer.querySelector('eui-paginator');
+        expect(paginator).toBeTruthy();
+
+        // Simulate loading state
+        component.isLoading = true;
+        component['cdr'].markForCheck();
+        fixture.detectChanges();
+
+        // Paginator should still be present
+        const paginatorDuringLoad = footer.querySelector('eui-paginator');
+        expect(paginatorDuringLoad).toBeTruthy();
     });
 
     // ── Loading / Empty / Error states ──
