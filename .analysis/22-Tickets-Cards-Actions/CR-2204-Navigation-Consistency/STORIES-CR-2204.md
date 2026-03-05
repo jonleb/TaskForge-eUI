@@ -198,11 +198,15 @@ if (this.navigatedFromTickets) {
 
 1. **`clearProject()` timing** — Must be called AFTER the ticket data has loaded (the `combineLatest` needs `currentProject$` to emit a non-null project to resolve the ticket). Calling it in the `next` handler ensures the data is already fetched.
 
-2. **`location.getState()` vs `router.getCurrentNavigation()`** — `getCurrentNavigation()` is only available during route activation (in guards/resolvers). By the time `ngOnInit` runs, it returns `null`. `location.getState()` reads from `history.state` and is available at any time.
+2. **`clearProject()` and page refresh safety** — `clearProject()` removes the sessionStorage key AND emits `null` on `currentProject$`. This does NOT break page refresh because `ProjectShellComponent` (the parent route) re-fetches the project from route params on every `ngOnInit`. On refresh: shell fetches project → `setProject()` → `currentProject$` emits non-null → `combineLatest` fires → ticket loads → `clearProject()` called again (because `history.state` persists across refreshes). The `restoreProject()` method on `ProjectContextService` is NOT involved in this flow — the shell handles project restoration via route params.
 
-3. **Sidebar restoration** — When `clearProject()` is called, the layout's `currentProject$` subscription emits `null`, which triggers `filterSidebarItems()` → global menu. This is the existing mechanism, no changes needed in `LayoutComponent`.
+3. **`location.getState()` vs `router.getCurrentNavigation()`** — `getCurrentNavigation()` is only available during route activation (in guards/resolvers). By the time `ngOnInit` runs, it returns `null`. `location.getState()` reads from `history.state` and is available at any time. `history.state` persists across page refreshes but is lost on new navigations — this is the desired behavior.
 
-4. **Back button** — `goBack()` uses `location.back()`, which returns to the Tickets page. The Tickets page's `ngOnInit` calls `breadcrumbService.setBreadcrumb([{ id: 'tickets', ... }])`, restoring the breadcrumb. The sidebar is already global because `clearProject()` was called.
+4. **Sidebar restoration** — When `clearProject()` is called, the layout's `currentProject$` subscription emits `null`, which triggers `filterSidebarItems()` → global menu. This is the existing mechanism, no changes needed in `LayoutComponent`. Note: there may be a brief visual flicker between the shell's `setProject()` and ticket-detail's `clearProject()` — this is acceptable and imperceptible in practice because both happen within the same change detection cycle.
+
+5. **Back button** — `goBack()` uses `location.back()`, which returns to the Tickets page. The Tickets page's `ngOnInit` calls `breadcrumbService.setBreadcrumb([{ id: 'tickets', ... }])`, restoring the breadcrumb. The sidebar is already global because `clearProject()` was called.
+
+6. **Direct URL access** — If a user navigates directly to a ticket-detail URL (no `history.state`), `navigatedFromTickets` defaults to `false`, and the project-context breadcrumb is shown. This is correct — without navigation context, the project sidebar is the appropriate default.
 
 ### TypeScript changes — `tickets.component.ts`
 
@@ -377,4 +381,4 @@ For each of the 6 components:
 - `setBreadcrumb()` replaces the entire breadcrumb array — no need to clear previous items.
 - The layout's `<eui-app-breadcrumb>` always renders the Home icon as the first item. The service items appear after it. So `setBreadcrumb([{ id: 'tickets', label: 'Tickets' }])` renders as `Home → Tickets`.
 - `location.getState()` returns `history.state` which persists across page refreshes but is lost on new navigations. This is acceptable — a direct URL access to a ticket-detail page will default to project-context breadcrumb.
-- `clearProject()` on `ProjectContextService` emits `null` on `currentProject$`, which triggers the layout to rebuild the sidebar as global. This is the existing mechanism used by `ProjectShellComponent.ngOnDestroy()`.
+- `clearProject()` on `ProjectContextService` emits `null` on `currentProject$` AND removes the sessionStorage key. This triggers the layout to rebuild the sidebar as global. On page refresh, `ProjectShellComponent.ngOnInit` re-fetches the project from route params and calls `setProject()`, so the `combineLatest` in `TicketDetailComponent` still resolves correctly. The sessionStorage removal does NOT cause a stuck page.
